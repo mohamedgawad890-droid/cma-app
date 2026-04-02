@@ -1080,6 +1080,32 @@ function renderTracker(){
   </div>`;
 }
 
+
+async function doAuth(){
+  const isReg=STATE.authScreen==='register';
+  const email=(document.getElementById('auth-email')?.value||'').trim();
+  const pass=document.getElementById('auth-pass')?.value||'';
+  const pass2=document.getElementById('auth-pass2')?.value||'';
+  const name=(document.getElementById('auth-name')?.value||'').trim();
+  STATE.authError='';
+  if(!email||!pass){STATE.authError='Please enter email and password.';render();return;}
+  if(isReg&&pass!==pass2){STATE.authError='Passwords do not match.';render();return;}
+  if(isReg&&!name){STATE.authError='Please enter your full name.';render();return;}
+  STATE.authLoading=true;render();
+  try{
+    if(isReg){
+      const cred=await auth.createUserWithEmailAndPassword(email,pass);
+      await cred.user.updateProfile({displayName:name});
+    }else{
+      await auth.signInWithEmailAndPassword(email,pass);
+    }
+  }catch(e){
+    STATE.authLoading=false;
+    STATE.authError=e.message.replace('Firebase: ','').replace(/ \(auth\/.*?\)/,'');
+    render();
+  }
+}
+
 // ─── AUTH SCREENS ─────────────────────────────────────────────────────────────
 function renderLoading(){
   return`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:40px 20px;text-align:center">
