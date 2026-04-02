@@ -414,7 +414,7 @@ function renderStudy(){
         <div style="font-size:11px;font-weight:500;color:${sec.text};margin-bottom:8px;letter-spacing:.5px">LESSONS & QUIZZES</div>
         ${sec.lessons.map((l,i)=>{const done=lessonDone(l.id);const lsc=(progress.lessonScores||{})[l.id];return`
           <div style="background:${done?sec.bg:'#f8f8f6'};margin-bottom:8px;border-radius:10px;border:.5px solid ${done?sec.text+'30':'#e0e0d8'};overflow:hidden">
-            <div onclick="STATE.lessonId='${l.id}';render()" style="display:flex;align-items:center;gap:10px;padding:9px 10px;cursor:pointer">
+            <div onclick="event.stopPropagation();STATE.lessonId='${l.id}';render()" style="display:flex;align-items:center;gap:10px;padding:9px 10px;cursor:pointer">
               <div style="width:24px;height:24px;border-radius:50%;background:${done?sec.bar:'#e5e5e0'};display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;flex-shrink:0;font-weight:500">${done?'✓':i+1}</div>
               <div style="flex:1;min-width:0"><div class="ellipsis" style="font-size:13px;font-weight:500;color:${done?sec.strong:'#1a1a1a'}">${esc(l.title)}</div>
               <div style="font-size:11px;color:#888;margin-top:1px">${l.dur} · ${done?'Completed':'Not started'}</div></div>
