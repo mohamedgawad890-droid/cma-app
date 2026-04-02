@@ -1161,12 +1161,12 @@ function renderIntro(){
 function renderDashboard(){
   const{progress}=STATE;
   const pct=getPct(),acc=getAcc();
-  const quizDone=Object.keys(progress.scores).length;
+  const quizDone=Object.keys(progress.lessonScores||{}).length;
   const doneCount=progress.done.length;
   const sectCards=S.map(sec=>{
     const done=sec.lessons.filter(l=>lessonDone(l.id)).length;
     const sp=Math.round(done/sec.lessons.length*100);
-    const sc=progress.scores[sec.id];
+    const sc=null;
     return`<div class="card">
       <div class="row" style="margin-bottom:10px">
         <div class="sect-icon" style="background:${sec.bg}">${sec.emoji}</div>
@@ -1226,7 +1226,7 @@ function renderLessons(){
 
 // ─── QUIZ LIST ────────────────────────────────────────────────────────────────
 function renderQuizList(){
-  const items=S.map(sec=>{const sc=STATE.progress.scores[sec.id];const scColor=sc?(sc.correct/sc.total>=0.8?'#3B6D11':sc.correct/sc.total>=0.6?'#BA7517':'#A32D2D'):'#888';
+  const items=S.map(sec=>{const sc=null;const scColor=sc?(sc.correct/sc.total>=0.8?'#3B6D11':sc.correct/sc.total>=0.6?'#BA7517':'#A32D2D'):'#888';
   return`<div class="card"><div class="row" style="margin-bottom:12px"><div class="sect-icon" style="background:${sec.bg}">${sec.emoji}</div><div style="flex:1;min-width:0"><div class="ellipsis" style="font-size:13px;font-weight:500">${esc(sec.title)}</div>${sc?`<div style="font-size:11px;margin-top:2px;color:${scColor}">Last: ${sc.correct}/${sc.total} (${Math.round(sc.correct/sc.total*100)}%)</div>`:`<div style="font-size:11px;color:#888;margin-top:2px">Not attempted yet</div>`}</div></div>
   <button class="btn-sm" onclick="startQuiz(${sec.id})" style="background:${sec.bg};color:${sec.strong};border:1px solid ${sec.text}50">${sc?'Retake Quiz':'Start Quiz'} — 5 MCQs</button></div>`;}).join('');
   return`<div class="sh"><h2>Practice Quizzes</h2><p>5 MCQs per section · Detailed explanations included</p></div><div class="scroll-area pad" style="padding-top:14px">${items}<div style="height:20px"></div></div>`;
