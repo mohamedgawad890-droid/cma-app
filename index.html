@@ -1865,7 +1865,7 @@ function navTo(tab){
   if(tab!=='intro'&&tab!=='register'&&tab!=='login'&&tab!=='loading'&&tab!=='feedback'&&tab!=='community'&&tab!=='question-detail'){
     const st=loadStudent();
     const fb=loadFeedback();
-    const isComplete=st&&st.name&&st.mobile&&st.email&&st.country&&st.university&&st.faculty&&st.gradyear&&st.title&&st.company&&st.experience&&st.level&&st.goal&&st.examdate&&st.photo&&fb.rating>0&&fb.comments&&fb.improvements;
+    const isComplete=st&&st.name&&st.mobile&&st.email&&st.country&&st.university&&st.faculty&&st.gradyear&&st.title&&st.company&&st.experience&&st.level&&st.goal&&st.examdate&&st.photo;
     if(!isComplete){STATE.tab='register';STATE.showProfileWarning=true;render();return;}
   }
   STATE.showProfileWarning=false;
@@ -1890,7 +1890,7 @@ auth.onAuthStateChanged(async(user)=>{
       if(td.exists){try{localStorage.setItem('cma-tracker-v1',JSON.stringify(td.data()));}catch{}}
     }catch{}
     const st=loadStudent();const fb=loadFeedback();
-    const isComplete=st&&st.name&&st.mobile&&st.email&&st.country&&st.university&&st.faculty&&st.gradyear&&st.title&&st.company&&st.experience&&st.level&&st.goal&&st.examdate&&st.photo&&fb.rating>0&&fb.comments&&fb.improvements;
+    const isComplete=st&&st.name&&st.mobile&&st.email&&st.country&&st.university&&st.faculty&&st.gradyear&&st.title&&st.company&&st.experience&&st.level&&st.goal&&st.examdate&&st.photo;
     STATE.tab=isComplete?'intro':'register';
     STATE.showProfileWarning=!isComplete;
   } else {
