@@ -146,9 +146,74 @@ const CLD_PRESET='cma_students';
 // ─── DATA ────────────────────────────────────────────────────────────────────
 
 const S=[
-  {id:1,title:"External Financial Reporting",weight:15,emoji:"📋",bar:"#185FA5",bg:"#E6F1FB",text:"#1A5A9E",strong:"#0C447C",lessons:[]},
-  {id:2,title:"Planning, Budgeting & Forecasting",weight:20,emoji:"📊",bar:"#639922",bg:"#EAF3DE",text:"#4A7A1A",strong:"#27500A",lessons:[]},
-  {id:3,title:"Performance Management",weight:20,emoji:"🎯",bar:"#7B3FA0",bg:"#F3E8FF",text:"#6A2E8F",strong:"#4A1F70",lessons:[]},
+  {id:1,title:"External Financial Reporting",weight:15,emoji:"📋",bar:"#185FA5",bg:"#E6F1FB",text:"#1A5A9E",strong:"#0C447C",
+    lessons:[
+      {id:"1-1",title:"Overview of Financial Statements",dur:"30 min",
+        blocks:[
+          {t:"h",v:"The Four Core Financial Statements"},
+          {t:"p",v:"External financial reporting communicates a company's financial position and performance to outside stakeholders — investors, creditors, regulators, and the public. The CMA exam tests deep knowledge of four core statements and how they interrelate."},
+          {t:"b",v:["Balance Sheet (Statement of Financial Position): Snapshot of assets, liabilities, and equity at a point in time","Income Statement (P&L): Revenues and expenses over a period — shows profitability","Statement of Cash Flows: Cash inflows/outflows from Operating, Investing, and Financing activities","Statement of Changes in Equity: Changes in retained earnings, paid-in capital, and other equity components"]},
+          {t:"h",v:"The Balance Sheet — Accounting Equation"},
+          {t:"f",l:"Accounting Equation",v:"Assets = Liabilities + Shareholders' Equity"},
+          {t:"tbl",h:["Category","Examples","Classification"],r:[["Current Assets","Cash, AR, Inventory, Prepaid Expenses","Due within 1 year"],["Non-Current Assets","PP&E, Intangibles, Long-term Investments","Held beyond 1 year"],["Current Liabilities","AP, Accrued Expenses, Short-term Debt","Due within 1 year"],["Non-Current Liabilities","Long-term Debt, Deferred Tax","Due beyond 1 year"],["Equity","Common Stock, APIC, Retained Earnings","Residual interest"]]},
+          {t:"h",v:"The Income Statement"},
+          {t:"f",l:"Net Income Formula",v:"Net Income = Revenues - Cost of Goods Sold - Operating Expenses - Interest - Taxes"},
+          {t:"p",v:"The income statement is prepared on the ACCRUAL basis — revenues are recognized when EARNED and expenses when INCURRED, regardless of when cash changes hands."},
+          {t:"h",v:"The Statement of Cash Flows"},
+          {t:"tbl",h:["Section","Contents","Key Items"],r:[["Operating Activities","Core business cash flows","Net income adjusted for non-cash items, working capital changes"],["Investing Activities","Long-term asset transactions","Purchase/sale of PP&E, investments"],["Financing Activities","Debt and equity transactions","Loans, stock issuance, dividends paid"]]},
+          {t:"h",v:"Accrual vs Cash Basis"},
+          {t:"b",v:["Accrual Basis: Revenue recognized when earned; expenses when incurred. Required under GAAP/IFRS.","Cash Basis: Revenue recorded when cash received; expenses when cash paid. Only used for small businesses or tax purposes."]},
+          {t:"h",v:"Key Ratios from Financial Statements"},
+          {t:"tbl",h:["Ratio","Formula","Measures"],r:[["Current Ratio","Current Assets / Current Liabilities","Short-term liquidity"],["Debt-to-Equity","Total Debt / Total Equity","Financial leverage"],["Net Profit Margin","Net Income / Revenue","Profitability"],["Return on Assets (ROA)","Net Income / Total Assets","Asset efficiency"],["Earnings Per Share","(Net Income - Preferred Dividends) / Shares","Per-share profitability"]]},
+          {t:"tip",v:"Exam Tips: Assets = Liabilities + Equity ALWAYS balances. Net Income flows from Income Statement → Retained Earnings on Balance Sheet. Cash from Operations starts with Net Income (indirect method). Non-cash items (depreciation) are ADDED BACK in operating activities. GAAP requires accrual basis for external reporting."}
+        ],
+        quizzes:[]}
+    ]},
+  {id:2,title:"Planning, Budgeting & Forecasting",weight:20,emoji:"📊",bar:"#639922",bg:"#EAF3DE",text:"#4A7A1A",strong:"#27500A",
+    lessons:[
+      {id:"2-1",title:"The Master Budget: Overview & Components",dur:"30 min",
+        blocks:[
+          {t:"h",v:"What Is the Master Budget?"},
+          {t:"p",v:"The master budget is a comprehensive financial plan that integrates ALL departmental budgets into one coordinated document. It serves as the financial roadmap for the entire organization for a specific period (usually one year)."},
+          {t:"h",v:"Two Main Components"},
+          {t:"b",v:["Operating Budget: Plans for revenues and expenses — results in a Budgeted Income Statement","Financial Budget: Plans for cash flows and balance sheet items — includes the Cash Budget and Budgeted Balance Sheet"]},
+          {t:"h",v:"The Operating Budget — Sequence"},
+          {t:"s",v:["Step 1: Sales Budget — the STARTING POINT. All other budgets flow from this.","Step 2: Production Budget = Sales Units + Desired Ending Inventory - Beginning Inventory","Step 3: Direct Materials Budget = Production Needs + Desired Ending DM - Beginning DM","Step 4: Direct Labor Budget = Production Units x Standard Hours x Labor Rate","Step 5: Manufacturing Overhead Budget = Fixed OH + (Variable OH Rate x Activity)","Step 6: Selling & Administrative Budget","Step 7: Budgeted Income Statement — combines all above"]},
+          {t:"f",l:"Production Budget Formula",v:"Required Production = Budgeted Sales + Desired Ending FG Inventory - Beginning FG Inventory"},
+          {t:"h",v:"The Financial Budget — Sequence"},
+          {t:"s",v:["Step 1: Capital Expenditures Budget — planned asset purchases","Step 2: Cash Budget — projects cash inflows and outflows, shows if financing needed","Step 3: Budgeted Balance Sheet — final output"]},
+          {t:"h",v:"Cash Budget Structure"},
+          {t:"tbl",h:["Section","Items"],r:[["Beginning Cash Balance","Cash on hand at period start"],["+ Cash Receipts","Collections from customers, other inflows"],["- Cash Disbursements","Payments for materials, labor, OH, SGA, taxes"],["= Cash Surplus / Deficit","Before financing"],["+/- Financing","Borrowings/repayments to maintain minimum balance"],["= Ending Cash Balance","Must meet minimum cash requirement"]]},
+          {t:"h",v:"Types of Budgets"},
+          {t:"b",v:["Static Budget: Fixed at one activity level — doesn't change with actual output","Flexible Budget: Adjusts to ACTUAL activity level — better for performance evaluation","Zero-Based Budget (ZBB): Every expense must be justified from zero each period — no automatic carryover","Rolling (Continuous) Budget: Always covers a fixed future period (e.g., 12 months) by adding a new month as each month ends"]},
+          {t:"tip",v:"Exam Tips: Sales Budget is ALWAYS first. Production Budget feeds into Materials, Labor, and OH budgets. Cash Budget is the most tested Financial Budget component. Flexible Budget = more useful for variance analysis. ZBB eliminates budgetary slack. Rolling budgets improve planning continuity. Budgetary slack = intentionally underestimating revenue or overestimating costs."}
+        ],
+        quizzes:[]}
+    ]},
+  {id:3,title:"Performance Management",weight:20,emoji:"🎯",bar:"#7B3FA0",bg:"#F3E8FF",text:"#6A2E8F",strong:"#4A1F70",
+    lessons:[
+      {id:"3-1",title:"Flexible Budgets & Performance Evaluation",dur:"25 min",
+        blocks:[
+          {t:"h",v:"Static vs Flexible Budget"},
+          {t:"p",v:"A static budget is prepared for ONE level of activity and doesn't change. A flexible budget ADJUSTS to the actual level of activity, making performance comparison meaningful. You cannot fairly compare actual costs at 9,000 units to a static budget prepared for 10,000 units."},
+          {t:"tbl",h:["Feature","Static Budget","Flexible Budget"],r:[["Activity level","Fixed (one level)","Adjusts to actual output"],["Use","Planning","Performance evaluation"],["Variance analysis","Less meaningful","More meaningful and fair"],["Variable costs","Set at planned volume","Recalculated at actual volume"],["Fixed costs","Same","Same (unchanged)"]
+]},
+          {t:"h",v:"Flexible Budget Formula"},
+          {t:"f",l:"Flexible Budget Amount",v:"Flexible Budget Cost = (Variable Cost Rate x Actual Activity) + Total Fixed Costs"},
+          {t:"h",v:"Variance Analysis Framework"},
+          {t:"f",l:"Total Budget Variance",v:"Total Variance = Actual Cost - Flexible Budget Cost"},
+          {t:"p",v:"Example: Static budget for 10,000 units. Actual production: 9,000 units. Variable cost rate $5/unit. Fixed costs $20,000."},
+          {t:"s",v:["Static Budget cost = ($5 x 10,000) + $20,000 = $70,000","Flexible Budget cost = ($5 x 9,000) + $20,000 = $65,000","Actual cost = $63,000","Variance vs Static = $63,000 - $70,000 = $7,000 Favorable (misleading)","Variance vs Flexible = $63,000 - $65,000 = $2,000 Favorable (fair comparison)"]},
+          {t:"h",v:"The Balanced Scorecard"},
+          {t:"p",v:"The Balanced Scorecard (BSC) measures performance across FOUR perspectives, linking day-to-day operations to long-term strategy:"},
+          {t:"tbl",h:["Perspective","Question","Example Metrics"],r:[["Financial","How do we look to shareholders?","Revenue growth, ROI, EVA"],["Customer","How do customers see us?","Satisfaction scores, market share, retention"],["Internal Business Process","What must we excel at?","Cycle time, quality, defect rates"],["Learning & Growth","Can we continue to improve?","Employee training hours, innovation rate"]]},
+          {t:"b",v:["BSC links strategy to operational measures across four dimensions","Prevents over-focus on financial metrics alone","Lagging indicators = financial results (past performance)","Leading indicators = process/learning metrics (predict future performance)"]},
+          {t:"h",v:"Responsibility Accounting"},
+          {t:"b",v:["Cost Center: Responsible for COSTS only (e.g., production department)","Revenue Center: Responsible for REVENUES only (e.g., sales team)","Profit Center: Responsible for both REVENUES and COSTS (e.g., a product division)","Investment Center: Responsible for revenues, costs, AND investment (e.g., a subsidiary) — measured by ROI or EVA"]},
+          {t:"tip",v:"Exam Tips: Flexible budget is used for PERFORMANCE EVALUATION — comparing actual to flexible is the fair comparison. Static budget is used for PLANNING. Balanced Scorecard has 4 perspectives — Financial, Customer, Internal Process, Learning & Growth. Investment centers use ROI = Operating Income / Invested Assets. EVA = NOPAT - (WACC x Invested Capital)."}
+        ],
+        quizzes:[]}
+    ]},
   {id:4,title:"Cost Management",weight:15,emoji:"💰",bar:"#EF9F27",bg:"#FAEEDA",text:"#BA7517",strong:"#854F0B",
     lessons:[
       {id:"4-1",title:"Cost Behavior: Fixed, Variable & Mixed Costs",dur:"25 min",
@@ -350,8 +415,49 @@ const S=[
           {q:"The PRIMARY purpose of a standard cost system is to:",o:["Simplify bookkeeping","Eliminate all cost variances","Provide benchmarks for CONTROLLING costs and evaluating performance","Replace the budgeting process"],a:2,e:"Standard costing provides BENCHMARKS for comparison with actual results, enabling managers to CONTROL costs and evaluate performance through variance analysis."}
         ]}
     ]},
-  {id:5,title:"Internal Controls",weight:15,emoji:"🔒",bar:"#E24B4A",bg:"#FCEBEB",text:"#A32D2D",strong:"#791F1F",lessons:[]},
-  {id:6,title:"Technology & Analytics",weight:15,emoji:"💻",bar:"#0A8A8A",bg:"#E0F7F7",text:"#0A6E6E",strong:"#075252",lessons:[]}
+  {id:5,title:"Internal Controls",weight:15,emoji:"🔒",bar:"#E24B4A",bg:"#FCEBEB",text:"#A32D2D",strong:"#791F1F",
+    lessons:[
+      {id:"5-1",title:"COSO Framework & Internal Control Fundamentals",dur:"25 min",
+        blocks:[
+          {t:"h",v:"What Are Internal Controls?"},
+          {t:"p",v:"Internal controls are processes and procedures designed to provide REASONABLE ASSURANCE that an organization achieves its objectives in operations, financial reporting, and compliance. They protect assets, ensure accurate records, and promote operational efficiency."},
+          {t:"h",v:"The COSO Framework — 5 Components"},
+          {t:"p",v:"The Committee of Sponsoring Organizations (COSO) framework is the gold standard for internal control. It has five integrated components:"},
+          {t:"b",v:["1. Control Environment: The foundation — tone at the top, ethical values, board oversight, organizational structure, competence commitment","2. Risk Assessment: Identifying and analyzing risks that threaten achieving objectives; includes fraud risk assessment","3. Control Activities: Policies and procedures that mitigate risks — authorizations, reconciliations, physical controls, segregation of duties","4. Information & Communication: Relevant information must be identified, captured, and communicated in a timely manner","5. Monitoring Activities: Ongoing evaluations and separate evaluations to ensure controls are present and functioning"]},
+          {t:"h",v:"Types of Control Activities"},
+          {t:"tbl",h:["Control Type","Description","Example"],r:[["Preventive","Stop errors/fraud BEFORE they occur","Requiring dual approval for payments"],["Detective","Identify errors/fraud AFTER they occur","Monthly bank reconciliations"],["Corrective","Fix identified problems","Adjusting entries after finding errors"],["Compensating","Alternative controls when primary isn't feasible","Manager review when segregation isn't possible"]]},
+          {t:"h",v:"Segregation of Duties (SOD)"},
+          {t:"p",v:"The most fundamental control principle. No single person should have control over all phases of a transaction. The four key duties that must be SEPARATED:"},
+          {t:"b",v:["Authorization: Approving transactions","Recording: Entering transactions in the accounting system","Custody: Physical possession of assets","Reconciliation: Comparing records to physical assets"]},
+          {t:"h",v:"Limitations of Internal Controls"},
+          {t:"b",v:["Internal controls provide only REASONABLE (not absolute) assurance","Collusion: Two or more employees working together can override controls","Management Override: Management can bypass controls — a key fraud risk","Cost-Benefit: Controls should not cost more than the benefit they provide","Human Error: Mistakes happen even with good controls in place"]},
+          {t:"h",v:"The Fraud Triangle"},
+          {t:"b",v:["Pressure/Incentive: Financial need, performance targets, personal problems","Opportunity: Weak internal controls, ability to override controls","Rationalization: Justifying the fraud ('I deserve this', 'I'll pay it back')"]},
+          {t:"tip",v:"Exam Tips: COSO has 5 components — Control Environment is the FOUNDATION. Segregation of Duties = most important preventive control. Preventive > Detective (better to prevent than detect). Reasonable assurance, NOT absolute assurance. Collusion and management override can bypass most controls. Fraud Triangle: Pressure + Opportunity + Rationalization."}
+        ],
+        quizzes:[]}
+    ]},
+  {id:6,title:"Technology & Analytics",weight:15,emoji:"💻",bar:"#0A8A8A",bg:"#E0F7F7",text:"#0A6E6E",strong:"#075252",
+    lessons:[
+      {id:"6-1",title:"Data Analytics & Business Intelligence Fundamentals",dur:"25 min",
+        blocks:[
+          {t:"h",v:"The Role of Technology in Modern Finance"},
+          {t:"p",v:"Technology and data analytics have transformed management accounting. Finance professionals are now expected to extract insights from large datasets, use BI tools, understand ERP systems, and evaluate cybersecurity risks. The CMA exam tests these competencies under Section 6."},
+          {t:"h",v:"Four Types of Analytics"},
+          {t:"tbl",h:["Type","Question It Answers","Complexity","Example"],r:[["Descriptive","What happened?","Low","Sales report showing last quarter revenue"],["Diagnostic","Why did it happen?","Medium","Drill-down analysis of why sales dropped"],["Predictive","What will happen?","High","Forecasting next quarter sales using regression"],["Prescriptive","What should we do?","Highest","Optimization model recommending pricing strategy"]]},
+          {t:"h",v:"Key Data Concepts"},
+          {t:"b",v:["Structured Data: Organized in rows/columns (databases, spreadsheets) — easy to analyze","Unstructured Data: No predefined format (emails, social media, videos) — requires special tools","Big Data: High Volume, Velocity, and Variety (the 3 Vs) — too large for traditional databases","Data Warehouse: Central repository of integrated data from multiple sources for analysis and reporting","Data Mining: Discovering patterns and relationships in large datasets using statistical tools"]},
+          {t:"h",v:"ERP Systems"},
+          {t:"p",v:"Enterprise Resource Planning (ERP) systems integrate ALL business processes into one system — finance, HR, supply chain, manufacturing, and sales share a SINGLE database. Examples: SAP, Oracle, Microsoft Dynamics."},
+          {t:"b",v:["Benefits: Real-time data, eliminates data silos, improves accuracy, automates processes","Risks: High implementation cost, data migration challenges, requires extensive training","Internal Control consideration: ERP requires strong IT controls (access controls, audit trails)"]},
+          {t:"h",v:"Cybersecurity & IT Controls"},
+          {t:"b",v:["Confidentiality: Data accessible only to authorized users","Integrity: Data is accurate and complete, not tampered with","Availability: Systems are accessible when needed (uptime)","Key controls: Access controls, encryption, firewalls, backup procedures, disaster recovery plans"]},
+          {t:"h",v:"Emerging Technologies"},
+          {t:"b",v:["Robotic Process Automation (RPA): Software robots automating repetitive rule-based tasks (e.g., invoice processing, bank reconciliations)","Artificial Intelligence (AI) & Machine Learning: Detecting patterns, anomalies, and fraud in financial data","Blockchain: Distributed ledger providing transparent, tamper-proof transaction records","Cloud Computing: On-demand access to computing resources — reduces IT infrastructure costs"]},
+          {t:"tip",v:"Exam Tips: 4 types of analytics in order: Descriptive → Diagnostic → Predictive → Prescriptive (complexity increases). Big Data = 3 Vs (Volume, Velocity, Variety). ERP integrates ALL business functions into ONE database. RPA automates REPETITIVE tasks. Blockchain = immutable distributed ledger. CIA Triad for cybersecurity: Confidentiality, Integrity, Availability."}
+        ],
+        quizzes:[]}
+    ]}
 ];
 const TOTAL_LESSONS=S.reduce((acc,s)=>acc+s.lessons.length,0);
 
