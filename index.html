@@ -146,6 +146,9 @@ const CLD_PRESET='cma_students';
 // ─── DATA ────────────────────────────────────────────────────────────────────
 
 const S=[
+  {id:1,title:"External Financial Reporting",weight:15,emoji:"📋",bar:"#185FA5",bg:"#E6F1FB",text:"#1A5A9E",strong:"#0C447C",lessons:[]},
+  {id:2,title:"Planning, Budgeting & Forecasting",weight:20,emoji:"📊",bar:"#639922",bg:"#EAF3DE",text:"#4A7A1A",strong:"#27500A",lessons:[]},
+  {id:3,title:"Performance Management",weight:20,emoji:"🎯",bar:"#7B3FA0",bg:"#F3E8FF",text:"#6A2E8F",strong:"#4A1F70",lessons:[]},
   {id:4,title:"Cost Management",weight:15,emoji:"💰",bar:"#EF9F27",bg:"#FAEEDA",text:"#BA7517",strong:"#854F0B",
     lessons:[
       {id:"4-1",title:"Cost Behavior: Fixed, Variable & Mixed Costs",dur:"25 min",
@@ -346,7 +349,9 @@ const S=[
           {q:"Total actual cost $45,000. Total standard cost $42,000. The total variance is:",o:["$3,000 Favorable","$3,000 Unfavorable","$87,000 total cost","Cannot be determined"],a:1,e:"Total Variance = Actual Cost - Standard Cost = $45,000 - $42,000 = $3,000 UNFAVORABLE. Actual exceeded standard."},
           {q:"The PRIMARY purpose of a standard cost system is to:",o:["Simplify bookkeeping","Eliminate all cost variances","Provide benchmarks for CONTROLLING costs and evaluating performance","Replace the budgeting process"],a:2,e:"Standard costing provides BENCHMARKS for comparison with actual results, enabling managers to CONTROL costs and evaluate performance through variance analysis."}
         ]}
-    ]}
+    ]},
+  {id:5,title:"Internal Controls",weight:15,emoji:"🔒",bar:"#E24B4A",bg:"#FCEBEB",text:"#A32D2D",strong:"#791F1F",lessons:[]},
+  {id:6,title:"Technology & Analytics",weight:15,emoji:"💻",bar:"#0A8A8A",bg:"#E0F7F7",text:"#0A6E6E",strong:"#075252",lessons:[]}
 ];
 const TOTAL_LESSONS=S.reduce((acc,s)=>acc+s.lessons.length,0);
 
