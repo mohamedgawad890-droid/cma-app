@@ -1350,14 +1350,12 @@ function saveFeedback(d){try{localStorage.setItem('cma-feedback-v1',JSON.stringi
 
 function renderRegister(){
   const st=loadStudent();
-  const fb=loadFeedback();
   const COUNTRIES=['Egypt','Saudi Arabia','UAE','Kuwait','Qatar','Bahrain','Oman','Jordan','Lebanon','USA','UK','Canada','Australia','Germany','France','Other'];
   const TITLES=['Student','Accountant','Senior Accountant','Financial Analyst','Senior Financial Analyst','Cost Accountant','Internal Auditor','Finance Manager','CFO','Controller','Consultant','Other'];
   const LEVELS=['Complete Beginner','Some Accounting Background','Finance Professional','CPA/ACCA Holder','Other'];
   const GOALS=['Pass CMA Part 1 Only','Pass Both Parts','Career Change','Promotion/Salary Increase','Personal Development'];
 
-  const fb2=loadFeedback();
-  const isComplete=st&&st.name&&st.mobile&&st.email&&st.country&&st.university&&st.faculty&&st.gradyear&&st.title&&st.company&&st.experience&&st.level&&st.goal&&st.examdate&&st.photo&&fb2.rating>0&&fb2.comments&&fb2.improvements;
+  const isComplete=st&&st.name&&st.mobile&&st.email&&st.country&&st.university&&st.faculty&&st.gradyear&&st.title&&st.company&&st.experience&&st.level&&st.goal&&st.examdate&&st.photo;
   const warningBanner=STATE.showProfileWarning?`<div style="background:#FCEBEB;border:1px solid #E24B4A;border-radius:12px;padding:14px 16px;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start"><span style="font-size:20px;flex-shrink:0">🔒</span><div><div style="font-size:14px;font-weight:500;color:#791F1F;margin-bottom:4px">Profile Required to Continue</div><div style="font-size:13px;color:#A32D2D;line-height:1.55">You must complete your full profile before accessing lessons, quizzes, progress tracking, or the AI chat. All fields are required. Please fill in everything below and submit to unlock the full app.</div></div></div>`:'';
 
   const profileSection = st && isComplete ? `
