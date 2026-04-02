@@ -1826,22 +1826,37 @@ async function submitProfile(){
   if(!experience)missing.push('Years of Experience');if(!level)missing.push('Finance Level');if(!goal)missing.push('CMA Goal');
   if(!examdate)missing.push('Target Exam Date');if(_currentRating===0)missing.push('App Rating (stars)');
   if(!comments)missing.push('Comments & Feedback');if(!improvements)missing.push('Areas of Improvement');
-  const photoVal=window._pendingPhoto||(loadStudent()?.photo||'');
-  if(!photoVal)missing.push('Profile Photo');
+  const existingPhoto=loadStudent()?.photo||'';
+  const pendingB64=window._pendingPhoto||'';
+  if(!pendingB64&&!existingPhoto)missing.push('Profile Photo');
   if(missing.length>0){
     alert('Please complete all required fields:\n\n• '+missing.join('\n• '));return;
   }
-  saveStudent({name,mobile,email,country,university,faculty,gradyear,title,company,experience,level,goal,examdate,photo:photoVal,registeredAt:loadStudent()?.registeredAt||new Date().toISOString()});
+
+  // Upload to Cloudinary if new photo selected
+  let photoUrl=existingPhoto;
+  if(pendingB64&&pendingB64.startsWith('data:')){
+    try{
+      const fd=new FormData();
+      fd.append('file',pendingB64);
+      fd.append('upload_preset',CLD_PRESET);
+      const res=await fetch(`https://api.cloudinary.com/v1_1/${CLD_CLOUD}/image/upload`,{method:'POST',body:fd});
+      const data=await res.json();
+      if(data.secure_url){photoUrl=data.secure_url;}else{photoUrl=pendingB64;}
+    }catch(err){photoUrl=pendingB64;}
+    window._pendingPhoto=null;
+  }
+
+  saveStudent({name,mobile,email,country,university,faculty,gradyear,title,company,experience,level,goal,examdate,photo:photoUrl,registeredAt:loadStudent()?.registeredAt||new Date().toISOString()});
   saveFeedback({rating:_currentRating,comments,improvements});
   STATE.showProfileWarning=false;
 
   // Send to Google Sheets
-  const fb2=loadFeedback();
   sendToSheet({
     name,mobile,email,country,university,faculty,gradyear,
     title,company,experience,level,goal,examdate,
     rating:_currentRating,comments,improvements,
-    photo:photoVal||'No Photo'
+    photo:photoUrl||'No Photo'
   });
 
   render();
