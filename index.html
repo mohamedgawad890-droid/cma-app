@@ -124,6 +124,11 @@ const PHOTO_B64 = 'data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1B
 
 // ─── FIREBASE & CLOUDINARY ───────────────────────────────────────────────────
 const INSTRUCTOR_EMAIL = 'Mohamed.Gawad890@gmail.com';
+window.onerror=function(msg,src,line,col,err){
+  document.body.innerHTML='<div style="padding:20px;font-family:monospace;color:red"><h2>Error:</h2><p>'+msg+'</p><p>Line: '+line+'</p><p>'+err+'</p></div>';
+  return true;
+};
+
 firebase.initializeApp({
   apiKey:"AIzaSyCAF48hvYUxBdWY-xHFQZMUNKglV0gRhhE",
   authDomain:"cma-study-app.firebaseapp.com",
