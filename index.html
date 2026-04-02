@@ -140,309 +140,49 @@ const CLD_PRESET='cma_students';
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
 
-
-const S = [
-  { id:1, title:"External Financial Reporting", weight:15, emoji:"📊",
-    bar:"#378ADD", bg:"#E6F1FB", text:"#185FA5", strong:"#0C447C",
+const S=[
+  {id:4,title:"Cost Management",weight:15,emoji:"💰",bar:"#EF9F27",bg:"#FAEEDA",text:"#BA7517",strong:"#854F0B",
     lessons:[
-      { id:"1-1", title:"Financial Statements Overview", dur:"20 min",
-        quizzes:[
-          {q:"Which statement shows financial position at a specific point in time?",o:["Income Statement","Balance Sheet","Cash Flow Statement","Statement of Retained Earnings"],a:1,e:"The Balance Sheet is a snapshot at a specific date — assets, liabilities, and equity."},
-          {q:"The accounting equation is:",o:["Assets = Liabilities − Equity","Assets = Liabilities + Stockholders' Equity","Revenue − Expenses = Net Income","Cash = Assets − Liabilities"],a:1,e:"Assets = Liabilities + Stockholders' Equity is the foundation of double-entry accounting."},
-          {q:"Which statement covers a PERIOD of time?",o:["Balance Sheet","Statement of Financial Position","Income Statement","None of the above"],a:2,e:"The Income Statement covers revenues and expenses over a period (month, quarter, year)."},
-          {q:"Retained Earnings appears on which statement?",o:["Income Statement","Cash Flow Statement","Balance Sheet","Notes only"],a:2,e:"Retained Earnings is an equity account found on the Balance Sheet."},
-          {q:"Which section of the Cash Flow Statement includes paying dividends?",o:["Operating","Investing","Financing","Supplemental"],a:2,e:"Dividend payments are a Financing activity — they relate to funding the business."},
-          {q:"Depreciation expense appears on which statement?",o:["Balance Sheet only","Income Statement only","Both IS and BS","Cash Flow Statement only"],a:2,e:"Depreciation appears on the Income Statement as an expense, and reduces asset value on the Balance Sheet."},
-          {q:"Which is a current liability?",o:["Long-term debt","Accounts Payable","Equipment","Goodwill"],a:1,e:"Accounts Payable is due within one year — a current liability."},
-          {q:"Gross Profit equals:",o:["Revenue − All Expenses","Revenue − COGS","Net Income + Tax","Operating Income + Interest"],a:1,e:"Gross Profit = Revenue − Cost of Goods Sold (COGS). It measures production profitability."},
-          {q:"Working Capital equals:",o:["Total Assets − Total Liabilities","Current Assets − Current Liabilities","Cash + Receivables","Revenue − Expenses"],a:1,e:"Working Capital = Current Assets − Current Liabilities. It measures short-term liquidity."},
-          {q:"Which is NOT an operating activity in the Cash Flow Statement?",o:["Cash received from customers","Cash paid to suppliers","Purchase of equipment","Wages paid"],a:2,e:"Purchasing equipment is an Investing activity, not Operating."}
-        ],
+      {id:"4-1",title:"Cost Behavior: Fixed, Variable & Mixed Costs",dur:"25 min",
         blocks:[
-          {t:"h",v:"The Four Core Financial Statements"},
-          {t:"p",v:"Every business communicates its financial story through four key financial statements. As a CMA candidate, you must master all four."},
-          {t:"b",v:["Income Statement (IS): Revenues, expenses, and net income over a period","Balance Sheet (BS): Assets, liabilities, and equity at a specific point in time","Statement of Cash Flows (SCF): Cash inflows/outflows from operating, investing, and financing activities","Statement of Stockholders' Equity: Changes in equity accounts over a period"]},
-          {t:"f",l:"The Accounting Equation",v:"Assets = Liabilities + Stockholders' Equity"},
-          {t:"tip",v:"The Balance Sheet is a SNAPSHOT (point in time). Income Statement and Cash Flow Statement are MOVIES (a period). Examiners love testing this distinction!"}
-        ]},
-      { id:"1-2", title:"Revenue Recognition — ASC 606", dur:"25 min",
-        quizzes:[
-          {q:"Under ASC 606, revenue is recognized when:",o:["Cash is collected","Invoice is sent","Control transfers to the customer","The contract is signed"],a:2,e:"ASC 606 requires recognition when performance obligations are satisfied — control transfers to the customer."},
-          {q:"Step 1 of the ASC 606 model is:",o:["Identify performance obligations","Determine transaction price","Identify the contract","Recognize revenue"],a:2,e:"Step 1 is to identify the contract with the customer."},
-          {q:"A 'performance obligation' is:",o:["A payment term","A distinct good or service promised in a contract","A warranty clause","A discount offered"],a:1,e:"A performance obligation is a promise to transfer a distinct good or service to the customer."},
-          {q:"Variable consideration in a contract should be:",o:["Ignored until received","Estimated and included if probable","Excluded always","Deferred indefinitely"],a:1,e:"Variable consideration (bonuses, discounts) should be estimated and included to the extent it's probable of not being reversed."},
-          {q:"Revenue recognition over time is appropriate when:",o:["Customer pays upfront","Entity creates an asset with no alternative use and has right to payment","Delivery is complete","Invoice is issued"],a:1,e:"Over-time recognition applies when the entity creates an asset with no alternative use and has enforceable right to payment for performance to date."},
-          {q:"ASC 606 replaced which previous standards?",o:["ASC 605 and IAS 18","ASC 350 and IAS 38","SFAS 13 and IAS 17","ASC 840 and IAS 40"],a:0,e:"ASC 606 replaced ASC 605 (US GAAP) and converged with IFRS 15, replacing IAS 18."},
-          {q:"A contract modification that adds distinct goods at standalone price is treated as:",o:["Cumulative catch-up","A separate new contract","Termination of old contract","An error correction"],a:1,e:"Adding distinct goods at their standalone selling price creates a new, separate contract."},
-          {q:"Transaction price should NOT include:",o:["Fixed amounts","Variable consideration estimates","Amounts collected on behalf of third parties (taxes)","Discounts"],a:2,e:"Amounts collected for third parties (like sales taxes) are excluded from transaction price."},
-          {q:"The 5-step model applies to contracts with:",o:["All vendors","Customers only","Government entities only","Related parties only"],a:1,e:"ASC 606 applies specifically to contracts with customers — parties who obtain goods/services in exchange for consideration."},
-          {q:"Practical expedient: if collection period is less than 1 year, the entity may:",o:["Defer all revenue","Ignore the time value of money","Double the transaction price","Recognize 50% upfront"],a:1,e:"The practical expedient allows ignoring the time value of money (financing component) for contracts under 1 year."}
+          {t:"h",v:"What Is Cost Behavior?"},
+          {t:"p",v:"Cost behavior describes how costs change as activity levels change. Understanding cost behavior is essential for budgeting, decision-making, and performance evaluation. Every cost must be classified before any analysis can begin."},
+          {t:"h",v:"1. Variable Costs"},
+          {t:"p",v:"Variable costs change proportionally with activity — they are CONSTANT PER UNIT but change in TOTAL. If you produce twice as many units, total variable cost doubles."},
+          {t:"tbl",h:["Activity","Total Variable Cost","Cost Per Unit"],r:[["1,000 units","$5,000","$5"],["2,000 units","$10,000","$5"],["3,000 units","$15,000","$5"]]},
+          {t:"b",v:["Examples: Direct Materials, Direct Labor (often), Sales Commissions, Packaging","Key rule: Total changes — Per unit stays the same"]},
+          {t:"h",v:"2. Fixed Costs"},
+          {t:"p",v:"Fixed costs remain CONSTANT IN TOTAL regardless of activity — but the cost PER UNIT decreases as production increases. Fixed costs exist even if output is zero."},
+          {t:"tbl",h:["Activity","Total Fixed Cost","Cost Per Unit"],r:[["1,000 units","$10,000","$10.00"],["2,000 units","$10,000","$5.00"],["4,000 units","$10,000","$2.50"]]},
+          {t:"b",v:["Examples: Rent, Insurance, Salaries, Depreciation, Property Tax","Key rule: Total stays the same — Per unit changes"]},
+          {t:"h",v:"3. Mixed Costs (Semi-Variable)"},
+          {t:"p",v:"Mixed costs contain BOTH a fixed component AND a variable component. They cannot be purely classified as fixed or variable — they must be separated using analytical methods."},
+          {t:"f",l:"Mixed Cost Formula",v:"Y = a + bX   where: Y = Total Cost | a = Fixed Component | b = Variable Rate | X = Activity Level"},
+          {t:"p",v:"Example: Monthly electricity bill = $500 base charge (fixed) + $0.10 per KWH used (variable). At 3,000 KWH: Y = $500 + ($0.10 × 3,000) = $800 total."},
+          {t:"h",v:"High-Low Method"},
+          {t:"p",v:"The simplest method to separate mixed costs. Uses ONLY the highest and lowest activity data points."},
+          {t:"s",v:["Step 1: Variable Rate = (High Cost − Low Cost) ÷ (High Activity − Low Activity)","Step 2: Fixed Cost = Total Cost at High Point − (Variable Rate × High Activity)","Step 3: Write the cost equation: Y = Fixed Cost + (Variable Rate × X)"]},
+          {t:"p",v:"Practical Example: Month A (High): 10,000 units → $45,000. Month B (Low): 4,000 units → $21,000. Variable Rate = ($45,000 − $21,000) ÷ (10,000 − 4,000) = $24,000 ÷ 6,000 = $4.00 per unit. Fixed Cost = $45,000 − ($4 × 10,000) = $5,000. Total Cost Equation: Y = $5,000 + $4.00X. Predicted cost at 7,000 units = $5,000 + ($4 × 7,000) = $33,000."},
+          {t:"h",v:"The Relevant Range"},
+          {t:"p",v:"Cost behavior assumptions (fixed vs variable) are only valid WITHIN a specific activity range called the relevant range. Outside this range, fixed costs can step up (e.g., adding a new factory) and variable cost per unit may change."},
+          {t:"tbl",h:["Cost Type","Total Behavior","Per Unit Behavior","Examples"],r:[["Variable","Changes proportionally","Constant","Direct Materials, Commissions"],["Fixed","Constant","Changes (inversely)","Rent, Insurance, Salaries"],["Mixed","Changes (partially)","Changes","Electricity, Phone, Maintenance"]]},
+          {t:"tip",v:"Exam Focus: Variable cost = constant per unit. Fixed cost = constant in total. High-Low uses only 2 points — weakness is that outlier points can distort results. Regression Analysis is more accurate because it uses ALL data points. Sunk costs are ALWAYS irrelevant to decisions. Opportunity costs are ALWAYS relevant."}
         ],
-        blocks:[
-          {t:"h",v:"The 5-Step Revenue Recognition Model"},
-          {t:"p",v:"ASC 606 provides a single comprehensive framework for recognizing revenue from contracts with customers."},
-          {t:"s",v:["Identify the contract with a customer","Identify the performance obligations in the contract","Determine the transaction price","Allocate the transaction price to the performance obligations","Recognize revenue when (or as) each obligation is satisfied"]},
-          {t:"tip",v:"Revenue is recognized when CONTROL transfers — NOT when cash is received. This is the #1 exam trap!"}
-        ]},
-      { id:"1-3", title:"Inventory Valuation — FIFO, LIFO, WA", dur:"20 min",
         quizzes:[
-          {q:"During rising prices, FIFO produces:",o:["Higher COGS, lower net income","Lower COGS, higher net income","Same as LIFO","Lower inventory balance"],a:1,e:"FIFO uses older (cheaper) costs for COGS, leaving newer (higher) costs in inventory — lower COGS, higher income."},
-          {q:"Which inventory method is NOT permitted under IFRS?",o:["FIFO","Weighted Average","LIFO","Specific Identification"],a:2,e:"LIFO is prohibited under IFRS because it can produce badly outdated balance sheet values."},
-          {q:"Weighted Average Cost = ?",o:["Ending inventory ÷ Units","Cost of Goods Available ÷ Units Available","COGS ÷ Units Sold","Beginning inventory ÷ Units"],a:1,e:"WA Cost = Total Cost of Goods Available for Sale ÷ Total Units Available for Sale."},
-          {q:"The LIFO Reserve represents:",o:["Extra taxes paid","Difference between LIFO and FIFO inventory","A contra asset","Overstated COGS"],a:1,e:"The LIFO Reserve = FIFO Inventory − LIFO Inventory. It shows the cumulative effect of using LIFO."},
-          {q:"LIFO liquidation occurs when:",o:["Prices fall","More units are sold than purchased, dipping into old LIFO layers","Company switches to FIFO","Inventory is written down"],a:1,e:"LIFO liquidation happens when sales exceed purchases, forcing use of old low-cost layers, boosting income."},
-          {q:"Which method gives the MOST accurate balance sheet during inflation?",o:["LIFO","FIFO","Weighted Average","Specific ID"],a:1,e:"FIFO leaves the most recent (current) costs on the balance sheet, giving the most accurate inventory value during inflation."},
-          {q:"Inventory turnover ratio = ?",o:["Revenue ÷ Inventory","COGS ÷ Average Inventory","Net Income ÷ Inventory","Purchases ÷ COGS"],a:1,e:"Inventory Turnover = COGS ÷ Average Inventory. It measures how efficiently inventory is managed."},
-          {q:"Under IFRS, inventory is measured at:",o:["Historical cost only","Lower of Cost or NRV","Higher of Cost or Market","Fair value always"],a:1,e:"IFRS requires inventory at the lower of cost or Net Realizable Value (NRV)."},
-          {q:"Net Realizable Value (NRV) is:",o:["Replacement cost","Estimated selling price minus costs to complete and sell","Fair market value","Book value"],a:1,e:"NRV = Estimated selling price − estimated costs to complete and sell the inventory."},
-          {q:"Beginning inventory $10,000 + Purchases $50,000 − Ending inventory $15,000 = COGS of:",o:["$45,000","$55,000","$40,000","$75,000"],a:0,e:"COGS = $10,000 + $50,000 − $15,000 = $45,000. This is the basic inventory equation."}
-        ],
-        blocks:[
-          {t:"h",v:"How the Method Affects Financial Statements"},
-          {t:"tbl",h:["Method","COGS (Rising Prices)","Ending Inventory","Tax Impact"],r:[["FIFO","Lower (old cheap costs)","Higher (recent costs)","Higher taxes"],["LIFO","Higher (recent costs)","Lower (old costs)","Lower taxes"],["Weighted Avg","Middle ground","Middle ground","Middle"]]},
-          {t:"f",l:"Inventory Equation",v:"Beginning Inventory + Purchases = COGS + Ending Inventory"},
-          {t:"tip",v:"LIFO is NOT permitted under IFRS — only US GAAP allows it. This appears on the exam almost every sitting!"}
+          {q:"A cost that is constant per unit but changes in total with activity is a:",o:["Fixed cost","Variable cost","Mixed cost","Step cost"],a:1,e:"Variable costs are CONSTANT PER UNIT but change PROPORTIONALLY in total with activity. If production doubles, total variable cost doubles — but cost per unit stays the same."},
+          {q:"High: 8,000 units / $38,000. Low: 2,000 units / $14,000. Variable rate per unit =",o:["$3.00","$4.00","$4.75","$6.33"],a:1,e:"Variable Rate = (High Cost − Low Cost) ÷ (High Activity − Low Activity) = ($38,000 − $14,000) ÷ (8,000 − 2,000) = $24,000 ÷ 6,000 = $4.00 per unit."},
+          {q:"Using the data above (variable rate = $4.00), Fixed Cost =",o:["$6,000","$8,000","$10,000","$14,000"],a:0,e:"FC = High Total Cost − (Variable Rate × High Activity) = $38,000 − ($4 × 8,000) = $38,000 − $32,000 = $6,000. Verify: $14,000 − ($4 × 2,000) = $6,000. Confirmed!"},
+          {q:"Monthly rent of $10,000 regardless of production level is a:",o:["Variable cost","Mixed cost","Fixed cost","Step cost"],a:2,e:"Fixed cost: constant in TOTAL regardless of activity level. Rent does not change whether you produce 100 or 10,000 units. However, fixed cost PER UNIT decreases as production increases."},
+          {q:"Y = $8,000 + $6X. At 3,000 units, Total Cost =",o:["$18,000","$24,000","$26,000","$30,000"],a:2,e:"Y = $8,000 + ($6 × 3,000) = $8,000 + $18,000 = $26,000. In this equation: $8,000 = fixed component (a), $6 = variable rate per unit (b), 3,000 = activity level (X)."},
+          {q:"Fixed cost per unit DECREASES when:",o:["Fixed costs increase in total","Variable costs decrease","Production volume INCREASES","Selling price increases"],a:2,e:"Fixed costs are constant in total. As production INCREASES, the same total fixed cost is spread over MORE units — so fixed cost per unit DECREASES. This is called economies of scale in fixed costs."},
+          {q:"The relevant range is best described as:",o:["The profitable activity range","The range where cost behavior assumptions are VALID","The break-even range","The range of acceptable selling prices"],a:1,e:"Relevant range: the band of activity within which the fixed and variable cost assumptions hold true. Outside this range (e.g., doubling production may require a new factory), cost behavior patterns change."},
+          {q:"A salesperson earns $2,000/month base salary + $50 commission per sale. This is a:",o:["Fixed cost","Variable cost","Mixed cost","Step cost"],a:2,e:"Mixed (semi-variable) cost: has a FIXED component ($2,000 base salary — exists even with zero sales) AND a VARIABLE component ($50 per sale — changes with activity). Use Y = $2,000 + $50X."},
+          {q:"The main WEAKNESS of the High-Low method is:",o:["It requires advanced software","It uses only 2 data points — which may not be representative","It cannot calculate fixed costs","It only works for variable costs"],a:1,e:"High-Low weakness: uses ONLY the highest and lowest data points. If either point is an outlier (unusually high or low), the entire calculation is distorted. Regression analysis is more reliable because it uses ALL data points."},
+          {q:"A factory adds a second supervisor only when production exceeds 500 units per day. This is a:",o:["Variable cost","Mixed cost","Fixed cost","Step fixed cost"],a:3,e:"Step fixed cost: remains constant within a range, then JUMPS to a higher level when activity crosses a threshold. One supervisor handles 0-500 units; two supervisors for 501+ units. Different from variable (no per-unit rate) and mixed (no continuous variable component)."}
         ]}
-    ]
-  },
-  { id:2, title:"Planning, Budgeting & Forecasting", weight:20, emoji:"📈",
-    bar:"#639922", bg:"#EAF3DE", text:"#3B6D11", strong:"#27500A",
-    lessons:[
-      { id:"2-1", title:"The Master Budget Process", dur:"25 min",
-        quizzes:[
-          {q:"Which budget is prepared FIRST in the master budget?",o:["Production Budget","Cash Budget","Sales Budget","Direct Labor Budget"],a:2,e:"The Sales Budget is always first — all other budgets depend on expected sales."},
-          {q:"The Production Budget calculates:",o:["Sales units − Returns","Units to produce = Sales + Ending Inventory − Beginning Inventory","Purchases + Overhead","Units sold × Selling price"],a:1,e:"Production = Budgeted Sales + Desired Ending Inventory − Beginning Inventory."},
-          {q:"A static budget is prepared for:",o:["Multiple activity levels","One specific activity level","The actual period results","Zero-base calculations"],a:1,e:"A static budget is fixed at one level of activity — it doesn't adjust when actual activity differs."},
-          {q:"The Cash Budget includes:",o:["Only cash receipts","Only cash disbursements","Both receipts and disbursements","Net income adjustments"],a:2,e:"The Cash Budget shows all expected cash inflows and outflows to determine ending cash balance."},
-          {q:"Zero-Based Budgeting (ZBB) starts from:",o:["Last year's budget","Zero — all expenses must be justified","The sales forecast","Industry benchmarks"],a:1,e:"ZBB requires every budget item to be justified from scratch each period, regardless of prior spending."},
-          {q:"A rolling (continuous) budget:",o:["Covers only one year","Adds a new period as the current period ends","Never changes","Is based on zero",""],a:1,e:"A rolling budget always covers a fixed horizon (e.g., 12 months) by adding a new month as each month ends."},
-          {q:"Participative (bottom-up) budgeting involves:",o:["Only top management","Only the finance department","Managers at all levels","External consultants only"],a:2,e:"Participative budgeting involves input from managers throughout the organization — improving buy-in and accuracy."},
-          {q:"Budget slack refers to:",o:["Unused budget funds","Intentionally underestimating revenues or overestimating costs","Late budget submissions","Variance analysis errors"],a:1,e:"Budget slack is when managers deliberately build in easy targets — overestimating costs or underestimating revenues."},
-          {q:"The Budgeted Income Statement is prepared:",o:["Before the Sales Budget","Before the Cash Budget","After all operating budgets","After the Balance Sheet"],a:2,e:"The Budgeted Income Statement is prepared after all operating budgets (sales, production, expenses) are complete."},
-          {q:"Kaizen budgeting focuses on:",o:["Zero-based analysis","Continuous improvement targets","Historical trend analysis","Competitor benchmarks"],a:1,e:"Kaizen budgeting builds in continuous improvement expectations — costs should decrease as efficiency improves."}
-        ],
-        blocks:[
-          {t:"h",v:"Building the Master Budget"},
-          {t:"s",v:["Sales Budget — always FIRST","Production Budget","Direct Materials, Labor & Overhead Budgets","Selling & Administrative Expense Budget","Budgeted Income Statement","Cash Budget → Budgeted Balance Sheet"]},
-          {t:"tip",v:"Always start with SALES. Every other budget depends on it."}
-        ]},
-      { id:"2-2", title:"Variance Analysis", dur:"30 min",
-        quizzes:[
-          {q:"Actual material cost $45,000; standard $42,000. The variance is:",o:["$3,000 Favorable","$3,000 Unfavorable","$42,000 Favorable","$45,000 Unfavorable"],a:1,e:"Variance = $45,000 − $42,000 = $3,000. Actual > Standard for a cost = Unfavorable."},
-          {q:"Material Price Variance formula:",o:["(SP − AP) × AQ Purchased","(SQ − AQ) × SP","(AP − SP) × SQ","(AQ − SQ) × AP"],a:0,e:"MPV = (Standard Price − Actual Price) × Actual Quantity Purchased."},
-          {q:"Material Usage Variance formula:",o:["(SP − AP) × AQ","(SQ Allowed − AQ Used) × SP","(AQ − SQ) × AP","(SP − AP) × SQ"],a:1,e:"MUV = (Standard Quantity Allowed for Actual Output − Actual Quantity Used) × Standard Price."},
-          {q:"Labor Efficiency Variance measures:",o:["Difference in wage rates","Difference in hours worked vs. standard","Total labor cost variance","Overtime premium"],a:1,e:"LEV = (Standard Hours Allowed − Actual Hours Worked) × Standard Rate."},
-          {q:"A favorable variance means:",o:["Actual cost > Standard cost","Actual revenue < Budget","Actual cost < Standard cost","Production is below plan"],a:2,e:"Favorable = actual cost is LESS than standard (good for costs) or actual revenue EXCEEDS budget (good for revenue)."},
-          {q:"Fixed Overhead Volume Variance arises from:",o:["Price changes","Difference between budgeted and actual fixed overhead","Actual production vs. budgeted production","Material waste"],a:2,e:"Fixed Overhead Volume Variance = (Actual Production − Budgeted Production) × Standard Fixed OH Rate."},
-          {q:"Sales Price Variance = ?",o:["(AP − SP) × Actual Units Sold","(Budgeted Units − Actual Units) × SP","(AP − BP) × AQ × SP","Actual Revenue − Budgeted Revenue"],a:0,e:"Sales Price Variance = (Actual Price − Standard Price) × Actual Units Sold."},
-          {q:"Which variance is ALWAYS the responsibility of the purchasing department?",o:["Labor efficiency variance","Material usage variance","Material price variance","Fixed overhead variance"],a:2,e:"Material Price Variance is primarily the purchasing department's responsibility — they negotiate prices."},
-          {q:"A flexible budget variance compares:",o:["Actual results to static budget","Actual results to flexible budget at actual activity","Budget to prior year","Standard costs to market prices"],a:1,e:"Flexible Budget Variance = Actual Results − Flexible Budget (at actual activity level)."},
-          {q:"If SQ allowed = 1,000 kg, AQ used = 1,100 kg, SP = $5. MUV = ?",o:["$500 Favorable","$500 Unfavorable","$5,500 Unfavorable","$1,000 Favorable"],a:1,e:"MUV = (1,000 − 1,100) × $5 = −$500 = $500 Unfavorable (used more than standard)."}
-        ],
-        blocks:[
-          {t:"h",v:"Understanding and Calculating Variances"},
-          {t:"f",l:"Basic Variance Formula",v:"Variance = Actual Amount − Standard (Budget) Amount"},
-          {t:"b",v:["Favorable (F): Actual cost < Standard","Unfavorable (U): Actual cost > Standard"]},
-          {t:"f",l:"Material Price Variance",v:"(Standard Price − Actual Price) × Actual Qty Purchased"},
-          {t:"f",l:"Material Usage Variance",v:"(Standard Qty Allowed − Actual Qty Used) × Standard Price"},
-          {t:"tip",v:"Always label variances F or U — examiners deduct marks without the label!"}
-        ]},
-      { id:"2-3", title:"Forecasting Techniques", dur:"20 min",
-        quizzes:[
-          {q:"Moving average gives equal weight to:",o:["Only the most recent period","All periods in the average","Earlier periods more","Random periods"],a:1,e:"Moving average assigns equal weight to all periods included in the calculation."},
-          {q:"Exponential smoothing places more weight on:",o:["Older data","Recent data","Random data","Average of all periods"],a:1,e:"Exponential smoothing uses a smoothing factor (α) that gives more weight to recent observations."},
-          {q:"In regression Y = a + bX, 'b' represents:",o:["Fixed cost","Variable rate per unit of X","Total cost","Y-intercept"],a:1,e:"In Y = a + bX, 'b' is the slope — the variable cost per unit of activity (X)."},
-          {q:"The learning curve applies to:",o:["Material costs","Fixed overhead","Direct labor in repetitive processes","Administrative expenses"],a:2,e:"The learning curve applies to direct labor — as workers gain experience, time per unit decreases."},
-          {q:"An 80% learning curve means:",o:["80% of workers learn quickly","Each time output doubles, average time falls to 80% of previous","Fixed costs fall by 20%","Labor efficiency rises by 80%"],a:1,e:"80% learning curve: each time cumulative output DOUBLES, average time per unit = 80% of previous average time."},
-          {q:"Coefficient of determination (R²) measures:",o:["Slope of regression line","How well the regression line fits the data","Forecasting error","Correlation direction"],a:1,e:"R² measures the percentage of variation in Y explained by X. R² = 1 means a perfect fit."},
-          {q:"High-Low method uses:",o:["All data points","Only the highest and lowest activity periods","Average of all periods","Regression analysis"],a:1,e:"High-Low uses only the highest and lowest activity data points to estimate variable and fixed costs."},
-          {q:"Causal forecasting models assume:",o:["Random patterns","Past trends continue","One variable causes changes in another","Seasonal factors dominate"],a:2,e:"Causal models assume a cause-and-effect relationship — changes in X cause changes in Y."},
-          {q:"Time series forecasting is based on:",o:["Causal relationships","Historical patterns of the variable itself","Expert opinion","Competitor data"],a:1,e:"Time series uses historical data of the variable itself to project future values, assuming patterns continue."},
-          {q:"The smoothing constant α in exponential smoothing ranges from:",o:["−1 to +1","0 to 1","1 to 100","0 to infinity"],a:1,e:"α ranges from 0 to 1. Higher α gives more weight to recent data; lower α smooths more."}
-        ],
-        blocks:[
-          {t:"h",v:"Key Forecasting Methods"},
-          {t:"tbl",h:["Method","Best Used When","Key Feature"],r:[["Moving Average","Stable demand","Averages last N periods"],["Exponential Smoothing","Recent data matters","Weights recent data higher"],["Regression Analysis","Causal relationships","Y = a + bX"],["Learning Curve","Labor-intensive","Time drops as output doubles"]]},
-          {t:"tip",v:"Learning curve: when output DOUBLES, average time falls by a constant %."}
-        ]}
-    ]
-  },
-  { id:3, title:"Performance Management", weight:20, emoji:"🎯",
-    bar:"#7F77DD", bg:"#EEEDFE", text:"#534AB7", strong:"#3C3489",
-    lessons:[
-      { id:"3-1", title:"Cost-Volume-Profit (CVP) Analysis", dur:"30 min",
-        quizzes:[
-          {q:"Price=$50, VC=$30, FC=$60,000. Break-even in units?",o:["1,200","2,000","3,000","6,000"],a:2,e:"CM = $50−$30 = $20. BEP = $60,000÷$20 = 3,000 units."},
-          {q:"Contribution Margin Ratio = ?",o:["CM ÷ Variable Costs","CM ÷ Selling Price","Fixed Costs ÷ Sales","Net Income ÷ Sales"],a:1,e:"CM Ratio = Contribution Margin per Unit ÷ Selling Price per Unit."},
-          {q:"FC=$80,000, CM ratio=40%. Break-even in sales dollars?",o:["$32,000","$120,000","$200,000","$280,000"],a:2,e:"BEP$ = $80,000 ÷ 0.40 = $200,000."},
-          {q:"Margin of Safety =",o:["Actual Sales − Break-Even Sales","Break-Even Sales − Actual Sales","CM − Fixed Costs","Net Income ÷ Sales"],a:0,e:"Margin of Safety = Actual Sales − Break-Even Sales. Shows how far sales can fall before losses begin."},
-          {q:"Target profit of $40,000: FC=$60,000, CM per unit=$20. Units needed?",o:["2,000","3,000","5,000","6,000"],a:2,e:"Units = (FC + Target Profit) ÷ CM per unit = ($60,000 + $40,000) ÷ $20 = $100,000 ÷ $20 = 5,000 units."},
-          {q:"Operating leverage means:",o:["High fixed costs relative to variable costs","High variable costs","Equal fixed and variable costs","No fixed costs"],a:0,e:"High operating leverage = high fixed costs. A small change in sales produces a large change in profit."},
-          {q:"If CM ratio = 35% and sales increase by $100,000, profit increases by:",o:["$35,000","$65,000","$100,000","$350,000"],a:0,e:"Profit increase = $100,000 × 35% = $35,000."},
-          {q:"CVP analysis assumes:",o:["Variable costs change per unit","Selling price changes with volume","Costs are either fixed or variable (linear)","Fixed costs vary with activity"],a:2,e:"CVP assumes linear cost behavior — variable costs are constant per unit, fixed costs are constant in total."},
-          {q:"Degree of Operating Leverage (DOL) = ?",o:["Net Income ÷ Sales","CM ÷ Net Operating Income","FC ÷ VC","Sales ÷ CM"],a:1,e:"DOL = Contribution Margin ÷ Net Operating Income. Shows % change in profit per 1% change in sales."},
-          {q:"Break-even point DECREASES when:",o:["Fixed costs increase","Variable cost per unit increases","Selling price increases","All costs rise"],a:2,e:"If selling price increases, CM per unit increases, so fewer units are needed to cover fixed costs."}
-        ],
-        blocks:[
-          {t:"h",v:"CVP — The Manager's Decision-Making Tool"},
-          {t:"f",l:"Contribution Margin",v:"CM per Unit = Selling Price − Variable Cost per Unit"},
-          {t:"f",l:"Break-Even (Units)",v:"BEP = Total Fixed Costs ÷ CM per Unit"},
-          {t:"f",l:"Break-Even (Sales $)",v:"BEP$ = Total Fixed Costs ÷ CM Ratio"},
-          {t:"f",l:"Target Profit Units",v:"Units = (Fixed Costs + Target Profit) ÷ CM per Unit"},
-          {t:"tip",v:"CM Ratio = CM per Unit ÷ Selling Price. High CM ratio = more profit per sales dollar."}
-        ]},
-      { id:"3-2", title:"ROI, Residual Income & EVA", dur:"25 min",
-        quizzes:[
-          {q:"ROI formula:",o:["Net Income ÷ Sales","Net Operating Income ÷ Avg Operating Assets","Sales ÷ Total Assets","EBIT ÷ Equity"],a:1,e:"ROI = Net Operating Income ÷ Average Operating Assets."},
-          {q:"Residual Income = ?",o:["Net Income − Dividends","NOI − (Required Rate × Avg Op. Assets)","ROI × Assets","Sales − All Costs"],a:1,e:"RI = Net Operating Income − (Minimum Required Rate of Return × Average Operating Assets)."},
-          {q:"Which metric causes managers to REJECT profitable investments?",o:["Residual Income","EVA","ROI","Contribution Margin"],a:2,e:"ROI can cause dysfunctional behavior — managers reject projects that lower their division's overall ROI."},
-          {q:"EVA uses which cost of capital?",o:["Risk-free rate","Debt cost only","WACC (Weighted Average Cost of Capital)","Equity cost only"],a:2,e:"EVA = After-Tax Operating Income − (WACC × Total Capital Invested)."},
-          {q:"Positive Residual Income means:",o:["Division is unprofitable","Division earns more than the minimum required return","Costs exceed revenues","Assets are overvalued"],a:1,e:"Positive RI means the division earns MORE than the minimum required rate of return — creating value."},
-          {q:"ROI can be improved by:",o:["Increasing assets only","Decreasing sales","Increasing profit or decreasing assets","Increasing costs"],a:2,e:"ROI = NOI ÷ Assets. You improve it by increasing NOI (profit) or reducing the asset base."},
-          {q:"Transfer pricing is MOST important when:",o:["Divisions sell externally only","Divisions buy/sell goods between each other","All divisions are in one country","Divisions have no fixed costs"],a:1,e:"Transfer pricing matters when divisions transact with each other — the price affects both divisions' performance."},
-          {q:"The Balanced Scorecard includes which perspective?",o:["Financial, Customer, Internal Process, Learning & Growth","Profit, Revenue, Cost, Asset","Short-term, Long-term, Medium-term, Past","Income, Balance, Cash, Equity"],a:0,e:"The Balanced Scorecard has 4 perspectives: Financial, Customer, Internal Business Process, Learning & Growth."},
-          {q:"A high asset turnover means:",o:["Company has many assets","Company generates high revenue per dollar of assets","Profit margins are high","Debt is low"],a:1,e:"Asset Turnover = Sales ÷ Assets. High turnover = efficient use of assets to generate revenue."},
-          {q:"DuPont formula expands ROI into:",o:["ROI = Net Income × Assets","ROI = Profit Margin × Asset Turnover","ROI = Sales − Costs","ROI = CM ÷ Fixed Costs"],a:1,e:"DuPont: ROI = Net Profit Margin × Asset Turnover. This shows two ways to improve ROI."}
-        ],
-        blocks:[
-          {t:"h",v:"Measuring Investment Center Performance"},
-          {t:"f",l:"ROI",v:"ROI = Net Operating Income ÷ Average Operating Assets"},
-          {t:"f",l:"Residual Income",v:"RI = NOI − (Min. Required Rate × Avg. Operating Assets)"},
-          {t:"f",l:"EVA",v:"EVA = After-Tax Operating Income − (WACC × Total Capital)"},
-          {t:"tbl",h:["Metric","Advantage","Weakness"],r:[["ROI","Easy to compare","May reject profitable projects"],["RI","Accepts above-min projects","Can't compare sizes"],["EVA","Best for shareholder value","Complex calculation"]]},
-          {t:"tip",v:"ROI rejection problem: managers reject profitable investments that lower their division ROI%. RI and EVA solve this."}
-        ]}
-    ]
-  },
-  { id:4, title:"Cost Management", weight:15, emoji:"💰",
-    bar:"#EF9F27", bg:"#FAEEDA", text:"#BA7517", strong:"#854F0B",
-    lessons:[
-      { id:"4-1", title:"Cost Classification & Behavior", dur:"20 min",
-        quizzes:[
-          {q:"High: 10,000 units/$25,000. Low: 5,000 units/$15,000. Variable rate?",o:["$1.50","$2.00","$2.50","$3.00"],a:1,e:"Variable Rate = ($25,000−$15,000)÷(10,000−5,000) = $10,000÷5,000 = $2.00 per unit."},
-          {q:"A cost constant PER UNIT but changing IN TOTAL is:",o:["Fixed cost","Variable cost","Mixed cost","Step cost"],a:1,e:"Variable costs are constant per unit but increase in total as activity increases."},
-          {q:"Fixed costs per unit INCREASE when:",o:["Production increases","Production decreases","Variable costs rise","Sales price rises"],a:1,e:"Fixed costs are constant in total — as production decreases, fixed cost per unit increases."},
-          {q:"A mixed cost has:",o:["Only variable components","Only fixed components","Both fixed and variable components","No relationship to activity"],a:2,e:"Mixed costs (semi-variable) have a fixed component plus a variable component that changes with activity."},
-          {q:"The relevant range is:",o:["The profitable range","Range where cost behavior assumptions hold","Range of selling prices","Break-even range"],a:1,e:"The relevant range is the normal activity range where fixed and variable cost assumptions are valid."},
-          {q:"Using High-Low with High: $25,000/10,000 units, what is Fixed Cost?",o:["$5,000","$10,000","$15,000","$25,000"],a:0,e:"Variable Rate = $2/unit. FC = Total Cost − (Variable Rate × Units) = $25,000 − ($2 × 10,000) = $5,000."},
-          {q:"A sunk cost is:",o:["A future cost","A cost already incurred and irrelevant to decisions","A variable cost","An opportunity cost"],a:1,e:"Sunk costs are already incurred and cannot be recovered — they should be ignored in decision-making."},
-          {q:"Opportunity cost represents:",o:["Actual cash paid","Benefit foregone from the next best alternative","Total fixed costs","Future variable costs"],a:1,e:"Opportunity cost = the benefit you give up by choosing one alternative over the best other option."},
-          {q:"Direct costs are:",o:["Costs allocated to products","Costs traceable directly to a cost object","Only fixed costs","Overhead costs"],a:1,e:"Direct costs can be traced directly and economically to a specific cost object (product, department)."},
-          {q:"Period costs are:",o:["Capitalized in inventory","Expensed in the period incurred","Direct materials + labor","Only manufacturing costs"],a:1,e:"Period costs (SG&A, selling expenses) are expensed immediately, not capitalized as inventory."}
-        ],
-        blocks:[
-          {t:"h",v:"How Costs Behave with Activity"},
-          {t:"tbl",h:["Type","Behavior","Example"],r:[["Variable","Changes proportionally","Direct materials"],["Fixed","Constant in total","Rent, salaries"],["Mixed","Fixed + variable part","Electricity"],["Step Fixed","Fixed then jumps","Supervisory staff"]]},
-          {t:"f",l:"High-Low Variable Rate",v:"Variable Rate = (High Cost − Low Cost) ÷ (High Activity − Low Activity)"},
-          {t:"tip",v:"The relevant range is where cost behavior assumptions hold. Outside it, even fixed costs can change."}
-        ]},
-      { id:"4-2", title:"Activity-Based Costing (ABC)", dur:"25 min",
-        quizzes:[
-          {q:"ABC is MOST beneficial when:",o:["All products use resources similarly","Overhead is minimal","Products are diverse and overhead is large","Operations are simple"],a:2,e:"ABC adds most value when diverse products consume overhead activities differently and overhead is significant."},
-          {q:"Traditional costing uses which driver?",o:["Multiple activity drivers","One volume-based driver for all overhead","No cost drivers","Customer-based drivers"],a:1,e:"Traditional costing uses a single volume-based driver (like machine hours or DL hours) for all overhead."},
-          {q:"In ABC, an activity cost pool is:",o:["A group of assets","Overhead costs grouped by activity","Variable costs only","Marketing expenses"],a:1,e:"An activity cost pool groups overhead costs related to the same activity (e.g., all setup costs in one pool)."},
-          {q:"The difference between absorption and variable costing is:",o:["Treatment of direct materials","Treatment of direct labor","Treatment of fixed manufacturing overhead","Treatment of variable overhead"],a:2,e:"Absorption capitalizes fixed manufacturing overhead in inventory; variable costing expenses it immediately."},
-          {q:"Under absorption costing, when production > sales:",o:["Net income = variable costing income","Absorption income > variable costing income","Variable income > absorption income","Both give the same result"],a:1,e:"When production > sales, some fixed OH is in ending inventory (absorption), so absorption income is higher."},
-          {q:"Step 1 in implementing ABC is:",o:["Assign costs to products","Calculate activity rates","Identify and define activities","Determine cost drivers"],a:2,e:"Step 1 is to identify all significant activities performed in the production/service process."},
-          {q:"Activity rate = ?",o:["Total overhead ÷ Total units","Activity cost pool ÷ Total cost driver quantity","Direct cost ÷ Overhead","Variable cost ÷ Activity"],a:1,e:"Activity Rate = Total Activity Cost Pool ÷ Total Quantity of Cost Driver for that activity."},
-          {q:"A cost driver should have a strong ______ with the cost:",o:["Time correlation","Causal relationship","Inverse relationship","No relationship"],a:1,e:"A cost driver should have a strong causal relationship with the cost — changes in the driver cause changes in cost."},
-          {q:"Which is a unit-level activity?",o:["Plant setup","Machine maintenance","Product design","Direct labor hours"],a:3,e:"Unit-level activities occur every time a unit is produced (e.g., direct labor, machine time, materials)."},
-          {q:"ABC improves product costing accuracy by:",o:["Using only one driver","Ignoring overhead","Using multiple drivers that reflect actual consumption","Allocating costs equally"],a:2,e:"ABC uses multiple drivers, each reflecting how products actually consume that specific overhead activity."}
-        ],
-        blocks:[
-          {t:"h",v:"ABC vs. Traditional Overhead Allocation"},
-          {t:"p",v:"Traditional costing uses one volume-based driver for ALL overhead — distorting product costs when products consume resources differently."},
-          {t:"s",v:["Identify activities","Assign costs to activity cost pools","Identify cost driver for each activity","Calculate activity rate = Pool ÷ Driver Quantity","Assign costs to products based on actual activity use"]},
-          {t:"tip",v:"ABC is most valuable when: products are diverse, overhead is large, and accurate costing matters."}
-        ]}
-    ]
-  },
-  { id:5, title:"Internal Controls", weight:15, emoji:"🔒",
-    bar:"#E24B4A", bg:"#FCEBEB", text:"#A32D2D", strong:"#791F1F",
-    lessons:[
-      { id:"5-1", title:"The COSO Framework", dur:"25 min",
-        quizzes:[
-          {q:"Which COSO component refers to policies ensuring directives are carried out?",o:["Control Environment","Risk Assessment","Control Activities","Monitoring"],a:2,e:"Control Activities are specific actions — authorizations, verifications, reconciliations, physical controls."},
-          {q:"'Tone at the top' relates to which COSO component?",o:["Risk Assessment","Control Activities","Control Environment","Information & Communication"],a:2,e:"Control Environment reflects management's commitment to integrity — setting the ethical tone for the whole organization."},
-          {q:"How many components does the COSO framework have?",o:["3","4","5","6"],a:2,e:"COSO has 5 components: Control Environment, Risk Assessment, Control Activities, Information & Communication, Monitoring."},
-          {q:"Risk assessment in COSO involves:",o:["Implementing controls","Identifying and analyzing risks to objectives","Monitoring control effectiveness","Communicating policies"],a:1,e:"Risk Assessment involves identifying and analyzing risks that could prevent the organization from achieving its objectives."},
-          {q:"The memory trick 'Every Rabbit Can Inspire Managers' stands for:",o:["Enterprise, Risk, Cost, Investment, Management","Environment, Risk, Controls, Information, Monitoring","Evaluation, Revenue, Cost, Income, Margin","None of the above"],a:1,e:"E=Control Environment, R=Risk Assessment, C=Control Activities, I=Information, M=Monitoring."},
-          {q:"Monitoring activities in COSO include:",o:["Setting objectives only","Ongoing and periodic evaluations of control effectiveness","Writing policies","Hiring qualified staff"],a:1,e:"Monitoring involves ongoing assessments and separate evaluations to determine if controls are operating effectively."},
-          {q:"Information and Communication in COSO means:",o:["Marketing communications","Relevant information identified and communicated timely","External reporting only","Annual reports"],a:1,e:"Information & Communication ensures relevant information flows up, down, and across the organization timely."},
-          {q:"COSO Enterprise Risk Management (ERM) framework has how many components?",o:["5","8","10","12"],a:1,e:"COSO ERM has 8 components, expanded from the original 5-component Internal Control framework."},
-          {q:"Which is a control environment factor?",o:["Monthly bank reconciliations","Management's philosophy and operating style","IT access controls","Variance analysis"],a:1,e:"Management's philosophy and operating style is a key Control Environment factor — it shapes how controls are applied."},
-          {q:"COSO was created by:",o:["SEC and FASB","Five private sector organizations (AICPA, AAA, FEI, IIA, IMA)","The Federal Reserve","PCAOB"],a:1,e:"COSO was formed by 5 organizations: AICPA, AAA (American Accounting Association), FEI, IIA, and IMA."}
-        ],
-        blocks:[
-          {t:"h",v:"Five Components of COSO Internal Control"},
-          {t:"b",v:["Control Environment: Ethical tone, board oversight, management philosophy","Risk Assessment: Identifying and analyzing risks to objectives","Control Activities: Policies and procedures ensuring directives are carried out","Information & Communication: Relevant info captured and communicated timely","Monitoring Activities: Ongoing evaluation of control effectiveness"]},
-          {t:"tip",v:"Memory trick: 'Every Rabbit Can Inspire Managers' → Environment, Risk, Controls, Information, Monitoring."}
-        ]},
-      { id:"5-2", title:"Types of Internal Controls", dur:"20 min",
-        quizzes:[
-          {q:"A bank reconciliation is an example of:",o:["Preventive control","Detective control","Corrective control","Directive control"],a:1,e:"Bank reconciliation detects discrepancies AFTER they occur — a classic detective control."},
-          {q:"Requiring dual signatures on checks is:",o:["Detective","Corrective","Preventive","Compensating"],a:2,e:"Dual signatures prevent unauthorized payments BEFORE they occur — a preventive control."},
-          {q:"Segregation of duties separates:",o:["Management and staff","Authorization, custody, and recording","Finance and operations","Internal and external auditors"],a:1,e:"No single person should authorize a transaction, have physical custody, AND record it — this enables fraud."},
-          {q:"IT access controls are primarily:",o:["Detective","Preventive","Corrective","Optional"],a:1,e:"Access controls (passwords, user permissions) prevent unauthorized access before it occurs — preventive."},
-          {q:"A corrective control example is:",o:["Password requirements","Monthly variance reports","Restoring data from backup after system failure","Surprise cash counts"],a:2,e:"Corrective controls fix problems after detection — data restoration after a failure is a corrective action."},
-          {q:"Physical security of assets (locks, safes) is:",o:["Detective","Preventive","Corrective","None"],a:1,e:"Physical security prevents unauthorized access or theft before it occurs — preventive control."},
-          {q:"Surprise cash counts are:",o:["Preventive","Detective","Corrective","Directive"],a:1,e:"Surprise cash counts detect discrepancies or irregularities — detective control."},
-          {q:"A compensating control is used when:",o:["Primary control is too expensive","Primary control is missing or weak","All controls fail","Management overrides controls"],a:1,e:"Compensating controls are alternative controls put in place when the primary control is absent or insufficient."},
-          {q:"SOX Section 404 requires:",o:["Only external audit","Management assessment of internal controls over financial reporting","Only IT controls","Quarterly board meetings"],a:1,e:"SOX 404 requires management to assess and report on the effectiveness of internal controls over financial reporting."},
-          {q:"Which is NOT a characteristic of effective internal controls?",o:["Cost-effectiveness","Reasonable assurance (not absolute)","Eliminates ALL fraud","Adapted to the organization"],a:2,e:"No system of internal controls provides absolute assurance — only reasonable assurance. Absolute elimination of fraud is impossible."}
-        ],
-        blocks:[
-          {t:"h",v:"Preventive, Detective & Corrective Controls"},
-          {t:"tbl",h:["Type","When It Acts","Examples"],r:[["Preventive","Before error/fraud","Passwords, dual approvals, segregation of duties"],["Detective","After error/fraud","Bank reconciliations, audits, variance analysis"],["Corrective","After detection","Backup recovery, error corrections"]]},
-          {t:"tip",v:"Segregation of Duties: no single person should have AUTHORIZATION + CUSTODY + RECORDING for the same transaction."}
-        ]}
-    ]
-  },
-  { id:6, title:"Technology & Analytics", weight:15, emoji:"💻",
-    bar:"#1D9E75", bg:"#E1F5EE", text:"#0F6E56", strong:"#085041",
-    lessons:[
-      { id:"6-1", title:"The Four Types of Analytics", dur:"20 min",
-        quizzes:[
-          {q:"Which analytics type answers 'What will happen?'",o:["Descriptive","Diagnostic","Predictive","Prescriptive"],a:2,e:"Predictive analytics uses historical data to forecast future outcomes."},
-          {q:"Analyzing WHY sales dropped is:",o:["Descriptive","Diagnostic","Predictive","Prescriptive"],a:1,e:"Diagnostic analytics investigates causes of past events — 'Why did it happen?'"},
-          {q:"Prescriptive analytics recommends:",o:["What happened","Why it happened","What will happen","What should be done"],a:3,e:"Prescriptive analytics goes beyond prediction to recommend optimal actions using optimization models."},
-          {q:"A monthly P&L report is an example of:",o:["Predictive analytics","Diagnostic analytics","Descriptive analytics","Prescriptive analytics"],a:2,e:"Descriptive analytics summarizes what happened — historical reports like P&L statements."},
-          {q:"Which analytics level adds the MOST value?",o:["Descriptive","Diagnostic","Predictive","Prescriptive"],a:3,e:"Prescriptive analytics adds the most value — it not only predicts but recommends the best action."},
-          {q:"Big Data is characterized by the '3 Vs':",o:["Value, Variety, Vision","Volume, Velocity, Variety","Validation, Verification, Value","Vision, Volume, Velocity"],a:1,e:"Big Data: Volume (amount), Velocity (speed), Variety (types of data)."},
-          {q:"Data mining is used to:",o:["Store large datasets","Discover patterns in large datasets","Encrypt financial data","Generate invoices"],a:1,e:"Data mining discovers patterns, correlations, and insights from large datasets."},
-          {q:"A data warehouse is:",o:["Physical server room","Central repository of integrated historical data for analysis","Real-time transaction database","Cloud backup only"],a:1,e:"A data warehouse integrates data from multiple sources for reporting and analysis — optimized for queries not transactions."},
-          {q:"Continuous monitoring in management accounting means:",o:["Annual audits","Real-time automated review of transactions against controls","Monthly reporting","Quarterly reviews"],a:1,e:"Continuous monitoring uses automated tools to review transactions in real-time against established controls."},
-          {q:"Artificial intelligence in management accounting helps with:",o:["Manual journal entries","Automated analysis and pattern recognition in financial data","Physical inventory counts","Printing reports"],a:1,e:"AI enables automated analysis, anomaly detection, and pattern recognition in large financial datasets."}
-        ],
-        blocks:[
-          {t:"h",v:"Analytics Maturity Model"},
-          {t:"tbl",h:["Type","Question","Example"],r:[["Descriptive","What happened?","Monthly P&L, dashboards"],["Diagnostic","Why did it happen?","Variance analysis"],["Predictive","What will happen?","Sales forecasting"],["Prescriptive","What should we do?","Optimization models"]]},
-          {t:"tip",v:"Think of analytics as a staircase: Descriptive → Diagnostic → Predictive → Prescriptive. Each level adds more value."}
-        ]},
-      { id:"6-2", title:"ERP Systems & IT Controls", dur:"20 min",
-        quizzes:[
-          {q:"ERP systems integrate:",o:["Only accounting functions","All core business functions in one system","Only HR and payroll","Supply chain only"],a:1,e:"ERP integrates finance, HR, supply chain, sales, and all other functions into one unified system."},
-          {q:"IT General Controls (ITGCs) apply to:",o:["Only financial systems","Only HR systems","All information systems organization-wide","Individual applications only"],a:2,e:"ITGCs apply across ALL systems — access security, change management, and backup/recovery."},
-          {q:"IT Application Controls are:",o:["Organization-wide controls","Specific to individual applications (input, processing, output)","Physical security controls","Network controls only"],a:1,e:"Application controls are specific to each application — they control input validation, processing, and output."},
-          {q:"If ITGCs are weak, application controls:",o:["Become stronger","Cannot be relied upon","Are unaffected","Are more efficient"],a:1,e:"Weak ITGCs undermine application controls built on top of them — the foundation must be strong first."},
-          {q:"Cloud computing benefits include:",o:["Higher upfront costs","Scalability and reduced infrastructure costs","Less security","No internet needed"],a:1,e:"Cloud computing offers scalability, reduced hardware costs, and pay-as-you-go pricing."},
-          {q:"Cybersecurity risk in ERP systems includes:",o:["Improved reporting","Unauthorized access to integrated financial data","Faster processing","Better controls"],a:1,e:"ERP concentration risk: all data in one system means a breach exposes all organizational data."},
-          {q:"Change management controls ensure:",o:["Systems never change","All system changes are authorized, tested, and documented","Employees resist change","IT makes changes freely"],a:1,e:"Change management controls ensure any system modification is properly authorized, tested, and documented before implementation."},
-          {q:"Blockchain technology in accounting provides:",o:["Centralized control","Immutable, transparent transaction records","Faster manual processing","Eliminated auditing need"],a:1,e:"Blockchain creates an immutable, distributed ledger — transactions cannot be altered once recorded."},
-          {q:"Business continuity planning (BCP) is:",o:["Annual performance reviews","Plans to maintain/restore operations after a disruption","Marketing strategy","Cost reduction plan"],a:1,e:"BCP ensures the organization can continue critical operations and recover quickly from disasters or disruptions."},
-          {q:"Input controls in application systems include:",o:["Output reports","Edit checks and validation rules to ensure accurate data entry","Backup procedures","User training"],a:1,e:"Input controls (edit checks, validation rules, required fields) ensure only accurate, authorized data enters the system."}
-        ],
-        blocks:[
-          {t:"h",v:"ERP and Technology Controls"},
-          {t:"p",v:"ERP systems integrate all business functions into one system with a shared database, providing real-time data."},
-          {t:"b",v:["Benefits: Real-time data, fewer errors, streamlined reporting","Risks: High cost, system-wide failures, cybersecurity exposure","ITGCs: Access security, change management, backup — apply to ALL systems","Application Controls: Input validation, processing, output — specific to each app"]},
-          {t:"tip",v:"ITGCs are the foundation. If general controls are weak, you CANNOT rely on application controls."}
-        ]}
-    ]
-  }
+    ]}
 ];
-
-const TOTAL_LESSONS = S.reduce((acc,s)=>acc+s.lessons.length,0);
+const TOTAL_LESSONS=S.reduce((acc,s)=>acc+s.lessons.length,0);
 
 
 // ─── STATE ────────────────────────────────────────────────────────────────────
@@ -1741,170 +1481,3 @@ function renderRegister(){
       </div>
     </div>
 
-    <div class="info-title" style="font-size:14px;margin-bottom:10px">⭐ Feedback & Suggestions <span style="font-size:11px;color:#A32D2D;font-weight:400">· all fields required</span></div>
-    <div class="card" style="margin-bottom:14px">
-      <div style="margin-bottom:14px">
-        <label style="font-size:12px;color:#888;display:block;margin-bottom:8px">Rate your experience with this app</label>
-        <div style="display:flex;gap:8px;justify-content:center" id="stars-row">
-          ${[1,2,3,4,5].map(i=>`<span onclick="setRating(${i})" id="star-${i}" style="font-size:32px;cursor:pointer;transition:transform .15s;opacity:${fb.rating>=i?1:0.3}">${fb.rating>=i?'⭐':'☆'}</span>`).join('')}
-        </div>
-      </div>
-      <div style="margin-bottom:12px">
-        <label style="font-size:12px;color:#888;display:block;margin-bottom:5px">Comments & overall feedback</label>
-        <textarea id="f-comments" rows="3" placeholder="Share your thoughts about the course, content, instructor..." style="width:100%;padding:10px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:14px;font-family:inherit;outline:none;color:#1a1a1a;background:#fafaf8;resize:none;line-height:1.5">${fb.comments||''}</textarea>
-      </div>
-      <div>
-        <label style="font-size:12px;color:#888;display:block;margin-bottom:5px">Areas of improvement</label>
-        <textarea id="f-improvements" rows="3" placeholder="What can be added or improved? More examples? More quizzes? Video content?..." style="width:100%;padding:10px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:14px;font-family:inherit;outline:none;color:#1a1a1a;background:#fafaf8;resize:none;line-height:1.5">${fb.improvements||''}</textarea>
-      </div>
-    </div>
-
-    <div style="background:#f5f5f0;border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:12px;color:#888;text-align:center;line-height:1.5">
-      All fields marked are required. You must complete this form to access lessons, quizzes, progress tracking, and the AI chat.
-    </div>
-    <button onclick="submitProfile()" class="btn submit-profile-btn" style="background:#0C447C;color:#fff;font-size:15px;margin-bottom:8px">
-      ${isComplete?'Update My Profile ✓':'Complete Profile & Unlock the App →'}
-    </button>
-    <div style="height:20px"></div>
-  </div>`;
-}
-
-let _currentRating = loadFeedback().rating || 0;
-function setRating(n){
-  _currentRating = n;
-  [1,2,3,4,5].forEach(i=>{
-    const el=document.getElementById('star-'+i);
-    if(el){el.textContent=i<=n?'⭐':'☆';el.style.opacity=i<=n?'1':'0.3';}
-  });
-}
-
-function handlePhoto(input){
-  const file=input.files[0];
-  if(!file)return;
-  if(file.size>2*1024*1024){alert('Photo is too large. Please choose an image under 2MB.');input.value='';return;}
-  const reader=new FileReader();
-  reader.onload=function(e){
-    const b64=e.target.result;
-    const preview=document.getElementById('photo-preview');
-    if(preview){preview.innerHTML=`<img src="${b64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;}
-    window._pendingPhoto=b64;
-  };
-  reader.readAsDataURL(file);
-}
-
-async function uploadToCloudinary(base64data){
-  try{
-    const res=await fetch(base64data);const blob=await res.blob();
-    const fd=new FormData();fd.append('file',blob);fd.append('upload_preset',CLD_PRESET);
-    const r=await fetch(`https://api.cloudinary.com/v1_1/${CLD_CLOUD}/image/upload`,{method:'POST',body:fd});
-    const d=await r.json();return d.secure_url||null;
-  }catch(e){console.log('Cloudinary error:',e);return null;}
-}
-
-async function sendToSheet(data){
-  try{
-    await fetch('https://script.google.com/macros/s/AKfycbwwfDLTcBC70-zpLM0bySnOZN7XzReVVLXbE-_nJr_jFmIoRNRnBa2hw1P93iCI_tMscg/exec',{
-      method:'POST',
-      mode:'no-cors',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(data)
-    });
-  }catch(e){console.log('Sheet sync error:',e);}
-}
-
-async function submitProfile(){
-  const get=(id)=>document.getElementById(id)?.value?.trim()||'';
-  const name=get('f-name'),mobile=get('f-mobile'),email=get('f-email'),country=get('f-country');
-  const university=get('f-university'),faculty=get('f-faculty'),gradyear=get('f-gradyear');
-  const title=get('f-title'),company=get('f-company'),experience=get('f-experience');
-  const level=get('f-level'),goal=get('f-goal'),examdate=get('f-examdate');
-  const comments=get('f-comments'),improvements=get('f-improvements');
-  const missing=[];
-  if(!name)missing.push('Full Name');if(!mobile)missing.push('Mobile');if(!email)missing.push('Email');
-  if(!country)missing.push('Country');if(!university)missing.push('University');if(!faculty)missing.push('Faculty / Major');
-  if(!gradyear)missing.push('Graduation Year');if(!title)missing.push('Current Job Title');if(!company)missing.push('Company');
-  if(!experience)missing.push('Years of Experience');if(!level)missing.push('Finance Level');if(!goal)missing.push('CMA Goal');
-  if(!examdate)missing.push('Target Exam Date');if(_currentRating===0)missing.push('App Rating (stars)');
-  if(!comments)missing.push('Comments & Feedback');if(!improvements)missing.push('Areas of Improvement');
-  const existingPhoto=loadStudent()?.photo||'';
-  const pendingB64=window._pendingPhoto||'';
-  if(!pendingB64&&!existingPhoto)missing.push('Profile Photo');
-  if(missing.length>0){
-    alert('Please complete all required fields:\n\n• '+missing.join('\n• '));return;
-  }
-
-  // Upload to Cloudinary if new photo selected
-  let photoUrl=existingPhoto;
-  if(pendingB64&&pendingB64.startsWith('data:')){
-    try{
-      const fd=new FormData();
-      fd.append('file',pendingB64);
-      fd.append('upload_preset',CLD_PRESET);
-      const res=await fetch(`https://api.cloudinary.com/v1_1/${CLD_CLOUD}/image/upload`,{method:'POST',body:fd});
-      const data=await res.json();
-      if(data.secure_url){photoUrl=data.secure_url;}else{photoUrl=pendingB64;}
-    }catch(err){photoUrl=pendingB64;}
-    window._pendingPhoto=null;
-  }
-
-  saveStudent({name,mobile,email,country,university,faculty,gradyear,title,company,experience,level,goal,examdate,photo:photoUrl,registeredAt:loadStudent()?.registeredAt||new Date().toISOString()});
-  saveFeedback({rating:_currentRating,comments,improvements});
-  STATE.showProfileWarning=false;
-
-  // Send to Google Sheets
-  sendToSheet({
-    name,mobile,email,country,university,faculty,gradyear,
-    title,company,experience,level,goal,examdate,
-    rating:_currentRating,comments,improvements,
-    photo:photoUrl||'No Photo'
-  });
-
-  render();
-  setTimeout(()=>{
-    const el=document.getElementById('content-area');
-    if(el)el.scrollTop=0;
-  },50);
-  alert('Profile saved! Welcome to CMA Prep 🎓\n\nYour data has been sent to your instructor.');
-}
-
-function navTo(tab){
-  if(!STATE.user&&tab!=='login'&&tab!=='loading'){STATE.tab='login';render();return;}
-  if(tab!=='intro'&&tab!=='register'&&tab!=='login'&&tab!=='loading'&&tab!=='feedback'&&tab!=='community'&&tab!=='question-detail'){
-    const st=loadStudent();
-    const fb=loadFeedback();
-    const isComplete=st&&st.name&&st.mobile&&st.email&&st.country&&st.university&&st.faculty&&st.gradyear&&st.title&&st.company&&st.experience&&st.level&&st.goal&&st.examdate&&st.photo&&fb.rating>0&&fb.comments&&fb.improvements;
-    if(!isComplete){STATE.tab='register';STATE.showProfileWarning=true;render();return;}
-  }
-  STATE.showProfileWarning=false;
-  if(tab==='lessons'&&tab!==STATE.tab){STATE.sectId=null;STATE.lessonId=null;}
-  STATE.tab=tab;render();
-}
-// ─── AUTH STATE LISTENER ──────────────────────────────────────────────────────
-auth.onAuthStateChanged(async(user)=>{
-  if(user){
-    STATE.user=user;
-    STATE.authLoading=false;
-    try{
-      const pd=await db.collection('progress').doc(user.uid).get();
-      if(pd.exists){STATE.progress=pd.data();try{localStorage.setItem('cma-html-v2',JSON.stringify(pd.data()));}catch{}}
-    }catch{}
-    try{
-      const sd=await db.collection('students').doc(user.uid).get();
-      if(sd.exists){try{localStorage.setItem('cma-student-v1',JSON.stringify(sd.data()));}catch{}}
-    }catch{}
-    try{
-      const td=await db.collection('tracker').doc(user.uid).get();
-      if(td.exists){try{localStorage.setItem('cma-tracker-v1',JSON.stringify(td.data()));}catch{}}
-    }catch{}
-    const st=loadStudent();const fb=loadFeedback();
-    const isComplete=st&&st.name&&st.mobile&&st.email&&st.country&&st.university&&st.faculty&&st.gradyear&&st.title&&st.company&&st.experience&&st.level&&st.goal&&st.examdate&&st.photo&&fb.rating>0&&fb.comments&&fb.improvements;
-    STATE.tab=isComplete?'intro':'register';
-    STATE.showProfileWarning=!isComplete;
-  } else {
-    STATE.user=null;STATE.tab='login';STATE.authLoading=false;
-  }
-  render();
-});
-</script>
-</body>
-</html>
