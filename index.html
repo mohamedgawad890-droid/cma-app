@@ -146,39 +146,36 @@ const S=[
       {id:"4-1",title:"Cost Behavior: Fixed, Variable & Mixed Costs",dur:"25 min",
         blocks:[
           {t:"h",v:"What Is Cost Behavior?"},
-          {t:"p",v:"Cost behavior describes how costs change as activity levels change. Understanding cost behavior is essential for budgeting, decision-making, and performance evaluation. Every cost must be classified before any analysis can begin."},
+          {t:"p",v:"Cost behavior describes how costs change as activity levels change. Understanding cost behavior is essential for budgeting, decision-making, and performance evaluation."},
           {t:"h",v:"1. Variable Costs"},
-          {t:"p",v:"Variable costs change proportionally with activity — they are CONSTANT PER UNIT but change in TOTAL. If you produce twice as many units, total variable cost doubles."},
+          {t:"p",v:"Variable costs change proportionally with activity. They are CONSTANT PER UNIT but change in TOTAL."},
           {t:"tbl",h:["Activity","Total Variable Cost","Cost Per Unit"],r:[["1,000 units","$5,000","$5"],["2,000 units","$10,000","$5"],["3,000 units","$15,000","$5"]]},
-          {t:"b",v:["Examples: Direct Materials, Direct Labor (often), Sales Commissions, Packaging","Key rule: Total changes — Per unit stays the same"]},
+          {t:"b",v:["Examples: Direct Materials, Sales Commissions, Packaging","Key rule: Total changes — Per unit stays the same"]},
           {t:"h",v:"2. Fixed Costs"},
-          {t:"p",v:"Fixed costs remain CONSTANT IN TOTAL regardless of activity — but the cost PER UNIT decreases as production increases. Fixed costs exist even if output is zero."},
+          {t:"p",v:"Fixed costs remain CONSTANT IN TOTAL regardless of activity. Cost per unit decreases as production increases."},
           {t:"tbl",h:["Activity","Total Fixed Cost","Cost Per Unit"],r:[["1,000 units","$10,000","$10.00"],["2,000 units","$10,000","$5.00"],["4,000 units","$10,000","$2.50"]]},
-          {t:"b",v:["Examples: Rent, Insurance, Salaries, Depreciation, Property Tax","Key rule: Total stays the same — Per unit changes"]},
+          {t:"b",v:["Examples: Rent, Insurance, Salaries, Depreciation","Key rule: Total stays the same — Per unit changes"]},
           {t:"h",v:"3. Mixed Costs (Semi-Variable)"},
-          {t:"p",v:"Mixed costs contain BOTH a fixed component AND a variable component. They cannot be purely classified as fixed or variable — they must be separated using analytical methods."},
-          {t:"f",l:"Mixed Cost Formula",v:"Y = a + bX   where: Y = Total Cost | a = Fixed Component | b = Variable Rate | X = Activity Level"},
-          {t:"p",v:"Example: Monthly electricity bill = $500 base charge (fixed) + $0.10 per KWH used (variable). At 3,000 KWH: Y = $500 + ($0.10 × 3,000) = $800 total."},
+          {t:"p",v:"Mixed costs contain BOTH a fixed AND variable component. They must be separated using analytical methods."},
+          {t:"f",l:"Mixed Cost Formula",v:"Y = a + bX   |   Y = Total Cost, a = Fixed, b = Variable Rate, X = Activity"},
+          {t:"p",v:"Example: Electricity bill = $500 base (fixed) + $0.10 per KWH (variable). At 3,000 KWH: Y = $500 + ($0.10 x 3,000) = $800."},
           {t:"h",v:"High-Low Method"},
-          {t:"p",v:"The simplest method to separate mixed costs. Uses ONLY the highest and lowest activity data points."},
-          {t:"s",v:["Step 1: Variable Rate = (High Cost − Low Cost) ÷ (High Activity − Low Activity)","Step 2: Fixed Cost = Total Cost at High Point − (Variable Rate × High Activity)","Step 3: Write the cost equation: Y = Fixed Cost + (Variable Rate × X)"]},
-          {t:"p",v:"Practical Example: Month A (High): 10,000 units → $45,000. Month B (Low): 4,000 units → $21,000. Variable Rate = ($45,000 − $21,000) ÷ (10,000 − 4,000) = $24,000 ÷ 6,000 = $4.00 per unit. Fixed Cost = $45,000 − ($4 × 10,000) = $5,000. Total Cost Equation: Y = $5,000 + $4.00X. Predicted cost at 7,000 units = $5,000 + ($4 × 7,000) = $33,000."},
-          {t:"h",v:"The Relevant Range"},
-          {t:"p",v:"Cost behavior assumptions (fixed vs variable) are only valid WITHIN a specific activity range called the relevant range. Outside this range, fixed costs can step up (e.g., adding a new factory) and variable cost per unit may change."},
+          {t:"s",v:["Step 1: Variable Rate = (High Cost - Low Cost) / (High Activity - Low Activity)","Step 2: Fixed Cost = Total Cost at High Point - (Variable Rate x High Activity)","Step 3: Write the equation: Y = Fixed Cost + (Variable Rate x X)"]},
+          {t:"p",v:"Example: High = 10,000 units / $45,000. Low = 4,000 units / $21,000. Variable Rate = ($45,000-$21,000)/(10,000-4,000) = $4.00/unit. Fixed Cost = $45,000 - ($4 x 10,000) = $5,000. Equation: Y = $5,000 + $4.00X"},
           {t:"tbl",h:["Cost Type","Total Behavior","Per Unit Behavior","Examples"],r:[["Variable","Changes proportionally","Constant","Direct Materials, Commissions"],["Fixed","Constant","Changes (inversely)","Rent, Insurance, Salaries"],["Mixed","Changes (partially)","Changes","Electricity, Phone, Maintenance"]]},
-          {t:"tip",v:"Exam Focus: Variable cost = constant per unit. Fixed cost = constant in total. High-Low uses only 2 points — weakness is that outlier points can distort results. Regression Analysis is more accurate because it uses ALL data points. Sunk costs are ALWAYS irrelevant to decisions. Opportunity costs are ALWAYS relevant."}
+          {t:"tip",v:"Exam Tips: Variable cost = constant per unit. Fixed cost = constant in total. High-Low weakness = uses only 2 data points. Regression Analysis is more accurate. Sunk costs = ALWAYS irrelevant. Opportunity costs = ALWAYS relevant."}
         ],
         quizzes:[
-          {q:"A cost that is constant per unit but changes in total with activity is a:",o:["Fixed cost","Variable cost","Mixed cost","Step cost"],a:1,e:"Variable costs are CONSTANT PER UNIT but change PROPORTIONALLY in total with activity. If production doubles, total variable cost doubles — but cost per unit stays the same."},
-          {q:"High: 8,000 units / $38,000. Low: 2,000 units / $14,000. Variable rate per unit =",o:["$3.00","$4.00","$4.75","$6.33"],a:1,e:"Variable Rate = (High Cost − Low Cost) ÷ (High Activity − Low Activity) = ($38,000 − $14,000) ÷ (8,000 − 2,000) = $24,000 ÷ 6,000 = $4.00 per unit."},
-          {q:"Using the data above (variable rate = $4.00), Fixed Cost =",o:["$6,000","$8,000","$10,000","$14,000"],a:0,e:"FC = High Total Cost − (Variable Rate × High Activity) = $38,000 − ($4 × 8,000) = $38,000 − $32,000 = $6,000. Verify: $14,000 − ($4 × 2,000) = $6,000. Confirmed!"},
-          {q:"Monthly rent of $10,000 regardless of production level is a:",o:["Variable cost","Mixed cost","Fixed cost","Step cost"],a:2,e:"Fixed cost: constant in TOTAL regardless of activity level. Rent does not change whether you produce 100 or 10,000 units. However, fixed cost PER UNIT decreases as production increases."},
-          {q:"Y = $8,000 + $6X. At 3,000 units, Total Cost =",o:["$18,000","$24,000","$26,000","$30,000"],a:2,e:"Y = $8,000 + ($6 × 3,000) = $8,000 + $18,000 = $26,000. In this equation: $8,000 = fixed component (a), $6 = variable rate per unit (b), 3,000 = activity level (X)."},
-          {q:"Fixed cost per unit DECREASES when:",o:["Fixed costs increase in total","Variable costs decrease","Production volume INCREASES","Selling price increases"],a:2,e:"Fixed costs are constant in total. As production INCREASES, the same total fixed cost is spread over MORE units — so fixed cost per unit DECREASES. This is called economies of scale in fixed costs."},
-          {q:"The relevant range is best described as:",o:["The profitable activity range","The range where cost behavior assumptions are VALID","The break-even range","The range of acceptable selling prices"],a:1,e:"Relevant range: the band of activity within which the fixed and variable cost assumptions hold true. Outside this range (e.g., doubling production may require a new factory), cost behavior patterns change."},
-          {q:"A salesperson earns $2,000/month base salary + $50 commission per sale. This is a:",o:["Fixed cost","Variable cost","Mixed cost","Step cost"],a:2,e:"Mixed (semi-variable) cost: has a FIXED component ($2,000 base salary — exists even with zero sales) AND a VARIABLE component ($50 per sale — changes with activity). Use Y = $2,000 + $50X."},
-          {q:"The main WEAKNESS of the High-Low method is:",o:["It requires advanced software","It uses only 2 data points — which may not be representative","It cannot calculate fixed costs","It only works for variable costs"],a:1,e:"High-Low weakness: uses ONLY the highest and lowest data points. If either point is an outlier (unusually high or low), the entire calculation is distorted. Regression analysis is more reliable because it uses ALL data points."},
-          {q:"A factory adds a second supervisor only when production exceeds 500 units per day. This is a:",o:["Variable cost","Mixed cost","Fixed cost","Step fixed cost"],a:3,e:"Step fixed cost: remains constant within a range, then JUMPS to a higher level when activity crosses a threshold. One supervisor handles 0-500 units; two supervisors for 501+ units. Different from variable (no per-unit rate) and mixed (no continuous variable component)."}
+          {q:"A cost that is constant per unit but changes in total with activity is a:",o:["Fixed cost","Variable cost","Mixed cost","Step cost"],a:1,e:"Variable costs are CONSTANT PER UNIT but change PROPORTIONALLY in total. If production doubles, total variable cost doubles but cost per unit stays the same."},
+          {q:"High: 8,000 units / $38,000. Low: 2,000 units / $14,000. Variable rate per unit =",o:["$3.00","$4.00","$4.75","$6.33"],a:1,e:"Variable Rate = ($38,000 - $14,000) / (8,000 - 2,000) = $24,000 / 6,000 = $4.00 per unit."},
+          {q:"Using the data above (variable rate $4.00), Fixed Cost =",o:["$6,000","$8,000","$10,000","$14,000"],a:0,e:"FC = $38,000 - ($4 x 8,000) = $38,000 - $32,000 = $6,000. Verify: $14,000 - ($4 x 2,000) = $6,000."},
+          {q:"Monthly rent of $10,000 regardless of production level is a:",o:["Variable cost","Mixed cost","Fixed cost","Step cost"],a:2,e:"Fixed cost: constant in TOTAL regardless of activity. Rent does not change whether you produce 100 or 10,000 units."},
+          {q:"Y = $8,000 + $6X. At 3,000 units, Total Cost =",o:["$18,000","$24,000","$26,000","$30,000"],a:2,e:"Y = $8,000 + ($6 x 3,000) = $8,000 + $18,000 = $26,000."},
+          {q:"Fixed cost per unit DECREASES when:",o:["Fixed costs increase in total","Variable costs decrease","Production volume INCREASES","Selling price increases"],a:2,e:"Fixed costs are constant in total. As production INCREASES, the same total fixed cost is spread over MORE units, so fixed cost per unit DECREASES."},
+          {q:"The relevant range is best described as:",o:["The profitable activity range","The range where cost behavior assumptions are VALID","The break-even range","The range of acceptable selling prices"],a:1,e:"Relevant range: the activity range within which fixed and variable cost assumptions hold true. Outside this range, cost behavior patterns change."},
+          {q:"A salesperson earns $2,000/month base + $50 commission per sale. This is a:",o:["Fixed cost","Variable cost","Mixed cost","Step cost"],a:2,e:"Mixed cost: FIXED component ($2,000 base) AND VARIABLE component ($50 per sale). Formula: Y = $2,000 + $50X."},
+          {q:"The main WEAKNESS of the High-Low method is:",o:["It requires advanced software","It uses only 2 data points which may not be representative","It cannot calculate fixed costs","It only works for variable costs"],a:1,e:"High-Low weakness: uses ONLY 2 data points. If either is an outlier, the entire calculation is distorted. Regression Analysis uses ALL data points and is more reliable."},
+          {q:"A factory adds a second supervisor when production exceeds 500 units/day. This is a:",o:["Variable cost","Mixed cost","Fixed cost","Step fixed cost"],a:3,e:"Step fixed cost: constant within a range then JUMPS to a higher level when activity crosses a threshold. Different from variable (no per-unit rate) and mixed (no continuous variable component)."}
         ]}
     ]}
 ];
@@ -845,7 +842,6 @@ async function doAuth(){
     render();
   }
 }
-
 // ─── AUTH SCREENS ─────────────────────────────────────────────────────────────
 function renderLoading(){
   return`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:40px 20px;text-align:center">
@@ -1479,3 +1475,145 @@ function renderRegister(){
       </div>
     </div>
 
+    <div style="background:#f5f5f0;border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:12px;color:#888;text-align:center;line-height:1.5">
+      All fields marked are required. You must complete this form to access lessons, quizzes, progress tracking, and the AI chat.
+    </div>
+    <button onclick="submitProfile()" class="btn submit-profile-btn" style="background:#0C447C;color:#fff;font-size:15px;margin-bottom:8px">
+      ${isComplete?'Update My Profile ✓':'Complete Profile & Unlock the App →'}
+    </button>
+    <div style="height:20px"></div>
+  </div>`;
+}
+
+let _currentRating = loadFeedback().rating || 0;
+function setRating(n){
+  _currentRating = n;
+  [1,2,3,4,5].forEach(i=>{
+    const el=document.getElementById('star-'+i);
+    if(el){el.textContent=i<=n?'⭐':'☆';el.style.opacity=i<=n?'1':'0.3';}
+  });
+}
+
+function handlePhoto(input){
+  const file=input.files[0];
+  if(!file)return;
+  if(file.size>2*1024*1024){alert('Photo is too large. Please choose an image under 2MB.');input.value='';return;}
+  const reader=new FileReader();
+  reader.onload=function(e){
+    const b64=e.target.result;
+    const preview=document.getElementById('photo-preview');
+    if(preview){preview.innerHTML=`<img src="${b64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;}
+    window._pendingPhoto=b64;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function uploadToCloudinary(base64data){
+  try{
+    const res=await fetch(base64data);const blob=await res.blob();
+    const fd=new FormData();fd.append('file',blob);fd.append('upload_preset',CLD_PRESET);
+    const r=await fetch(`https://api.cloudinary.com/v1_1/${CLD_CLOUD}/image/upload`,{method:'POST',body:fd});
+    const d=await r.json();return d.secure_url||null;
+  }catch(e){console.log('Cloudinary error:',e);return null;}
+}
+
+async function sendToSheet(data){
+  try{
+    await fetch('https://script.google.com/macros/s/AKfycbwwfDLTcBC70-zpLM0bySnOZN7XzReVVLXbE-_nJr_jFmIoRNRnBa2hw1P93iCI_tMscg/exec',{
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(data)
+    });
+  }catch(e){console.log('Sheet sync error:',e);}
+}
+
+async function submitProfile(){
+  const get=(id)=>document.getElementById(id)?.value?.trim()||'';
+  const name=get('f-name'),mobile=get('f-mobile'),email=get('f-email'),country=get('f-country');
+  const university=get('f-university'),faculty=get('f-faculty'),gradyear=get('f-gradyear');
+  const title=get('f-title'),company=get('f-company'),experience=get('f-experience');
+  const level=get('f-level'),goal=get('f-goal'),examdate=get('f-examdate');
+  const missing=[];
+  if(!name)missing.push('Full Name');if(!mobile)missing.push('Mobile');if(!email)missing.push('Email');
+  if(!country)missing.push('Country');if(!university)missing.push('University');if(!faculty)missing.push('Faculty / Major');
+  if(!gradyear)missing.push('Graduation Year');if(!title)missing.push('Current Job Title');if(!company)missing.push('Company');
+  if(!experience)missing.push('Years of Experience');if(!level)missing.push('Finance Level');if(!goal)missing.push('CMA Goal');
+  if(!examdate)missing.push('Target Exam Date');
+  
+  const existingPhoto=loadStudent()?.photo||'';
+  const pendingB64=window._pendingPhoto||'';
+  if(!pendingB64&&!existingPhoto)missing.push('Profile Photo');
+  if(missing.length>0){
+    alert('Please complete all required fields:\n\n• '+missing.join('\n• '));return;
+  }
+  let photoUrl=existingPhoto;
+  if(pendingB64&&pendingB64.startsWith('data:')){
+    try{
+      const fd=new FormData();fd.append('file',pendingB64);fd.append('upload_preset',CLD_PRESET);
+      const res=await fetch(`https://api.cloudinary.com/v1_1/${CLD_CLOUD}/image/upload`,{method:'POST',body:fd});
+      const cldData=await res.json();
+      if(cldData.secure_url){photoUrl=cldData.secure_url;}else{photoUrl=pendingB64;}
+    }catch(err){photoUrl=pendingB64;}
+    window._pendingPhoto=null;
+  }
+  saveStudent({name,mobile,email,country,university,faculty,gradyear,title,company,experience,level,goal,examdate,photo:photoUrl,registeredAt:loadStudent()?.registeredAt||new Date().toISOString()});
+  STATE.showProfileWarning=false;
+
+  // Send to Google Sheets
+  const fb2=loadFeedback();
+  sendToSheet({
+    name,mobile,email,country,university,faculty,gradyear,
+    title,company,experience,level,goal,examdate,
+    photo:photoUrl||'No Photo'
+  });
+
+  render();
+  setTimeout(()=>{
+    const el=document.getElementById('content-area');
+    if(el)el.scrollTop=0;
+  },50);
+  alert('Profile saved! Welcome to CMA Prep 🎓\n\nYour data has been sent to your instructor.');
+}
+
+function navTo(tab){
+  if(!STATE.user&&tab!=='login'&&tab!=='loading'){STATE.tab='login';render();return;}
+  if(tab!=='intro'&&tab!=='register'&&tab!=='login'&&tab!=='loading'&&tab!=='feedback'&&tab!=='community'&&tab!=='question-detail'){
+    const st=loadStudent();
+    const fb=loadFeedback();
+    const isComplete=st&&st.name&&st.mobile&&st.email&&st.country&&st.university&&st.faculty&&st.gradyear&&st.title&&st.company&&st.experience&&st.level&&st.goal&&st.examdate&&st.photo&&fb.rating>0&&fb.comments&&fb.improvements;
+    if(!isComplete){STATE.tab='register';STATE.showProfileWarning=true;render();return;}
+  }
+  STATE.showProfileWarning=false;
+  if(tab==='lessons'&&tab!==STATE.tab){STATE.sectId=null;STATE.lessonId=null;}
+  STATE.tab=tab;render();
+}
+// ─── AUTH STATE LISTENER ──────────────────────────────────────────────────────
+auth.onAuthStateChanged(async(user)=>{
+  if(user){
+    STATE.user=user;
+    STATE.authLoading=false;
+    try{
+      const pd=await db.collection('progress').doc(user.uid).get();
+      if(pd.exists){STATE.progress=pd.data();try{localStorage.setItem('cma-html-v2',JSON.stringify(pd.data()));}catch{}}
+    }catch{}
+    try{
+      const sd=await db.collection('students').doc(user.uid).get();
+      if(sd.exists){try{localStorage.setItem('cma-student-v1',JSON.stringify(sd.data()));}catch{}}
+    }catch{}
+    try{
+      const td=await db.collection('tracker').doc(user.uid).get();
+      if(td.exists){try{localStorage.setItem('cma-tracker-v1',JSON.stringify(td.data()));}catch{}}
+    }catch{}
+    const st=loadStudent();const fb=loadFeedback();
+    const isComplete=st&&st.name&&st.mobile&&st.email&&st.country&&st.university&&st.faculty&&st.gradyear&&st.title&&st.company&&st.experience&&st.level&&st.goal&&st.examdate&&st.photo&&fb.rating>0&&fb.comments&&fb.improvements;
+    STATE.tab=isComplete?'intro':'register';
+    STATE.showProfileWarning=!isComplete;
+  } else {
+    STATE.user=null;STATE.tab='login';STATE.authLoading=false;
+  }
+  render();
+});
+</script>
+</body>
+</html>
