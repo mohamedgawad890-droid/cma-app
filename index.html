@@ -1609,6 +1609,95 @@ function renderLoading(){
   </div>`;
 }
 
+function renderOnboarding(){
+  return`<div style="overflow-y:auto;flex:1;background:#fff">
+
+    <!-- HERO -->
+    <div style="background:linear-gradient(135deg,#0C447C 0%,#185FA5 60%,#378ADD 100%);padding:40px 24px 32px;text-align:center;color:#fff">
+      <div style="font-size:11px;font-weight:500;letter-spacing:3px;opacity:.7;margin-bottom:16px">CMA PART 1 PREP</div>
+      <img src="${PHOTO_B64}" style="width:88px;height:88px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,.8);margin-bottom:14px;display:block;margin-left:auto;margin-right:auto">
+      <div style="font-size:22px;font-weight:500;margin-bottom:4px">Gawad's CMA Prep</div>
+      <div style="font-size:14px;opacity:.85;margin-bottom:20px">Your complete CMA Part 1 study companion</div>
+      <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap">
+        <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px">21 Lessons</div>
+        <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px">210 MCQs</div>
+        <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px">6 Sections</div>
+        <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px">Free Access</div>
+      </div>
+    </div>
+
+    <div style="padding:24px 20px">
+
+      <!-- WHAT IS THIS APP -->
+      <div style="margin-bottom:24px">
+        <div style="font-size:17px;font-weight:500;color:#1a1a1a;margin-bottom:10px">📱 What is this app?</div>
+        <div style="font-size:14px;color:#555;line-height:1.7">
+          This is your personal CMA Part 1 study app — built by <strong style="color:#0C447C">Gawad</strong>, a CFO and CMA instructor with 17+ years of experience. It covers everything you need to pass the exam: structured lessons, practice quizzes, progress tracking, and more.
+        </div>
+      </div>
+
+      <!-- FEATURES -->
+      <div style="margin-bottom:24px">
+        <div style="font-size:17px;font-weight:500;color:#1a1a1a;margin-bottom:12px">✨ What's inside?</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          ${[
+            ['📚','Study','6 sections covering all CMA Part 1 topics with detailed lessons based on Hock textbook'],
+            ['❓','Quizzes','10 MCQs per lesson — exam-style questions with full explanations after each answer'],
+            ['📊','Progress','Track your completed lessons and quiz scores across all sections'],
+            ['📌','Tracker','Mark lessons as Good or Bad to know what to review'],
+            ['🌐','Community','Ask questions and get answers from fellow CMA candidates'],
+            ['⭐','Feedback','Share your experience and help improve the course'],
+          ].map(([icon,title,desc])=>`
+          <div style="display:flex;gap:12px;align-items:flex-start;background:#f8f8f6;border-radius:12px;padding:12px 14px">
+            <span style="font-size:22px;flex-shrink:0">${icon}</span>
+            <div>
+              <div style="font-size:14px;font-weight:500;color:#1a1a1a;margin-bottom:2px">${title}</div>
+              <div style="font-size:13px;color:#666;line-height:1.5">${desc}</div>
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>
+
+      <!-- HOW TO REGISTER -->
+      <div style="margin-bottom:24px">
+        <div style="font-size:17px;font-weight:500;color:#1a1a1a;margin-bottom:12px">🚀 How to get started?</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          ${[
+            ['1','Tap "Get Started" below'],
+            ['2','Choose "New Student" and enter your email + password'],
+            ['3','Complete your profile (name, mobile, country, exam date)'],
+            ['4','Start studying — lessons, quizzes, and tools are all unlocked!'],
+            ['5','Already have an account? Just tap "Login"'],
+          ].map(([n,txt])=>`
+          <div style="display:flex;gap:12px;align-items:center">
+            <div style="width:26px;height:26px;border-radius:50%;background:#0C447C;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0">${n}</div>
+            <div style="font-size:14px;color:#555">${txt}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+
+      <!-- ANY BROWSER -->
+      <div style="background:#E6F1FB;border-radius:12px;padding:14px 16px;margin-bottom:24px;display:flex;gap:10px;align-items:flex-start">
+        <span style="font-size:22px;flex-shrink:0">💻</span>
+        <div>
+          <div style="font-size:14px;font-weight:500;color:#0C447C;margin-bottom:3px">Works on any device</div>
+          <div style="font-size:13px;color:#185FA5;line-height:1.55">Open <strong>mohamedgawad890-droid.github.io/cma-app</strong> on any browser — Chrome, Safari, Firefox — on your phone, tablet, or computer. Sign in with your email and password and your progress syncs automatically.</div>
+        </div>
+      </div>
+
+      <!-- CTA BUTTONS -->
+      <button onclick="localStorage.setItem('cma-visited','1');STATE.authScreen='register';STATE.tab='login';render()" class="btn" style="background:#0C447C;color:#fff;font-size:16px;margin-bottom:10px">
+        Get Started — Create Account →
+      </button>
+      <button onclick="localStorage.setItem('cma-visited','1');STATE.authScreen='login';STATE.tab='login';render()" class="btn btn-outline" style="font-size:15px;margin-bottom:8px">
+        I already have an account
+      </button>
+
+      <div style="height:20px"></div>
+    </div>
+  </div>`;
+}
+
 function renderLogin(){
   const isReg=STATE.authScreen==='register';
   return`<div style="overflow-y:auto;flex:1;padding:28px 20px 20px">
@@ -2080,11 +2169,11 @@ function render(){
   const content=document.getElementById('content-area');const nav=document.getElementById('bottom-nav');if(!content||!nav)return;
   let html='';
   switch(STATE.tab){
-    case'loading':html=renderLoading();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;default:html=renderIntro();
+    case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;default:html=renderIntro();
   }
   content.innerHTML=html;
   content.style.display='flex';content.style.flexDirection='column';content.style.overflow=STATE.tab==='chat'?'hidden':'auto';
-  if(STATE.tab==='loading'||STATE.tab==='login'){nav.style.display='none';}
+  if(STATE.tab==='loading'||STATE.tab==='login'||STATE.tab==='onboarding'){nav.style.display='none';}
   else{nav.style.display='flex';
     const active=activeNavTab();
     nav.innerHTML=TABS.map(t=>`<button class="nav-btn${t.id===active?' active':''}" onclick="navTo('${t.id}')"><span class="nav-icon">${t.icon}</span><span>${t.label}</span></button>`).join('');}
@@ -2326,7 +2415,7 @@ async function submitProfile(){
 }
 
 function navTo(tab){
-  if(!STATE.user&&tab!=='login'&&tab!=='loading'){STATE.tab='login';render();return;}
+  if(!STATE.user&&tab!=='login'&&tab!=='loading'&&tab!=='onboarding'){STATE.tab='login';render();return;}
   if(tab!=='intro'&&tab!=='register'&&tab!=='login'&&tab!=='loading'&&tab!=='feedback'&&tab!=='community'&&tab!=='question-detail'){
     const st=loadStudent();
     const fb=loadFeedback();
@@ -2359,7 +2448,7 @@ auth.onAuthStateChanged(async(user)=>{
     STATE.tab=isComplete?'intro':'register';
     STATE.showProfileWarning=!isComplete;
   } else {
-    STATE.user=null;STATE.tab='login';STATE.authLoading=false;
+    STATE.user=null;STATE.tab=localStorage.getItem('cma-visited')?'login':'onboarding';STATE.authLoading=false;
   }
   render();
 });
