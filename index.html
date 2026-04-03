@@ -413,6 +413,126 @@ const S=[
           {q:"Management by Exception in variance analysis means:",o:["All variances are investigated equally","Only favorable variances are reviewed","Only SIGNIFICANT or LARGE variances are investigated","Only unfavorable variances are reviewed"],a:2,e:"Management by Exception: managers focus on SIGNIFICANT variances that require attention, ignoring minor/insignificant ones."},
           {q:"Total actual cost $45,000. Total standard cost $42,000. The total variance is:",o:["$3,000 Favorable","$3,000 Unfavorable","$87,000 total cost","Cannot be determined"],a:1,e:"Total Variance = Actual Cost - Standard Cost = $45,000 - $42,000 = $3,000 UNFAVORABLE. Actual exceeded standard."},
           {q:"The PRIMARY purpose of a standard cost system is to:",o:["Simplify bookkeeping","Eliminate all cost variances","Provide benchmarks for CONTROLLING costs and evaluating performance","Replace the budgeting process"],a:2,e:"Standard costing provides BENCHMARKS for comparison with actual results, enabling managers to CONTROL costs and evaluate performance through variance analysis."}
+        ]},
+      {id:"4-7",title:"Costing Methods: Variable vs Absorption Costing",dur:"30 min",
+        blocks:[
+          {t:"h",v:"Variable Costing vs Absorption Costing"},
+          {t:"p",v:"Two methods exist for treating Fixed Manufacturing Overhead (Fixed MOH) in product costing. The difference affects inventory valuation and operating income when production differs from sales."},
+          {t:"tbl",h:["Feature","Variable Costing","Absorption Costing"],r:[["Fixed MOH treatment","PERIOD cost — expensed immediately","PRODUCT cost — included in inventory"],["Required by GAAP/IFRS","No (internal use only)","Yes (external reporting)"],["Income affected by","Sales volume only","Both sales AND production volume"],["Inventory includes","DM + DL + Variable MOH only","DM + DL + Variable MOH + Fixed MOH"]]},
+          {t:"h",v:"Key Formulas"},
+          {t:"f",l:"Absorption Costing Unit Cost",v:"Unit Cost = DM + DL + Variable MOH + (Fixed MOH / Units Produced)"},
+          {t:"f",l:"Variable Costing Unit Cost",v:"Unit Cost = DM + DL + Variable MOH only (Fixed MOH is a period cost)"},
+          {t:"h",v:"Income Difference — The Key Rule"},
+          {t:"f",l:"Reconciliation",v:"Absorption NI - Variable NI = Fixed MOH in Ending Inventory - Fixed MOH in Beginning Inventory"},
+          {t:"b",v:["Production > Sales: Absorption NI > Variable NI (fixed MOH deferred in inventory)","Production < Sales: Absorption NI < Variable NI (fixed MOH released from inventory)","Production = Sales: Absorption NI = Variable NI (no difference)"]},
+          {t:"h",v:"Example"},
+          {t:"p",v:"Fixed MOH $60,000. Produced 10,000 units. Sold 8,000 units. Fixed MOH/unit = $6. Ending inventory = 2,000 units."},
+          {t:"s",v:["Absorption: Fixed MOH in ending inventory = 2,000 x $6 = $12,000 (deferred)","Variable: All $60,000 expensed immediately","Absorption NI is $12,000 HIGHER than Variable NI"]},
+          {t:"h",v:"Contribution Margin Income Statement (Variable Costing)"},
+          {t:"tbl",h:["Line","Amount"],r:[["Sales Revenue","$XXX"],["- Variable Cost of Goods Sold","($XXX)"],["= Gross Contribution Margin","$XXX"],["- Variable Selling & Admin","($XXX)"],["= Contribution Margin","$XXX"],["- Fixed Manufacturing Overhead","($XXX)"],["- Fixed Selling & Admin","($XXX)"],["= Net Operating Income","$XXX"]]},
+          {t:"tip",v:"Exam Tips: Absorption = GAAP required. Variable = management use only. When production > sales, absorption shows HIGHER income. Fixed MOH is the ONLY difference between the two methods. Contribution Margin format = variable costing income statement. Gross Profit format = absorption costing income statement."}
+        ],
+        quizzes:[
+          {q:"Under absorption costing, fixed manufacturing overhead is treated as a:",o:["Period cost","Product cost","Sunk cost","Opportunity cost"],a:1,e:"Absorption costing treats fixed MOH as a PRODUCT cost — it goes into inventory and is only expensed when the product is sold. This is required under GAAP/IFRS for external reporting."},
+          {q:"Under variable costing, fixed manufacturing overhead is:",o:["Added to inventory","A product cost","Expensed in the period incurred","Allocated based on units sold"],a:2,e:"Variable costing treats fixed MOH as a PERIOD cost — expensed immediately in the period incurred, regardless of how many units were sold."},
+          {q:"Production 12,000 units. Sales 10,000 units. Compared to variable costing, absorption costing net income is:",o:["The same","Lower","Higher","Cannot be determined without more data"],a:2,e:"Production (12,000) > Sales (10,000) — 2,000 units in ending inventory. Under absorption, some fixed MOH is DEFERRED in inventory, making absorption NI HIGHER than variable NI."},
+          {q:"Fixed MOH $80,000. Produced 8,000 units. Sold 6,000 units. Difference in NI (Absorption vs Variable) =",o:["$10,000","$20,000","$60,000","$80,000"],a:1,e:"Fixed MOH/unit = $80,000/8,000 = $10. Ending inventory = 2,000 units. Difference = 2,000 x $10 = $20,000. Absorption NI is $20,000 higher."},
+          {q:"When production EQUALS sales, absorption and variable costing net income are:",o:["Absorption higher","Variable higher","Equal","Cannot be determined"],a:2,e:"When production = sales, there is no change in inventory. All fixed MOH is expensed under both methods in the same period. Therefore NI is EQUAL."},
+          {q:"Variable costing is primarily used for:",o:["External financial reporting","Tax reporting","Internal management decisions","GAAP compliance"],a:2,e:"Variable costing is used for INTERNAL management decisions — CVP analysis, break-even analysis, and short-term pricing decisions. It is NOT accepted for external GAAP/IFRS reporting."},
+          {q:"The contribution margin income statement format is associated with:",o:["Absorption costing","Variable costing","Job order costing","Process costing"],a:1,e:"The Contribution Margin income statement separates variable and fixed costs — this is the variable costing format. Absorption costing uses the traditional Gross Profit format (Sales - COGS = Gross Profit)."},
+          {q:"Fixed MOH per unit = $5. Beginning inventory 1,000 units. Ending inventory 3,000 units. Absorption NI vs Variable NI:",o:["Absorption $10,000 higher","Absorption $10,000 lower","Absorption $5,000 higher","They are equal"],a:0,e:"Inventory INCREASED by 2,000 units (3,000 - 1,000). Fixed MOH deferred in ending inventory = 2,000 x $5 = $10,000. Absorption NI is $10,000 HIGHER."},
+          {q:"Which costing method results in a lower net income when inventory DECREASES?",o:["Variable costing","Absorption costing","Both are equal","Depends on fixed cost level"],a:1,e:"When inventory decreases, fixed MOH previously deferred in beginning inventory is now RELEASED and expensed under absorption. This means absorption shows LOWER income when inventory decreases."},
+          {q:"Under variable costing, which cost is NOT included in product cost?",o:["Direct Materials","Direct Labor","Variable Manufacturing Overhead","Fixed Manufacturing Overhead"],a:3,e:"Fixed Manufacturing Overhead is the ONLY cost excluded from product cost under variable costing. DM, DL, and Variable MOH are included in both variable and absorption costing product costs."}
+        ]},
+      {id:"4-8",title:"Joint Products & By-Products",dur:"25 min",
+        blocks:[
+          {t:"h",v:"What Are Joint Products?"},
+          {t:"p",v:"Joint products arise from a SINGLE production process that simultaneously produces TWO OR MORE products. The costs incurred before the split-off point are called JOINT COSTS and cannot be directly traced to individual products."},
+          {t:"f",l:"Key Terms",v:"Split-off Point: Where joint products become separately identifiable | Joint Costs: Costs incurred BEFORE split-off | Separable Costs: Costs incurred AFTER split-off for a specific product"},
+          {t:"h",v:"Methods of Allocating Joint Costs"},
+          {t:"tbl",h:["Method","Basis","Formula","Best For"],r:[["Physical Units","Volume (lbs, gallons)","Joint Cost x (Product Units / Total Units)","Simple, same physical measure"],["Sales Value at Split-off","Market value at split-off","Joint Cost x (Product Sales Value / Total Sales Value)","Most common — reflects economic value"],["Net Realizable Value (NRV)","Final sales price - separable costs","Joint Cost x (Product NRV / Total NRV)","When products need further processing"],["Constant Gross Margin %","Maintains same gross margin for all","More complex calculation","Rare on exams"]]},
+          {t:"h",v:"Sales Value at Split-off Example"},
+          {t:"p",v:"Joint costs $90,000. Product A: 1,000 units at $60/unit = $60,000. Product B: 1,000 units at $40/unit = $40,000. Total = $100,000."},
+          {t:"s",v:["Product A allocation = $90,000 x ($60,000/$100,000) = $54,000","Product B allocation = $90,000 x ($40,000/$100,000) = $36,000"]},
+          {t:"h",v:"Should We Process Further? — Sell or Process Decision"},
+          {t:"f",l:"Process Further Rule",v:"Process further ONLY if: Incremental Revenue > Incremental Separable Costs | Joint costs are IRRELEVANT (sunk costs)"},
+          {t:"p",v:"Example: Product X sells at split-off for $50. Can be processed further for $20 more to sell at $80. Incremental revenue = $30. Incremental cost = $20. Profit = $10. → Process further!"},
+          {t:"h",v:"By-Products"},
+          {t:"b",v:["By-products: Minor outputs from joint production with relatively low sales value","Two accounting methods:","1. Net Realizable Value Method: By-product NRV reduces joint costs allocated to main products","2. Production Method: By-product recognized as revenue when produced"]},
+          {t:"tip",v:"Exam Tips: Joint costs are SUNK at split-off — NEVER relevant for sell-or-process decisions. Only INCREMENTAL revenues and costs after split-off matter. Sales Value at Split-off is the most common allocation method. NRV method: NRV = Final Price - Separable Costs. By-products have LOW relative value. Physical units method ignores market value — may distort profitability."}
+        ],
+        quizzes:[
+          {q:"Joint costs are costs incurred:",o:["After the split-off point","Before the split-off point","Only for by-products","For marketing and distribution"],a:1,e:"Joint costs are incurred BEFORE the split-off point during the single process that produces all joint products simultaneously. They cannot be directly traced to individual products."},
+          {q:"The split-off point is:",o:["Where products are sold","Where joint products become separately identifiable","Where by-products are separated from waste","The break-even point for joint production"],a:1,e:"The split-off point is where two or more joint products BECOME SEPARATELY IDENTIFIABLE and can be sold separately or processed further."},
+          {q:"Joint costs $120,000. Product A NRV $80,000. Product B NRV $40,000. Joint costs allocated to A =",o:["$40,000","$60,000","$80,000","$90,000"],a:2,e:"NRV method: Total NRV = $80,000 + $40,000 = $120,000. Product A allocation = $120,000 x ($80,000/$120,000) = $80,000."},
+          {q:"In a sell-or-process-further decision, joint costs are:",o:["Relevant — should be included","Irrelevant — sunk costs","Relevant only if large","Relevant if allocated using NRV"],a:1,e:"Joint costs are SUNK COSTS at the split-off point — they have already been incurred and cannot be changed. They are ALWAYS IRRELEVANT in sell-or-process decisions. Only incremental revenues and costs matter."},
+          {q:"Product sells at split-off for $100. Processing further costs $30 extra and sells for $145. Decision:",o:["Sell at split-off — more profitable","Process further — $15 additional profit","Process further — $45 additional profit","Cannot determine without joint costs"],a:1,e:"Incremental revenue = $145 - $100 = $45. Incremental cost = $30. Incremental profit = $45 - $30 = $15. Process further is profitable by $15. Joint costs are irrelevant."},
+          {q:"The Sales Value at Split-off method allocates joint costs based on:",o:["Units produced","NRV after further processing","Market value at the split-off point","Physical weight of each product"],a:2,e:"Sales Value at Split-off allocates joint costs based on the RELATIVE MARKET VALUE of each product at the split-off point. It is the most widely used and exam-tested method."},
+          {q:"Joint costs $50,000. Product A: 500 units. Product B: 1,500 units. Physical units method — Product A allocation =",o:["$12,500","$37,500","$25,000","$10,000"],a:0,e:"Physical units: Total = 500 + 1,500 = 2,000 units. Product A = $50,000 x (500/2,000) = $50,000 x 25% = $12,500."},
+          {q:"By-products are characterized by:",o:["High relative sales value","Low relative sales value","Equal importance to main products","Always requiring further processing"],a:1,e:"By-products have RELATIVELY LOW sales value compared to the main products. They emerge from the same production process but are secondary outputs. Their low value is what distinguishes them from joint products."},
+          {q:"Separable costs are costs incurred:",o:["Before split-off","During joint processing","After split-off for a specific product","For all joint products together"],a:2,e:"Separable costs are incurred AFTER the split-off point for a specific individual product — such as additional processing, packaging, or marketing for just one of the joint products."},
+          {q:"Which joint cost allocation method is MOST useful when products require different amounts of further processing?",o:["Physical Units","Sales Value at Split-off","Net Realizable Value (NRV)","Constant Gross Margin %"],a:2,e:"NRV (Net Realizable Value) is best when products require different amounts of further processing. NRV = Final Sales Price - Separable Costs, which accounts for the different processing costs each product needs after split-off."}
+        ]},
+      {id:"4-9",title:"Overhead Costs: Allocation & Applied Overhead",dur:"30 min",
+        blocks:[
+          {t:"h",v:"What Is Manufacturing Overhead?"},
+          {t:"p",v:"Manufacturing Overhead (MOH) includes ALL manufacturing costs that cannot be directly traced to specific products. Unlike Direct Materials and Direct Labor, overhead must be ALLOCATED using a systematic method."},
+          {t:"b",v:["Examples: Factory rent, utilities, depreciation, indirect labor, insurance, maintenance","Cannot be traced directly to a product — must be allocated","Includes BOTH fixed and variable components"]},
+          {t:"h",v:"Departmental vs Plant-wide Overhead Rates"},
+          {t:"tbl",h:["Approach","Description","When to Use"],r:[["Single Plant-wide Rate","One rate for entire factory","Simple products, homogeneous processes"],["Departmental Rates","Separate rate for each department","Products pass through different departments with different overhead levels"],["Activity-Based Costing","Rate per activity driver","Diverse products, modern manufacturing"]]},
+          {t:"h",v:"Overhead Allocation Bases"},
+          {t:"b",v:["Direct Labor Hours (DLH): Most traditional — works when labor-intensive","Direct Labor Cost: % of DL cost","Machine Hours: Best for automated/capital-intensive operations","Units Produced: Simple but only valid for single-product companies"]},
+          {t:"h",v:"Departmental Overhead Rate Example"},
+          {t:"p",v:"Dept A (Labor-intensive): Overhead $200,000, DLH 40,000. Rate = $5/DLH. Dept B (Automated): Overhead $300,000, MH 60,000. Rate = $5/MH. Job uses 10 DLH in Dept A and 5 MH in Dept B. Applied OH = (10 x $5) + (5 x $5) = $50 + $25 = $75."},
+          {t:"h",v:"Service Department Cost Allocation"},
+          {t:"p",v:"Service departments (HR, IT, Maintenance) support production departments but don't directly make products. Their costs must be allocated to production departments before calculating product costs."},
+          {t:"tbl",h:["Method","Description","Accuracy"],r:[["Direct Method","Allocates service costs directly to production departments only","Simplest — ignores inter-service usage"],["Step-down Method","Allocates in sequence; once allocated, a dept receives no more","Moderate accuracy"],["Reciprocal Method","Recognizes ALL inter-service relationships using simultaneous equations","Most accurate — most complex"]]},
+          {t:"h",v:"Over/Under Applied Overhead — Year-End Disposition"},
+          {t:"b",v:["Small amount: Close entire balance to Cost of Goods Sold","Large amount: Prorate between WIP Inventory, Finished Goods Inventory, and COGS based on their relative balances"]},
+          {t:"tip",v:"Exam Tips: Direct Method is simplest — ignores reciprocal services between service depts. Reciprocal Method is most accurate. Step-down is in between. Machine hours best for automated plants. DLH best for labor-intensive. Under-applied OH = costs UNDERSTATED in products — adjust COGS upward. Over-applied OH = costs OVERSTATED — adjust COGS downward."}
+        ],
+        quizzes:[
+          {q:"Which overhead allocation base is MOST appropriate for a highly automated factory?",o:["Direct Labor Hours","Direct Labor Cost","Machine Hours","Units Produced"],a:2,e:"Machine Hours is most appropriate for automated factories where machines drive overhead costs (depreciation, maintenance, utilities). DLH is more appropriate for labor-intensive operations."},
+          {q:"The Direct Method of service department allocation:",o:["Allocates to other service departments first","Ignores inter-service department usage","Uses simultaneous equations","Is the most accurate method"],a:1,e:"The Direct Method allocates service department costs ONLY to production departments, IGNORING any services provided between service departments. It is the simplest method but least accurate."},
+          {q:"Which service cost allocation method is MOST accurate but most complex?",o:["Direct Method","Step-down Method","Reciprocal Method","Physical Units Method"],a:2,e:"The Reciprocal Method is MOST ACCURATE because it recognizes ALL mutual services between service departments using simultaneous equations. It is the most complex but captures the most complete picture."},
+          {q:"Dept A: $150,000 overhead, 30,000 DLH. Dept B: $90,000 overhead, 18,000 MH. A job uses 4 DLH in A and 2 MH in B. Applied overhead =",o:["$20","$30","$30","$30"],a:1,e:"Rate A = $150,000/30,000 = $5/DLH. Rate B = $90,000/18,000 = $5/MH. Applied = (4 x $5) + (2 x $5) = $20 + $10 = $30."},
+          {q:"Under-applied overhead means:",o:["Applied overhead > Actual overhead","Applied overhead < Actual overhead","No difference between applied and actual","Overhead was not allocated"],a:1,e:"Under-applied: Applied OH < Actual OH. The company charged LESS overhead to products than was actually incurred. Results in a DEBIT balance in the MOH account. At year-end, this increases COGS."},
+          {q:"At year-end, a large amount of over-applied overhead should be:",o:["Written off entirely to COGS","Carried forward to next year","Prorated between WIP, Finished Goods, and COGS","Added to Retained Earnings"],a:2,e:"LARGE over/under-applied overhead should be PRORATED (allocated) between WIP Inventory, Finished Goods Inventory, and COGS based on their relative balances. Small amounts go entirely to COGS."},
+          {q:"A single plant-wide overhead rate is MOST appropriate when:",o:["Products are diverse and complex","The factory is fully automated","Products are similar and processes are homogeneous","Multiple service departments exist"],a:2,e:"A single plant-wide rate works best when products are SIMILAR and pass through homogeneous processes with similar overhead consumption. For diverse products, departmental rates or ABC provide more accuracy."},
+          {q:"The Step-down method of service cost allocation differs from the Direct Method because it:",o:["Uses simultaneous equations","Allocates to other service departments before production departments","Ignores all inter-service relationships","Only allocates variable costs"],a:1,e:"The Step-down method allocates service department costs to OTHER SERVICE DEPARTMENTS (in order) before allocating to production departments. Once a service dept has been allocated, it receives no more. More accurate than Direct, less accurate than Reciprocal."},
+          {q:"Over-applied overhead creates a _____ balance in the Manufacturing Overhead account:",o:["Debit","Credit","Zero","Contra"],a:1,e:"Over-applied = Applied > Actual. The MOH account is credited when overhead is applied and debited when actual overhead is incurred. If applied exceeds actual, there are more credits than debits = CREDIT balance."},
+          {q:"Why do companies use predetermined overhead rates instead of actual overhead rates?",o:["Actual rates are always too high","Products need a cost before actual overhead is known at year-end","GAAP requires predetermined rates","Actual overhead cannot be measured"],a:1,e:"Companies use POHR because actual overhead is only known at year-end, but products need costs throughout the year for pricing, billing, and financial statements. POHR allows timely cost assignment."}
+        ]},
+      {id:"4-10",title:"Responsibility Accounting & Transfer Pricing",dur:"30 min",
+        blocks:[
+          {t:"h",v:"What Is Responsibility Accounting?"},
+          {t:"p",v:"Responsibility accounting is a system that measures performance based on CONTROLLABLE costs and revenues for each manager's area of responsibility. The key principle: managers should only be evaluated on what they CAN CONTROL."},
+          {t:"h",v:"Four Types of Responsibility Centers"},
+          {t:"tbl",h:["Center Type","Responsible For","Key Performance Measure"],r:[["Cost Center","Costs only (no revenue control)","Budget vs Actual cost variance"],["Revenue Center","Revenues only (no cost control)","Actual vs Target revenue"],["Profit Center","Both revenues AND costs","Operating Income / Profit"],["Investment Center","Revenues, costs, AND invested capital","ROI, EVA, Residual Income"]]},
+          {t:"h",v:"Investment Center Metrics"},
+          {t:"f",l:"Return on Investment (ROI)",v:"ROI = Operating Income / Invested Assets (Average)   OR   Profit Margin x Asset Turnover"},
+          {t:"f",l:"Residual Income (RI)",v:"RI = Operating Income - (Required Rate of Return x Invested Assets)"},
+          {t:"f",l:"Economic Value Added (EVA)",v:"EVA = NOPAT - (WACC x Invested Capital)   [NOPAT = Net Operating Profit After Tax]"},
+          {t:"h",v:"ROI vs Residual Income — Key Difference"},
+          {t:"p",v:"ROI problem: A manager may REJECT a project with ROI above the required rate if it lowers the division's current ROI. Residual Income SOLVES this — any project with positive RI should be accepted."},
+          {t:"p",v:"Example: Division ROI = 20%. New project ROI = 16%. Required rate = 12%. Manager rejects project (lowers division ROI) even though it creates value (16% > 12%). RI = positive — should accept!"},
+          {t:"h",v:"Transfer Pricing"},
+          {t:"p",v:"When one division sells goods/services to another division within the same company, the TRANSFER PRICE is the internal price charged. It affects the profitability reported by both divisions."},
+          {t:"tbl",h:["Method","Formula","When Used"],r:[["Market Price","External market price","When competitive market exists — most objective"],["Cost-based","Variable cost or Full cost","When no external market"],["Negotiated","Agreed between divisions","When divisions have bargaining power"],["Minimum Transfer Price","Selling division's variable cost + opportunity cost","Economic lower limit"]]},
+          {t:"f",l:"Transfer Price Range",v:"Min TP = Variable Cost + Opportunity Cost (seller's perspective) | Max TP = Market Price (buyer's perspective)"},
+          {t:"tip",v:"Exam Tips: Controllable costs ONLY for performance evaluation. Cost centers = no revenue. Investment centers use ROI, RI, or EVA. ROI can cause dysfunctional behavior (rejecting good projects). RI and EVA avoid this problem. Transfer price minimum = variable cost + opportunity cost. Market price transfer is most objective. EVA uses WACC; RI uses required rate of return."}
+        ],
+        quizzes:[
+          {q:"A production department manager is evaluated only on manufacturing costs. This is a:",o:["Revenue Center","Profit Center","Cost Center","Investment Center"],a:2,e:"A Cost Center manager is responsible for COSTS ONLY — no control over revenues or investment decisions. The production department fits this perfectly. Performance measured by budget vs actual cost variance."},
+          {q:"Division Operating Income $500,000. Invested Assets $2,500,000. ROI =",o:["5%","15%","20%","25%"],a:2,e:"ROI = Operating Income / Invested Assets = $500,000 / $2,500,000 = 20%."},
+          {q:"Operating Income $400,000. Invested Assets $2,000,000. Required Rate 15%. Residual Income =",o:["$100,000","$300,000","$200,000","$70,000"],a:0,e:"RI = Operating Income - (Required Rate x Invested Assets) = $400,000 - (15% x $2,000,000) = $400,000 - $300,000 = $100,000."},
+          {q:"The main PROBLEM with using ROI as a performance measure is that it may cause managers to:",o:["Accept all investment projects","Reject profitable projects that lower the division ROI","Overstate revenues","Understate costs"],a:1,e:"ROI dysfunction: A manager with 20% ROI may REJECT a project earning 16% (above the 12% required rate) because it lowers the division's average ROI. This is suboptimal for the company. RI/EVA solve this problem."},
+          {q:"Residual Income solves the ROI problem by:",o:["Measuring profitability as a ratio","Focusing on absolute dollar profit above a minimum return","Ignoring invested capital","Using market values instead of book values"],a:1,e:"RI measures ABSOLUTE DOLLARS earned above the minimum required return. Any project with positive RI adds value and should be accepted, regardless of its effect on the division's average ROI percentage."},
+          {q:"The MINIMUM acceptable transfer price from the selling division's perspective is:",o:["The market price","Full absorption cost","Variable cost + opportunity cost","Negotiated price"],a:2,e:"Minimum TP = Variable Cost + Opportunity Cost. The selling division must at minimum recover its variable costs AND any contribution margin given up from external sales (opportunity cost)."},
+          {q:"When a competitive external market exists, the BEST transfer price is:",o:["Variable cost","Full cost","Market price","Negotiated price"],a:2,e:"Market price is the most OBJECTIVE transfer price when an external competitive market exists. It reflects the true economic value of the transfer and avoids distorting divisional profits."},
+          {q:"EVA differs from Residual Income primarily because EVA uses:",o:["Book value of assets","Required rate of return","WACC and NOPAT (after-tax operating profit)","Gross profit instead of operating income"],a:2,e:"EVA = NOPAT - (WACC x Invested Capital). EVA uses NOPAT (after-tax) and WACC (weighted average cost of capital), while RI uses pre-tax operating income and a single required rate of return."},
+          {q:"A manager controls both revenues and costs but NOT investment decisions. This is a:",o:["Cost Center","Revenue Center","Profit Center","Investment Center"],a:2,e:"A Profit Center manager controls both REVENUES and COSTS but NOT the level of invested capital. Performance measured by operating profit/income. Examples: product lines, store managers with P&L responsibility."},
+          {q:"Controllable costs in responsibility accounting are costs that:",o:["Are variable in nature","The manager can DIRECTLY INFLUENCE within a reasonable time","Are allocated from headquarters","Appear on the income statement"],a:1,e:"Controllable costs are those the manager can DIRECTLY INFLUENCE. A production manager controls direct materials and direct labor but NOT allocated corporate overhead or depreciation on assets chosen by top management."}
         ]}
     ]},
   {id:5,title:"Internal Controls",weight:15,emoji:"🔒",bar:"#E24B4A",bg:"#FCEBEB",text:"#A32D2D",strong:"#791F1F",
@@ -531,7 +651,7 @@ function renderStudy(){
           <div style="background:${done?sec.bg:'#f8f8f6'};margin-bottom:8px;border-radius:10px;border:.5px solid ${done?sec.text+'30':'#e0e0d8'};overflow:hidden">
             <div onclick="event.stopPropagation();STATE.sectId=${sec.id};STATE.lessonId='${l.id}';render()" style="display:flex;align-items:center;gap:10px;padding:9px 10px;cursor:pointer">
               <div style="width:24px;height:24px;border-radius:50%;background:${done?sec.bar:'#e5e5e0'};display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;flex-shrink:0;font-weight:500">${done?'✓':i+1}</div>
-              <div style="flex:1;min-width:0"><div class="ellipsis" style="font-size:13px;font-weight:500;color:${done?sec.strong:'#1a1a1a'}">${esc(l.title)}</div>
+              <div style="flex:1;min-width:0"><div style="font-size:10px;font-weight:500;color:${done?sec.text:'#aaa'};margin-bottom:2px">Unit ${i+1}</div><div class="ellipsis" style="font-size:13px;font-weight:500;color:${done?sec.strong:'#1a1a1a'}">${esc(l.title)}</div>
               <div style="font-size:11px;color:#888;margin-top:1px">${l.dur} · ${done?'Completed':'Not started'}</div></div>
               <span style="color:#bbb;font-size:16px">›</span>
             </div>
@@ -1144,9 +1264,9 @@ function renderLogin(){
   const isReg=STATE.authScreen==='register';
   return`<div style="overflow-y:auto;flex:1;padding:28px 20px 20px">
     <div style="text-align:center;margin-bottom:24px">
+      <div style="font-size:13px;font-weight:500;color:#185FA5;letter-spacing:2px;margin-bottom:10px">CMA</div>
       <img src="${PHOTO_B64}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin:0 auto 12px;display:block;border:3px solid #E6F1FB">
-      <div style="font-size:20px;font-weight:500;color:#1a1a1a">CMA Part 1 Prep</div>
-      <div style="font-size:13px;color:#888;margin-top:3px">by Mohamed Abdelgawad · CFO · CMA</div>
+      <div style="font-size:14px;font-weight:500;color:#1a1a1a;margin-top:4px">By Mohamed Abdelgawad</div>
     </div>
 
     <div style="display:flex;background:#f5f5f0;border-radius:10px;padding:3px;margin-bottom:18px">
@@ -1164,7 +1284,7 @@ function renderLogin(){
       </div>
       <div style="${isReg?'margin-bottom:12px':''}">
         <label style="font-size:12px;color:#888;display:block;margin-bottom:5px">Password</label>
-        <input id="auth-pass" type="password" placeholder="Min. 6 characters" onkeydown="if(event.key==='Enter')doAuth()" style="width:100%;padding:10px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:14px;font-family:inherit;outline:none;background:#fafaf8;color:#1a1a1a">
+        <input id="auth-pass" type="password" placeholder="Enter your password" onkeydown="if(event.key==='Enter')doAuth()" style="width:100%;padding:10px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:14px;font-family:inherit;outline:none;background:#fafaf8;color:#1a1a1a">
       </div>
       ${isReg?`<div><label style="font-size:12px;color:#888;display:block;margin-bottom:5px">Confirm Password</label><input id="auth-pass2" type="password" placeholder="Repeat your password" onkeydown="if(event.key==='Enter')doAuth()" style="width:100%;padding:10px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:14px;font-family:inherit;outline:none;background:#fafaf8;color:#1a1a1a"></div>`:''}
     </div>
@@ -1604,7 +1724,7 @@ function askAboutResults(lessonId,pct){const lesson=S.flatMap(s=>s.lessons).find
 function saveApiKey(){const k=document.getElementById('api-key-input')?.value?.trim()||'';STATE.apiKey=k;STATE.showKeyInput=false;saveKey(k);render();}
 
 // ─── RENDER ───────────────────────────────────────────────────────────────────
-const TABS=[{id:'intro',label:'Guide',icon:'👤'},{id:'register',label:'Profile',icon:'🎓'},{id:'progress',label:'Progress',icon:'📊'},{id:'study',label:'Study',icon:'📚'},{id:'tracker',label:'Tracker',icon:'📌'},{id:'feedback',label:'Feedback',icon:'⭐'},{id:'community',label:'Community',icon:'🌐'}];
+const TABS=[{id:'intro',label:'Guide',icon:'👤'},{id:'register',label:'Profile',icon:'🎓'},{id:'study',label:'Study',icon:'📚'},{id:'tracker',label:'Tracker',icon:'📌'},{id:'community',label:'Community',icon:'🌐'},{id:'feedback',label:'Feedback',icon:'⭐'}];
 function activeNavTab(){if(STATE.tab==='quiz-session'||STATE.tab==='quiz-results'||STATE.tab==='dashboard'||STATE.tab==='lessons'||STATE.tab==='quiz')return'study';if(STATE.tab==='question-detail')return'community';return STATE.tab;}
 function render(){
   const content=document.getElementById('content-area');const nav=document.getElementById('bottom-nav');if(!content||!nav)return;
@@ -1630,12 +1750,12 @@ function saveFeedback(d){try{localStorage.setItem('cma-feedback-v1',JSON.stringi
 
 function renderRegister(){
   const st=loadStudent();
-  const COUNTRIES=['Egypt','Saudi Arabia','UAE','Kuwait','Qatar','Bahrain','Oman','Jordan','Lebanon','USA','UK','Canada','Australia','Germany','France','Other'];
+  const COUNTRIES=['Egypt','Saudi Arabia','UAE','Kuwait','Qatar','Bahrain','Oman','Jordan','Lebanon','Iraq','Syria','Palestine','Yemen','Libya','Tunisia','Algeria','Morocco','Sudan','Somalia','Djibouti','Comoros','Mauritania'];
   const TITLES=['Student','Accountant','Senior Accountant','Financial Analyst','Senior Financial Analyst','Cost Accountant','Internal Auditor','Finance Manager','CFO','Controller','Consultant','Other'];
   const LEVELS=['Complete Beginner','Some Accounting Background','Finance Professional','CPA/ACCA Holder','Other'];
   const GOALS=['Pass CMA Part 1 Only','Pass Both Parts','Career Change','Promotion/Salary Increase','Personal Development'];
 
-  const isComplete=st&&st.name&&st.mobile&&st.email&&st.country&&st.university&&st.faculty&&st.gradyear&&st.title&&st.company&&st.experience&&st.level&&st.goal&&st.examdate&&st.photo;
+  const isComplete=st&&st.name&&st.mobile&&st.email&&st.country&&st.examdate;
   const warningBanner=STATE.showProfileWarning?`<div style="background:#FCEBEB;border:1px solid #E24B4A;border-radius:12px;padding:14px 16px;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start"><span style="font-size:20px;flex-shrink:0">🔒</span><div><div style="font-size:14px;font-weight:500;color:#791F1F;margin-bottom:4px">Profile Required to Continue</div><div style="font-size:13px;color:#A32D2D;line-height:1.55">You must complete your full profile before accessing lessons, quizzes, progress tracking, or the AI chat. All fields are required. Please fill in everything below and submit to unlock the full app.</div></div></div>`:'';
 
   const profileSection = st && isComplete ? `
@@ -1661,10 +1781,10 @@ function renderRegister(){
     ${warningBanner}
     ${profileSection}
 
-    <div class="info-title" style="font-size:14px;margin-bottom:10px">👤 Personal Information <span style="font-size:11px;color:#A32D2D;font-weight:400">· all fields required</span></div>
+    <div class="info-title" style="font-size:14px;margin-bottom:10px">👤 Personal Information <span style="font-size:11px;color:#A32D2D;font-weight:400">· required</span></div>
     <div class="card" style="margin-bottom:14px">
       <div style="margin-bottom:16px">
-        <label style="font-size:12px;color:#888;display:block;margin-bottom:8px">Profile Photo *</label>
+        <label style="font-size:12px;color:#888;display:block;margin-bottom:8px">Profile Photo <span style="font-size:11px;color:#aaa">(optional)</span></label>
         <div style="display:flex;align-items:center;gap:14px">
           <div id="photo-preview" onclick="document.getElementById('f-photo').click()" style="width:80px;height:80px;border-radius:50%;border:2px dashed #d0d0d0;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;overflow:hidden;background:#f5f5f0">
             ${st&&st.photo?`<img src="${st.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:`<span style="font-size:24px">📷</span><span style="font-size:10px;color:#aaa;margin-top:3px">Tap to add</span>`}
@@ -1702,7 +1822,7 @@ function renderRegister(){
       </div>
     </div>
 
-    <div class="info-title" style="font-size:14px;margin-bottom:10px">🎓 Education & Career <span style="font-size:11px;color:#A32D2D;font-weight:400">· all fields required</span></div>
+    <div class="info-title" style="font-size:14px;margin-bottom:10px">🎓 Education & Career <span style="font-size:11px;color:#aaa;font-weight:400">· optional</span></div>
     <div class="card" style="margin-bottom:14px">
       <div style="margin-bottom:12px">
         <label style="font-size:12px;color:#888;display:block;margin-bottom:5px">University / Institution</label>
@@ -1737,7 +1857,7 @@ function renderRegister(){
       </div>
     </div>
 
-    <div class="info-title" style="font-size:14px;margin-bottom:10px">📊 CMA Study Profile <span style="font-size:11px;color:#A32D2D;font-weight:400">· all fields required</span></div>
+    <div class="info-title" style="font-size:14px;margin-bottom:10px">📊 CMA Study Profile <span style="font-size:11px;color:#aaa;font-weight:400">· optional</span></div>
     <div class="card" style="margin-bottom:14px">
       <div style="margin-bottom:12px">
         <label style="font-size:12px;color:#888;display:block;margin-bottom:5px">Your current accounting/finance level</label>
@@ -1760,7 +1880,7 @@ function renderRegister(){
     </div>
 
     <div style="background:#f5f5f0;border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:12px;color:#888;text-align:center;line-height:1.5">
-      All fields marked are required. You must complete this form to access lessons, quizzes, progress tracking, and the AI chat.
+      Fields marked * are required. The rest are optional but help personalize your learning experience.
     </div>
     <button onclick="submitProfile()" class="btn submit-profile-btn" style="background:#0C447C;color:#fff;font-size:15px;margin-bottom:8px">
       ${isComplete?'Update My Profile ✓':'Complete Profile & Unlock the App →'}
@@ -1820,14 +1940,9 @@ async function submitProfile(){
   const level=get('f-level'),goal=get('f-goal'),examdate=get('f-examdate');
   const missing=[];
   if(!name)missing.push('Full Name');if(!mobile)missing.push('Mobile');if(!email)missing.push('Email');
-  if(!country)missing.push('Country');if(!university)missing.push('University');if(!faculty)missing.push('Faculty / Major');
-  if(!gradyear)missing.push('Graduation Year');if(!title)missing.push('Current Job Title');if(!company)missing.push('Company');
-  if(!experience)missing.push('Years of Experience');if(!level)missing.push('Finance Level');if(!goal)missing.push('CMA Goal');
-  if(!examdate)missing.push('Target Exam Date');
-  
+  if(!country)missing.push('Country');if(!examdate)missing.push('Target Exam Date');
   const existingPhoto=loadStudent()?.photo||'';
   const pendingB64=window._pendingPhoto||'';
-  if(!pendingB64&&!existingPhoto)missing.push('Profile Photo');
   if(missing.length>0){
     alert('Please complete all required fields:\n\n• '+missing.join('\n• '));return;
   }
