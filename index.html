@@ -109,9 +109,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .row-sb{display:flex;align-items:center;justify-content:space-between}
 .badge{font-size:11px;font-weight:500;padding:3px 9px;border-radius:6px;white-space:nowrap}
 .sect-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
-.gawad-bar{display:flex;align-items:center;gap:8px;padding:6px 16px;background:#fff;border-bottom:.5px solid #e0e0d8;flex-shrink:0}
-.gawad-bar img{width:26px;height:26px;border-radius:50%;object-fit:cover;border:1.5px solid #185FA520}
-.gawad-bar-name{font-size:12px;font-weight:500;color:#0C447C}
 </style>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -120,12 +117,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <body>
 <div id="app">
   <nav class="bottom-nav" id="bottom-nav"></nav>
-  <div class="gawad-bar" id="gawad-bar" style="display:none">
-    <img src="" id="gawad-bar-img" alt="Gawad">
-    <span class="gawad-bar-name">Gawad</span>
-    <span style="flex:1"></span>
-    <span style="font-size:10px;color:#aaa">CMA Instructor</span>
-  </div>
   <div class="content" id="content-area"></div>
 </div>
 <script>
@@ -937,7 +928,7 @@ function updateStreak(){
   saveStreak({count:newCount,lastDate:today});
 }
 
-const STATE={tab:'loading',_timerInterval:null,_lessonStartTime:null,user:null,authScreen:'login',authError:'',authLoading:false,communityFilter:'all',questionDetail:null,showAskForm:false,communityQuestions:[],questionReplies:[],draftTitle:'',draftBody:'',draftSection:'General',draftReply:'',trackerOpenSects:[],sectId:null,lessonId:null,quizState:null,showProfileWarning:false,progress:{done:[],scores:{},mcqTotal:0,mcqRight:0},
+const STATE={tab:'loading',user:null,authScreen:'login',authError:'',authLoading:false,communityFilter:'all',questionDetail:null,showAskForm:false,communityQuestions:[],questionReplies:[],draftTitle:'',draftBody:'',draftSection:'General',draftReply:'',trackerOpenSects:[],sectId:null,lessonId:null,quizState:null,showProfileWarning:false,progress:{done:[],scores:{},mcqTotal:0,mcqRight:0},
   chatMsgs:[{r:'a',t:"Hi! I'm Mohamed Abdelgawad, your CMA Part 1 instructor. I have 17+ years of finance experience and I'm here to help you pass the CMA exam. Ask me anything! 🎓"}],
   chatLoading:false,apiKey:loadKey(),showKeyInput:false,showReset:false,chatDraft:''};
 
@@ -973,10 +964,8 @@ function renderStudy(){
     if(!sec){sec=S.find(s=>s.lessons.some(l=>l.id===STATE.lessonId));}
     if(!sec||!sec.lessons.find(l=>l.id===STATE.lessonId)){STATE.lessonId=null;render();return '';}
     STATE.sectId=sec.id;
-    updateStreak();
     const lesson=sec.lessons.find(l=>l.id===STATE.lessonId);const done=lessonDone(lesson.id);
-    STATE._lessonStartTime=STATE._lessonStartTime||Date.now();
-    return`<div class="bh"><button class="bh-back" onclick="STATE._lessonStartTime=null;STATE.lessonId=null;render()">‹</button>
+    return`<div class="bh"><button class="bh-back" onclick="STATE.lessonId=null;render()">‹</button>
       <div style="min-width:0"><div style="font-size:11px;font-weight:500;color:${sec.text}">${sec.emoji} ${esc(sec.title)}</div>
       <div class="ellipsis" style="font-size:15px;font-weight:500;margin-top:1px">${esc(lesson.title)}</div></div></div>
     <div class="scroll-area pad"><div class="card" style="margin-top:14px;padding:4px 16px 16px">${lesson.blocks.map(b=>renderBlock(b,sec)).join('')}</div>
@@ -1043,10 +1032,7 @@ function renderStudy(){
         <div style="height:6px;background:rgba(255,255,255,.25);border-radius:3px;overflow:hidden">
           <div style="height:100%;width:${pct}%;background:#fff;border-radius:3px;transition:width .5s"></div>
         </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px">
-          <span style="font-size:11px;color:rgba(255,255,255,.65)">${doneCount} of ${TOTAL_LESSONS} lessons completed</span>
-          ${(()=>{const s=loadStreak();return s.count>0?`<span style="font-size:11px;color:rgba(255,255,255,.85)">🔥 ${s.count} day streak</span>`:'';})()}
-        </div>
+        <div style="font-size:11px;color:rgba(255,255,255,.65);margin-top:6px">${doneCount} of ${TOTAL_LESSONS} lessons completed</div>
       </div>
     </div>
     <div style="font-size:12px;font-weight:500;color:#888;margin-bottom:8px;letter-spacing:.5px">ALL SECTIONS</div>
@@ -2027,7 +2013,6 @@ function renderQuizResults(){
   return`<div class="scroll-area" style="padding:30px 16px 20px;text-align:center"><div style="font-size:52px">${gradeEmoji}</div><div style="font-size:20px;font-weight:500;margin-top:10px">${gradeLabel}</div><div style="font-size:46px;font-weight:500;color:${sec.text};margin:6px 0 2px">${pctQ}%</div><div style="font-size:14px;color:#888;margin-bottom:24px">${correct} out of ${qs.questions.length} correct</div>
   <div class="card" style="text-align:left;margin-bottom:14px"><div style="font-size:13px;font-weight:500;color:#555;margin-bottom:12px">Question Review</div>${breakdown}</div>
   <div style="display:flex;gap:10px;margin-bottom:12px"><button class="btn btn-outline" onclick="STATE.tab='quiz';STATE.quizState=null;render()">Back to Quizzes</button><button class="btn" onclick="startQuiz('${qs.lessonId}')" style="background:${sec.bar};color:#fff">Retake Quiz</button></div>
-  <button onclick="shareResult('${qs.lessonId}',${pctQ})" style="width:100%;padding:12px;border-radius:10px;border:none;background:#25D366;color:#fff;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;margin-bottom:10px">Share Result on WhatsApp 📤</button>
   <button onclick="askAboutResults('${qs.lessonId}',${pctQ})" style="width:100%;padding:12px;border-radius:10px;border:1px solid ${sec.text}50;background:${sec.bg};color:${sec.strong};font-size:13px;cursor:pointer;font-family:inherit;font-weight:500">Ask Mohamed to review weak areas ↗</button><div style="height:20px"></div></div>`;
 }
 
@@ -2085,14 +2070,6 @@ function nextQuestion(){
   else{STATE.quizState={...qs,idx:qs.idx+1,selected:null,answers:newAnswers};render();}
 }
 function resetAll(){saveProg({done:[],lessonScores:{},mcqTotal:0,mcqRight:0});STATE.showReset=false;render();}
-function shareResult(lessonId,pct){
-  const lesson=S.flatMap(s=>s.lessons).find(l=>l.id===lessonId);
-  const title=lesson?.title||'CMA Quiz';
-  const emoji=pct>=80?'🏆':pct>=60?'👍':'📚';
-  const msg=`${emoji} I just scored ${pct}% on "${title}" in my CMA Part 1 prep!\n\nStudying with Gawad's CMA Prep App. Let's go! 💪`;
-  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
-}
-
 function askAboutResults(lessonId,pct){const lesson=S.flatMap(s=>s.lessons).find(l=>l.id===lessonId);STATE.chatDraft=`I just scored ${pct}% on the ${lesson?.title||'quiz'}. Can you help me review the weak areas?`;STATE.tab='chat';render();setTimeout(()=>{const el=document.getElementById('chat-input');if(el)el.value=STATE.chatDraft;},50);}
 function saveApiKey(){const k=document.getElementById('api-key-input')?.value?.trim()||'';STATE.apiKey=k;STATE.showKeyInput=false;saveKey(k);render();}
 
@@ -2106,31 +2083,12 @@ function render(){
     case'loading':html=renderLoading();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;default:html=renderIntro();
   }
   content.innerHTML=html;
-  // Gawad bar
-  const gb=document.getElementById('gawad-bar');
-  const gbImg=document.getElementById('gawad-bar-img');
-  if(gb){
-    const showBar=STATE.tab!=='login'&&STATE.tab!=='loading'&&STATE.tab!=='register';
-    gb.style.display=showBar?'flex':'none';
-    if(gbImg&&gbImg.src.includes('PLACEHOLDER'))gbImg.src=PHOTO_B64;
-  }
   content.style.display='flex';content.style.flexDirection='column';content.style.overflow=STATE.tab==='chat'?'hidden':'auto';
   if(STATE.tab==='loading'||STATE.tab==='login'){nav.style.display='none';}
   else{nav.style.display='flex';
     const active=activeNavTab();
     nav.innerHTML=TABS.map(t=>`<button class="nav-btn${t.id===active?' active':''}" onclick="navTo('${t.id}')"><span class="nav-icon">${t.icon}</span><span>${t.label}</span></button>`).join('');}
   if(STATE.tab==='chat'){setTimeout(()=>{const el=document.getElementById('chat-msgs');if(el)el.scrollTop=el.scrollHeight;},20);}
-  if(STATE.lessonId!==null){
-    if(!STATE._timerInterval)STATE._timerInterval=setInterval(()=>{
-      const el=document.getElementById('lesson-timer');
-      if(!el){clearInterval(STATE._timerInterval);STATE._timerInterval=null;return;}
-      const elapsed=Math.floor((Date.now()-(STATE._lessonStartTime||Date.now()))/1000);
-      const m=Math.floor(elapsed/60),s=elapsed%60;
-      el.textContent='⏱ '+m+':'+(s<10?'0':'')+s;
-    },1000);
-  } else {
-    if(STATE._timerInterval){clearInterval(STATE._timerInterval);STATE._timerInterval=null;}
-  }
 }
 function loadStudent(){try{const d=localStorage.getItem('cma-student-v1');return d?JSON.parse(d):null;}catch{return null;}}
 function saveStudent(d){
