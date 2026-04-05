@@ -2246,7 +2246,7 @@ function buildQuizModeQuestions(sectionId){
   });
   // Shuffle
   for(let i=allQ.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[allQ[i],allQ[j]]=[allQ[j],allQ[i]];}
-  return allQ.slice(0,sectionId?Math.min(allQ.length,20):50);
+  return allQ.slice(0,sectionId?Math.min(allQ.length,50):Math.min(allQ.length,100));
 }
 
 function startQuizMode(sectionId){
@@ -2339,7 +2339,7 @@ function renderQuizModeSelect(){
     <div class="card" style="margin-bottom:14px">
       <div style="font-size:14px;font-weight:500;color:#1a1a1a;margin-bottom:4px">🎯 Full CMA Mix</div>
       <div style="font-size:12px;color:#888;margin-bottom:12px">50 random questions from ALL sections — exam simulation</div>
-      <button onclick="startQuizMode(null)" class="btn" style="background:#0C447C;color:#fff;font-size:14px">Start Full Quiz (50 MCQs)</button>
+      <button onclick="startQuizMode(null)" class="btn" style="background:#0C447C;color:#fff;font-size:14px">Start Full CMA Quiz (100 MCQs)</button>
     </div>
     <div style="font-size:12px;font-weight:500;color:#888;letter-spacing:.5px;margin-bottom:10px">BY SECTION</div>
     ${S.map(sec=>{
@@ -2353,11 +2353,41 @@ function renderQuizModeSelect(){
             <div style="font-size:11px;color:#888">${totalQ} questions · ${sec.weight}% of exam</div>
           </div>
         </div>
-        <button onclick="startQuizMode(${sec.id})" class="btn" style="background:${sec.bar};color:#fff;font-size:13px">Start Quiz (up to 20 MCQs)</button>
+        <button onclick="startQuizMode(${sec.id})" class="btn" style="background:${sec.bar};color:#fff;font-size:13px">Start Quiz (up to 50 MCQs)</button>
       </div>`;
     }).join('')}
     <div style="height:20px"></div>
   </div>`;
+}
+
+function updateSearchResults(){
+  STATE.searchQ=document.getElementById('search-input')?.value||'';
+  const q=STATE.searchQ.toLowerCase().trim();
+  const container=document.getElementById('search-results');
+  if(!container)return;
+  const results=[];
+  if(q.length>=2){
+    S.forEach(sec=>{sec.lessons.forEach(l=>{
+      let score=0;
+      if(l.title.toLowerCase().includes(q))score+=3;
+      const blockText=l.blocks.map(b=>{if(b.v&&typeof b.v==='string')return b.v;if(Array.isArray(b.v))return b.v.join(' ');if(b.h)return b.h;return'';}).join(' ').toLowerCase();
+      if(blockText.includes(q))score+=1;
+      l.quizzes.forEach(qz=>{if(qz.q&&qz.q.toLowerCase().includes(q))score+=2;});
+      if(score>0)results.push({sec,lesson:l,score});
+    });});
+    results.sort((a,b)=>b.score-a.score);
+  }
+  if(q.length<2){
+    container.innerHTML='<div style="text-align:center;padding:40px 20px;color:#aaa"><div style="font-size:36px;margin-bottom:10px">🔍</div><div style="font-size:14px">Type at least 2 characters to search</div></div>';
+  }else if(results.length===0){
+    container.innerHTML=`<div style="text-align:center;padding:40px 20px;color:#aaa"><div style="font-size:36px;margin-bottom:10px">😕</div><div style="font-size:14px">No results for "<b>${esc(STATE.searchQ)}</b>"</div></div>`;
+  }else{
+    container.innerHTML=`<div style="font-size:12px;color:#888;margin-bottom:10px">${results.length} result${results.length>1?'s':''} for "<b>${esc(STATE.searchQ)}</b>"</div>`+
+    results.slice(0,20).map(r=>{const done=lessonDone(r.lesson.id);return`<div onclick="STATE.tab='study';STATE.sectId=${r.sec.id};STATE.lessonId='${r.lesson.id}';render()" style="background:${done?r.sec.bg:'#f8f8f6'};border:.5px solid ${done?r.sec.text+'40':'#e0e0d8'};border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer"><div style="font-size:10px;font-weight:500;color:${r.sec.text};margin-bottom:3px">${r.sec.emoji} ${esc(r.sec.title)}</div><div style="font-size:13px;font-weight:500;color:#1a1a1a">${esc(r.lesson.title)}</div><div style="font-size:11px;color:#888;margin-top:2px">${r.lesson.dur} · ${done?'✓ Completed':'Not started'}</div></div>`;}).join('');
+  }
+  // Update clear button
+  const clearBtn=document.getElementById('search-clear');
+  if(clearBtn)clearBtn.style.display=q.length>=2?'block':'none';
 }
 
 function renderSearch(){
@@ -2385,21 +2415,13 @@ function renderSearch(){
   <div class="scroll-area pad" style="padding-top:12px">
     <div style="position:relative;margin-bottom:14px">
       <input id="search-input" type="text" placeholder="Search topics, lessons, formulas..." value="${esc(STATE.searchQ||'')}"
-        oninput="STATE.searchQ=this.value;render()" autofocus
+        oninput="STATE.searchQ=this.value;updateSearchResults()" autofocus
         class="search-box"
         style="width:100%;padding:12px 14px 12px 40px;border-radius:10px;border:.5px solid #d0d0d0;font-size:14px;font-family:inherit;outline:none;background:#fafaf8;color:#1a1a1a;box-sizing:border-box">
       <span style="position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none">🔍</span>
-      ${q.length>=2?`<span onclick="STATE.searchQ='';render()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:18px;cursor:pointer;color:#aaa;line-height:1">×</span>`:''}
+      <span id="search-clear" onclick="document.getElementById('search-input').value='';STATE.searchQ='';updateSearchResults()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:18px;cursor:pointer;color:#aaa;line-height:1;display:none">×</span>
     </div>
-    ${q.length<2?`<div style="text-align:center;padding:40px 20px;color:#aaa"><div style="font-size:36px;margin-bottom:10px">🔍</div><div style="font-size:14px">Type at least 2 characters to search</div></div>`
-    :results.length===0?`<div style="text-align:center;padding:40px 20px;color:#aaa"><div style="font-size:36px;margin-bottom:10px">😕</div><div style="font-size:14px">No results found for "<b>${esc(STATE.searchQ)}</b>"</div></div>`
-    :`<div style="font-size:12px;color:#888;margin-bottom:10px">${results.length} result${results.length>1?'s':''} for "<b>${esc(STATE.searchQ)}</b>"</div>
-    ${results.slice(0,20).map(r=>{const done=lessonDone(r.lesson.id);return`
-      <div onclick="STATE.tab='study';STATE.sectId=${r.sec.id};STATE.lessonId='${r.lesson.id}';render()" style="background:${done?r.sec.bg:'#f8f8f6'};border:.5px solid ${done?r.sec.text+'40':'#e0e0d8'};border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer">
-        <div style="font-size:10px;font-weight:500;color:${r.sec.text};margin-bottom:3px">${r.sec.emoji} ${esc(r.sec.title)}</div>
-        <div style="font-size:13px;font-weight:500;color:#1a1a1a">${esc(r.lesson.title)}</div>
-        <div style="font-size:11px;color:#888;margin-top:2px">${r.lesson.dur} · ${done?'✓ Completed':'Not started'}</div>
-      </div>`}).join('')}`}
+    <div id="search-results" style="min-height:200px"><div style="text-align:center;padding:40px 20px;color:#aaa"><div style="font-size:36px;margin-bottom:10px">🔍</div><div style="font-size:14px">Type at least 2 characters to search</div></div></div>
     <div style="height:20px"></div>
   </div>`;
 }
@@ -2907,53 +2929,7 @@ function renderIntro(){
 }
 
 // ─── DASHBOARD ────────────────────────────────────────────────────────────────
-function renderDashboard(){
-  const{progress}=STATE;
-  const pct=getPct(),acc=getAcc();
-  const quizDone=Object.keys(progress.lessonScores||{}).length;
-  const doneCount=progress.done.length;
-  const sectCards=S.map(sec=>{
-    const done=sec.lessons.filter(l=>lessonDone(l.id)).length;
-    const sp=Math.round(done/sec.lessons.length*100);
-    const sc=null;
-    return`<div class="card">
-      <div class="row" style="margin-bottom:10px">
-        <div class="sect-icon" style="background:${sec.bg}">${sec.emoji}</div>
-        <div style="flex:1;min-width:0">
-          <div class="ellipsis" style="font-size:13px;font-weight:500">${esc(sec.title)}</div>
-          <div style="font-size:11px;color:#888;margin-top:2px">${sec.weight}% of exam · ${sec.lessons.length} lessons${sc?` · Quiz: ${sc.correct}/${sc.total}`:''}</div>
-        </div>
-        <span class="badge" style="background:${sec.bg};color:${sec.strong}">${sp}%</span>
-      </div>
-      <div class="pb" style="margin-bottom:12px"><div class="pb-fill" style="width:${sp}%;background:${sec.bar}"></div></div>
-      <div style="display:flex;gap:8px">
-        <button class="btn-sm btn-outline" onclick="goLesson(${sec.id})" style="border:0.5px solid #ccc">Study</button>
-        <button class="btn-sm" onclick="startQuiz(${sec.id})" style="background:${sec.bg};color:${sec.strong};border:1px solid ${sec.text}50">${sc?`Quiz (${sc.correct}/${sc.total})`:'Take Quiz'}</button>
-      </div>
-    </div>`;
-  }).join('');
-  return`<div style="padding:0 16px;overflow-y:auto;flex:1">
-    <div style="padding:18px 0 14px">
-      <h1 style="font-size:20px;font-weight:500">CMA Part 1</h1>
-      <p style="font-size:13px;color:#888;margin-top:3px">Financial Planning, Performance & Analytics</p>
-    </div>
-    <div class="stat-grid">
-      <div class="stat"><div class="stat-l">Progress</div><div class="stat-v">${pct}%</div><div class="stat-s">${doneCount}/${TOTAL_LESSONS} lessons</div></div>
-      <div class="stat"><div class="stat-l">Accuracy</div><div class="stat-v">${acc}%</div><div class="stat-s">${progress.mcqRight}/${progress.mcqTotal} MCQs</div></div>
-      <div class="stat"><div class="stat-l">Quizzes</div><div class="stat-v">${quizDone}/6</div><div class="stat-s">sections done</div></div>
-    </div>
-    <div style="background:#f5f5f0;border-radius:10px;padding:14px 16px;margin-bottom:14px">
-      <div class="row-sb" style="margin-bottom:8px;font-size:13px">
-        <span style="color:#555;font-weight:500">Overall Progress</span><span style="font-weight:500">${pct}%</span>
-      </div>
-      <div class="pb"><div class="pb-fill" style="width:${pct}%;background:#185FA5"></div></div>
-      <div style="font-size:11px;color:#888;margin-top:6px">Target: 180 hours · Schedule exam by Month 4–5</div>
-    </div>
-    <div style="font-size:13px;font-weight:500;color:#555;margin-bottom:10px">Exam Sections</div>
-    ${sectCards}<div style="height:20px"></div></div>`;
-}
 
-// ─── LESSONS ──────────────────────────────────────────────────────────────────
 function renderLessons(){
   const{sectId,lessonId,progress}=STATE;
   if(lessonId!==null){
@@ -3079,6 +3055,7 @@ function render(){
   }
   content.innerHTML=html;
   // Dark mode toggle visibility
+  if(STATE.tab==='search'){setTimeout(()=>{const inp=document.getElementById('search-input');if(inp){inp.focus();if(STATE.searchQ)updateSearchResults();}},50);}
   const dt=document.getElementById('dark-toggle');
   if(dt){dt.style.display=(STATE.tab==='login'||STATE.tab==='loading'||STATE.tab==='onboarding')?'none':'flex';dt.style.alignItems='center';dt.style.justifyContent='center';dt.textContent=isDark()?'☀️':'🌙';}
   content.style.display='flex';content.style.flexDirection='column';content.style.overflow=STATE.tab==='chat'?'hidden':'auto';
@@ -3327,7 +3304,7 @@ async function submitProfile(){
 
 function navTo(tab){
   if(!STATE.user&&tab!=='login'&&tab!=='loading'&&tab!=='onboarding'&&tab!=='quiz-mode'&&tab!=='quiz-mode-select'){STATE.tab='login';render();return;}
-  if(tab!=='intro'&&tab!=='register'&&tab!=='login'&&tab!=='loading'&&tab!=='feedback'&&tab!=='community'&&tab!=='question-detail'){
+  if(tab!=='intro'&&tab!=='register'&&tab!=='login'&&tab!=='loading'&&tab!=='feedback'&&tab!=='community'&&tab!=='dashboard'&&tab!=='leaderboard'&&tab!=='search'&&tab!=='quiz-mode-select'&&tab!=='question-detail'){
     const st=loadStudent();
     const fb=loadFeedback();
     const isComplete=st&&st.name&&st.mobile&&st.email&&st.country&&st.examdate&&st.photo&&st.university&&st.faculty&&st.gradyear;
