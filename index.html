@@ -2154,88 +2154,6 @@ function renderLeaderboard(){
   </div>`;
 }
 
-function renderDashboard(){
-  const{progress}=STATE;const st=loadStudent();
-  const ls=progress.lessonScores||{};
-  const totalLessons=TOTAL_LESSONS;
-  const doneLessons=progress.done.length;
-  const pct=getPct();
-  const acc=getAcc();
-  const totalQ=progress.mcqTotal||0;
-  const totalRight=progress.mcqRight||0;
-  
-  // Section breakdown
-  const secStats=S.map(sec=>{
-    const done=sec.lessons.filter(l=>progress.done.includes(l.id)).length;
-    const qDone=sec.lessons.filter(l=>ls[l.id]).length;
-    const totalSecQ=sec.lessons.reduce((a,l)=>a+(ls[l.id]?ls[l.id].total:0),0);
-    const rightSecQ=sec.lessons.reduce((a,l)=>a+(ls[l.id]?ls[l.id].correct:0),0);
-    const secAcc=totalSecQ>0?Math.round(rightSecQ/totalSecQ*100):0;
-    const sp=Math.round(done/sec.lessons.length*100);
-    return{sec,done,qDone,sp,secAcc,totalSecQ};
-  });
-  
-  // Weak topics (scored < 70%)
-  const weakTopics=[];
-  S.forEach(sec=>{sec.lessons.forEach(l=>{const sc=ls[l.id];if(sc&&Math.round(sc.correct/sc.total*100)<70)weakTopics.push({sec,lesson:l,pct:Math.round(sc.correct/sc.total*100)});});});
-  weakTopics.sort((a,b)=>a.pct-b.pct);
-  
-  // Exam countdown
-  const examCountdown=(()=>{if(st&&st.examdate){const d=new Date(st.examdate+'-01');const diff=Math.ceil((d-new Date())/(1000*60*60*24));return diff>0?diff:null;}return null;})();
-  
-  return`<div class="sh"><h2>My Dashboard</h2><p>${st?st.name+' — Progress':'Your progress overview'}</p></div>
-  <div class="scroll-area pad" style="padding-top:14px">
-  
-    ${examCountdown?`<div style="background:linear-gradient(135deg,#0C447C,#185FA5);border-radius:12px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px">
-      <span style="font-size:28px">📅</span>
-      <div><div style="font-size:20px;font-weight:500;color:#fff">${examCountdown} days</div><div style="font-size:12px;color:rgba(255,255,255,.75)">until your CMA exam — keep going!</div></div>
-    </div>`:''}
-    
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
-      <div class="card" style="text-align:center;padding:14px 10px">
-        <div style="font-size:28px;font-weight:500;color:#0C447C">${pct}%</div>
-        <div style="font-size:11px;color:#888;margin-top:2px">Lessons Done</div>
-        <div style="font-size:11px;color:#aaa">${doneLessons}/${totalLessons}</div>
-      </div>
-      <div class="card" style="text-align:center;padding:14px 10px">
-        <div style="font-size:28px;font-weight:500;color:${acc>=70?'#639922':'#E24B4A'}">${acc}%</div>
-        <div style="font-size:11px;color:#888;margin-top:2px">Quiz Accuracy</div>
-        <div style="font-size:11px;color:#aaa">${totalRight}/${totalQ} correct</div>
-      </div>
-    </div>
-    
-    <div class="card" style="margin-bottom:14px">
-      <div style="font-size:13px;font-weight:500;color:#1a1a1a;margin-bottom:12px">📚 Section Progress</div>
-      ${secStats.map(({sec,done,sp,secAcc,totalSecQ})=>`
-        <div style="margin-bottom:12px">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-            <span style="font-size:12px;font-weight:500;color:#1a1a1a">${sec.emoji} ${esc(sec.title)}</span>
-            <span style="font-size:11px;color:${sec.strong}">${done}/${sec.lessons.length} · ${secAcc>0?secAcc+'% acc':'no quiz'}</span>
-          </div>
-          <div style="height:6px;background:#f0f0eb;border-radius:3px;overflow:hidden">
-            <div style="height:100%;width:${sp}%;background:${sec.bar};border-radius:3px;transition:width .5s"></div>
-          </div>
-        </div>`).join('')}
-    </div>
-    
-    ${weakTopics.length>0?`<div class="card" style="margin-bottom:14px">
-      <div style="font-size:13px;font-weight:500;color:#791F1F;margin-bottom:12px">🔴 Weak Topics (< 70%)</div>
-      ${weakTopics.slice(0,5).map(w=>`
-        <div onclick="STATE.tab='study';STATE.sectId=${w.sec.id};STATE.lessonId='${w.lesson.id}';render()" style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:.5px solid #f0f0eb;cursor:pointer">
-          <div>
-            <div style="font-size:12px;font-weight:500;color:#1a1a1a">${esc(w.lesson.title)}</div>
-            <div style="font-size:11px;color:#888">${w.sec.emoji} ${esc(w.sec.title)}</div>
-          </div>
-          <span style="font-size:13px;font-weight:500;color:#E24B4A;flex-shrink:0;margin-left:8px">${w.pct}%</span>
-        </div>`).join('')}
-    </div>`:''}
-    
-    <button class="btn btn-outline" onclick="STATE.showReset=true;render()" style="margin-top:4px;color:#aaa">Reset All Progress</button>
-    ${STATE.showReset?`<div style="background:#FCEBEB;border:1px solid #E24B4A;border-radius:10px;padding:14px 16px;margin-top:12px"><div style="font-size:13px;color:#791F1F;margin-bottom:12px;font-weight:500">This will delete ALL your progress. Are you sure?</div><div style="display:flex;gap:8px"><button class="btn btn-outline" onclick="STATE.showReset=false;render()" style="border-color:#A32D2D;color:#A32D2D">Cancel</button><button class="btn" onclick="resetAll()" style="background:#E24B4A;color:#fff">Yes, Reset</button></div></div>`:''}
-    <div style="height:20px"></div>
-  </div>`;
-}
-
 function buildQuizModeQuestions(sectionId){
   const allQ=[];
   const sections=sectionId?S.filter(s=>s.id===sectionId):S;
@@ -3045,13 +2963,13 @@ function askAboutResults(lessonId,pct){const lesson=S.flatMap(s=>s.lessons).find
 function saveApiKey(){const k=document.getElementById('api-key-input')?.value?.trim()||'';STATE.apiKey=k;STATE.showKeyInput=false;saveKey(k);render();}
 
 // ─── RENDER ───────────────────────────────────────────────────────────────────
-const TABS=[{id:'intro',label:'Guide',icon:'👤'},{id:'register',label:'Profile',icon:'🎓'},{id:'study',label:'Study',icon:'📚'},{id:'search',label:'Search',icon:'🔍'},{id:'quiz-mode-select',label:'Quiz',icon:'🎯'},{id:'tracker',label:'Tracker',icon:'📌'},{id:'dashboard',label:'Dashboard',icon:'📊'},{id:'leaderboard',label:'Top',icon:'🏆'},{id:'community',label:'Community',icon:'🌐'},{id:'feedback',label:'Feedback',icon:'⭐'}];
+const TABS=[{id:'intro',label:'Guide',icon:'👤'},{id:'register',label:'Profile',icon:'🎓'},{id:'study',label:'Study',icon:'📚'},{id:'search',label:'Search',icon:'🔍'},{id:'quiz-mode-select',label:'Quiz',icon:'🎯'},{id:'tracker',label:'Tracker',icon:'📌'},{id:'leaderboard',label:'Top',icon:'🏆'},{id:'community',label:'Community',icon:'🌐'},{id:'feedback',label:'Feedback',icon:'⭐'}];
 function activeNavTab(){if(STATE.tab==='quiz-session'||STATE.tab==='quiz-results'||STATE.tab==='dashboard'||STATE.tab==='lessons'||STATE.tab==='quiz')return'study';if(STATE.tab==='question-detail')return'community';return STATE.tab;}
 function render(){
   const content=document.getElementById('content-area');const nav=document.getElementById('bottom-nav');if(!content||!nav)return;
   let html='';
   switch(STATE.tab){
-    case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'dashboard':html=renderDashboard();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;default:html=renderIntro();
+    case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;default:html=renderIntro();
   }
   content.innerHTML=html;
   // Dark mode toggle visibility
@@ -3304,7 +3222,7 @@ async function submitProfile(){
 
 function navTo(tab){
   if(!STATE.user&&tab!=='login'&&tab!=='loading'&&tab!=='onboarding'&&tab!=='quiz-mode'&&tab!=='quiz-mode-select'){STATE.tab='login';render();return;}
-  if(tab!=='intro'&&tab!=='register'&&tab!=='login'&&tab!=='loading'&&tab!=='feedback'&&tab!=='community'&&tab!=='dashboard'&&tab!=='leaderboard'&&tab!=='search'&&tab!=='quiz-mode-select'&&tab!=='question-detail'){
+  if(tab!=='intro'&&tab!=='register'&&tab!=='login'&&tab!=='loading'&&tab!=='feedback'&&tab!=='community'&&tab!=='leaderboard'&&tab!=='search'&&tab!=='quiz-mode-select'&&tab!=='question-detail'){
     const st=loadStudent();
     const fb=loadFeedback();
     const isComplete=st&&st.name&&st.mobile&&st.email&&st.country&&st.examdate&&st.photo&&st.university&&st.faculty&&st.gradyear;
