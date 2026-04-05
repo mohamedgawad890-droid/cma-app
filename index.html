@@ -7,6 +7,25 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f0eb;color:#1a1a1a;overscroll-behavior:none}
+body.dark{background:#111;color:#e8e8e2}
+body.dark .card{background:#1e1e1e!important;border-color:#333!important;color:#e8e8e2}
+body.dark .bh{background:#1a1a1a!important;border-color:#333!important}
+body.dark .bottom-nav{background:#1a1a1a!important;border-color:#333!important}
+body.dark .scroll-area,body.dark .pad{background:#111}
+body.dark .nav-btn{color:#555}
+body.dark .nav-btn.active{color:#378ADD}
+body.dark input,body.dark select,body.dark textarea{background:#1e1e1e!important;color:#e8e8e2!important;border-color:#444!important}
+body.dark .q-opt{background:#1e1e1e!important;border-color:#333!important}
+body.dark .sh{background:#1a1a1a!important;border-color:#333!important}
+body.dark .tip{background:#1c1a0a!important;border-color:#4a3a00!important}
+body.dark .f-block{background:#0e0e1e!important;border-color:#334!important}
+body.dark .profile-hero{background:linear-gradient(135deg,#0a2040,#0c3060)!important}
+body.dark .info-title{color:#aaa}
+body.dark .part-card{background:#1e1e1e!important}
+body.dark .tbl-wrap table tr:nth-child(even){background:#1a1a1a}
+body.dark .tbl-wrap table{border-color:#333}
+body.dark .tbl-wrap td,body.dark .tbl-wrap th{border-color:#333!important;color:#ccc}
+body.dark .welcome-box{background:#0f1a0f!important;border-color:#1a3a1a!important}
 #app{display:flex;flex-direction:column;height:100vh;max-width:600px;margin:0 auto;background:#fff;position:relative;overflow:hidden}
 @media(min-width:620px){#app{border-radius:16px;margin:16px auto;height:calc(100vh - 32px);box-shadow:0 8px 40px rgba(0,0,0,.12)}}
 .content{flex:1;overflow:hidden;display:flex;flex-direction:column}
@@ -117,6 +136,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <body>
 <div id="app">
   <nav class="bottom-nav" id="bottom-nav"></nav>
+  <button id="dark-toggle" onclick="toggleDark()" style="position:fixed;top:10px;right:12px;z-index:999;width:34px;height:34px;border-radius:50%;border:none;background:rgba(0,0,0,.08);font-size:16px;cursor:pointer;display:none">🌙</button>
   <div class="content" id="content-area"></div>
 </div>
 <script>
@@ -1489,7 +1509,16 @@ function updateStreak(){
   saveStreak({count:newCount,lastDate:today});
 }
 
-const STATE={tab:'loading',user:null,authScreen:'login',authError:'',authLoading:false,communityFilter:'all',questionDetail:null,showAskForm:false,communityQuestions:[],questionReplies:[],draftTitle:'',draftBody:'',draftSection:'General',draftReply:'',trackerOpenSects:[],sectId:null,lessonId:null,quizState:null,showProfileWarning:false,progress:{done:[],scores:{},mcqTotal:0,mcqRight:0},
+function isDark(){return localStorage.getItem('cma-dark')==='1';}
+function toggleDark(){
+  const d=!isDark();
+  localStorage.setItem('cma-dark',d?'1':'0');
+  document.body.classList.toggle('dark',d);
+  document.getElementById('dark-toggle').textContent=d?'☀️':'🌙';
+}
+function applyDark(){document.body.classList.toggle('dark',isDark());}
+
+const STATE={tab:'loading',searchQ:'',leaderboardData:[],leaderboardLoaded:false,quizMode:{active:false,sectionId:null,idx:0,questions:[],answers:[],selected:null},user:null,authScreen:'login',authError:'',authLoading:false,communityFilter:'all',questionDetail:null,showAskForm:false,communityQuestions:[],questionReplies:[],draftTitle:'',draftBody:'',draftSection:'General',draftReply:'',trackerOpenSects:[],sectId:null,lessonId:null,quizState:null,showProfileWarning:false,progress:{done:[],scores:{},mcqTotal:0,mcqRight:0},
   chatMsgs:[{r:'a',t:"Hi! I'm Mohamed Abdelgawad, your CMA Part 1 instructor. I have 17+ years of finance experience and I'm here to help you pass the CMA exam. Ask me anything! 🎓"}],
   chatLoading:false,apiKey:loadKey(),showKeyInput:false,showReset:false,chatDraft:''};
 
@@ -2057,6 +2086,322 @@ function setTrackerValue(lessonId,val){
   if(t[lessonId]===val){delete t[lessonId];}else{t[lessonId]=val;}
   saveTracker(t);
   render();
+}
+
+async function syncLeaderboard(){
+  if(!STATE.user||!db)return;
+  const{progress}=STATE;const st=loadStudent();
+  if(!st||!st.name)return;
+  const score={
+    name:st.name,
+    country:st.country||'',
+    lessons:progress.done.length,
+    accuracy:getAcc(),
+    mcqTotal:progress.mcqTotal||0,
+    mcqRight:progress.mcqRight||0,
+    updatedAt:new Date().toISOString()
+  };
+  try{await db.collection('leaderboard').doc(STATE.user.uid).set(score);}catch(e){console.log('LB sync error',e);}
+}
+
+function renderLeaderboard(){
+  const lb=STATE.leaderboardData||[];
+  const st=loadStudent();
+  const myUid=STATE.user?.uid;
+  const myRank=lb.findIndex(e=>e.uid===myUid)+1;
+  
+  if(!STATE.leaderboardLoaded){
+    STATE.leaderboardLoaded=true;
+    // Sync own score then fetch
+    syncLeaderboard().then(()=>{
+      if(!db)return;
+      db.collection('leaderboard').orderBy('lessons','desc').limit(50).get().then(snap=>{
+        STATE.leaderboardData=snap.docs.map(d=>({uid:d.id,...d.data()}));
+        render();
+      }).catch(e=>console.log('LB fetch error',e));
+    });
+    return`<div class="sh"><h2>Leaderboard</h2><p>Top CMA students</p></div>
+    <div class="scroll-area" style="display:flex;align-items:center;justify-content:center;height:60%">
+      <div style="text-align:center;color:#aaa"><div style="font-size:36px;margin-bottom:10px">⏳</div><div>Loading leaderboard...</div></div>
+    </div>`;
+  }
+  
+  return`<div class="sh"><h2>Leaderboard</h2><p>Top ${lb.length} CMA students</p></div>
+  <div class="scroll-area pad" style="padding-top:14px">
+    ${myRank>0?`<div style="background:#FAEEDA;border:1px solid #EF9F2730;border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px">
+      <span style="font-size:20px">🎯</span>
+      <div><div style="font-size:13px;font-weight:500;color:#854F0B">Your Rank: #${myRank}</div><div style="font-size:11px;color:#BA7517">${lb.find(e=>e.uid===myUid)?.lessons||0} lessons · ${getAcc()}% accuracy</div></div>
+    </div>`:''}
+    ${lb.map((entry,i)=>{
+      const isMe=entry.uid===myUid;
+      const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}`;
+      return`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:.5px solid #f0f0eb;${isMe?'background:#FAEEDA;border-radius:8px;padding:10px 10px;margin:-2px -2px;':''} ">
+        <div style="font-size:${i<3?'20':'14'}px;font-weight:500;min-width:28px;text-align:center">${medal}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:500;color:#1a1a1a${isMe?';color:#854F0B':''}">${esc(entry.name||'Student')}${isMe?' (You)':''}</div>
+          <div style="font-size:11px;color:#888">${entry.country||''}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-size:13px;font-weight:500;color:#0C447C">${entry.lessons||0} lessons</div>
+          <div style="font-size:11px;color:#888">${entry.accuracy||0}% accuracy</div>
+        </div>
+      </div>`;
+    }).join('')}
+    <div style="text-align:center;margin-top:14px">
+      <button class="btn btn-outline" onclick="STATE.leaderboardLoaded=false;STATE.leaderboardData=[];render()" style="font-size:12px">🔄 Refresh</button>
+    </div>
+    <div style="height:20px"></div>
+  </div>`;
+}
+
+function renderDashboard(){
+  const{progress}=STATE;const st=loadStudent();
+  const ls=progress.lessonScores||{};
+  const totalLessons=TOTAL_LESSONS;
+  const doneLessons=progress.done.length;
+  const pct=getPct();
+  const acc=getAcc();
+  const totalQ=progress.mcqTotal||0;
+  const totalRight=progress.mcqRight||0;
+  
+  // Section breakdown
+  const secStats=S.map(sec=>{
+    const done=sec.lessons.filter(l=>progress.done.includes(l.id)).length;
+    const qDone=sec.lessons.filter(l=>ls[l.id]).length;
+    const totalSecQ=sec.lessons.reduce((a,l)=>a+(ls[l.id]?ls[l.id].total:0),0);
+    const rightSecQ=sec.lessons.reduce((a,l)=>a+(ls[l.id]?ls[l.id].correct:0),0);
+    const secAcc=totalSecQ>0?Math.round(rightSecQ/totalSecQ*100):0;
+    const sp=Math.round(done/sec.lessons.length*100);
+    return{sec,done,qDone,sp,secAcc,totalSecQ};
+  });
+  
+  // Weak topics (scored < 70%)
+  const weakTopics=[];
+  S.forEach(sec=>{sec.lessons.forEach(l=>{const sc=ls[l.id];if(sc&&Math.round(sc.correct/sc.total*100)<70)weakTopics.push({sec,lesson:l,pct:Math.round(sc.correct/sc.total*100)});});});
+  weakTopics.sort((a,b)=>a.pct-b.pct);
+  
+  // Exam countdown
+  const examCountdown=(()=>{if(st&&st.examdate){const d=new Date(st.examdate+'-01');const diff=Math.ceil((d-new Date())/(1000*60*60*24));return diff>0?diff:null;}return null;})();
+  
+  return`<div class="sh"><h2>My Dashboard</h2><p>${st?st.name+' — Progress':'Your progress overview'}</p></div>
+  <div class="scroll-area pad" style="padding-top:14px">
+  
+    ${examCountdown?`<div style="background:linear-gradient(135deg,#0C447C,#185FA5);border-radius:12px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px">
+      <span style="font-size:28px">📅</span>
+      <div><div style="font-size:20px;font-weight:500;color:#fff">${examCountdown} days</div><div style="font-size:12px;color:rgba(255,255,255,.75)">until your CMA exam — keep going!</div></div>
+    </div>`:''}
+    
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+      <div class="card" style="text-align:center;padding:14px 10px">
+        <div style="font-size:28px;font-weight:500;color:#0C447C">${pct}%</div>
+        <div style="font-size:11px;color:#888;margin-top:2px">Lessons Done</div>
+        <div style="font-size:11px;color:#aaa">${doneLessons}/${totalLessons}</div>
+      </div>
+      <div class="card" style="text-align:center;padding:14px 10px">
+        <div style="font-size:28px;font-weight:500;color:${acc>=70?'#639922':'#E24B4A'}">${acc}%</div>
+        <div style="font-size:11px;color:#888;margin-top:2px">Quiz Accuracy</div>
+        <div style="font-size:11px;color:#aaa">${totalRight}/${totalQ} correct</div>
+      </div>
+    </div>
+    
+    <div class="card" style="margin-bottom:14px">
+      <div style="font-size:13px;font-weight:500;color:#1a1a1a;margin-bottom:12px">📚 Section Progress</div>
+      ${secStats.map(({sec,done,sp,secAcc,totalSecQ})=>`
+        <div style="margin-bottom:12px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+            <span style="font-size:12px;font-weight:500;color:#1a1a1a">${sec.emoji} ${esc(sec.title)}</span>
+            <span style="font-size:11px;color:${sec.strong}">${done}/${sec.lessons.length} · ${secAcc>0?secAcc+'% acc':'no quiz'}</span>
+          </div>
+          <div style="height:6px;background:#f0f0eb;border-radius:3px;overflow:hidden">
+            <div style="height:100%;width:${sp}%;background:${sec.bar};border-radius:3px;transition:width .5s"></div>
+          </div>
+        </div>`).join('')}
+    </div>
+    
+    ${weakTopics.length>0?`<div class="card" style="margin-bottom:14px">
+      <div style="font-size:13px;font-weight:500;color:#791F1F;margin-bottom:12px">🔴 Weak Topics (< 70%)</div>
+      ${weakTopics.slice(0,5).map(w=>`
+        <div onclick="STATE.tab='study';STATE.sectId=${w.sec.id};STATE.lessonId='${w.lesson.id}';render()" style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:.5px solid #f0f0eb;cursor:pointer">
+          <div>
+            <div style="font-size:12px;font-weight:500;color:#1a1a1a">${esc(w.lesson.title)}</div>
+            <div style="font-size:11px;color:#888">${w.sec.emoji} ${esc(w.sec.title)}</div>
+          </div>
+          <span style="font-size:13px;font-weight:500;color:#E24B4A;flex-shrink:0;margin-left:8px">${w.pct}%</span>
+        </div>`).join('')}
+    </div>`:''}
+    
+    <button class="btn btn-outline" onclick="STATE.showReset=true;render()" style="margin-top:4px;color:#aaa">Reset All Progress</button>
+    ${STATE.showReset?`<div style="background:#FCEBEB;border:1px solid #E24B4A;border-radius:10px;padding:14px 16px;margin-top:12px"><div style="font-size:13px;color:#791F1F;margin-bottom:12px;font-weight:500">This will delete ALL your progress. Are you sure?</div><div style="display:flex;gap:8px"><button class="btn btn-outline" onclick="STATE.showReset=false;render()" style="border-color:#A32D2D;color:#A32D2D">Cancel</button><button class="btn" onclick="resetAll()" style="background:#E24B4A;color:#fff">Yes, Reset</button></div></div>`:''}
+    <div style="height:20px"></div>
+  </div>`;
+}
+
+function buildQuizModeQuestions(sectionId){
+  const allQ=[];
+  const sections=sectionId?S.filter(s=>s.id===sectionId):S;
+  sections.forEach(sec=>{
+    sec.lessons.forEach(l=>{
+      l.quizzes.forEach(q=>{allQ.push({...q,lessonTitle:l.title,sectionTitle:sec.title,secEmoji:sec.emoji,secBar:sec.bar,secBg:sec.bg,secText:sec.text,secStrong:sec.strong});});
+    });
+  });
+  // Shuffle
+  for(let i=allQ.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[allQ[i],allQ[j]]=[allQ[j],allQ[i]];}
+  return allQ.slice(0,sectionId?Math.min(allQ.length,20):50);
+}
+
+function startQuizMode(sectionId){
+  const questions=buildQuizModeQuestions(sectionId);
+  if(!questions.length){alert('No questions available for this section.');return;}
+  STATE.quizMode={active:true,sectionId,idx:0,questions,answers:[],selected:null,done:false};
+  STATE.tab='quiz-mode';render();
+}
+
+function selectQuizModeAnswer(i){
+  if(STATE.quizMode.selected!==null)return;
+  STATE.quizMode.selected=i;render();
+}
+
+function nextQuizModeQuestion(){
+  const qm=STATE.quizMode;
+  const q=qm.questions[qm.idx];
+  qm.answers.push({selected:qm.selected,correct:qm.selected===q.a});
+  if(qm.idx+1>=qm.questions.length){qm.done=true;qm.selected=null;render();return;}
+  qm.idx++;qm.selected=null;render();
+}
+
+function renderQuizMode(){
+  const qm=STATE.quizMode;
+  
+  // ── Results screen ──────────────────────────────────────
+  if(qm.done){
+    const correct=qm.answers.filter(a=>a.correct).length;
+    const pct=Math.round(correct/qm.questions.length*100);
+    const emoji=pct>=80?'🏆':pct>=60?'👍':'📚';
+    const label=pct>=80?'Excellent!':pct>=60?'Good work!':'Keep studying!';
+    const breakdown=qm.questions.map((q,i)=>`
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;padding-bottom:10px;border-bottom:.5px solid #f0f0eb">
+        <span style="font-size:15px;flex-shrink:0">${qm.answers[i]?.correct?'✅':'❌'}</span>
+        <div>
+          <div style="font-size:12px;color:#666;margin-bottom:2px">${esc(q.secEmoji+' '+q.sectionTitle+' — '+q.lessonTitle)}</div>
+          <div style="font-size:13px;color:#333;line-height:1.4">${esc(q.q)}</div>
+          ${!qm.answers[i]?.correct?`<div style="font-size:12px;color:#3B6D11;margin-top:3px">✓ ${esc(q.o[q.a])}</div>`:''}
+        </div>
+      </div>`).join('');
+    return`<div class="scroll-area" style="padding:30px 16px 20px;text-align:center">
+      <div style="font-size:52px">${emoji}</div>
+      <div style="font-size:20px;font-weight:500;margin-top:10px">${label}</div>
+      <div style="font-size:46px;font-weight:500;color:#185FA5;margin:6px 0 2px">${pct}%</div>
+      <div style="font-size:14px;color:#888;margin-bottom:8px">${correct} of ${qm.questions.length} correct</div>
+      <div style="font-size:12px;color:#aaa;margin-bottom:24px">${qm.sectionId?S.find(s=>s.id===qm.sectionId)?.title+' Quiz':'Full CMA Quiz'}</div>
+      <div style="display:flex;gap:10px;margin-bottom:14px">
+        <button class="btn btn-outline" onclick="STATE.tab='quiz-mode-select';render()" style="flex:1">← Back</button>
+        <button class="btn" onclick="startQuizMode(${qm.sectionId})" style="flex:1;background:#0C447C;color:#fff">Retake</button>
+      </div>
+      <div class="card" style="text-align:left;margin-bottom:14px">
+        <div style="font-size:13px;font-weight:500;color:#555;margin-bottom:12px">Question Review</div>
+        ${breakdown}
+      </div>
+      <div style="height:20px"></div>
+    </div>`;
+  }
+
+  // ── Quiz session ────────────────────────────────────────
+  const q=qm.questions[qm.idx];const sel=qm.selected;
+  const barW=Math.round(qm.idx/qm.questions.length*100);
+  const opts=q.o.map((opt,i)=>{
+    let bg='#f5f5f0',border='.5px solid #e0e0d8',textC='#1a1a1a',circBg='#e5e5e0',circC='#666',circBorder='.5px solid #bbb',circTxt=String.fromCharCode(65+i);
+    if(sel!==null){if(i===q.a){bg='#EAF3DE';border='1px solid #639922';textC='#27500A';circBg='#c0dd97';circC='#27500A';circBorder='1px solid #639922';circTxt='✓';}
+    else if(i===sel&&sel!==q.a){bg='#FCEBEB';border='1px solid #E24B4A';textC='#791F1F';circBg='#f7c1c1';circC='#791F1F';circBorder='1px solid #E24B4A';circTxt='✗';}
+    else{textC='#888';}}
+    return`<div class="q-opt" onclick="selectQuizModeAnswer(${i})" style="background:${bg};border:${border};${sel===null?'cursor:pointer':'cursor:default'}"><div class="q-circle" style="background:${circBg};color:${circC};border:${circBorder}">${circTxt}</div><div class="q-text" style="color:${textC}">${esc(opt)}</div></div>`;
+  }).join('');
+  const explanation=sel!==null?`<div style="margin-top:14px;padding:13px 14px;border-radius:10px;background:${sel===q.a?'#EAF3DE':'#FCEBEB'};border:1px solid ${sel===q.a?'#639922':'#E24B4A'}"><div style="font-size:12px;font-weight:500;color:${sel===q.a?'#27500A':'#791F1F'};margin-bottom:5px">${sel===q.a?'Correct! Well done.':'Not quite — here is why:'}</div><div style="font-size:13px;color:${sel===q.a?'#3B6D11':'#A32D2D'};line-height:1.55">${esc(q.e)}</div></div>`:''  ;
+  const nextBtn=sel!==null?`<button class="btn btn-primary" onclick="nextQuizModeQuestion()" style="background:#0C447C">${qm.idx+1>=qm.questions.length?'See Results':'Next →'}</button>`:`<button class="btn" style="background:#f0f0eb;color:#bbb;cursor:not-allowed">Select an answer to continue</button>`;
+  return`<div class="bh"><button class="bh-back" onclick="STATE.tab='quiz-mode-select';render()">‹</button>
+    <div style="flex:1">
+      <div style="font-size:11px;font-weight:500;color:#185FA5">${esc(q.secEmoji+' '+q.lessonTitle)}</div>
+      <div style="font-size:14px;font-weight:500">Question ${qm.idx+1} of ${qm.questions.length}</div>
+    </div>
+    <span style="font-size:12px;font-weight:500;color:#185FA5;background:#E6F1FB;padding:3px 8px;border-radius:6px">${qm.idx+1}/${qm.questions.length}</span>
+  </div>
+  <div style="height:5px;background:#ebebea;flex-shrink:0"><div style="height:100%;width:${barW}%;background:#0C447C;transition:width .4s;border-radius:0 3px 3px 0"></div></div>
+  <div class="scroll-area pad" style="padding-top:16px">
+    <div class="card"><p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${esc(q.q)}</p>${opts}${explanation}</div>
+    <div style="margin-top:12px">${nextBtn}</div>
+    <div style="height:20px"></div>
+  </div>`;
+}
+
+// ── Quiz Mode Selection Screen ─────────────────────────────────────────────
+function renderQuizModeSelect(){
+  return`<div class="sh"><h2>Quiz Mode</h2><p>Practice MCQs by section or mixed exam</p></div>
+  <div class="scroll-area pad" style="padding-top:14px">
+    <div class="card" style="margin-bottom:14px">
+      <div style="font-size:14px;font-weight:500;color:#1a1a1a;margin-bottom:4px">🎯 Full CMA Mix</div>
+      <div style="font-size:12px;color:#888;margin-bottom:12px">50 random questions from ALL sections — exam simulation</div>
+      <button onclick="startQuizMode(null)" class="btn" style="background:#0C447C;color:#fff;font-size:14px">Start Full Quiz (50 MCQs)</button>
+    </div>
+    <div style="font-size:12px;font-weight:500;color:#888;letter-spacing:.5px;margin-bottom:10px">BY SECTION</div>
+    ${S.map(sec=>{
+      const totalQ=sec.lessons.reduce((a,l)=>a+l.quizzes.length,0);
+      if(!totalQ)return'';
+      return`<div class="card" style="margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div class="sect-icon" style="background:${sec.bg}">${sec.emoji}</div>
+          <div>
+            <div style="font-size:13px;font-weight:500;color:#1a1a1a">${esc(sec.title)}</div>
+            <div style="font-size:11px;color:#888">${totalQ} questions · ${sec.weight}% of exam</div>
+          </div>
+        </div>
+        <button onclick="startQuizMode(${sec.id})" class="btn" style="background:${sec.bar};color:#fff;font-size:13px">Start Quiz (up to 20 MCQs)</button>
+      </div>`;
+    }).join('')}
+    <div style="height:20px"></div>
+  </div>`;
+}
+
+function renderSearch(){
+  const q=(STATE.searchQ||'').toLowerCase().trim();
+  const results=[];
+  if(q.length>=2){
+    S.forEach(sec=>{
+      sec.lessons.forEach(l=>{
+        let score=0;
+        if(l.title.toLowerCase().includes(q))score+=3;
+        const blockText=l.blocks.map(b=>{
+          if(b.v&&typeof b.v==='string')return b.v;
+          if(Array.isArray(b.v))return b.v.join(' ');
+          if(b.h)return b.h;
+          return '';
+        }).join(' ').toLowerCase();
+        if(blockText.includes(q))score+=1;
+        l.quizzes.forEach(qz=>{if(qz.q&&qz.q.toLowerCase().includes(q))score+=2;});
+        if(score>0)results.push({sec,lesson:l,score});
+      });
+    });
+    results.sort((a,b)=>b.score-a.score);
+  }
+  return`<div class="sh"><h2>Search</h2><p>Search lessons, topics & quiz questions</p></div>
+  <div class="scroll-area pad" style="padding-top:12px">
+    <div style="position:relative;margin-bottom:14px">
+      <input id="search-input" type="text" placeholder="Search topics, lessons, formulas..." value="${esc(STATE.searchQ||'')}"
+        oninput="STATE.searchQ=this.value;render()" autofocus
+        class="search-box"
+        style="width:100%;padding:12px 14px 12px 40px;border-radius:10px;border:.5px solid #d0d0d0;font-size:14px;font-family:inherit;outline:none;background:#fafaf8;color:#1a1a1a;box-sizing:border-box">
+      <span style="position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none">🔍</span>
+      ${q.length>=2?`<span onclick="STATE.searchQ='';render()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:18px;cursor:pointer;color:#aaa;line-height:1">×</span>`:''}
+    </div>
+    ${q.length<2?`<div style="text-align:center;padding:40px 20px;color:#aaa"><div style="font-size:36px;margin-bottom:10px">🔍</div><div style="font-size:14px">Type at least 2 characters to search</div></div>`
+    :results.length===0?`<div style="text-align:center;padding:40px 20px;color:#aaa"><div style="font-size:36px;margin-bottom:10px">😕</div><div style="font-size:14px">No results found for "<b>${esc(STATE.searchQ)}</b>"</div></div>`
+    :`<div style="font-size:12px;color:#888;margin-bottom:10px">${results.length} result${results.length>1?'s':''} for "<b>${esc(STATE.searchQ)}</b>"</div>
+    ${results.slice(0,20).map(r=>{const done=lessonDone(r.lesson.id);return`
+      <div onclick="STATE.tab='study';STATE.sectId=${r.sec.id};STATE.lessonId='${r.lesson.id}';render()" style="background:${done?r.sec.bg:'#f8f8f6'};border:.5px solid ${done?r.sec.text+'40':'#e0e0d8'};border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer">
+        <div style="font-size:10px;font-weight:500;color:${r.sec.text};margin-bottom:3px">${r.sec.emoji} ${esc(r.sec.title)}</div>
+        <div style="font-size:13px;font-weight:500;color:#1a1a1a">${esc(r.lesson.title)}</div>
+        <div style="font-size:11px;color:#888;margin-top:2px">${r.lesson.dur} · ${done?'✓ Completed':'Not started'}</div>
+      </div>`}).join('')}`}
+    <div style="height:20px"></div>
+  </div>`;
 }
 
 function renderTracker(){
@@ -2704,7 +3049,7 @@ function renderProgress(){
 
 // ─── ACTIONS ──────────────────────────────────────────────────────────────────
 function goLesson(sId){STATE.sectId=sId;STATE.lessonId=null;STATE.tab='lessons';render();}
-function markDone(lid){if(!STATE.progress.done.includes(lid)){saveProg({...STATE.progress,done:[...STATE.progress.done,lid]});}STATE.lessonId=null;render();}
+function markDone(lid){if(!STATE.progress.done.includes(lid)){saveProg({...STATE.progress,done:[...STATE.progress.done,lid]});setTimeout(syncLeaderboard,500);}STATE.lessonId=null;render();}
 function doLessonQuiz(lid){startQuiz(lid);}
 function startQuiz(lessonId){
   let foundLesson=null,foundSect=null;
@@ -2724,15 +3069,18 @@ function askAboutResults(lessonId,pct){const lesson=S.flatMap(s=>s.lessons).find
 function saveApiKey(){const k=document.getElementById('api-key-input')?.value?.trim()||'';STATE.apiKey=k;STATE.showKeyInput=false;saveKey(k);render();}
 
 // ─── RENDER ───────────────────────────────────────────────────────────────────
-const TABS=[{id:'intro',label:'Guide',icon:'👤'},{id:'register',label:'Profile',icon:'🎓'},{id:'study',label:'Study',icon:'📚'},{id:'tracker',label:'Tracker',icon:'📌'},{id:'community',label:'Community',icon:'🌐'},{id:'feedback',label:'Feedback',icon:'⭐'}];
+const TABS=[{id:'intro',label:'Guide',icon:'👤'},{id:'register',label:'Profile',icon:'🎓'},{id:'study',label:'Study',icon:'📚'},{id:'search',label:'Search',icon:'🔍'},{id:'quiz-mode-select',label:'Quiz',icon:'🎯'},{id:'tracker',label:'Tracker',icon:'📌'},{id:'dashboard',label:'Dashboard',icon:'📊'},{id:'leaderboard',label:'Top',icon:'🏆'},{id:'community',label:'Community',icon:'🌐'},{id:'feedback',label:'Feedback',icon:'⭐'}];
 function activeNavTab(){if(STATE.tab==='quiz-session'||STATE.tab==='quiz-results'||STATE.tab==='dashboard'||STATE.tab==='lessons'||STATE.tab==='quiz')return'study';if(STATE.tab==='question-detail')return'community';return STATE.tab;}
 function render(){
   const content=document.getElementById('content-area');const nav=document.getElementById('bottom-nav');if(!content||!nav)return;
   let html='';
   switch(STATE.tab){
-    case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;default:html=renderIntro();
+    case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'dashboard':html=renderDashboard();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;default:html=renderIntro();
   }
   content.innerHTML=html;
+  // Dark mode toggle visibility
+  const dt=document.getElementById('dark-toggle');
+  if(dt){dt.style.display=(STATE.tab==='login'||STATE.tab==='loading'||STATE.tab==='onboarding')?'none':'flex';dt.style.alignItems='center';dt.style.justifyContent='center';dt.textContent=isDark()?'☀️':'🌙';}
   content.style.display='flex';content.style.flexDirection='column';content.style.overflow=STATE.tab==='chat'?'hidden':'auto';
   if(STATE.tab==='loading'||STATE.tab==='login'||STATE.tab==='onboarding'){nav.style.display='none';}
   else{nav.style.display='flex';
@@ -2978,7 +3326,7 @@ async function submitProfile(){
 }
 
 function navTo(tab){
-  if(!STATE.user&&tab!=='login'&&tab!=='loading'&&tab!=='onboarding'){STATE.tab='login';render();return;}
+  if(!STATE.user&&tab!=='login'&&tab!=='loading'&&tab!=='onboarding'&&tab!=='quiz-mode'&&tab!=='quiz-mode-select'){STATE.tab='login';render();return;}
   if(tab!=='intro'&&tab!=='register'&&tab!=='login'&&tab!=='loading'&&tab!=='feedback'&&tab!=='community'&&tab!=='question-detail'){
     const st=loadStudent();
     const fb=loadFeedback();
