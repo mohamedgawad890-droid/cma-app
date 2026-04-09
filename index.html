@@ -3524,7 +3524,7 @@ function renderStudy(){
             </div>
             <div style="padding:0 10px 9px;display:flex;align-items:center;justify-content:space-between;border-top:.5px solid ${done?sec.text+'20':'#ebebea'}">
               <span style="font-size:11px;color:${lsc?(Math.round(lsc.correct/lsc.total*100)>=70?'#3B6D11':'#A32D2D'):'#aaa'}">${lsc?`${Math.round(lsc.correct/lsc.total*100)<70?'🔴 ':'✅ '}Quiz: ${lsc.correct}/${lsc.total} (${Math.round(lsc.correct/lsc.total*100)}%)`:'Quiz not attempted'}</span>
-              <button onclick="event.stopPropagation();doLessonQuiz('${l.id}')" style="padding:5px 12px;border-radius:6px;border:none;background:${sec.bar};color:#fff;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">${lsc?'Retake':'Start Quiz'} (10 MCQs)</button>
+              <button onclick="event.stopPropagation();doLessonQuiz('${l.id}')" style="padding:5px 12px;border-radius:6px;border:none;background:${sec.bar};color:#fff;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">${lsc?'Retake':'Start Quiz'} (${(l.quizzes||[]).length} MCQs)</button>
             </div>
           </div>`}).join('')}
 
@@ -4426,7 +4426,7 @@ function renderOnboarding(){
         <div style="display:flex;flex-direction:column;gap:10px">
           ${[
             ['📚','Study','6 sections covering all CMA Part 1 topics with detailed lessons based on Hock textbook'],
-            ['❓','Quizzes','10 MCQs per lesson — exam-style questions with full explanations after each answer'],
+            ['❓','Quizzes','20 MCQs per lesson — exam-style questions with full explanations after each answer'],
             ['📊','Progress','Track your completed lessons and quiz scores across all sections'],
             ['📌','Tracker','Mark lessons as Good or Bad to know what to review'],
             ['🌐','Community','Ask questions and get answers from fellow CMA candidates'],
