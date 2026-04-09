@@ -7,25 +7,6 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f0eb;color:#1a1a1a;overscroll-behavior:none}
-body.dark{background:#111;color:#e8e8e2}
-body.dark .card{background:#1e1e1e!important;border-color:#333!important;color:#e8e8e2}
-body.dark .bh{background:#1a1a1a!important;border-color:#333!important}
-body.dark .bottom-nav{background:#1a1a1a!important;border-color:#333!important}
-body.dark .scroll-area,body.dark .pad{background:#111}
-body.dark .nav-btn{color:#555}
-body.dark .nav-btn.active{color:#378ADD}
-body.dark input,body.dark select,body.dark textarea{background:#1e1e1e!important;color:#e8e8e2!important;border-color:#444!important}
-body.dark .q-opt{background:#1e1e1e!important;border-color:#333!important}
-body.dark .sh{background:#1a1a1a!important;border-color:#333!important}
-body.dark .tip{background:#1c1a0a!important;border-color:#4a3a00!important}
-body.dark .f-block{background:#0e0e1e!important;border-color:#334!important}
-body.dark .profile-hero{background:linear-gradient(135deg,#0a2040,#0c3060)!important}
-body.dark .info-title{color:#aaa}
-body.dark .part-card{background:#1e1e1e!important}
-body.dark .tbl-wrap table tr:nth-child(even){background:#1a1a1a}
-body.dark .tbl-wrap table{border-color:#333}
-body.dark .tbl-wrap td,body.dark .tbl-wrap th{border-color:#333!important;color:#ccc}
-body.dark .welcome-box{background:#0f1a0f!important;border-color:#1a3a1a!important}
 #app{display:flex;flex-direction:column;height:100vh;max-width:600px;margin:0 auto;background:#fff;position:relative;overflow:hidden}
 @media(min-width:620px){#app{border-radius:16px;margin:16px auto;height:calc(100vh - 32px);box-shadow:0 8px 40px rgba(0,0,0,.12)}}
 .content{flex:1;overflow:hidden;display:flex;flex-direction:column}
@@ -136,7 +117,6 @@ body.dark .welcome-box{background:#0f1a0f!important;border-color:#1a3a1a!importa
 <body>
 <div id="app">
   <nav class="bottom-nav" id="bottom-nav"></nav>
-  <button id="dark-toggle" onclick="toggleDark()" style="position:fixed;top:10px;right:12px;z-index:999;width:34px;height:34px;border-radius:50%;border:none;background:rgba(0,0,0,.08);font-size:16px;cursor:pointer;display:none">🌙</button>
   <div class="content" id="content-area"></div>
 </div>
 <script>
@@ -3297,14 +3277,6 @@ function updateStreak(){
   saveStreak({count:newCount,lastDate:today});
 }
 
-function isDark(){return localStorage.getItem('cma-dark')==='1';}
-function toggleDark(){
-  const d=!isDark();
-  localStorage.setItem('cma-dark',d?'1':'0');
-  document.body.classList.toggle('dark',d);
-  document.getElementById('dark-toggle').textContent=d?'☀️':'🌙';
-}
-function applyDark(){document.body.classList.toggle('dark',isDark());}
 
 const STATE={tab:'loading',searchQ:'',leaderboardData:[],leaderboardLoaded:false,quizMode:{active:false,sectionId:null,idx:0,questions:[],answers:[],selected:null},user:null,authScreen:'login',authError:'',authLoading:false,communityFilter:'all',questionDetail:null,showAskForm:false,communityQuestions:[],questionReplies:[],draftTitle:'',draftBody:'',draftSection:'General',draftReply:'',trackerOpenSects:[],sectId:null,lessonId:null,quizState:null,showProfileWarning:false,progress:{done:[],scores:{},mcqTotal:0,mcqRight:0},
   chatMsgs:[{r:'a',t:"Hi! I'm Mohamed Abdelgawad, your CMA Part 1 instructor. I have 17+ years of finance experience and I'm here to help you pass the CMA exam. Ask me anything! 🎓"}],
@@ -4760,10 +4732,7 @@ function render(){
     case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;default:html=renderIntro();
   }
   content.innerHTML=html;
-  // Dark mode toggle visibility
   if(STATE.tab==='search'){setTimeout(()=>{const inp=document.getElementById('search-input');if(inp){inp.focus();if(STATE.searchQ)updateSearchResults();}},50);}
-  const dt=document.getElementById('dark-toggle');
-  if(dt){dt.style.display=(STATE.tab==='login'||STATE.tab==='loading'||STATE.tab==='onboarding')?'none':'flex';dt.style.alignItems='center';dt.style.justifyContent='center';dt.textContent=isDark()?'☀️':'🌙';}
   content.style.display='flex';content.style.flexDirection='column';content.style.overflow=STATE.tab==='chat'?'hidden':'auto';
   if(STATE.tab==='loading'||STATE.tab==='login'||STATE.tab==='onboarding'){nav.style.display='none';}
   else{nav.style.display='flex';
