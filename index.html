@@ -5289,7 +5289,17 @@ function extractLessonText(lesson){
 }
 
 async function startFARQuiz(lesson,sec){
-  STATE.tab='far-quiz-loading';STATE.farQuizLoading={lessonTitle:lesson.title,error:null};render();
+  const apiKey=STATE.apiKey||loadKey();
+  if(!apiKey){
+    STATE.tab='far-quiz-loading';
+    STATE.farQuizLoading={lessonTitle:lesson.title,lessonId:lesson.id,secId:sec.id,needsKey:true,error:null};
+    render();return;
+  }
+  STATE.tab='far-quiz-loading';STATE.farQuizLoading={lessonTitle:lesson.title,lessonId:lesson.id,secId:sec.id,needsKey:false,error:null};render();
+  await runFARQuizGeneration(lesson,sec,apiKey);
+}
+
+async function runFARQuizGeneration(lesson,sec,apiKey){
   const lessonText=extractLessonText(lesson);
   const prompt=`You are a CMA (Certified Management Accountant) Part 1 exam question writer specializing in External Financial Reporting (Section A).
 
@@ -5309,19 +5319,13 @@ RULES:
 Respond ONLY with a valid JSON array. No preamble, no markdown fences. Format:
 [{"q":"question text","o":["option A","option B","option C","option D"],"a":0,"e":"explanation"}]
 where "a" is the 0-based index of the correct answer.`;
-
   try{
-    const apiKey=STATE.apiKey||loadKey();
-    if(!apiKey){STATE.farQuizLoading={lessonTitle:lesson.title,error:'No API key found. Please add your Anthropic API key in the Chat tab settings.'};render();return;}
     const res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:8000,
-        messages:[{role:'user',content:prompt}]
-      })
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:8000,messages:[{role:'user',content:prompt}]})
     });
+    if(!res.ok){const err=await res.json().catch(()=>({}));throw new Error(err?.error?.message||'API error '+res.status);}
     const data=await res.json();
     const raw=(data.content||[]).map(c=>c.text||'').join('');
     const clean=raw.replace(/```json|```/g,'').trim();
@@ -5332,19 +5336,50 @@ where "a" is the 0-based index of the correct answer.`;
     STATE.quizState={lessonId:lesson.id,sId:sec.id,questions,idx:0,selected:null,answers:[]};
     STATE.tab='quiz-session';render();
   }catch(err){
-    STATE.farQuizLoading={lessonTitle:lesson.title,error:'Could not generate questions. Please try again.'};
+    STATE.farQuizLoading={...STATE.farQuizLoading,error:err.message||'Could not generate questions. Please try again.'};
     render();
   }
 }
 
+function saveFARKey(){
+  const k=(document.getElementById('far-api-key-input')||{}).value?.trim()||'';
+  if(!k){alert('Please enter your API key.');return;}
+  STATE.apiKey=k;saveKey(k);
+  const{lessonId,secId}=STATE.farQuizLoading||{};
+  let foundLesson=null,foundSect=null;
+  for(const s of S){for(const l of s.lessons){if(l.id===lessonId){foundLesson=l;foundSect=s;break;}}}
+  if(!foundLesson)return;
+  STATE.farQuizLoading={...STATE.farQuizLoading,needsKey:false,error:null};render();
+  runFARQuizGeneration(foundLesson,foundSect,k);
+}
+
 function renderFARQuizLoading(){
-  const{lessonTitle,error}=STATE.farQuizLoading||{};
+  const{lessonTitle,error,needsKey}=STATE.farQuizLoading||{};
+  if(needsKey){
+    return`<div class="bh"><button class="bh-back" onclick="STATE.tab='study';render()">‹</button><div style="font-size:15px;font-weight:500">AI Quiz Setup</div></div>
+    <div class="scroll-area pad" style="padding-top:24px">
+      <div style="background:#E6F1FB;border-radius:12px;padding:16px;margin-bottom:20px">
+        <div style="font-size:14px;font-weight:500;color:#0C447C;margin-bottom:6px">🔑 API Key Required</div>
+        <div style="font-size:13px;color:#185FA5;line-height:1.55">This quiz uses AI to generate 20 personalised questions for <strong>${lessonTitle}</strong>. A one-time Anthropic API key is needed.</div>
+      </div>
+      <div style="margin-bottom:14px">
+        <label style="font-size:12px;font-weight:500;color:#555;display:block;margin-bottom:6px">Anthropic API Key</label>
+        <input id="far-api-key-input" type="password" placeholder="sk-ant-..." style="width:100%;padding:10px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:13px;font-family:inherit;outline:none;background:#fafaf8;color:#1a1a1a;box-sizing:border-box">
+        <div style="font-size:11px;color:#aaa;margin-top:5px">Your key is saved locally on this device only.</div>
+      </div>
+      <button class="btn btn-primary" onclick="saveFARKey()" style="margin-bottom:10px">Save & Generate Quiz</button>
+      <button class="btn btn-outline" onclick="STATE.tab='study';render()">Cancel</button>
+    </div>`;
+  }
   if(error){return`<div class="bh"><button class="bh-back" onclick="STATE.tab='study';render()">‹</button><div style="font-size:15px;font-weight:500">Quiz Error</div></div>
   <div class="scroll-area pad" style="padding-top:40px;text-align:center">
     <div style="font-size:40px;margin-bottom:16px">⚠️</div>
     <div style="font-size:15px;font-weight:500;color:#791F1F;margin-bottom:8px">Couldn't generate questions</div>
     <div style="font-size:13px;color:#888;margin-bottom:24px">${error}</div>
-    <button class="btn btn-primary" onclick="STATE.tab='study';render()">Go Back</button>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-outline" onclick="STATE.tab='study';render()" style="flex:1">Go Back</button>
+      <button class="btn btn-primary" onclick="STATE.farQuizLoading={...STATE.farQuizLoading,error:null,needsKey:true};render()" style="flex:1">Update Key</button>
+    </div>
   </div>`;}
   return`<div class="bh"><button class="bh-back" onclick="STATE.tab='study';render()">‹</button>
     <div style="flex:1"><div style="font-size:11px;color:#1A5A9E;font-weight:500">📋 External Financial Reporting</div>
