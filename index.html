@@ -3877,7 +3877,7 @@ function renderStudy(){
             </div>
             <div style="padding:0 10px 9px;display:flex;align-items:center;justify-content:space-between;border-top:.5px solid ${done?sec.text+'20':'#ebebea'}">
               <span style="font-size:11px;color:${lsc?(Math.round(lsc.correct/lsc.total*100)>=70?'#3B6D11':'#A32D2D'):'#aaa'}">${lsc?`${Math.round(lsc.correct/lsc.total*100)<70?'🔴 ':'✅ '}Quiz: ${lsc.correct}/${lsc.total} (${Math.round(lsc.correct/lsc.total*100)}%)`:'Quiz not attempted'}</span>
-              <button onclick="event.stopPropagation();doLessonQuiz('${l.id}')" style="padding:5px 12px;border-radius:6px;border:none;background:${sec.bar};color:#fff;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">${lsc?'Retake':'Start Quiz'} (${sec.id===1?'20 MCQs · AI':(l.quizzes||[]).length+' MCQs'})</button>
+              <button onclick="event.stopPropagation();doLessonQuiz('${l.id}')" style="padding:5px 12px;border-radius:6px;border:none;background:${sec.bar};color:#fff;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">${lsc?'Retake':'Start Quiz'} (${sec.id===1?'20 MCQs':(l.quizzes||[]).length+' MCQs'})</button>
             </div>
           </div>`}).join('')}
 
@@ -5311,9 +5311,11 @@ Respond ONLY with a valid JSON array. No preamble, no markdown fences. Format:
 where "a" is the 0-based index of the correct answer.`;
 
   try{
+    const apiKey=STATE.apiKey||loadKey();
+    if(!apiKey){STATE.farQuizLoading={lessonTitle:lesson.title,error:'No API key found. Please add your Anthropic API key in the Chat tab settings.'};render();return;}
     const res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:8000,
