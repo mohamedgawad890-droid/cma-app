@@ -3877,7 +3877,7 @@ function renderStudy(){
             </div>
             <div style="padding:0 10px 9px;display:flex;align-items:center;justify-content:space-between;border-top:.5px solid ${done?sec.text+'20':'#ebebea'}">
               <span style="font-size:11px;color:${lsc?(Math.round(lsc.correct/lsc.total*100)>=70?'#3B6D11':'#A32D2D'):'#aaa'}">${lsc?`${Math.round(lsc.correct/lsc.total*100)<70?'🔴 ':'✅ '}Quiz: ${lsc.correct}/${lsc.total} (${Math.round(lsc.correct/lsc.total*100)}%)`:'Quiz not attempted'}</span>
-              <button onclick="event.stopPropagation();doLessonQuiz('${l.id}')" style="padding:5px 12px;border-radius:6px;border:none;background:${sec.bar};color:#fff;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">${lsc?'Retake':'Start Quiz'} (${sec.id===1?'20 MCQs':(l.quizzes||[]).length+' MCQs'})</button>
+              <button onclick="event.stopPropagation();doLessonQuiz('${l.id}')" style="padding:5px 12px;border-radius:6px;border:none;background:${sec.bar};color:#fff;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">${lsc?'Retake':'Start Quiz'} (${(l.quizzes||[]).length} MCQs)</button>
             </div>
           </div>`}).join('')}
 
@@ -5218,7 +5218,7 @@ function renderQuizResults(){
   const breakdown=qs.questions.map((q,i)=>`<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;padding-bottom:${i<qs.questions.length-1?'10px':'0'};border-bottom:${i<qs.questions.length-1?'.5px solid #e0e0d8':'none'}"><span style="font-size:15px;flex-shrink:0">${qs.answers[i]?.correct?'✅':'❌'}</span><div><div style="font-size:13px;color:#333;line-height:1.4">Q${i+1}: ${esc(q.q)}</div>${!qs.answers[i]?.correct?`<div style="font-size:12px;color:#3B6D11;margin-top:3px">Correct: ${esc(q.o[q.a])}</div>`:''}</div></div>`).join('');
   return`<div class="scroll-area" style="padding:30px 16px 20px;text-align:center"><div style="font-size:52px">${gradeEmoji}</div><div style="font-size:20px;font-weight:500;margin-top:10px">${gradeLabel}</div><div style="font-size:46px;font-weight:500;color:${sec.text};margin:6px 0 2px">${pctQ}%</div><div style="font-size:14px;color:#888;margin-bottom:24px">${correct} out of ${qs.questions.length} correct</div>
   <div class="card" style="text-align:left;margin-bottom:14px"><div style="font-size:13px;font-weight:500;color:#555;margin-bottom:12px">Question Review</div>${breakdown}</div>
-  <div style="display:flex;gap:10px;margin-bottom:12px"><button class="btn btn-outline" onclick="STATE.tab=${qs.sId===1?"'study'":"'quiz'"};STATE.quizState=null;render()">← Back</button><button class="btn" onclick="startQuiz('${qs.lessonId}')" style="background:${sec.bar};color:#fff">Retake Quiz</button></div>
+  <div style="display:flex;gap:10px;margin-bottom:12px"><button class="btn btn-outline" onclick="STATE.tab='quiz';STATE.quizState=null;render()">Back to Quizzes</button><button class="btn" onclick="startQuiz('${qs.lessonId}')" style="background:${sec.bar};color:#fff">Retake Quiz</button></div>
   <button onclick="askAboutResults('${qs.lessonId}',${pctQ})" style="width:100%;padding:12px;border-radius:10px;border:1px solid ${sec.text}50;background:${sec.bg};color:${sec.strong};font-size:13px;cursor:pointer;font-family:inherit;font-weight:500">Ask Mohamed to review weak areas ↗</button><div style="height:20px"></div></div>`;
 }
 
@@ -5266,131 +5266,8 @@ function startQuiz(lessonId){
   let foundLesson=null,foundSect=null;
   for(const sec of S){for(const l of sec.lessons){if(l.id===lessonId){foundLesson=l;foundSect=sec;break;}}}
   if(!foundLesson){console.log('Lesson not found:',lessonId);return;}
-  if(foundSect.id===1){startFARQuiz(foundLesson,foundSect);return;}
   STATE.quizState={lessonId,sId:foundSect.id,questions:foundLesson.quizzes,idx:0,selected:null,answers:[]};
   STATE.tab='quiz-session';render();
-}
-
-function extractLessonText(lesson){
-  const parts=[];
-  (lesson.blocks||[]).forEach(b=>{
-    if(!b)return;
-    if(b.t==='h')parts.push(b.v);
-    else if(b.t==='p')parts.push(b.v);
-    else if(b.t==='tip')parts.push('Tip: '+b.v);
-    else if(b.t==='formula')parts.push('Formula: '+b.v);
-    else if(b.t==='b'&&Array.isArray(b.v))b.v.forEach(x=>parts.push('• '+x));
-    else if(b.t==='tbl'&&b.h&&b.r){parts.push(b.h.join(' | '));b.r.forEach(row=>parts.push(row.join(' | ')));}
-  });
-  (lesson.quizzes||[]).forEach(q=>{
-    if(q.q)parts.push('Q: '+q.q+' A: '+(q.o||[])[q.a]||'');
-  });
-  return parts.join('\n').slice(0,6000);
-}
-
-async function startFARQuiz(lesson,sec){
-  const apiKey=STATE.apiKey||loadKey();
-  if(!apiKey){
-    STATE.tab='far-quiz-loading';
-    STATE.farQuizLoading={lessonTitle:lesson.title,lessonId:lesson.id,secId:sec.id,needsKey:true,error:null};
-    render();return;
-  }
-  STATE.tab='far-quiz-loading';STATE.farQuizLoading={lessonTitle:lesson.title,lessonId:lesson.id,secId:sec.id,needsKey:false,error:null};render();
-  await runFARQuizGeneration(lesson,sec,apiKey);
-}
-
-async function runFARQuizGeneration(lesson,sec,apiKey){
-  const lessonText=extractLessonText(lesson);
-  const prompt=`You are a CMA (Certified Management Accountant) Part 1 exam question writer specializing in External Financial Reporting (Section A).
-
-Generate exactly 20 MEDIUM-difficulty multiple-choice questions based on the following lesson content.
-
-LESSON: "${lesson.title}"
-CONTENT:
-${lessonText}
-
-RULES:
-- Medium difficulty: require application and understanding, not just recall
-- 4 options each (A-D), only one correct
-- Cover different aspects of the lesson
-- Include a concise explanation for the correct answer
-- No duplicate questions
-
-Respond ONLY with a valid JSON array. No preamble, no markdown fences. Format:
-[{"q":"question text","o":["option A","option B","option C","option D"],"a":0,"e":"explanation"}]
-where "a" is the 0-based index of the correct answer.`;
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:8000,messages:[{role:'user',content:prompt}]})
-    });
-    if(!res.ok){const err=await res.json().catch(()=>({}));throw new Error(err?.error?.message||'API error '+res.status);}
-    const data=await res.json();
-    const raw=(data.content||[]).map(c=>c.text||'').join('');
-    const clean=raw.replace(/```json|```/g,'').trim();
-    let questions;
-    try{questions=JSON.parse(clean);}catch(e){throw new Error('Failed to parse questions');}
-    if(!Array.isArray(questions)||questions.length===0)throw new Error('No questions returned');
-    questions=questions.slice(0,20);
-    STATE.quizState={lessonId:lesson.id,sId:sec.id,questions,idx:0,selected:null,answers:[]};
-    STATE.tab='quiz-session';render();
-  }catch(err){
-    STATE.farQuizLoading={...STATE.farQuizLoading,error:err.message||'Could not generate questions. Please try again.'};
-    render();
-  }
-}
-
-function saveFARKey(){
-  const k=(document.getElementById('far-api-key-input')||{}).value?.trim()||'';
-  if(!k){alert('Please enter your API key.');return;}
-  STATE.apiKey=k;saveKey(k);
-  const{lessonId,secId}=STATE.farQuizLoading||{};
-  let foundLesson=null,foundSect=null;
-  for(const s of S){for(const l of s.lessons){if(l.id===lessonId){foundLesson=l;foundSect=s;break;}}}
-  if(!foundLesson)return;
-  STATE.farQuizLoading={...STATE.farQuizLoading,needsKey:false,error:null};render();
-  runFARQuizGeneration(foundLesson,foundSect,k);
-}
-
-function renderFARQuizLoading(){
-  const{lessonTitle,error,needsKey}=STATE.farQuizLoading||{};
-  if(needsKey){
-    return`<div class="bh"><button class="bh-back" onclick="STATE.tab='study';render()">‹</button><div style="font-size:15px;font-weight:500">AI Quiz Setup</div></div>
-    <div class="scroll-area pad" style="padding-top:24px">
-      <div style="background:#E6F1FB;border-radius:12px;padding:16px;margin-bottom:20px">
-        <div style="font-size:14px;font-weight:500;color:#0C447C;margin-bottom:6px">🔑 API Key Required</div>
-        <div style="font-size:13px;color:#185FA5;line-height:1.55">This quiz uses AI to generate 20 personalised questions for <strong>${lessonTitle}</strong>. A one-time Anthropic API key is needed.</div>
-      </div>
-      <div style="margin-bottom:14px">
-        <label style="font-size:12px;font-weight:500;color:#555;display:block;margin-bottom:6px">Anthropic API Key</label>
-        <input id="far-api-key-input" type="password" placeholder="sk-ant-..." style="width:100%;padding:10px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:13px;font-family:inherit;outline:none;background:#fafaf8;color:#1a1a1a;box-sizing:border-box">
-        <div style="font-size:11px;color:#aaa;margin-top:5px">Your key is saved locally on this device only.</div>
-      </div>
-      <button class="btn btn-primary" onclick="saveFARKey()" style="margin-bottom:10px">Save & Generate Quiz</button>
-      <button class="btn btn-outline" onclick="STATE.tab='study';render()">Cancel</button>
-    </div>`;
-  }
-  if(error){return`<div class="bh"><button class="bh-back" onclick="STATE.tab='study';render()">‹</button><div style="font-size:15px;font-weight:500">Quiz Error</div></div>
-  <div class="scroll-area pad" style="padding-top:40px;text-align:center">
-    <div style="font-size:40px;margin-bottom:16px">⚠️</div>
-    <div style="font-size:15px;font-weight:500;color:#791F1F;margin-bottom:8px">Couldn't generate questions</div>
-    <div style="font-size:13px;color:#888;margin-bottom:24px">${error}</div>
-    <div style="display:flex;gap:10px">
-      <button class="btn btn-outline" onclick="STATE.tab='study';render()" style="flex:1">Go Back</button>
-      <button class="btn btn-primary" onclick="STATE.farQuizLoading={...STATE.farQuizLoading,error:null,needsKey:true};render()" style="flex:1">Update Key</button>
-    </div>
-  </div>`;}
-  return`<div class="bh"><button class="bh-back" onclick="STATE.tab='study';render()">‹</button>
-    <div style="flex:1"><div style="font-size:11px;color:#1A5A9E;font-weight:500">📋 External Financial Reporting</div>
-    <div style="font-size:14px;font-weight:500">${lessonTitle||'Loading...'}</div></div></div>
-  <div class="scroll-area pad" style="padding-top:60px;text-align:center">
-    <div style="font-size:48px;margin-bottom:20px;animation:spin 1.5s linear infinite;display:inline-block">⚙️</div>
-    <div style="font-size:16px;font-weight:500;color:#185FA5;margin-bottom:8px">Generating your quiz…</div>
-    <div style="font-size:13px;color:#888;margin-bottom:4px">20 medium-difficulty questions</div>
-    <div style="font-size:12px;color:#aaa">Tailored to this lesson by AI</div>
-  </div>
-  <style>@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}</style>`;
 }
 function selectAnswer(i){if(STATE.quizState.selected!==null)return;STATE.quizState={...STATE.quizState,selected:i};render();}
 function nextQuestion(){
@@ -5404,12 +5281,12 @@ function saveApiKey(){const k=document.getElementById('api-key-input')?.value?.t
 
 // ─── RENDER ───────────────────────────────────────────────────────────────────
 const TABS=[{id:'intro',label:'Guide',icon:'👤'},{id:'register',label:'Profile',icon:'🎓'},{id:'study',label:'Study',icon:'📚'},{id:'search',label:'Search',icon:'🔍'},{id:'quiz-mode-select',label:'Quiz',icon:'🎯'},{id:'tracker',label:'Tracker',icon:'📌'},{id:'leaderboard',label:'Top',icon:'🏆'},{id:'community',label:'Community',icon:'🌐'},{id:'feedback',label:'Feedback',icon:'⭐'}];
-function activeNavTab(){if(STATE.tab==='quiz-session'||STATE.tab==='quiz-results'||STATE.tab==='dashboard'||STATE.tab==='lessons'||STATE.tab==='quiz'||STATE.tab==='far-quiz-loading')return'study';if(STATE.tab==='question-detail')return'community';return STATE.tab;}
+function activeNavTab(){if(STATE.tab==='quiz-session'||STATE.tab==='quiz-results'||STATE.tab==='dashboard'||STATE.tab==='lessons'||STATE.tab==='quiz')return'study';if(STATE.tab==='question-detail')return'community';return STATE.tab;}
 function render(){
   const content=document.getElementById('content-area');const nav=document.getElementById('bottom-nav');if(!content||!nav)return;
   let html='';
   switch(STATE.tab){
-    case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'study':html=renderStudy();break;case'far-quiz-loading':html=renderFARQuizLoading();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;default:html=renderIntro();
+    case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;default:html=renderIntro();
   }
   content.innerHTML=html;
   if(STATE.tab==='search'){setTimeout(()=>{const inp=document.getElementById('search-input');if(inp){inp.focus();if(STATE.searchQ)updateSearchResults();}},50);}
