@@ -2138,6 +2138,7 @@ const S=[
         blocks:[
           {t:"h",v:"What Is Variance Analysis?"},
           {t:"p",v:"Variance analysis is the process of comparing ACTUAL results with BUDGETED (standard) amounts for the same period. It identifies differences so management can investigate causes and take corrective action."},
+          {t:"video",l:"Watch: Variance Analysis Overview",v:"dQw4w9WgXcQ"},
           {t:"b",v:["Identify areas where performance differs from expectations","Support management by exception — focus on significant variances","Help improve efficiency, cost control, and decision-making"]},
           {t:"h",v:"Management by Exception"},
           {t:"p",v:"A management system where only SIGNIFICANT deviations from the budget are reported. Benefits: saves time, identifies unfavorable and favorable trends. Limitations: minor but consistent trends may be missed; too many variances can cause confusion."},
@@ -4988,6 +4989,11 @@ function renderBlock(block,sec){
     case'b':return`<ul class="blist">${block.v.map(i=>`<li><span style="color:${tx};font-weight:500;flex-shrink:0">•</span><span>${esc(i)}</span></li>`).join('')}</ul>`;
     case's':return`<ol class="slist">${block.v.map((i,j)=>`<li><span class="snum" style="background:${bg};color:${st};border:1px solid ${tx}40">${j+1}</span><span>${esc(i)}</span></li>`).join('')}</ol>`;
     case'tbl':return`<div class="tbl-wrap"><table class="tbl"><thead><tr>${block.h.map(h=>`<th style="background:${bg};color:${st}">${esc(h)}</th>`).join('')}</tr></thead><tbody>${block.r.map(row=>`<tr>${row.map(c=>`<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+    case'video':{
+      const vid=block.v;
+      const lbl=block.l?`<div class="formula-lbl" style="color:${tx};margin-bottom:8px">${esc(block.l)}</div>`:'';
+      return`<div style="margin:14px 0">${lbl}<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;background:#000"><iframe src="https://www.youtube.com/embed/${vid}?rel=0&modestbranding=1" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" allowfullscreen loading="lazy" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"></iframe></div></div>`;
+    }
     default:return'';
   }
 }
@@ -5913,8 +5919,8 @@ function renderOnboarding(){
       <div style="font-size:22px;font-weight:500;margin-bottom:4px">Gawad's CMA Prep</div>
       <div style="font-size:14px;opacity:.85;margin-bottom:20px">Your complete CMA Part 1 study companion</div>
       <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap">
-        <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px">21 Lessons</div>
-        <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px">210 MCQs</div>
+        <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px">113 Lessons</div>
+        <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px">2,295 MCQs</div>
         <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px">6 Sections</div>
         <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px">Free Access</div>
       </div>
@@ -5922,11 +5928,19 @@ function renderOnboarding(){
 
     <div style="padding:24px 20px">
 
+      <!-- INTRO VIDEO -->
+      <div style="margin-bottom:24px">
+        <div style="font-size:17px;font-weight:500;color:#1a1a1a;margin-bottom:10px">🎬 Watch this first</div>
+        <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;background:#000;box-shadow:0 4px 16px rgba(0,0,0,.12)">
+          <iframe src="https://www.youtube.com/embed/LWHyZxV5als?rel=0&modestbranding=1" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" allowfullscreen loading="lazy" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"></iframe>
+        </div>
+      </div>
+
       <!-- WHAT IS THIS APP -->
       <div style="margin-bottom:24px">
         <div style="font-size:17px;font-weight:500;color:#1a1a1a;margin-bottom:10px">📱 What is this app?</div>
         <div style="font-size:14px;color:#555;line-height:1.7">
-          This is your personal CMA Part 1 study app — built by <strong style="color:#0C447C">Gawad</strong>, a CFO and CMA instructor with 17+ years of experience. It covers everything you need to pass the exam: structured lessons, practice quizzes, progress tracking, and more.
+          This is your personal CMA Part 1 study app — built by <strong style="color:#0C447C">Gawad</strong>, a CFO and CMA instructor with 20 years of experience. It covers everything you need to pass the exam: structured lessons, practice quizzes, progress tracking, and more.
         </div>
       </div>
 
@@ -5935,8 +5949,8 @@ function renderOnboarding(){
         <div style="font-size:17px;font-weight:500;color:#1a1a1a;margin-bottom:12px">✨ What's inside?</div>
         <div style="display:flex;flex-direction:column;gap:10px">
           ${[
-            ['📚','Study','6 sections covering all CMA Part 1 topics with detailed lessons based on Hock textbook'],
-            ['❓','Quizzes','20 MCQs per lesson — exam-style questions with full explanations after each answer'],
+            ['📚','Study','6 sections · 113 lessons covering all CMA Part 1 topics with detailed content based on the HOCK textbook'],
+            ['❓','Quizzes','2,295 MCQs — exam-style questions with full explanations after each answer'],
             ['📊','Progress','Track your completed lessons and quiz scores across all sections'],
             ['📌','Tracker','Mark lessons as Good or Bad to know what to review'],
             ['🌐','Community','Ask questions and get answers from fellow CMA candidates'],
