@@ -2138,7 +2138,6 @@ const S=[
         blocks:[
           {t:"h",v:"What Is Variance Analysis?"},
           {t:"p",v:"Variance analysis is the process of comparing ACTUAL results with BUDGETED (standard) amounts for the same period. It identifies differences so management can investigate causes and take corrective action."},
-          {t:"video",l:"Watch: Variance Analysis Overview",v:"dQw4w9WgXcQ"},
           {t:"b",v:["Identify areas where performance differs from expectations","Support management by exception — focus on significant variances","Help improve efficiency, cost control, and decision-making"]},
           {t:"h",v:"Management by Exception"},
           {t:"p",v:"A management system where only SIGNIFICANT deviations from the budget are reported. Benefits: saves time, identifies unfavorable and favorable trends. Limitations: minor but consistent trends may be missed; too many variances can cause confusion."},
@@ -4968,7 +4967,7 @@ function updateStreak(){
 
 
 const STATE={tab:'loading',searchQ:'',leaderboardData:[],leaderboardLoaded:false,quizMode:{active:false,sectionId:null,idx:0,questions:[],answers:[],selected:null},user:null,authScreen:'login',authError:'',authLoading:false,communityFilter:'all',questionDetail:null,showAskForm:false,communityQuestions:[],questionReplies:[],draftTitle:'',draftBody:'',draftSection:'General',draftReply:'',trackerOpenSects:[],sectId:null,lessonId:null,quizState:null,showProfileWarning:false,progress:{done:[],scores:{},mcqTotal:0,mcqRight:0},
-  chatMsgs:[{r:'a',t:"Hi! I'm Mohamed Abdelgawad, your CMA Part 1 instructor. I have 17+ years of finance experience and I'm here to help you pass the CMA exam. Ask me anything! 🎓"}],
+  chatMsgs:[{r:'a',t:"Hi! I'm Mohamed Abdelgawad, your CMA Part 1 instructor. I have 20 years of finance experience and I'm here to help you pass the CMA exam. Ask me anything! 🎓"}],
   chatLoading:false,apiKey:loadKey(),showKeyInput:false,showReset:false,chatDraft:''};
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
@@ -4977,6 +4976,7 @@ function getPct(){return Math.round(STATE.progress.done.length/TOTAL_LESSONS*100
 function getAcc(){const{mcqTotal,mcqRight}=STATE.progress;return mcqTotal>0?Math.round(mcqRight/mcqTotal*100):0;}
 function lessonDone(lid){return STATE.progress.done.includes(lid);}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function getStudyStreak(){return loadStreak().count||0;}
 
 // ─── RENDER LESSON BLOCK ──────────────────────────────────────────────────────
 function renderBlock(block,sec){
@@ -5014,9 +5014,10 @@ function renderStudy(){
       <div class="ellipsis" style="font-size:15px;font-weight:500;margin-top:1px">${esc(lesson.title)}</div></div></div>
     <div class="scroll-area pad"><div class="card" style="margin-top:14px;padding:4px 16px 16px">${lesson.blocks.map(b=>renderBlock(b,sec)).join('')}</div>
     <button class="btn" onclick="markDone('${lesson.id}')" style="margin-top:14px;background:${done?'#EAF3DE':sec.bar};color:${done?'#27500A':'#fff'}">${done?'✓ Completed — Back':'Mark as Complete ✓'}</button>
+    ${(()=>{const nx=getNextLesson(sec.id,lesson.id);if(!nx)return'';return`<button class="btn btn-outline" onclick="STATE.sectId=${nx.sec.id};STATE.lessonId='${nx.lesson.id}';render()" style="margin-top:8px;border-color:#185FA520;color:#185FA5">Next: ${esc(nx.lesson.title)} →</button>`;})()}
     <div style="margin-top:12px">
       <div style="font-size:12px;font-weight:500;color:#888;margin-bottom:6px">📝 My Notes</div>
-      <textarea id="lesson-notes-${lesson.id}" placeholder="Write your notes here... (saved automatically)" onchange="saveLessonNote('${lesson.id}',this.value)" style="width:100%;padding:10px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:13px;font-family:inherit;outline:none;background:#fafaf8;color:#1a1a1a;resize:none;line-height:1.5;box-sizing:border-box" rows="3">${loadLessonNote('${lesson.id}')}</textarea>
+      <textarea id="lesson-notes-${lesson.id}" placeholder="Write your notes here... (saved automatically)" onchange="saveLessonNote('${lesson.id}',this.value)" style="width:100%;padding:10px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:13px;font-family:inherit;outline:none;background:#fafaf8;color:#1a1a1a;resize:vertical;line-height:1.5;box-sizing:border-box;min-height:120px" rows="7">${loadLessonNote('${lesson.id}')}</textarea>
     </div>
     <div style="height:20px"></div></div>`;
   }
@@ -5079,7 +5080,13 @@ function renderStudy(){
         <div style="font-size:11px;color:rgba(255,255,255,.65);margin-top:6px">${doneCount} of ${TOTAL_LESSONS} lessons completed</div>
       </div>
     </div>
-    <div style="font-size:12px;font-weight:500;color:#888;margin-bottom:8px;letter-spacing:.5px">ALL SECTIONS</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <div style="font-size:12px;font-weight:500;color:#888;letter-spacing:.5px">ALL SECTIONS</div>
+      <div style="display:flex;gap:6px">
+        <button onclick="STATE.tab='formula-bank';render()" style="padding:5px 10px;border-radius:8px;border:.5px solid #185FA520;background:#E6F1FB;color:#185FA5;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">📐 Formulas</button>
+        <button onclick="window._essayOpenIdx=null;STATE.tab='essay-practice';render()" style="padding:5px 10px;border-radius:8px;border:.5px solid #63992220;background:#EAF3DE;color:#3B6D11;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">✍️ Essays</button>
+      </div>
+    </div>
     ${sectCards}
     <div style="height:20px"></div>
   </div>`;
@@ -6061,7 +6068,7 @@ function renderIntro(){
         <span class="cred-badge">DBA</span>
         <span class="cred-badge">MBA</span>
         <span class="cred-badge">TOT</span>
-        <span class="cred-badge">17+ Years Experience</span>
+        <span class="cred-badge">20 Years Experience</span>
       </div>
       <div style="display:flex;gap:10px;justify-content:center;margin-top:16px">
         <a href="tel:+201019641390" style="display:flex;flex-direction:column;align-items:center;gap:5px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);border-radius:12px;padding:10px 18px;text-decoration:none;color:#fff;min-width:80px">
@@ -6112,8 +6119,18 @@ function renderIntro(){
         <div class="welcome-box">
           <p>Welcome to CMA Prep! 🎓 Great to meet you! I'm your CMA instructor. I've helped candidates from fresh graduates to seasoned CFOs — and I know exactly what it takes to pass the CMA exam. Let's get you there together!</p>
         </div>
+        ${(()=>{const st=loadStudent();if(!st||!st.examdate)return'';const d=new Date(st.examdate+'-01');const today=new Date();const diff=Math.ceil((d-today)/(1000*60*60*24));if(diff<=0)return'';const streak=getStudyStreak();return`<div style="display:flex;gap:8px;margin-bottom:4px">
+          <div style="flex:1;background:linear-gradient(135deg,#0C447C,#185FA5);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px">
+            <span style="font-size:24px">📅</span>
+            <div><div style="font-size:11px;color:rgba(255,255,255,.75)">Exam countdown</div><div style="font-size:18px;font-weight:500;color:#fff">${diff} days</div></div>
+          </div>
+          <div style="flex:1;background:linear-gradient(135deg,#3B6D11,#639922);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px">
+            <span style="font-size:24px">🔥</span>
+            <div><div style="font-size:11px;color:rgba(255,255,255,.75)">Study streak</div><div style="font-size:18px;font-weight:500;color:#fff">${streak} day${streak===1?'':'s'}</div></div>
+          </div>
+        </div>`;})()}
         <div style="background:#f5f5f0;border-radius:10px;padding:14px 16px;font-size:13px;color:#555;line-height:1.6">
-          <strong style="color:#1a1a1a">About me:</strong> I'm currently CFO, with 17+ years of experience in Accounting, Inventory Management, Cost Accounting, Financial Planning & Controlling, Forecasting & Budgeting, Data Analysis.</div>
+          <strong style="color:#1a1a1a">About me:</strong> I'm currently CFO, with 20 years of experience in Accounting, Inventory Management, Cost Accounting, Financial Planning & Controlling, Forecasting & Budgeting, Data Analysis.</div>
       </div>
 
       <!-- WHAT IS IMA -->
@@ -6306,7 +6323,7 @@ function renderIntro(){
             ["Choose your study materials","I recommend Gleim or Hock. Get the full package including MCQ bank. Do NOT study without a structured MCQ bank."],
             ["Follow the 7-month plan","Study 10 hours/week. Break it into daily 1.5 hour sessions. Consistency beats intensity every time — small daily progress compounds into exam success."],
             ["MCQs are your best friend","Do at least 20 MCQs per study session. Review every wrong answer. Understand WHY wrong answers are wrong."],
-            ["Use this app daily","Read lessons here, do quizzes, and ask me anything in the Ask AI tab. I'm available 24/7."],
+            ["Use this app daily","Read lessons here, take quizzes, track your progress, and use the Formula Bank for quick reference. Consistency beats intensity — study a little every day."],
             ["Schedule your exam by Month 5","Having a real exam date changes everything psychologically. Book it before you feel 100% ready — the deadline will push you."],
             ["Essay practice in Month 5","Write full essay answers under timed conditions. The essay is 25% of your score — don't ignore it."],
             ["Pass and celebrate! 🎉","You've got this. I've seen all types of candidates succeed with the right plan and commitment."]
@@ -6322,7 +6339,7 @@ function renderIntro(){
       </div>
 
       <!-- START BUTTON -->
-      <button class="btn btn-primary" onclick="navTo('dashboard')" style="margin-top:6px;background:#0C447C;font-size:15px">
+      <button class="btn btn-primary" onclick="navTo('study')" style="margin-top:6px;background:#0C447C;font-size:15px">
         Start Studying Now →
       </button>
       <button onclick="logout()" style="width:100%;margin-top:10px;padding:12px;border-radius:10px;border:.5px solid #e0e0d8;background:transparent;color:#aaa;font-size:13px;cursor:pointer;font-family:inherit">
@@ -6394,6 +6411,195 @@ function renderQuizResults(){
 }
 
 // ─── PROGRESS ─────────────────────────────────────────────────────────────────
+function renderEssayPractice(){
+  const essays=[
+    {sec:'Performance Management',q:'Discuss how Residual Income (RI) overcomes the limitations of Return on Investment (ROI) as a performance measure for investment center managers. Include a numerical example.',hint:'Cover: ROI dysfunction (rejecting profitable projects), RI formula, goal congruence, scale limitation of RI, numerical illustration.'},
+    {sec:'Performance Management',q:'A company uses a Balanced Scorecard. Explain the four perspectives, the cause-and-effect relationship between them, and why financial measures alone are insufficient for strategic management.',hint:'Cover: Financial (outcome/lag), Customer, Internal Process, Learning & Growth (foundation/lead), strategy map logic.'},
+    {sec:'Performance Management',q:'Explain the concept of transfer pricing in a decentralized company. Discuss the general guideline for setting a minimum transfer price when the selling division operates at full capacity versus excess capacity.',hint:'Cover: Purpose of TP, divisional vs consolidated impact, general guideline = outlay + opportunity cost, full capacity vs excess capacity scenarios.'},
+    {sec:'Cost Management',q:'Explain the difference between variable costing and absorption costing. Under what circumstances will each method report a higher net income? Show with a brief numerical example.',hint:'Cover: Fixed OH treatment, income difference = Fixed OH in/out of inventory, production > sales → absorption higher, production < sales → variable higher.'},
+    {sec:'Cost Management',q:'Describe Activity-Based Costing (ABC) and explain how it improves the accuracy of product cost information compared to traditional overhead allocation. Discuss the limitations of ABC.',hint:'Cover: Traditional single rate distortion, ABC identifies activities and cost drivers, product-level accuracy, limitations: cost/complexity, arbitrary allocation still exists.'},
+    {sec:'Planning & Budgeting',q:'Explain the budgeting process and the role of the master budget. Distinguish between a static budget and a flexible budget, and explain why flexible budgets provide better performance evaluation.',hint:'Cover: Budget cycle, master budget components, static = one volume, flexible = adjusts to actual volume, removes volume effect from performance evaluation.'},
+    {sec:'Financial Reporting',q:'Describe the five-step revenue recognition model under ASC 606. Apply the model to a software company that sells a license and one year of technical support for a bundled price of $120,000.',hint:'Cover: 5 steps, identify performance obligations (license + support = 2), allocate transaction price using relative SSP, recognize each when/as satisfied.'},
+    {sec:'Financial Reporting',q:'Compare and contrast IFRS and US GAAP in terms of their conceptual frameworks, the treatment of inventory write-downs, and the approach to development costs.',hint:'Cover: Rules vs principles-based, LIFO prohibition under IFRS, IFRS allows reversal of write-downs, R&D: GAAP expensed; IFRS capitalizes development if criteria met.'},
+    {sec:'Internal Controls',q:'Describe the COSO Internal Control Framework. Explain the five components and discuss how management override of controls represents a significant limitation.',hint:'Cover: 5 components + 17 principles, control environment as foundation, management override: bypasses controls they designed, why it is primary mechanism for financial fraud.'},
+    {sec:'Internal Controls',q:'Explain the Fraud Triangle. For each element, describe specific organizational controls or practices that management can implement to reduce the risk of employee fraud.',hint:'Cover: Pressure (compensation, EAP), Opportunity (SOD, physical controls, reconciliations), Rationalization (ethics culture, fair treatment, zero-tolerance policy).'},
+  ];
+  const STATE_KEY='essay-open-idx';
+  const openIdx=window._essayOpenIdx==null?null:window._essayOpenIdx;
+  const items=essays.map((e,i)=>{
+    const isOpen=openIdx===i;
+    const noteKey='essay-note-'+i;
+    const saved=localStorage.getItem(noteKey)||'';
+    return`<div class="card" style="margin-bottom:10px">
+      <div onclick="window._essayOpenIdx=${isOpen?'null':i};render()" style="cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+        <div style="flex:1">
+          <div style="font-size:10px;font-weight:500;color:#185FA5;margin-bottom:5px">${esc(e.sec)}</div>
+          <div style="font-size:13px;font-weight:500;color:#1a1a1a;line-height:1.5">${esc(e.q)}</div>
+        </div>
+        <span style="color:#bbb;font-size:16px;flex-shrink:0;margin-top:2px">${isOpen?'▾':'›'}</span>
+      </div>
+      ${isOpen?`<div style="margin-top:12px;border-top:.5px solid #e0e0d8;padding-top:12px">
+        <div style="background:#FAEEDA;border-left:3px solid #EF9F27;border-radius:0 8px 8px 0;padding:10px 12px;margin-bottom:10px">
+          <div style="font-size:10px;font-weight:500;color:#854F0B;letter-spacing:.8px;margin-bottom:4px">KEY POINTS TO COVER</div>
+          <div style="font-size:12px;color:#633806;line-height:1.55">${esc(e.hint)}</div>
+        </div>
+        <div style="font-size:12px;font-weight:500;color:#888;margin-bottom:6px">✍️ Your Answer (practice under timed conditions — aim for 15-20 minutes)</div>
+        <textarea placeholder="Write your essay answer here..." onchange="localStorage.setItem('essay-note-${i}',this.value)" style="width:100%;padding:10px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:13px;font-family:inherit;outline:none;background:#fafaf8;color:#1a1a1a;resize:vertical;line-height:1.5;box-sizing:border-box;min-height:160px" rows="8">${esc(saved)}</textarea>
+      </div>`:''}
+    </div>`;
+  }).join('');
+  return`<div class="bh"><button class="bh-back" onclick="window._essayOpenIdx=null;STATE.tab='study';render()">‹</button>
+    <div style="min-width:0"><div style="font-size:15px;font-weight:500">Essay Practice</div>
+    <div style="font-size:11px;color:#888">10 exam-style essay questions · 25% of CMA score</div></div></div>
+  <div class="scroll-area pad" style="padding-top:14px">
+    <div class="tip" style="margin-bottom:14px"><div class="tip-lbl">HOW TO USE</div><div class="tip-txt">Tap a question to expand it. Read the key points, then write your full answer in the text box without looking at notes — aim for 15–20 minutes per question, just like the real exam. Your answers are saved automatically.</div></div>
+    ${items}<div style="height:20px"></div></div>`;
+}
+
+function renderFormulaBank(){
+  const cats=[
+    {title:'Performance Management',color:'#7B3FA0',bg:'#F3E8FF',formulas:[
+      ['ROI','Operating Income ÷ Assets Employed'],
+      ['Residual Income (RI)','Operating Income − (Assets × Required Rate of Return)'],
+      ['EVA','NOPAT − (WACC × Invested Capital)'],
+      ['DuPont ROI','Profit Margin × Asset Turnover'],
+      ['Asset Turnover','Sales ÷ Total Assets'],
+      ['Profit Margin','Net Income ÷ Sales'],
+      ['DM Price Variance','(AP − SP) × AQ'],
+      ['DM Quantity Variance','(AQ − SQ) × SP'],
+      ['DL Rate Variance','(AR − SR) × AH'],
+      ['DL Efficiency Variance','(AH − SH) × SR'],
+      ['VOH Spending Variance','(Actual VOH Rate − Standard VOH Rate) × AH'],
+      ['VOH Efficiency Variance','(AH − SH Allowed) × Standard VOH Rate'],
+      ['FOH Spending Variance','Actual FOH − Budgeted FOH'],
+      ['FOH Volume Variance','Budgeted FOH − Applied FOH'],
+      ['Selling Price Variance','(AP − SP) × Actual Units Sold'],
+      ['Sales Volume Variance','(Actual Units − Budgeted Units) × Budgeted Price'],
+      ['Flexible Budget Variance','Actual Results − Flexible Budget'],
+      ['Min Transfer Price','Outlay Cost + Opportunity Cost (CM foregone)'],
+    ]},
+    {title:'Cost Management',color:'#854F0B',bg:'#FAEEDA',formulas:[
+      ['Break-Even Units','Fixed Costs ÷ CM per Unit'],
+      ['Break-Even Sales $','Fixed Costs ÷ CM Ratio'],
+      ['CM per Unit','Selling Price − Variable Cost per Unit'],
+      ['CM Ratio','CM per Unit ÷ Selling Price'],
+      ['Target Profit Units','(Fixed Costs + Target Profit) ÷ CM per Unit'],
+      ['Margin of Safety','Actual Sales − Break-Even Sales'],
+      ['Operating Leverage','CM ÷ Operating Income'],
+      ['Predetermined OH Rate','Budgeted OH ÷ Budgeted Activity'],
+      ['Applied OH','POHR × Actual Activity'],
+      ['COGM','DM Used + DL + OH Applied + Begin WIP − End WIP'],
+      ['COGS','COGM + Begin FG − End FG'],
+      ['Variable Cost per Unit (High-Low)','(Cost High − Cost Low) ÷ (Activity High − Activity Low)'],
+      ['Fixed Cost (High-Low)','Total Cost − (Variable Rate × Activity)'],
+      ['Y (Regression)','a + bX  (a = fixed, b = variable rate, X = activity)'],
+    ]},
+    {title:'Planning & Budgeting',color:'#185FA5',bg:'#E6F1FB',formulas:[
+      ['Static Budget Variance','Actual − Static Budget'],
+      ['Flexible Budget Variance','Actual − Flexible Budget (at actual volume)'],
+      ['Sales Volume Variance','Flexible Budget − Static Budget'],
+      ['Cash Collections','Beginning AR + Credit Sales − Ending AR'],
+      ['Purchases Budget','COGS + Ending Inventory − Beginning Inventory'],
+      ['Budgeted Cash Payments','Purchases + Beginning AP − Ending AP'],
+    ]},
+    {title:'Financial Reporting',color:'#0C447C',bg:'#E6F1FB',formulas:[
+      ['Accounting Equation','Assets = Liabilities + Equity'],
+      ['Working Capital','Current Assets − Current Liabilities'],
+      ['Current Ratio','Current Assets ÷ Current Liabilities'],
+      ['Quick Ratio','(Cash + ST Investments + Net AR) ÷ Current Liabilities'],
+      ['Debt-to-Equity','Total Liabilities ÷ Total Equity'],
+      ['Interest Coverage','EBIT ÷ Interest Expense'],
+      ['Inventory Turnover','COGS ÷ Average Inventory'],
+      ['Days in Inventory','365 ÷ Inventory Turnover'],
+      ['AR Turnover','Net Credit Sales ÷ Average AR'],
+      ['Days Sales Outstanding','365 ÷ AR Turnover'],
+      ['AP Turnover','COGS ÷ Average AP'],
+      ['Days Payable Outstanding','365 ÷ AP Turnover'],
+      ['Cash Conversion Cycle','DIO + DSO − DPO'],
+      ['Asset Turnover','Net Sales ÷ Average Total Assets'],
+      ['Return on Assets (ROA)','Net Income ÷ Average Total Assets'],
+      ['Return on Equity (ROE)','Net Income ÷ Average Stockholders Equity'],
+      ['Gross Profit Margin','Gross Profit ÷ Net Sales'],
+      ['Net Profit Margin','Net Income ÷ Net Sales'],
+      ['EPS (Basic)','(Net Income − Preferred Dividends) ÷ Weighted Avg Common Shares'],
+      ['P/E Ratio','Market Price per Share ÷ EPS'],
+      ['Book Value per Share','Total Equity ÷ Shares Outstanding'],
+      ['Equity Method — Investor Income','Ownership % × Investee Net Income'],
+    ]},
+    {title:'Internal Controls',color:'#A32D2D',bg:'#FCEBEB',formulas:[
+      ['Audit Risk Model','Audit Risk = Inherent Risk × Control Risk × Detection Risk'],
+      ['Residual Risk','Inherent Risk − Effect of Controls'],
+      ['Cyber Risk','Likelihood × Impact'],
+    ]},
+    {title:'Technology & Analytics',color:'#0A6E6E',bg:'#E0F7F7',formulas:[
+      ['Regression (Cost Estimation)','Y = a + bX  (a = fixed cost, b = variable rate, X = activity)'],
+      ['R² (Coefficient of Determination)','% of variation in Y explained by X (0 to 1)'],
+      ['RTO','Maximum acceptable time to restore a system after failure'],
+      ['RPO','Maximum acceptable data loss measured in time'],
+    ]},
+  ];
+  const items=cats.map(cat=>`
+    <div style="margin-bottom:14px">
+      <div style="font-size:13px;font-weight:500;color:${cat.color};background:${cat.bg};padding:8px 12px;border-radius:10px 10px 0 0;letter-spacing:.3px">${cat.title}</div>
+      <div style="border:.5px solid #e0e0d8;border-top:none;border-radius:0 0 10px 10px;overflow:hidden">
+        ${cat.formulas.map(([name,formula],i)=>`
+        <div style="display:flex;gap:10px;padding:9px 12px;border-bottom:${i<cat.formulas.length-1?'.5px solid #f0f0eb':'none'};background:${i%2===0?'#fff':'#fafaf8'}">
+          <div style="font-size:12px;font-weight:500;color:#1a1a1a;width:40%;flex-shrink:0;line-height:1.4">${esc(name)}</div>
+          <div style="font-family:'Courier New',monospace;font-size:12px;color:#185FA5;line-height:1.4;flex:1">${esc(formula)}</div>
+        </div>`).join('')}
+      </div>
+    </div>`).join('');
+  return`<div class="bh"><button class="bh-back" onclick="STATE.tab='study';render()">‹</button>
+    <div style="min-width:0"><div style="font-size:15px;font-weight:500">Formula Bank</div>
+    <div style="font-size:11px;color:#888">Quick reference — all sections</div></div></div>
+  <div class="scroll-area pad" style="padding-top:14px">${items}<div style="height:20px"></div></div>`;
+}
+
+function renderWrongAnswers(){
+  // Collect all wrong answers from lessonScores
+  const scores=STATE.progress.lessonScores||{};
+  const wrongItems=[];
+  for(const sec of S){
+    for(const l of sec.lessons){
+      const sc=scores[l.id];
+      if(sc&&sc.answers){
+        sc.answers.forEach((ans,idx)=>{
+          const q=l.quizzes[idx];
+          if(q&&ans!==q.a) wrongItems.push({sec,lesson:l,q,chosen:ans,correct:q.a});
+        });
+      }
+    }
+  }
+  const total=wrongItems.length;
+  if(total===0){
+    return`<div class="bh"><button class="bh-back" onclick="STATE.tab='progress';render()">‹</button><div style="font-size:15px;font-weight:500">Wrong Answers</div></div>
+    <div class="scroll-area pad" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:60px;text-align:center">
+      <div style="font-size:48px;margin-bottom:16px">🎉</div>
+      <div style="font-size:17px;font-weight:500;color:#1a1a1a;margin-bottom:8px">No wrong answers yet!</div>
+      <div style="font-size:14px;color:#888;line-height:1.6">Take some quizzes and your incorrect answers will appear here for review.</div>
+    </div>`;
+  }
+  const items=wrongItems.map((item,i)=>{
+    const pct=Math.round((item.chosen===item.correct?1:0));
+    return`<div class="card" style="margin-bottom:10px;border-left:3px solid #E24B4A">
+      <div style="font-size:10px;font-weight:500;color:${item.sec.text};margin-bottom:6px">${item.sec.emoji} ${esc(item.sec.title)} · ${esc(item.lesson.title)}</div>
+      <div style="font-size:13px;font-weight:500;color:#1a1a1a;margin-bottom:10px;line-height:1.5">${esc(item.q.q)}</div>
+      ${item.q.o.map((opt,j)=>`
+        <div style="padding:8px 12px;border-radius:8px;margin-bottom:6px;font-size:13px;line-height:1.4;border:.5px solid ${j===item.q.a?'#639922':j===item.chosen?'#E24B4A':'#e0e0d8'};background:${j===item.q.a?'#EAF3DE':j===item.chosen?'#FCEBEB':'#f8f8f6'};color:${j===item.q.a?'#27500A':j===item.chosen?'#791F1F':'#555'}">
+          ${j===item.q.a?'✓ ':''}${j===item.chosen?'✗ ':''}${esc(opt)}
+        </div>`).join('')}
+      <div style="background:#FAEEDA;border-left:3px solid #EF9F27;border-radius:0 8px 8px 0;padding:10px 12px;margin-top:8px">
+        <div style="font-size:10px;font-weight:500;color:#854F0B;letter-spacing:.8px;margin-bottom:4px">EXPLANATION</div>
+        <div style="font-size:12px;color:#633806;line-height:1.55">${esc(item.q.e)}</div>
+      </div>
+    </div>`;
+  }).join('');
+  return`<div class="bh"><button class="bh-back" onclick="STATE.tab='progress';render()">‹</button>
+    <div style="min-width:0"><div style="font-size:15px;font-weight:500">Wrong Answers</div>
+    <div style="font-size:11px;color:#888">${total} question${total===1?'':'s'} to review</div></div></div>
+  <div class="scroll-area pad" style="padding-top:14px">${items}<div style="height:20px"></div></div>`;
+}
+
 function renderProgress(){
   const{progress}=STATE;const pct=getPct();
   const cards=S.map((sec,i)=>{const done=sec.lessons.filter(l=>lessonDone(l.id)).length;const lp=Math.round(done/sec.lessons.length*100);
@@ -6425,13 +6631,15 @@ function renderProgress(){
     <div style="background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:0 14px;margin-bottom:12px">
       ${cards}
     </div>
+    <button class="btn" onclick="STATE.tab='wrong-answers';render()" style="background:#E24B4A;color:#fff;margin-bottom:8px">📋 Review Wrong Answers</button>
     ${resetHTML}<div style="height:16px"></div></div>`;
 }
 
 
 // ─── ACTIONS ──────────────────────────────────────────────────────────────────
 function goLesson(sId){STATE.sectId=sId;STATE.lessonId=null;STATE.tab='lessons';render();}
-function markDone(lid){if(!STATE.progress.done.includes(lid)){saveProg({...STATE.progress,done:[...STATE.progress.done,lid]});setTimeout(syncLeaderboard,500);}STATE.lessonId=null;render();}
+function markDone(lid){if(!STATE.progress.done.includes(lid)){saveProg({...STATE.progress,done:[...STATE.progress.done,lid]});setTimeout(syncLeaderboard,500);updateStreak();}STATE.lessonId=null;render();}
+function getNextLesson(sectId,lessonId){const sec=sect(sectId);if(!sec)return null;const idx=sec.lessons.findIndex(l=>l.id===lessonId);if(idx===-1||idx>=sec.lessons.length-1){const sIdx=S.findIndex(s=>s.id===sectId);if(sIdx===-1||sIdx>=S.length-1)return null;return{sec:S[sIdx+1],lesson:S[sIdx+1].lessons[0]};}return{sec,lesson:sec.lessons[idx+1]};}
 function doLessonQuiz(lid){startQuiz(lid);}
 function startQuiz(lessonId){
   let foundLesson=null,foundSect=null;
@@ -6443,7 +6651,7 @@ function startQuiz(lessonId){
 function selectAnswer(i){if(STATE.quizState.selected!==null)return;STATE.quizState={...STATE.quizState,selected:i};render();}
 function nextQuestion(){
   const qs=STATE.quizState;const correct=qs.selected===qs.questions[qs.idx].a;const newAnswers=[...qs.answers,{selected:qs.selected,correct}];
-  if(qs.idx+1>=qs.questions.length){const rightCount=newAnswers.filter(a=>a.correct).length;const p=STATE.progress;const ls=p.lessonScores||{};saveProg({...p,lessonScores:{...ls,[qs.lessonId]:{correct:rightCount,total:qs.questions.length}},mcqTotal:p.mcqTotal+qs.questions.length,mcqRight:p.mcqRight+rightCount});STATE.quizState={...qs,answers:newAnswers,done:true};STATE.tab='quiz-results';render();}
+  if(qs.idx+1>=qs.questions.length){const rightCount=newAnswers.filter(a=>a.correct).length;const p=STATE.progress;const ls=p.lessonScores||{};const ansArr=newAnswers.map(a=>a.selected);saveProg({...p,lessonScores:{...ls,[qs.lessonId]:{correct:rightCount,total:qs.questions.length,answers:ansArr}},mcqTotal:p.mcqTotal+qs.questions.length,mcqRight:p.mcqRight+rightCount});STATE.quizState={...qs,answers:newAnswers,done:true};updateStreak();STATE.tab='quiz-results';render();}
   else{STATE.quizState={...qs,idx:qs.idx+1,selected:null,answers:newAnswers};render();}
 }
 function resetAll(){saveProg({done:[],lessonScores:{},mcqTotal:0,mcqRight:0});STATE.showReset=false;render();}
@@ -6457,7 +6665,7 @@ function render(){
   const content=document.getElementById('content-area');const nav=document.getElementById('bottom-nav');if(!content||!nav)return;
   let html='';
   switch(STATE.tab){
-    case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;default:html=renderIntro();
+    case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'wrong-answers':html=renderWrongAnswers();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;case'formula-bank':html=renderFormulaBank();break;case'essay-practice':html=renderEssayPractice();break;default:html=renderIntro();
   }
   content.innerHTML=html;
   if(STATE.tab==='search'){setTimeout(()=>{const inp=document.getElementById('search-input');if(inp){inp.focus();if(STATE.searchQ)updateSearchResults();}},50);}
