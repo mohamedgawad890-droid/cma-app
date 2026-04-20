@@ -5004,6 +5004,28 @@ const STATE={tab:'loading',searchQ:'',leaderboardData:[],leaderboardLoaded:false
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 function sect(id){return S.find(s=>s.id===id);}
+
+// ─── PER-QUESTION LIVE TIMER ──────────────────────────────────────────────────
+window._qTimerInterval=null;
+function startQTimer(getStartFn){
+  if(window._qTimerInterval)clearInterval(window._qTimerInterval);
+  window._qTimerInterval=setInterval(()=>{
+    const el=document.getElementById('q-timer-val');
+    if(!el){clearInterval(window._qTimerInterval);return;}
+    const elapsed=Date.now()-getStartFn();
+    const s=Math.floor(elapsed/1000);
+    const m=Math.floor(s/60);
+    el.textContent=m>0?`${m}m ${s%60<10?'0':''}${s%60}s`:`${s}s`;
+    // Color the badge live
+    const badge=document.getElementById('q-timer');
+    if(badge){
+      if(elapsed<60000){badge.style.background='#EAF3DE';badge.style.color='#27500A';}
+      else if(elapsed<120000){badge.style.background='#FAEEDA';badge.style.color='#854F0B';}
+      else{badge.style.background='#FCEBEB';badge.style.color='#791F1F';}
+    }
+  },500);
+}
+function stopQTimer(){if(window._qTimerInterval){clearInterval(window._qTimerInterval);window._qTimerInterval=null;}}
 function getPct(){return Math.round(STATE.progress.done.length/TOTAL_LESSONS*100);}
 function getAcc(){const{mcqTotal,mcqRight}=STATE.progress;return mcqTotal>0?Math.round(mcqRight/mcqTotal*100):0;}
 function lessonDone(lid){return STATE.progress.done.includes(lid);}
@@ -5663,21 +5685,23 @@ function buildQuizModeQuestions(sectionId){
 function startQuizMode(sectionId){
   const questions=buildQuizModeQuestions(sectionId);
   if(!questions.length){alert('No questions available for this section.');return;}
-  STATE.quizMode={active:true,sectionId,idx:0,questions,answers:[],selected:null,done:false};
+  STATE.quizMode={active:true,sectionId,idx:0,questions,answers:[],selected:null,done:false,questionTimes:[],quizStartTime:Date.now(),qTimerStart:Date.now(),qTimerElapsed:null};
   STATE.tab='quiz-mode';render();
 }
 
 function selectQuizModeAnswer(i){
   if(STATE.quizMode.selected!==null)return;
+  stopQTimer();
+  STATE.quizMode.qTimerElapsed=Date.now()-STATE.quizMode.qTimerStart;
   STATE.quizMode.selected=i;render();
 }
 
 function nextQuizModeQuestion(){
   const qm=STATE.quizMode;
   const q=qm.questions[qm.idx];
-  qm.answers.push({selected:qm.selected,correct:qm.selected===q.a});
-  if(qm.idx+1>=qm.questions.length){qm.done=true;qm.selected=null;render();return;}
-  qm.idx++;qm.selected=null;render();
+  const qmt=qm.qTimerElapsed||0;qm.questionTimes=[...(qm.questionTimes||[]),qmt];qm.answers.push({selected:qm.selected,correct:qm.selected===q.a});
+  if(qm.idx+1>=qm.questions.length){qm.done=true;qm.selected=null;qm.quizEndTime=Date.now();render();return;}
+  qm.idx++;qm.selected=null;qm.qTimerStart=Date.now();qm.qTimerElapsed=null;render();
 }
 
 function renderQuizMode(){
@@ -5698,12 +5722,14 @@ function renderQuizMode(){
           ${!qm.answers[i]?.correct?`<div style="font-size:12px;color:#3B6D11;margin-top:3px">✓ ${esc(q.o[q.a])}</div>`:''}
         </div>
       </div>`).join('');
+    const qmTimeHTML=totalTimeHTML(qm.quizStartTime,qm.quizEndTime,qm.questionTimes);
     return`<div class="scroll-area" style="padding:30px 16px 20px;text-align:center">
       <div style="font-size:52px">${emoji}</div>
       <div style="font-size:20px;font-weight:500;margin-top:10px">${label}</div>
       <div style="font-size:46px;font-weight:500;color:#185FA5;margin:6px 0 2px">${pct}%</div>
-      <div style="font-size:14px;color:#888;margin-bottom:8px">${correct} of ${qm.questions.length} correct</div>
-      <div style="font-size:12px;color:#aaa;margin-bottom:24px">${qm.sectionId?S.find(s=>s.id===qm.sectionId)?.title+' Quiz':'Full CMA Quiz'}</div>
+      <div style="font-size:14px;color:#888;margin-bottom:16px">${correct} of ${qm.questions.length} correct</div>
+      <div style="font-size:12px;color:#aaa;margin-bottom:16px">${qm.sectionId?S.find(s=>s.id===qm.sectionId)?.title+' Quiz':'Full CMA Quiz'}</div>
+      ${qmTimeHTML}
       <div style="display:flex;gap:10px;margin-bottom:14px">
         <button class="btn btn-outline" onclick="STATE.tab='quiz-mode-select';render()" style="flex:1">← Back</button>
         <button class="btn" onclick="startQuizMode(${qm.sectionId})" style="flex:1;background:#0C447C;color:#fff">Retake</button>
@@ -5728,12 +5754,13 @@ function renderQuizMode(){
   }).join('');
   const explanation=sel!==null?`<div style="margin-top:14px;padding:13px 14px;border-radius:10px;background:${sel===q.a?'#EAF3DE':'#FCEBEB'};border:1px solid ${sel===q.a?'#639922':'#E24B4A'}"><div style="font-size:12px;font-weight:500;color:${sel===q.a?'#27500A':'#791F1F'};margin-bottom:5px">${sel===q.a?'Correct! Well done.':'Not quite — here is why:'}</div><div style="font-size:13px;color:${sel===q.a?'#3B6D11':'#A32D2D'};line-height:1.55">${esc(q.e)}</div></div>`:''  ;
   const nextBtn=sel!==null?`<button class="btn btn-primary" onclick="nextQuizModeQuestion()" style="background:#0C447C">${qm.idx+1>=qm.questions.length?'See Results':'Next →'}</button>`:`<button class="btn" style="background:#f0f0eb;color:#bbb;cursor:not-allowed">Select an answer to continue</button>`;
+  const qmTimerBadge=timerBadgeHTML(qm.qTimerElapsed,sel!==null);
   return`<div class="bh"><button class="bh-back" onclick="STATE.tab='quiz-mode-select';render()">‹</button>
     <div style="flex:1">
       <div style="font-size:11px;font-weight:500;color:#185FA5">${esc(q.secEmoji+' '+q.lessonTitle)}</div>
       <div style="font-size:14px;font-weight:500">Question ${qm.idx+1} of ${qm.questions.length}</div>
     </div>
-    <span style="font-size:12px;font-weight:500;color:#185FA5;background:#E6F1FB;padding:3px 8px;border-radius:6px">${qm.idx+1}/${qm.questions.length}</span>
+    ${qmTimerBadge}
   </div>
   <div style="height:5px;background:#ebebea;flex-shrink:0"><div style="height:100%;width:${barW}%;background:#0C447C;transition:width .4s;border-radius:0 3px 3px 0"></div></div>
   <div class="scroll-area pad" style="padding-top:16px">
@@ -6413,6 +6440,40 @@ function renderQuizList(){
 }
 
 // ─── QUIZ SESSION ─────────────────────────────────────────────────────────────
+
+// ─── TIMER HELPERS ────────────────────────────────────────────────────────────
+function fmtTime(ms){if(!ms||ms<0)ms=0;const s=Math.floor(ms/1000);const m=Math.floor(s/60);return m>0?`${m}m ${s%60<10?'0':''}${s%60}s`:`${s}s`;}
+function timerColor(ms){if(ms<60000)return{bg:'#EAF3DE',color:'#27500A',dot:'🟢'};if(ms<120000)return{bg:'#FAEEDA',color:'#854F0B',dot:'🟡'};return{bg:'#FCEBEB',color:'#791F1F',dot:'🔴'};}
+function timerBadgeHTML(elapsed,answered){
+  if(!answered){return`<span id="q-timer" style="display:inline-flex;align-items:center;gap:5px;background:#f0f0eb;border-radius:6px;padding:3px 10px;font-size:12px;font-weight:500;color:#555">⏱ <span id="q-timer-val">0s</span></span>`;}
+  const tc=timerColor(elapsed);
+  return`<span style="display:inline-flex;align-items:center;gap:5px;background:${tc.bg};border-radius:6px;padding:3px 10px;font-size:12px;font-weight:500;color:${tc.color}">${tc.dot} ${fmtTime(elapsed)}</span>`;
+}
+function totalTimeHTML(startTime,endTime,questionTimes){
+  if(!startTime||!endTime)return'';
+  const total=endTime-startTime;
+  const avg=questionTimes&&questionTimes.length?Math.round(questionTimes.reduce((a,b)=>a+b,0)/questionTimes.length):0;
+  const cmaTarget=108000;// 1.8 min CMA benchmark
+  const tc=timerColor(avg);
+  const totalFmt=fmtTime(total);
+  const avgFmt=fmtTime(avg);
+  const diff=avg-cmaTarget;
+  const benchFmt=diff<=0?`<span style="color:#27500A;font-weight:500">${fmtTime(Math.abs(diff))} faster than CMA target ✓</span>`:`<span style="color:#791F1F;font-weight:500">${fmtTime(diff)} slower than CMA target</span>`;
+  return`<div style="background:#f5f5f0;border-radius:12px;padding:14px 16px;margin-bottom:16px;text-align:left">
+    <div style="font-size:12px;font-weight:500;color:#888;margin-bottom:10px;letter-spacing:.5px">⏱ TIME ANALYSIS</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+      <div style="background:#fff;border-radius:8px;padding:10px 12px;border:.5px solid #e0e0d8">
+        <div style="font-size:10px;color:#888;margin-bottom:2px">Total Time</div>
+        <div style="font-size:18px;font-weight:500;color:#1a1a1a">${totalFmt}</div>
+      </div>
+      <div style="background:${tc.bg};border-radius:8px;padding:10px 12px;border:.5px solid ${tc.color}30">
+        <div style="font-size:10px;color:#888;margin-bottom:2px">Avg / Question</div>
+        <div style="font-size:18px;font-weight:500;color:${tc.color}">${tc.dot} ${avgFmt}</div>
+      </div>
+    </div>
+    <div style="font-size:12px;color:#555">CMA target: 1.8 min/question — ${benchFmt}</div>
+  </div>`;
+}
 function renderQuizSession(){
   const qs=STATE.quizState;if(!qs)return'';
   const sec=sect(qs.sId);const lessonTitle=S.flatMap(s=>s.lessons).find(l=>l.id===qs.lessonId)?.title||'';const q=qs.questions[qs.idx];const sel=qs.selected;
@@ -6425,7 +6486,8 @@ function renderQuizSession(){
   }).join('');
   const explanation=sel!==null?`<div style="margin-top:14px;padding:13px 14px;border-radius:10px;background:${sel===q.a?'#EAF3DE':'#FCEBEB'};border:1px solid ${sel===q.a?'#639922':'#E24B4A'}"><div style="font-size:12px;font-weight:500;color:${sel===q.a?'#27500A':'#791F1F'};margin-bottom:5px">${sel===q.a?'Correct! Well done.':'Not quite — here is why:'}</div><div style="font-size:13px;color:${sel===q.a?'#3B6D11':'#A32D2D'};line-height:1.55">${esc(q.e)}</div></div>`:'';
   const nextBtn=sel!==null?`<button class="btn btn-primary" onclick="nextQuestion()" style="background:${sec.bar}">${qs.idx+1>=qs.questions.length?'See My Results':'Next Question →'}</button>`:`<button class="btn" style="background:#f0f0eb;color:#bbb;cursor:not-allowed">Select an answer to continue</button>`;
-  return`<div class="bh"><button class="bh-back" onclick="STATE.tab='quiz';STATE.quizState=null;render()">‹</button><div style="flex:1"><div style="font-size:11px;font-weight:500;color:${sec.text}">${esc(lessonTitle)}</div><div style="font-size:14px;font-weight:500">Question ${qs.idx+1} of ${qs.questions.length}</div></div><span style="font-size:12px;font-weight:500;color:${sec.text};background:${sec.bg};padding:3px 8px;border-radius:6px">${qs.idx+1}/${qs.questions.length}</span></div>
+  const timerBadge=timerBadgeHTML(qs.qTimerElapsed,sel!==null);
+  return`<div class="bh"><button class="bh-back" onclick="STATE.tab='quiz';STATE.quizState=null;render()">‹</button><div style="flex:1"><div style="font-size:11px;font-weight:500;color:${sec.text}">${esc(lessonTitle)}</div><div style="font-size:14px;font-weight:500">Question ${qs.idx+1} of ${qs.questions.length}</div></div>${timerBadge}</div>
   <div style="height:5px;background:#ebebea;flex-shrink:0"><div style="height:100%;width:${barW}%;background:${sec.bar};transition:width .4s;border-radius:0 3px 3px 0"></div></div>
   <div class="scroll-area pad" style="padding-top:16px"><div class="card"><p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${esc(q.q)}</p>${opts}${explanation}</div><div style="margin-top:12px">${nextBtn}</div><div style="height:20px"></div></div>`;
 }
@@ -6436,7 +6498,9 @@ function renderQuizResults(){
   const sec=sect(qs.sId);const correct=qs.answers.filter(a=>a.correct).length;const pctQ=Math.round(correct/qs.questions.length*100);const lessonTitle=S.flatMap(s=>s.lessons).find(l=>l.id===qs.lessonId)?.title||'';
   const gradeEmoji=pctQ>=80?'🏆':pctQ>=60?'👍':'📚';const gradeLabel=pctQ>=80?'Excellent!':pctQ>=60?'Good work!':'Keep studying!';
   const breakdown=qs.questions.map((q,i)=>`<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;padding-bottom:${i<qs.questions.length-1?'10px':'0'};border-bottom:${i<qs.questions.length-1?'.5px solid #e0e0d8':'none'}"><span style="font-size:15px;flex-shrink:0">${qs.answers[i]?.correct?'✅':'❌'}</span><div><div style="font-size:13px;color:#333;line-height:1.4">Q${i+1}: ${esc(q.q)}</div>${!qs.answers[i]?.correct?`<div style="font-size:12px;color:#3B6D11;margin-top:3px">Correct: ${esc(q.o[q.a])}</div>`:''}</div></div>`).join('');
-  return`<div class="scroll-area" style="padding:30px 16px 20px;text-align:center"><div style="font-size:52px">${gradeEmoji}</div><div style="font-size:20px;font-weight:500;margin-top:10px">${gradeLabel}</div><div style="font-size:46px;font-weight:500;color:${sec.text};margin:6px 0 2px">${pctQ}%</div><div style="font-size:14px;color:#888;margin-bottom:24px">${correct} out of ${qs.questions.length} correct</div>
+  const timeHTML=totalTimeHTML(qs.quizStartTime,qs.quizEndTime,qs.questionTimes);
+  return`<div class="scroll-area" style="padding:30px 16px 20px;text-align:center"><div style="font-size:52px">${gradeEmoji}</div><div style="font-size:20px;font-weight:500;margin-top:10px">${gradeLabel}</div><div style="font-size:46px;font-weight:500;color:${sec.text};margin:6px 0 2px">${pctQ}%</div><div style="font-size:14px;color:#888;margin-bottom:16px">${correct} out of ${qs.questions.length} correct</div>
+  ${timeHTML}
   <div class="card" style="text-align:left;margin-bottom:14px"><div style="font-size:13px;font-weight:500;color:#555;margin-bottom:12px">Question Review</div>${breakdown}</div>
   <div style="display:flex;gap:10px;margin-bottom:12px"><button class="btn btn-outline" onclick="STATE.tab='quiz';STATE.quizState=null;render()">Back to Quizzes</button><button class="btn" onclick="startQuiz('${qs.lessonId}')" style="background:${sec.bar};color:#fff">Retake Quiz</button></div>
   <button onclick="askAboutResults('${qs.lessonId}',${pctQ})" style="width:100%;padding:12px;border-radius:10px;border:1px solid ${sec.text}50;background:${sec.bg};color:${sec.strong};font-size:13px;cursor:pointer;font-family:inherit;font-weight:500">Ask Mohamed to review weak areas ↗</button><div style="height:20px"></div></div>`;
@@ -6677,14 +6741,14 @@ function startQuiz(lessonId){
   let foundLesson=null,foundSect=null;
   for(const sec of S){for(const l of sec.lessons){if(l.id===lessonId){foundLesson=l;foundSect=sec;break;}}}
   if(!foundLesson){console.log('Lesson not found:',lessonId);return;}
-  STATE.quizState={lessonId,sId:foundSect.id,questions:foundLesson.quizzes,idx:0,selected:null,answers:[]};
+  STATE.quizState={lessonId,sId:foundSect.id,questions:foundLesson.quizzes,idx:0,selected:null,answers:[],questionTimes:[],quizStartTime:Date.now(),qTimerStart:Date.now(),qTimerElapsed:null};
   STATE.tab='quiz-session';render();
 }
-function selectAnswer(i){if(STATE.quizState.selected!==null)return;STATE.quizState={...STATE.quizState,selected:i};render();}
+function selectAnswer(i){if(STATE.quizState.selected!==null)return;stopQTimer();STATE.quizState.qTimerElapsed=Date.now()-STATE.quizState.qTimerStart;STATE.quizState={...STATE.quizState,selected:i};render();}
 function nextQuestion(){
   const qs=STATE.quizState;const correct=qs.selected===qs.questions[qs.idx].a;const newAnswers=[...qs.answers,{selected:qs.selected,correct}];
-  if(qs.idx+1>=qs.questions.length){const rightCount=newAnswers.filter(a=>a.correct).length;const p=STATE.progress;const ls=p.lessonScores||{};const ansArr=newAnswers.map(a=>a.selected);saveProg({...p,lessonScores:{...ls,[qs.lessonId]:{correct:rightCount,total:qs.questions.length,answers:ansArr}},mcqTotal:p.mcqTotal+qs.questions.length,mcqRight:p.mcqRight+rightCount});STATE.quizState={...qs,answers:newAnswers,done:true};updateStreak();STATE.tab='quiz-results';render();}
-  else{STATE.quizState={...qs,idx:qs.idx+1,selected:null,answers:newAnswers};render();}
+  if(qs.idx+1>=qs.questions.length){const rightCount=newAnswers.filter(a=>a.correct).length;const p=STATE.progress;const ls=p.lessonScores||{};const ansArr=newAnswers.map(a=>a.selected);saveProg({...p,lessonScores:{...ls,[qs.lessonId]:{correct:rightCount,total:qs.questions.length,answers:ansArr}},mcqTotal:p.mcqTotal+qs.questions.length,mcqRight:p.mcqRight+rightCount});const qt2=[...(qs.questionTimes||[]),qs.qTimerElapsed||0];STATE.quizState={...qs,answers:newAnswers,done:true,questionTimes:qt2,quizEndTime:Date.now()};updateStreak();STATE.tab='quiz-results';render();}
+  else{const qt=[...(qs.questionTimes||[]),qs.qTimerElapsed||0];STATE.quizState={...qs,idx:qs.idx+1,selected:null,answers:newAnswers,questionTimes:qt,qTimerStart:Date.now(),qTimerElapsed:null};render();}
 }
 function resetAll(){saveProg({done:[],lessonScores:{},mcqTotal:0,mcqRight:0});STATE.showReset=false;render();}
 function askAboutResults(lessonId,pct){const lesson=S.flatMap(s=>s.lessons).find(l=>l.id===lessonId);STATE.chatDraft=`I just scored ${pct}% on the ${lesson?.title||'quiz'}. Can you help me review the weak areas?`;STATE.tab='chat';render();setTimeout(()=>{const el=document.getElementById('chat-input');if(el)el.value=STATE.chatDraft;},50);}
@@ -6708,6 +6772,14 @@ function render(){
     const brandHeader=`<div class="desktop-brand"><div style="font-size:13px;font-weight:600;color:#0C447C;letter-spacing:.5px">CMA PREP</div><div style="font-size:10px;color:#888;margin-top:1px">by Gawad</div></div>`;
     nav.innerHTML=brandHeader+TABS.map(t=>`<button class="nav-btn${t.id===active?' active':''}" onclick="navTo('${t.id}')"><span class="nav-icon">${t.icon}</span><span>${t.label}</span></button>`).join('');}
   if(STATE.tab==='chat'){setTimeout(()=>{const el=document.getElementById('chat-msgs');if(el)el.scrollTop=el.scrollHeight;},20);}
+  // Start live per-question timer when on a quiz screen with unanswered question
+  if(STATE.tab==='quiz-session'&&STATE.quizState&&STATE.quizState.selected===null){
+    setTimeout(()=>startQTimer(()=>STATE.quizState.qTimerStart),20);
+  } else if(STATE.tab==='quiz-mode'&&STATE.quizMode&&!STATE.quizMode.done&&STATE.quizMode.selected===null){
+    setTimeout(()=>startQTimer(()=>STATE.quizMode.qTimerStart),20);
+  } else {
+    stopQTimer();
+  }
 }
 function loadStudent(){try{const d=localStorage.getItem('cma-student-v1');return d?JSON.parse(d):null;}catch{return null;}}
 function saveStudent(d){
