@@ -3234,14 +3234,12 @@ function renderQuizModeSelect(){
     </div>
     <div style="font-size:12px;font-weight:500;color:#888;letter-spacing:.5px;margin-bottom:10px">BY SECTION</div>
     ${S.map(sec=>{
-      const totalQ=sec.lessons.reduce((a,l)=>a+l.quizzes.length,0);
-      if(!totalQ)return'';
       return`<div class="card" style="margin-bottom:10px">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
           <div class="sect-icon" style="background:${sec.bg}">${sec.emoji}</div>
           <div>
             <div style="font-size:13px;font-weight:500;color:#1a1a1a">${esc(sec.title)}</div>
-            <div style="font-size:11px;color:#888">${totalQ} questions · ${sec.weight}% of exam</div>
+            <div style="font-size:11px;color:#888">${sec.lessons.length} lessons · ${sec.weight}% of exam</div>
           </div>
         </div>
         <button onclick="startQuizMode(${sec.id})" class="btn" style="background:${sec.bar};color:#fff;font-size:13px">Start Quiz (up to 50 MCQs)</button>
