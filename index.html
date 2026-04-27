@@ -2535,17 +2535,18 @@ function renderStudy(){
     const lessonList=isOpen?`
       <div style="margin-top:10px;border-top:.5px solid ${sec.text}20;padding-top:10px">
         <div style="font-size:11px;font-weight:500;color:${sec.text};margin-bottom:8px;letter-spacing:.5px">LESSONS & QUIZZES</div>
-        ${sec.lessons.map((l,i)=>{const done=lessonDone(l.id);const lsc=(progress.lessonScores||{})[l.id];return`
-          <div style="background:${done?sec.bg:'#f8f8f6'};margin-bottom:8px;border-radius:10px;border:.5px solid ${done?sec.text+'30':'#e0e0d8'};overflow:hidden">
-            <div onclick="event.stopPropagation();STATE.sectId=${sec.id};STATE.lessonId='${l.id}';render()" style="display:flex;align-items:center;gap:10px;padding:9px 10px;cursor:pointer">
-              <div style="width:24px;height:24px;border-radius:50%;background:${done?sec.bar:'#e5e5e0'};display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;flex-shrink:0;font-weight:500">${done?'✓':i+1}</div>
-              <div style="flex:1;min-width:0"><div style="font-size:10px;font-weight:500;color:${done?sec.text:'#aaa'};margin-bottom:2px">Unit ${i+1}</div><div class="ellipsis" style="font-size:13px;font-weight:500;color:${done?sec.strong:'#1a1a1a'}">${esc(l.title)}</div>
-              <div style="font-size:11px;color:#888;margin-top:1px">${l.dur} · ${done?'Completed':'Not started'}</div></div>
-              <span style="color:#bbb;font-size:16px">›</span>
-            </div>
-            <div style="padding:0 10px 9px;display:flex;align-items:center;justify-content:space-between;border-top:.5px solid ${done?sec.text+'20':'#ebebea'}">
-              <span style="font-size:11px;color:${lsc?(Math.round(lsc.correct/lsc.total*100)>=70?'#3B6D11':'#A32D2D'):'#aaa'}">${lsc?`${Math.round(lsc.correct/lsc.total*100)<70?'🔴 ':'✅ '}Quiz: ${lsc.correct}/${lsc.total} (${Math.round(lsc.correct/lsc.total*100)}%)`:'Quiz not attempted'}</span>
-              <button onclick="event.stopPropagation();doLessonQuiz('${l.id}')" style="padding:5px 12px;border-radius:6px;border:none;background:${sec.bar};color:#fff;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">${lsc?'Retake':'Start Quiz'} (20 MCQs)</button>
+        ${sec.lessons.map((l,i)=>{const done=lessonDone(l.id);const lsc=(progress.lessonScores||{})[l.id];const qpct=lsc?Math.round(lsc.correct/lsc.total*100):null;return`
+          <div style="background:${done?sec.bg:'#f8f8f6'};margin-bottom:8px;border-radius:10px;border:.5px solid ${done?sec.text+'30':'#e0e0d8'}">
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 12px">
+              <div style="width:28px;height:28px;border-radius:50%;background:${done?sec.bar:'#e5e5e0'};display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0;font-weight:600">${done?'✓':i+1}</div>
+              <div style="flex:1;min-width:0">
+                <div class="ellipsis" style="font-size:13px;font-weight:500;color:${done?sec.strong:'#1a1a1a'}">${esc(l.title)}</div>
+                <div style="font-size:11px;color:#888;margin-top:2px">${l.dur}${lsc?` · ${qpct>=70?'✅':'🔴'} ${lsc.correct}/${lsc.total} (${qpct}%)`:' · Quiz not attempted'}</div>
+              </div>
+              <div style="display:flex;gap:6px;flex-shrink:0">
+                <button onclick="event.stopPropagation();STATE.sectId=${sec.id};STATE.lessonId='${l.id}';render()" title="Study Lesson" style="width:36px;height:36px;border-radius:9px;border:.5px solid ${sec.text}30;background:${done?sec.bar:'#fff'};color:${done?'#fff':sec.strong};font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">📖</button>
+                <button onclick="event.stopPropagation();doLessonQuiz('${l.id}')" title="${lsc?'Retake Quiz':'Start Quiz'}" style="width:36px;height:36px;border-radius:9px;border:.5px solid ${lsc?(qpct>=70?'#63992240':'#E24B4A40'):'#185FA540'};background:${lsc?(qpct>=70?'#EAF3DE':'#FCEBEB'):'#E6F1FB'};color:${lsc?(qpct>=70?'#27500A':'#A32D2D'):'#185FA5'};font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">🎯</button>
+              </div>
             </div>
           </div>`}).join('')}
 
@@ -2586,10 +2587,6 @@ function renderStudy(){
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
       <div style="font-size:12px;font-weight:500;color:#888;letter-spacing:.5px">ALL SECTIONS</div>
-      <div style="display:flex;gap:6px">
-        <button onclick="STATE.tab='formula-bank';render()" style="padding:5px 10px;border-radius:8px;border:.5px solid #185FA520;background:#E6F1FB;color:#185FA5;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">📐 Formulas</button>
-        <button onclick="window._essayOpenIdx=null;STATE.tab='essay-practice';render()" style="padding:5px 10px;border-radius:8px;border:.5px solid #63992220;background:#EAF3DE;color:#3B6D11;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">✍️ Essays</button>
-      </div>
     </div>
     ${sectCards}
     <div style="height:20px"></div>
@@ -4096,10 +4093,8 @@ function renderFormulaBank(){
         </div>`).join('')}
       </div>
     </div>`).join('');
-  return`<div class="bh"><button class="bh-back" onclick="STATE.tab='study';render()">‹</button>
-    <div style="min-width:0"><div style="font-size:15px;font-weight:500">Formula Bank</div>
-    <div style="font-size:11px;color:#888">Quick reference — all sections</div></div></div>
-  <div class="scroll-area pad" style="padding-top:14px">${items}<div style="height:20px"></div></div>`;
+  return`<div class="sh"><h2>📐 Formula Bank</h2><p>Quick reference — all CMA Part 1 sections</p></div>
+  <div class="scroll-area pad" style="padding-top:4px">${items}<div style="height:20px"></div></div>`;
 }
 
 function renderWrongAnswers(){
@@ -4228,13 +4223,13 @@ async function ensureQuizzes(sectionId){
 }
 // ─────────────────────────────────────────────────────────────────────────────
 // ─── RENDER ───────────────────────────────────────────────────────────────────
-const TABS=[{id:'intro',label:'Guide',icon:'👤'},{id:'register',label:'Profile',icon:'🎓'},{id:'study',label:'Study',icon:'📚'},{id:'search',label:'Search',icon:'🔍'},{id:'quiz-mode-select',label:'Quiz',icon:'🎯'},{id:'tracker',label:'Tracker',icon:'📌'},{id:'leaderboard',label:'Top',icon:'🏆'},{id:'community',label:'Community',icon:'🌐'},{id:'feedback',label:'Feedback',icon:'⭐'}];
-function activeNavTab(){if(STATE.tab==='quiz-session'||STATE.tab==='quiz-results'||STATE.tab==='dashboard'||STATE.tab==='lessons'||STATE.tab==='quiz')return'study';if(STATE.tab==='question-detail')return'community';return STATE.tab;}
+const TABS=[{id:'intro',label:'Guide',icon:'👤'},{id:'register',label:'Profile',icon:'🎓'},{id:'study',label:'Study',icon:'📚'},{id:'search',label:'Search',icon:'🔍'},{id:'quiz-mode-select',label:'Quiz',icon:'🎯'},{id:'tracker',label:'Tracker',icon:'📌'},{id:'formula-bank',label:'Formulas',icon:'📐'},{id:'leaderboard',label:'Top',icon:'🏆'},{id:'community',label:'Community',icon:'🌐'},{id:'feedback',label:'Feedback',icon:'⭐'}];
+function activeNavTab(){if(STATE.tab==='quiz-session'||STATE.tab==='quiz-results'||STATE.tab==='dashboard'||STATE.tab==='lessons'||STATE.tab==='quiz')return'study';if(STATE.tab==='question-detail')return'community';if(STATE.tab==='essay-practice')return'study';return STATE.tab;}
 function render(){
   const content=document.getElementById('content-area');const nav=document.getElementById('bottom-nav');if(!content||!nav)return;
   let html='';
   switch(STATE.tab){
-    case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'wrong-answers':html=renderWrongAnswers();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;case'formula-bank':html=renderFormulaBank();break;case'essay-practice':html=renderEssayPractice();break;default:html=renderIntro();
+    case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'wrong-answers':html=renderWrongAnswers();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;case'formula-bank':html=renderFormulaBank();break;default:html=renderIntro();
   }
   content.innerHTML=html;
   if(STATE.tab==='search'){setTimeout(()=>{const inp=document.getElementById('search-input');if(inp){inp.focus();if(STATE.searchQ)updateSearchResults();}},50);}
