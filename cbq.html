@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CBQ Practice — CMA Part 1</title>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#0C447C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f0eb;color:#1a1a1a;overscroll-behavior:none}
+#app{display:flex;flex-direction:column;height:100vh;max-width:600px;margin:0 auto;background:#fff;position:relative;overflow:hidden}
+@media(min-width:620px){#app{border-radius:16px;margin:16px auto;height:calc(100vh - 32px);box-shadow:0 8px 40px rgba(0,0,0,.12)}}
+@media(min-width:900px){body{background:#dde3ea}#app{flex-direction:row;max-width:1280px;border-radius:16px;margin:16px auto;height:calc(100vh - 32px)}#sidebar{display:flex!important;flex-direction:column;width:200px;min-width:200px;border-right:.5px solid #e0e0d8;padding:16px 8px;overflow-y:auto;flex-shrink:0}.content{flex:1;min-width:0;overflow:hidden;display:flex;flex-direction:column}}
+#sidebar{display:none}
+.brand{padding:8px 14px 16px;border-bottom:.5px solid #e0e0d8;margin-bottom:8px}
+.brand-name{font-size:15px;font-weight:700;color:#0C447C}
+.brand-sub{font-size:12px;color:#888;margin-top:2px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:14px;color:#555;border:none;background:none;width:100%;text-align:left;font-family:inherit;transition:all .15s}
+.nav-item:hover{background:#f5f5f0}
+.nav-item.active{background:#E6F1FB;color:#0C447C;font-weight:500}
+.content{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.header{padding:14px 16px 12px;border-bottom:.5px solid #e0e0d8;flex-shrink:0;background:#fff}
+.header-top{display:flex;align-items:center;gap:10px}
+.back-btn{background:none;border:none;cursor:pointer;font-size:26px;color:#888;padding:0;line-height:1;font-family:inherit;flex-shrink:0}
+.header-title{font-size:17px;font-weight:600;color:#1a1a1a;flex:1}
+.header-sub{font-size:13px;color:#888;margin-top:3px}
+.sec-tabs{display:flex;gap:6px;padding:10px 16px;background:#fff;border-bottom:.5px solid #e0e0d8;overflow-x:auto;flex-shrink:0;scrollbar-width:none}
+.sec-tabs::-webkit-scrollbar{display:none}
+.sec-tab{padding:6px 14px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;border:none;font-family:inherit;transition:all .15s}
+.sec-tab.active{background:#0C447C;color:#fff}
+.sec-tab:not(.active){background:#f0f0eb;color:#555}
+.scroll-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:20px}
+/* CBQ List */
+.cbq-list{padding:12px 16px}
+.cbq-card{background:#fff;border:.5px solid #e0e0d8;border-radius:14px;padding:16px;margin-bottom:10px;cursor:pointer;transition:all .2s}
+.cbq-card:hover{border-color:#185FA5;box-shadow:0 2px 12px rgba(24,95,165,.1)}
+.cbq-card-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.cbq-num{width:38px;height:38px;border-radius:10px;background:#E6F1FB;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#0C447C;flex-shrink:0}
+.cbq-badge{padding:4px 10px;border-radius:20px;font-size:12px;font-weight:500}
+/* Case */
+.case-box{background:#f8f8f6;border:.5px solid #e0e0d8;border-radius:12px;padding:16px;margin:12px 16px 0}
+.case-label{font-size:11px;font-weight:700;color:#185FA5;letter-spacing:.8px;margin-bottom:8px}
+.case-text{font-size:14px;color:#444;line-height:1.7}
+.exhibit-wrap{overflow-x:auto;margin-top:12px;border-radius:8px;border:.5px solid #d0d0d8}
+.exhibit-tbl{width:100%;border-collapse:collapse;font-size:13px}
+.exhibit-tbl th{padding:8px 12px;text-align:left;font-weight:600;background:#E6F1FB;color:#0C447C;border-bottom:1px solid #c0d4ea}
+.exhibit-tbl td{padding:7px 12px;border-bottom:.5px solid #e0e0d8;color:#444}
+.exhibit-tbl .num{text-align:right;font-family:'Courier New',monospace}
+/* Questions */
+.q-block{margin:14px 16px 0;border:.5px solid #e0e0d8;border-radius:12px;overflow:hidden}
+.q-header{padding:12px 14px;background:#fafaf8;border-bottom:.5px solid #e0e0d8;display:flex;gap:10px;align-items:flex-start}
+.q-num{width:24px;height:24px;border-radius:50%;background:#185FA5;color:#fff;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.q-type-badge{font-size:10px;padding:2px 8px;border-radius:10px;background:#EEEDFE;color:#534AB7;font-weight:700;letter-spacing:.5px;flex-shrink:0;margin-top:3px}
+.q-text{font-size:14px;color:#1a1a1a;line-height:1.55;font-weight:500;flex:1}
+.q-body{padding:12px 14px}
+/* Calc */
+.calc-wrap{display:flex;align-items:center;gap:8px}
+.calc-prefix{font-size:16px;color:#555;font-weight:500}
+.calc-input{border:.5px solid #d0d0d8;border-radius:8px;padding:10px 12px;font-size:16px;font-family:'Courier New',monospace;color:#1a1a1a;background:#fafaf8;outline:none;width:170px;text-align:right;transition:border-color .15s}
+.calc-input:focus{border-color:#185FA5;background:#fff}
+.calc-input.correct{border-color:#639922;background:#EAF3DE;color:#27500A}
+.calc-input.wrong{border-color:#E24B4A;background:#FCEBEB;color:#791F1F}
+/* Select */
+.select-opts{display:flex;flex-direction:column;gap:7px}
+.select-opt{padding:11px 14px;border-radius:8px;border:.5px solid #d0d0d8;cursor:pointer;font-size:14px;color:#444;transition:all .15s;background:#fafaf8;user-select:none;line-height:1.4}
+.select-opt:hover{border-color:#185FA5;background:#f0f6ff}
+.select-opt.selected{border-color:#185FA5;background:#E6F1FB;color:#0C447C;font-weight:500}
+.select-opt.correct{border-color:#639922;background:#EAF3DE;color:#27500A;font-weight:500}
+.select-opt.wrong{border-color:#E24B4A;background:#FCEBEB;color:#791F1F}
+/* Drag */
+.drag-source{display:flex;flex-wrap:wrap;gap:7px;padding:8px 0 12px}
+.drag-area{display:flex;gap:10px;flex-wrap:wrap}
+.drag-col{flex:1;min-width:120px}
+.drag-col-label{font-size:11px;font-weight:700;color:#888;letter-spacing:.5px;margin-bottom:7px;text-align:center}
+.drop-zone{min-height:46px;border:1.5px dashed #c0c8d8;border-radius:8px;padding:6px;background:#fafaf8;transition:all .2s;display:flex;flex-direction:column;gap:5px}
+.drop-zone.over{border-color:#185FA5;background:#EEF5FF}
+.drop-zone.correct{border-color:#639922;border-style:solid;background:#EAF3DE}
+.drop-zone.wrong{border-color:#E24B4A;border-style:solid;background:#FCEBEB}
+.drag-chip{padding:7px 11px;border-radius:7px;background:#E6F1FB;color:#0C447C;font-size:13px;font-weight:500;cursor:grab;user-select:none;border:.5px solid #b0c8e0;text-align:center;touch-action:none}
+.drag-chip:active{cursor:grabbing}
+/* Blank */
+.blank-sentence{font-size:14px;color:#444;line-height:2}
+.blank-sel{border:.5px solid #185FA5;border-radius:6px;padding:4px 8px;font-size:13px;font-family:inherit;color:#0C447C;background:#E6F1FB;outline:none;cursor:pointer;font-weight:500}
+.blank-sel.correct{border-color:#639922;background:#EAF3DE;color:#27500A}
+.blank-sel.wrong{border-color:#E24B4A;background:#FCEBEB;color:#791F1F}
+/* Feedback */
+.q-fb{margin-top:10px;padding:10px 12px;border-radius:8px;font-size:13px;line-height:1.55;display:none}
+.q-fb.show{display:block}
+.q-fb.ok{background:#EAF3DE;border-left:3px solid #639922;color:#27500A}
+.q-fb.no{background:#FCEBEB;border-left:3px solid #E24B4A;color:#791F1F}
+/* Bottom */
+.bottom-bar{padding:12px 16px;border-top:.5px solid #e0e0d8;background:#fff;flex-shrink:0;display:flex;gap:10px;align-items:center}
+.btn{padding:13px;border-radius:10px;font-size:15px;cursor:pointer;font-weight:600;border:none;font-family:inherit;transition:opacity .15s;flex:1}
+.btn:active{opacity:.8}
+.btn-primary{background:#185FA5;color:#fff}
+.btn-success{background:#639922;color:#fff}
+.score-pill{background:#E6F1FB;border-radius:20px;padding:6px 14px;font-size:13px;font-weight:700;color:#0C447C;white-space:nowrap;flex-shrink:0}
+/* Results */
+.res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0}
+.res-stat{background:#f5f5f0;border-radius:10px;padding:12px 8px;text-align:center}
+.res-stat-l{font-size:11px;color:#888;margin-bottom:4px}
+.res-stat-v{font-size:22px;font-weight:700}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="sidebar">
+    <div class="brand"><div class="brand-name">CMA PREP</div><div class="brand-sub">by Gawad</div></div>
+    <button class="nav-item" onclick="location.href='./index.html'"><span style="font-size:18px">📚</span> Back to App</button>
+    <button class="nav-item active"><span style="font-size:18px">🧩</span> CBQ Practice</button>
+  </div>
+  <div class="content">
+    <div class="header">
+      <div class="header-top">
+        <button class="back-btn" onclick="goBack()">‹</button>
+        <div><div class="header-title" id="hTitle">🧩 CBQ Practice</div><div class="header-sub" id="hSub">Case-Based Questions — New 2026 Format</div></div>
+      </div>
+    </div>
+    <div class="sec-tabs" id="secTabs">
+      <button class="sec-tab active" onclick="setSection(0)">📊 Section C</button>
+      <button class="sec-tab" onclick="setSection(1)">💰 Section D</button>
+      <button class="sec-tab" onclick="setSection(2)">📋 Section A</button>
+      <button class="sec-tab" onclick="setSection(3)">📅 Section B</button>
+      <button class="sec-tab" onclick="setSection(4)">🔒 Section E</button>
+      <button class="sec-tab" onclick="setSection(5)">💡 Section F</button>
+    </div>
+    <div class="scroll-area" id="scrollArea">
+      <div id="listView"></div>
+      <div id="detailView" class="hidden"></div>
+      <div id="resultsView" class="hidden"></div>
+    </div>
+    <div class="bottom-bar hidden" id="bottomBar">
+      <span class="score-pill" id="scorePill">0 / 0</span>
+      <button class="btn btn-primary" id="mainBtn" onclick="mainAction()">Check Answers</button>
+    </div>
+  </div>
+</div>
+<script>
+// ════════════════════════════════════════════════════════════════
+// DATA — Section C: Performance Management (5 CBQs)
+// ════════════════════════════════════════════════════════════════
+const DATA = {
+  C:[
+    // ── CBQ 1: Variance Analysis ──────────────────────────────
+    {id:'C1',num:1,title:'Variance Analysis — NovaTech Manufacturing',topics:'DM Variance · DL Variance · Responsibility',
+     case:'NovaTech Manufacturing produces industrial control panels using a standard costing system. For November, the production department completed 4,000 units.\n\nThe purchasing manager bought materials from a new supplier at a lower price. However, the production manager reports that workers used more material and more hours than standard due to machine setup issues.\n\nThe CFO needs a complete variance analysis to identify deviations and assign responsibility.',
+     exhibit:{headers:['Item','Standard','Actual'],rows:[['Units Produced','4,000','4,000'],['DM per unit','2.5 kg @ $8.00/kg','2.8 kg @ $7.50/kg'],['DL per unit','1.5 hrs @ $20.00/hr','1.7 hrs @ $20.50/hr'],['Fixed OH','$48,000','$51,200']]},
+     questions:[
+      {type:'calc',id:'C1Q1',text:'Calculate the DM Price Variance for November.',hint:'(AP − SP) × AQ purchased. AQ = 4,000 × 2.8',exact:5600,tol:10,pre:'$',suf:'',fb:'DM Price Variance = (AP − SP) × AQ = ($7.50 − $8.00) × 11,200 kg = −$0.50 × 11,200 = $5,600 Favorable. Cheaper purchase price = favorable.'},
+      {type:'calc',id:'C1Q2',text:'Calculate the DM Quantity Variance.',hint:'(AQ used − SQ allowed) × SP',exact:9600,tol:10,pre:'$',suf:'',fb:'DM Qty Variance = (AQ − SQ) × SP = (11,200 − 10,000) × $8.00 = $9,600 Unfavorable. More material used than standard.'},
+      {type:'calc',id:'C1Q3',text:'Calculate the DL Rate Variance.',hint:'(AR − SR) × AH. AH = 4,000 × 1.7',exact:3400,tol:10,pre:'$',suf:'',fb:'DL Rate Variance = (AR − SR) × AH = ($20.50 − $20.00) × 6,800 hrs = $3,400 Unfavorable. Paid more per hour than standard.'},
+      {type:'select',id:'C1Q4',text:'The DM Price Variance responsibility belongs to:',opts:['Production Manager','Purchasing Manager','Plant Superintendent','CFO'],ans:1,fb:'The Purchasing Manager negotiates and controls the price paid for materials, making them responsible for the Price Variance.'},
+      {type:'drag',id:'C1Q5',text:'Classify each variance as Favorable (F) or Unfavorable (U):',items:['DM Price Variance','DM Qty Variance','DL Rate Variance','DL Efficiency Variance'],zones:['Favorable','Unfavorable'],correct:{'DM Price Variance':'Favorable','DM Qty Variance':'Unfavorable','DL Rate Variance':'Unfavorable','DL Efficiency Variance':'Unfavorable'},fb:'DM Price: Favorable (cheaper). DM Qty: Unfavorable (more used). DL Rate: Unfavorable (higher hourly pay). DL Efficiency: Unfavorable (more hours used).'},
+      {type:'blank',id:'C1Q6',text:'The DM Quantity Variance is the responsibility of the [B1], because it reflects the efficiency of [B2] usage in production.',blanks:[{id:'B1',opts:['Purchasing Manager','Production Manager','CFO'],ans:'Production Manager'},{id:'B2',opts:['labor','material','overhead'],ans:'material'}],fb:'The Production Manager controls shop floor operations, including how efficiently materials are consumed.'},
+     ]},
+    // ── CBQ 2: ROI vs Residual Income ─────────────────────────
+    {id:'C2',num:2,title:'ROI vs. Residual Income — Apex Group',topics:'ROI · Residual Income · Goal Congruence',
+     case:'Apex Group operates two independent divisions evaluated on ROI. The CFO suspects that the ROI system is causing goal incongruence — managers are rejecting investments that would benefit the overall company.\n\nA new project requires $500,000 investment and generates $70,000 in annual operating income. The required rate of return for both divisions is 12%.',
+     exhibit:{headers:['','Division Alpha','Division Beta'],rows:[['Assets Employed','$5,000,000','$2,000,000'],['Operating Income','$700,000','$260,000'],['New Project — Investment','$500,000','$500,000'],['New Project — Income','$70,000','$70,000']]},
+     questions:[
+      {type:'calc',id:'C2Q1',text:'What is Division Alpha\'s current ROI?',hint:'Operating Income ÷ Assets Employed',exact:14,tol:0.1,pre:'',suf:'%',fb:'ROI = $700,000 ÷ $5,000,000 = 14%'},
+      {type:'calc',id:'C2Q2',text:'What is Division Alpha\'s current Residual Income (RI)?',hint:'Operating Income − (Assets × Required Rate)',exact:100000,tol:10,pre:'$',suf:'',fb:'RI = $700,000 − ($5,000,000 × 12%) = $700,000 − $600,000 = $100,000'},
+      {type:'calc',id:'C2Q3',text:'What is the RI of the new project alone?',hint:'Project Income − (Investment × Required Rate)',exact:10000,tol:10,pre:'$',suf:'',fb:'Project RI = $70,000 − ($500,000 × 12%) = $70,000 − $60,000 = $10,000 Positive → adds value.'},
+      {type:'select',id:'C2Q4',text:'If Alpha is measured by ROI, will the manager accept the new project? (Project ROI = 14%)',opts:['Yes — 14% ROI is high enough to accept','No — it will dilute the division ROI if combined average falls','Yes — positive ROI always accepted','No — ROI is below the hurdle rate'],ans:1,fb:'New combined ROI = ($700K+$70K) ÷ ($5M+$500K) = $770K ÷ $5.5M = 14.0%. Barely changes, but the fear of dilution causes managers to reject. At higher current ROI, managers reject anything that pulls their metric down.'},
+      {type:'select',id:'C2Q5',text:'Which metric better aligns divisional managers with company goals?',opts:['ROI — easy percentage comparison','Residual Income — accepts any project earning above the hurdle rate','ROI — penalizes large assets','Both are equally effective'],ans:1,fb:'RI promotes goal congruence: accept any project with positive RI (earns above required rate) = good for the company. ROI creates dysfunctional behavior when current ROI exceeds the hurdle rate.'},
+      {type:'blank',id:'C2Q6',text:'When a division\'s ROI already [B1] the required rate, managers tend to [B2] projects that earn above the hurdle rate, harming the company.',blanks:[{id:'B1',opts:['is below','exceeds','equals'],ans:'exceeds'},{id:'B2',opts:['accept','reject','delay'],ans:'reject'}],fb:'This is the classic goal incongruence problem: high-performing divisions (ROI > hurdle) reject value-creating projects that would dilute their metric. RI solves this.'},
+     ]},
+    // ── CBQ 3: EVA & DuPont ──────────────────────────────────
+    {id:'C3',num:3,title:'EVA & DuPont Analysis — Meridian Corp',topics:'EVA · WACC · DuPont ROI',
+     case:'Meridian Corp is a listed manufacturer. The board wants to know if the company is creating shareholder value.\n\nCapital structure: 60% equity (cost 14%) and 40% debt (after-tax cost 6%). Net Sales = $8,000,000. NOPAT = $520,000. Net Income = $480,000. Total Assets (= Invested Capital) = $4,000,000.',
+     exhibit:{headers:['Item','Amount'],rows:[['Net Sales','$8,000,000'],['NOPAT','$520,000'],['Net Income','$480,000'],['Invested Capital','$4,000,000'],['Equity (60%)','@ 14%'],['Debt (40%)','@ 6% after-tax']]},
+     questions:[
+      {type:'calc',id:'C3Q1',text:'Calculate WACC.',hint:'(Wd × Kd) + (We × Ke)',exact:10.8,tol:0.1,pre:'',suf:'%',fb:'WACC = (40% × 6%) + (60% × 14%) = 2.4% + 8.4% = 10.8%'},
+      {type:'calc',id:'C3Q2',text:'Calculate EVA.',hint:'NOPAT − (WACC × Invested Capital)',exact:88000,tol:10,pre:'$',suf:'',fb:'EVA = $520,000 − (10.8% × $4,000,000) = $520,000 − $432,000 = $88,000'},
+      {type:'select',id:'C3Q3',text:'The EVA of $88,000 means:',opts:['Meridian is destroying value (WACC > NOPAT)','Meridian is creating value — it earns more than its cost of capital','Meridian is breaking even','EVA needs market price to interpret'],ans:1,fb:'Positive EVA = value created. Meridian earns $88,000 more than what investors require. EVA > 0 → good for shareholders.'},
+      {type:'calc',id:'C3Q4',text:'Calculate Asset Turnover (DuPont component).',hint:'Net Sales ÷ Total Assets',exact:2,tol:0.05,pre:'',suf:'x',fb:'Asset Turnover = $8,000,000 ÷ $4,000,000 = 2.0x'},
+      {type:'drag',id:'C3Q5',text:'Match each formula to its DuPont component:',items:['Net Income ÷ Sales','Sales ÷ Total Assets','Profit Margin × Asset Turnover'],zones:['Profit Margin','Asset Turnover','DuPont ROI'],correct:{'Net Income ÷ Sales':'Profit Margin','Sales ÷ Total Assets':'Asset Turnover','Profit Margin × Asset Turnover':'DuPont ROI'},fb:'Profit Margin = Net Income ÷ Sales. Asset Turnover = Sales ÷ Assets. DuPont ROI = Profit Margin × Asset Turnover.'},
+      {type:'blank',id:'C3Q6',text:'EVA uses [B1] (not Net Income) and [B2] as the cost of capital, making it more comprehensive than simple RI.',blanks:[{id:'B1',opts:['NOPAT','EBIT','Gross Profit'],ans:'NOPAT'},{id:'B2',opts:['WACC','Required Rate of Return','Cost of Equity'],ans:'WACC'}],fb:'EVA = NOPAT − (WACC × Invested Capital). NOPAT removes tax distortions. WACC reflects both debt and equity costs.'},
+     ]},
+    // ── CBQ 4: Balanced Scorecard ────────────────────────────
+    {id:'C4',num:4,title:'Balanced Scorecard — Sunrise Hospital Group',topics:'BSC · KPIs · Strategy Alignment',
+     case:'Sunrise Hospital Group is implementing the Balanced Scorecard (BSC) framework to link strategy to performance measurement.\n\nThe CEO states: "Financial success comes from satisfying patients. Patient satisfaction requires excellent internal processes. Excellent processes require investing in our people and systems."\n\nManagement must classify KPIs into the four BSC perspectives.',
+     exhibit:{headers:['KPI','BSC Perspective (?)'],rows:[['Return on Equity','?'],['Patient Satisfaction Score','?'],['Average Treatment Time','?'],['Staff Training Hours','?'],['Cost per Patient','?'],['Employee Turnover Rate','?']]},
+     questions:[
+      {type:'drag',id:'C4Q1',text:'Drag each KPI to the correct BSC perspective:',items:['Return on Equity','Patient Satisfaction Score','Average Treatment Time','Staff Training Hours'],zones:['Financial','Customer','Internal Process','Learning & Growth'],correct:{'Return on Equity':'Financial','Patient Satisfaction Score':'Customer','Average Treatment Time':'Internal Process','Staff Training Hours':'Learning & Growth'},fb:'Financial → ROE. Customer → Patient Satisfaction. Internal Process → Treatment Time. Learning & Growth → Training Hours.'},
+      {type:'select',id:'C4Q2',text:'In the BSC cause-and-effect chain, which perspective is the FOUNDATION driving all others?',opts:['Financial','Customer','Internal Process','Learning & Growth'],ans:3,fb:'Learning & Growth is the root: invest in people → improve processes → satisfy customers → achieve financial results. It all starts from the bottom.'},
+      {type:'select',id:'C4Q3',text:'"Patient Satisfaction Score" is a:',opts:['Purely lagging indicator — measures past results','Lagging indicator for operations AND leading indicator for financial results','Purely leading indicator — predicts future only','Neither — not a valid performance metric'],ans:1,fb:'BSC metrics are often both: Patient Satisfaction lags operational performance (past service quality) but leads future revenue and loyalty (leading financial indicator). This dual nature is a BSC strength.'},
+      {type:'select',id:'C4Q4',text:'The main advantage of BSC over traditional financial reporting is:',opts:['It eliminates financial statements','It links non-financial drivers to long-term financial outcomes','It focuses only on customer satisfaction','It replaces budgeting'],ans:1,fb:'BSC provides a balanced, multi-perspective view connecting non-financial drivers (processes, people, customers) to long-term financial success — something pure financial statements cannot show.'},
+      {type:'blank',id:'C4Q5',text:'The [B1] perspective covers operational efficiency (e.g., treatment time), while the [B2] perspective covers skills and systems needed to sustain those operations.',blanks:[{id:'B1',opts:['Financial','Customer','Internal Process','Learning & Growth'],ans:'Internal Process'},{id:'B2',opts:['Financial','Customer','Internal Process','Learning & Growth'],ans:'Learning & Growth'}],fb:'Internal Process = HOW we operate. Learning & Growth = WHAT enables us to operate well (people, technology, culture).'},
+     ]},
+    // ── CBQ 5: Transfer Pricing ──────────────────────────────
+    {id:'C5',num:5,title:'Transfer Pricing — Vertex Industries',topics:'Transfer Price · Capacity · Goal Congruence',
+     case:'Vertex Industries has two divisions. The Components Division makes a part (variable cost $45/unit, external price $80). Capacity: 20,000 units/year.\n\nScenario A: Division is at FULL capacity (20,000 units sold externally).\nScenario B: Division has 5,000 units of spare capacity.\n\nThe Assembly Division requests 5,000 units internally. It can source externally at $80.',
+     exhibit:{headers:['Item','Value'],rows:[['Variable Cost per unit','$45'],['External Market Price','$80'],['Annual Capacity','20,000 units'],['Scenario A — Current Output','20,000 (full capacity)'],['Scenario B — Current Output','15,000 (spare = 5,000)'],['Requested Transfer','5,000 units']]},
+     questions:[
+      {type:'calc',id:'C5Q1',text:'Minimum transfer price at FULL capacity (Scenario A)?',hint:'Min TP = Variable Cost + Opportunity Cost per unit',exact:80,tol:0.5,pre:'$',suf:'',fb:'At full capacity, to give 5,000 units to Assembly, Components gives up 5,000 external sales. Min TP = $45 + ($80−$45) = $45 + $35 = $80. Opportunity cost = lost CM = $35/unit.'},
+      {type:'calc',id:'C5Q2',text:'Minimum transfer price with SPARE capacity (Scenario B)?',hint:'No opportunity cost when spare capacity available',exact:45,tol:0.5,pre:'$',suf:'',fb:'With spare capacity, no external sales are foregone. Opportunity cost = $0. Min TP = Variable Cost = $45 only.'},
+      {type:'select',id:'C5Q3',text:'At full capacity with TP = $80, which statement is TRUE for the overall company?',opts:['Company gains — internal transfer saves costs','Company is indifferent — no overall benefit or cost from the internal transfer','Company loses — Components foregoes premium sales','Company gains — Assembly pays less than market'],ans:1,fb:'At TP = $80 (= external price), Components is indifferent between internal and external. Assembly pays same as market. Overall company: no gain or loss (unless selling/shipping costs are saved on internal transfers).'},
+      {type:'select',id:'C5Q4',text:'The PRIMARY purpose of a transfer pricing system is to:',opts:['Minimize total tax liability','Measure divisional performance fairly and encourage decisions that benefit the whole company','Maximize the supplying division\'s profit','Match external market prices exactly'],ans:1,fb:'Transfer pricing serves two goals: (1) fair performance measurement of each division, and (2) goal congruence — decisions that benefit each division should also benefit the overall company.'},
+      {type:'blank',id:'C5Q5',text:'Min TP formula = Variable Cost + [B1]. With spare capacity, the [B1] equals zero, so Min TP = [B2] cost only.',blanks:[{id:'B1',opts:['Fixed Cost','Opportunity Cost','Selling Price'],ans:'Opportunity Cost'},{id:'B2',opts:['total','variable','fixed'],ans:'variable'}],fb:'Min TP = Variable Cost + Opportunity Cost. Opportunity cost = CM foregone per unit when capacity is given up. With spare capacity: opportunity cost = $0, so Min TP = variable cost.'},
+     ]},
+  ],
+  D:[], A:[], B:[], E:[], F:[]
+};
+
+const SEC_KEYS = ['C','D','A','B','E','F'];
+const SEC_META = {
+  C:{title:'Performance Management',color:'#7B3FA0'},
+  D:{title:'Cost Management',color:'#854F0B'},
+  A:{title:'External Financial Reporting',color:'#0C447C'},
+  B:{title:'Planning, Budgeting & Forecasting',color:'#185FA5'},
+  E:{title:'Internal Controls',color:'#639922'},
+  F:{title:'Technology & Analytics',color:'#534AB7'},
+};
+
+// ════════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════════
+let S = {
+  secIdx: 0,
+  view: 'list',
+  cbqIdx: 0,
+  answers: {},
+  checked: false,
+  scores: {},
+};
+
+let dragItem=null, dragFromZone=null, dragQid=null;
+
+// ════════════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════════════
+renderList();
+
+function setSection(i){
+  S.secIdx=i; S.view='list'; S.checked=false;
+  document.querySelectorAll('.sec-tab').forEach((t,j)=>t.classList.toggle('active',i===j));
+  renderList();
+}
+
+function goBack(){
+  if(S.view==='list') location.href='./index.html';
+  else renderList();
+}
+
+// ════════════════════════════════════════════════════════════════
+// LIST
+// ════════════════════════════════════════════════════════════════
+function renderList(){
+  S.view='list';
+  show('listView'); hide('detailView'); hide('resultsView');
+  show('secTabs'); hide('bottomBar');
+  set('hTitle','🧩 CBQ Practice');
+  set('hSub','Case-Based Questions — New 2026 Format');
+
+  const key = SEC_KEYS[S.secIdx];
+  const meta = SEC_META[key];
+  const cbqs = DATA[key];
+
+  if(!cbqs||!cbqs.length){
+    document.getElementById('listView').innerHTML=`<div style="text-align:center;padding:50px 20px">
+      <div style="font-size:40px;margin-bottom:12px">🚧</div>
+      <div style="font-size:17px;font-weight:600;margin-bottom:8px">Coming Soon</div>
+      <div style="font-size:14px;color:#888">CBQs for Section ${key} are being prepared. Check back soon!</div>
+    </div>`;
+    return;
+  }
+
+  const totalQs = cbqs.reduce((a,c)=>a+c.questions.length,0);
+  document.getElementById('listView').innerHTML=`
+    <div class="cbq-list">
+      <div style="margin-bottom:12px">
+        <div style="font-size:13px;font-weight:600;color:${meta.color}">Section ${key} — ${meta.title}</div>
+        <div style="font-size:13px;color:#888;margin-top:3px">${cbqs.length} Case-Based Questions · ${totalQs} sub-questions</div>
+      </div>
+      ${cbqs.map((c,i)=>{
+        const sc=S.scores[c.id];
+        const pct=sc?Math.round(sc.s/sc.t*100):null;
+        const badge=sc?(pct>=70?`<span class="cbq-badge" style="background:#EAF3DE;color:#27500A">✓ ${sc.s}/${sc.t} (${pct}%)</span>`:`<span class="cbq-badge" style="background:#FAEEDA;color:#854F0B">⚑ ${sc.s}/${sc.t} (${pct}%)</span>`):`<span class="cbq-badge" style="background:#E6F1FB;color:#185FA5">Not attempted</span>`;
+        return`<div class="cbq-card" onclick="openCBQ(${i})">
+          <div class="cbq-card-top">
+            <div class="cbq-num">${c.num}</div>
+            <div style="flex:1"><div style="font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:2px">${c.title}</div><div style="font-size:13px;color:#888">${c.topics}</div></div>
+            <span style="font-size:22px;color:#ccc">›</span>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">${badge}<span class="cbq-badge" style="background:#f0f0eb;color:#555">${c.questions.length} questions</span></div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+// ════════════════════════════════════════════════════════════════
+// DETAIL
+// ════════════════════════════════════════════════════════════════
+function openCBQ(i){
+  S.cbqIdx=i; S.view='detail'; S.checked=false; S.answers={};
+  renderDetail();
+}
+
+function renderDetail(){
+  const cbq = DATA[SEC_KEYS[S.secIdx]][S.cbqIdx];
+  hide('listView'); hide('resultsView'); show('detailView'); hide('secTabs'); show('bottomBar');
+  set('hTitle',`CBQ ${cbq.num} / ${DATA[SEC_KEYS[S.secIdx]].length}`);
+  set('hSub',cbq.title);
+  setBtn('Check Answers','btn btn-primary',mainAction);
+  updatePill(cbq);
+
+  document.getElementById('detailView').innerHTML=
+    renderCase(cbq) +
+    cbq.questions.map((q,i)=>renderQ(q,i)).join('') +
+    `<div style="height:8px"></div>`;
+
+  setupDrag();
+  document.getElementById('scrollArea').scrollTop=0;
+}
+
+function renderCase(cbq){
+  const ex = cbq.exhibit?`<div class="exhibit-wrap">
+    <div style="font-size:11px;font-weight:700;color:#185FA5;letter-spacing:.6px;padding:6px 12px;background:#E6F1FB;border-bottom:.5px solid #c0d4ea">📊 EXHIBIT</div>
+    <table class="exhibit-tbl"><tr>${cbq.exhibit.headers.map(h=>`<th>${h}</th>`).join('')}</tr>${cbq.exhibit.rows.map(r=>`<tr>${r.map((c,i)=>`<td class="${i>0?'num':''}">${c}</td>`).join('')}</tr>`).join('')}</table></div>`:'';
+  return`<div class="case-box"><div class="case-label">📄 CASE STUDY</div><div class="case-text">${cbq.case.replace(/\n/g,'<br>')}</div>${ex}</div>`;
+}
+
+function renderQ(q,idx){
+  const types={calc:'CALCULATION',select:'SELECT FROM LIST',drag:'DRAG & DROP',blank:'FILL IN BLANK'};
+  let body='';
+  if(q.type==='calc') body=`<div class="calc-wrap"><span class="calc-prefix">${q.pre||'$'}</span><input type="number" class="calc-input" id="inp_${q.id}" placeholder="0" step="any" oninput="S.answers['${q.id}']=this.value"><span style="font-size:14px;color:#888">${q.suf||''}</span></div>`;
+  else if(q.type==='select') body=`<div class="select-opts">${q.opts.map((o,i)=>`<div class="select-opt" id="so_${q.id}_${i}" onclick="pickOpt('${q.id}',${i})">${o}</div>`).join('')}</div>`;
+  else if(q.type==='drag') body=renderDragQ(q);
+  else if(q.type==='blank') body=renderBlankQ(q);
+  return`<div class="q-block" id="qb_${q.id}"><div class="q-header"><div class="q-num">${idx+1}</div><div style="flex:1"><div style="display:flex;gap:8px;align-items:center;margin-bottom:5px"><span class="q-type-badge">${types[q.type]}</span></div><div class="q-text">${q.text}</div>${q.hint?`<div style="font-size:12px;color:#888;margin-top:4px;font-style:italic">💡 ${q.hint}</div>`:''}</div></div><div class="q-body">${body}<div class="q-fb" id="fb_${q.id}"></div></div></div>`;
+}
+
+function renderDragQ(q){
+  const chips = q.items.map(it=>`<div class="drag-chip" data-qid="${q.id}" data-item="${it}" id="chip_${q.id}_${it.replace(/\W/g,'_')}" draggable="true">${it}</div>`).join('');
+  const zones = q.zones.map(z=>`<div class="drag-col"><div class="drag-col-label">${z}</div><div class="drop-zone" id="zone_${q.id}_${z.replace(/\W/g,'_')}"></div></div>`).join('');
+  return`<div id="dsrc_${q.id}" class="drag-source">${chips}</div><div class="drag-area">${zones}</div>`;
+}
+
+function renderBlankQ(q){
+  let txt=q.text;
+  q.blanks.forEach((b,i)=>{
+    const opts=b.opts.map(o=>`<option value="${o}">${o}</option>`).join('');
+    txt=txt.replace(`[${b.id}]`,`<select class="blank-sel" id="bl_${q.id}_${b.id}" onchange="setBlank('${q.id}','${b.id}',this.value)"><option value="">—select—</option>${opts}</select>`);
+  });
+  return`<div class="blank-sentence">${txt}</div>`;
+}
+
+// ════════════════════════════════════════════════════════════════
+// INTERACTIONS
+// ════════════════════════════════════════════════════════════════
+function pickOpt(qid,i){
+  if(S.checked)return;
+  S.answers[qid]=i;
+  document.querySelectorAll(`[id^="so_${qid}_"]`).forEach((el,j)=>el.classList.toggle('selected',j===i));
+}
+function setBlank(qid,bid,val){
+  if(!S.answers[qid])S.answers[qid]={};
+  S.answers[qid][bid]=val;
+}
+
+// DRAG
+function setupDrag(){
+  document.querySelectorAll('.drag-chip').forEach(chip=>{
+    chip.addEventListener('dragstart',e=>{
+      dragItem=chip.dataset.item; dragQid=chip.dataset.qid;
+      // find which zone it's in (if any)
+      dragFromZone=chip.parentElement.id.startsWith('zone_')?chip.parentElement:null;
+      e.dataTransfer.effectAllowed='move';
+      chip.style.opacity='.4';
+    });
+    chip.addEventListener('dragend',e=>{ chip.style.opacity='1'; });
+  });
+  document.querySelectorAll('.drop-zone').forEach(zone=>{
+    zone.addEventListener('dragover',e=>{ e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave',()=>zone.classList.remove('over'));
+    zone.addEventListener('drop',e=>{
+      e.preventDefault(); zone.classList.remove('over');
+      if(!dragItem)return;
+      const zoneId=zone.id; // zone_QID_ZONENAME
+      const parts=zoneId.split('_'); parts.shift(); parts.shift();
+      const zoneName=parts.join('_').replace(/_/g,' ');
+      // find actual zone name from q
+      const q=DATA[SEC_KEYS[S.secIdx]][S.cbqIdx].questions.find(x=>x.id===dragQid);
+      const matchedZone=q?q.zones.find(z=>z.replace(/\W/g,'_')===parts.join('_')):null;
+      if(!matchedZone)return;
+      if(!S.answers[dragQid])S.answers[dragQid]={};
+      S.answers[dragQid][dragItem]=matchedZone;
+      const chip=document.getElementById(`chip_${dragQid}_${dragItem.replace(/\W/g,'_')}`);
+      if(chip)zone.appendChild(chip);
+      dragItem=null; dragQid=null;
+    });
+  });
+}
+
+// ════════════════════════════════════════════════════════════════
+// CHECK
+// ════════════════════════════════════════════════════════════════
+function mainAction(){
+  if(!S.checked) check();
+  else nextOrResults();
+}
+
+function check(){
+  S.checked=true;
+  const cbq=DATA[SEC_KEYS[S.secIdx]][S.cbqIdx];
+  let score=0;
+  cbq.questions.forEach(q=>{
+    let ok=false;
+    const a=S.answers[q.id];
+    if(q.type==='calc'){
+      const n=parseFloat((a+'').replace(/,/g,''));
+      ok=!isNaN(n)&&Math.abs(n-q.exact)<=(q.tol||1);
+      const el=document.getElementById(`inp_${q.id}`);
+      if(el){el.classList.add(ok?'correct':'wrong');el.disabled=true;}
+    } else if(q.type==='select'){
+      ok=parseInt(a)===q.ans;
+      document.querySelectorAll(`[id^="so_${q.id}_"]`).forEach((el,i)=>{
+        if(i===q.ans)el.classList.add('correct');
+        else if(i===parseInt(a)&&!ok)el.classList.add('wrong');
+      });
+    } else if(q.type==='drag'){
+      const placed=a||{};
+      ok=q.items.every(it=>placed[it]===q.correct[it]);
+      q.zones.forEach(z=>{
+        const zEl=document.getElementById(`zone_${q.id}_${z.replace(/\W/g,'_')}`);
+        if(zEl){const exp=q.items.filter(it=>q.correct[it]===z);const got=q.items.filter(it=>(placed[it]||'')=== z);const zOk=exp.length===got.length&&exp.every(it=>got.includes(it));zEl.classList.add(zOk?'correct':'wrong');}
+      });
+    } else if(q.type==='blank'){
+      const placed=a||{};
+      ok=q.blanks.every(b=>placed[b.id]===b.ans);
+      q.blanks.forEach(b=>{
+        const el=document.getElementById(`bl_${q.id}_${b.id}`);
+        if(el){el.classList.add(placed[b.id]===b.ans?'correct':'wrong');el.disabled=true;}
+      });
+    }
+    if(ok)score++;
+    const fb=document.getElementById(`fb_${q.id}`);
+    if(fb){fb.textContent=(ok?'✅ Correct! ':'❌ Incorrect. ')+q.fb;fb.className=`q-fb show ${ok?'ok':'no'}`;}
+  });
+
+  S.scores[cbq.id]={s:score,t:cbq.questions.length};
+  updatePill(cbq);
+  const hasNext=S.cbqIdx<DATA[SEC_KEYS[S.secIdx]].length-1;
+  setBtn(hasNext?'Next Case →':'View Results',`btn ${score/cbq.questions.length>=0.7?'btn-success':'btn-primary'}`,mainAction);
+}
+
+function nextOrResults(){
+  const cbqs=DATA[SEC_KEYS[S.secIdx]];
+  if(S.cbqIdx<cbqs.length-1){S.cbqIdx++;S.checked=false;S.answers={};renderDetail();}
+  else renderResults();
+}
+
+function updatePill(cbq){
+  const sc=S.scores[cbq.id];
+  document.getElementById('scorePill').textContent=sc?`${sc.s} / ${sc.t}`:`0 / ${cbq.questions.length}`;
+}
+
+// ════════════════════════════════════════════════════════════════
+// RESULTS
+// ════════════════════════════════════════════════════════════════
+function renderResults(){
+  S.view='results';
+  hide('listView');hide('detailView');show('resultsView');hide('secTabs');show('bottomBar');
+  set('hTitle','Results'); set('hSub',SEC_META[SEC_KEYS[S.secIdx]].title);
+
+  const key=SEC_KEYS[S.secIdx]; const cbqs=DATA[key];
+  let ts=0,tt=0;
+  cbqs.forEach(c=>{const sc=S.scores[c.id];if(sc){ts+=sc.s;tt+=sc.t;}});
+  const pct=tt?Math.round(ts/tt*100):0;
+  const icon=pct>=80?'🏆':pct>=60?'📈':'📚';
+  const msg=pct>=80?'Excellent!':pct>=60?'Good progress!':'Keep practicing!';
+
+  document.getElementById('resultsView').innerHTML=`<div style="padding:20px 16px;text-align:center">
+    <div style="font-size:52px;margin-bottom:10px">${icon}</div>
+    <div style="font-size:22px;font-weight:700;color:#1a1a1a;margin-bottom:4px">${msg}</div>
+    <div style="font-size:14px;color:#888;margin-bottom:18px">Section ${key} — ${SEC_META[key].title}</div>
+    <div class="res-grid">
+      <div class="res-stat"><div class="res-stat-l">Score</div><div class="res-stat-v" style="color:#185FA5">${pct}%</div></div>
+      <div class="res-stat"><div class="res-stat-l">Correct</div><div class="res-stat-v" style="color:#639922">${ts}</div></div>
+      <div class="res-stat"><div class="res-stat-l">Questions</div><div class="res-stat-v">${tt}</div></div>
+    </div>
+    ${cbqs.map(c=>{const sc=S.scores[c.id];const p=sc?Math.round(sc.s/sc.t*100):0;
+    return`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:.5px solid #f0f0eb;text-align:left">
+      <div style="width:32px;height:32px;border-radius:8px;background:#E6F1FB;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#0C447C;flex-shrink:0">${c.num}</div>
+      <div style="flex:1"><div style="font-size:14px;font-weight:500;margin-bottom:4px">${c.title}</div>
+      <div style="height:5px;background:#f0f0eb;border-radius:3px;overflow:hidden"><div style="height:100%;width:${p}%;background:${p>=70?'#639922':'#E24B4A'};border-radius:3px"></div></div></div>
+      <div style="font-size:13px;font-weight:700;color:${p>=70?'#27500A':'#791F1F'};flex-shrink:0">${sc?sc.s+'/'+sc.t:'—'}</div>
+    </div>`;}).join('')}
+  </div>`;
+
+  document.getElementById('scorePill').textContent=`${ts} / ${tt}`;
+  setBtn('Try Again','btn btn-primary',()=>{S.scores={};renderList();});
+}
+
+// ════════════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════════════
+function show(id){document.getElementById(id).classList.remove('hidden');}
+function hide(id){document.getElementById(id).classList.add('hidden');}
+function set(id,txt){document.getElementById(id).textContent=txt;}
+function setBtn(label,cls,fn){const b=document.getElementById('mainBtn');b.textContent=label;b.className=cls;b.onclick=fn;}
+</script>
+</body>
+</html>
