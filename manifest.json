@@ -1,7 +1,7 @@
 {
   "name": "CMA Part 1 Prep — Mohamed Abdelgawad",
   "short_name": "CMA Prep",
-  "description": "Complete CMA Part 1 study app — 113 lessons, 2,295 MCQs, Progress Tracking",
+"description": "Complete CMA Part 1 study app — 113 lessons, 2,295 MCQs, CBQ Practice, Progress Tracking"
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
