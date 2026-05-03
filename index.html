@@ -2448,6 +2448,26 @@ function updateStreak(){
 }
 
 
+// ── PWA Install Prompt ──────────────────────────────────────────────────────
+let deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  render();
+});
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  render();
+});
+function installApp(){
+  if(!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  deferredInstallPrompt.userChoice.then(() => {
+    deferredInstallPrompt = null;
+    render();
+  });
+}
+
 const STATE={tab:'loading',searchQ:'',leaderboardData:[],leaderboardLoaded:false,quizMode:{active:false,sectionId:null,idx:0,questions:[],answers:[],selected:null},user:null,authScreen:'login',authError:'',authLoading:false,communityFilter:'all',questionDetail:null,showAskForm:false,communityQuestions:[],questionReplies:[],draftTitle:'',draftBody:'',draftSection:'General',draftReply:'',trackerOpenSects:[],sectId:null,lessonId:null,quizState:null,showProfileWarning:false,progress:{done:[],scores:{},mcqTotal:0,mcqRight:0},
   chatMsgs:[{r:'a',t:"Hi! I'm Mohamed Abdelgawad, your CMA Part 1 instructor. I have 20 years of finance experience and I'm here to help you pass the CMA exam. Ask me anything! 🎓"}],
   chatLoading:false,apiKey:loadKey(),showKeyInput:false,showReset:false,chatDraft:''};
@@ -4239,7 +4259,7 @@ function render(){
   if(STATE.tab==='loading'||STATE.tab==='login'||STATE.tab==='onboarding'){nav.style.display='none';}
   else{nav.style.display='flex';
     const active=activeNavTab();
-    const brandHeader=`<div class="desktop-brand"><div style="font-size:13px;font-weight:600;color:#0C447C;letter-spacing:.5px">CMA PREP</div><div style="font-size:10px;color:#888;margin-top:1px">by Gawad</div></div>`;
+    const brandHeader=`<div class="desktop-brand" style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:13px;font-weight:600;color:#0C447C;letter-spacing:.5px">CMA PREP</div><div style="font-size:10px;color:#888;margin-top:1px">by Gawad</div></div>${deferredInstallPrompt&&!window.matchMedia("(display-mode: standalone)").matches?'<button onclick="installApp()" title="Install App" style="width:30px;height:30px;border-radius:8px;border:1px solid #d0d8e8;background:#E6F1FB;color:#0C447C;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0">⬇</button>':''}</div>`;
     nav.innerHTML=brandHeader+TABS.map(t=>`<button class="nav-btn${t.id===active?' active':''}" onclick="navTo('${t.id}')"><span class="nav-icon">${t.icon}</span><span>${t.label}</span></button>`).join('');}
   if(STATE.tab==='chat'){setTimeout(()=>{const el=document.getElementById('chat-msgs');if(el)el.scrollTop=el.scrollHeight;},20);}
   // Start live per-question timer when on a quiz screen with unanswered question
