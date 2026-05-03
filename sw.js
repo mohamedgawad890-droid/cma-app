@@ -1,11 +1,17 @@
-// CMA Prep — Service Worker v2
+// CMA Prep — Service Worker v3
 // Strategy: Network-first with cache fallback
 
-const CACHE_NAME = 'cma-prep-v2';
+const CACHE_NAME = 'cma-prep-v3';
 const OFFLINE_URLS = [
   './',
   './index.html',
-  './cbq.html'
+  './cbq.html',
+  './questions/s1.json',
+  './questions/s2.json',
+  './questions/s3.json',
+  './questions/s4.json',
+  './questions/s5.json',
+  './questions/s6.json'
 ];
 
 self.addEventListener('install', event => {
