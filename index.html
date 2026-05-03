@@ -2460,12 +2460,35 @@ window.addEventListener('appinstalled', () => {
   render();
 });
 function installApp(){
-  if(!deferredInstallPrompt) return;
-  deferredInstallPrompt.prompt();
-  deferredInstallPrompt.userChoice.then(() => {
-    deferredInstallPrompt = null;
-    render();
-  });
+  if(deferredInstallPrompt){
+    deferredInstallPrompt.prompt();
+    deferredInstallPrompt.userChoice.then(()=>{deferredInstallPrompt=null;render();});
+    return;
+  }
+  // Show manual install instructions
+  const isSafari=/^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  const isFF=/firefox/i.test(navigator.userAgent);
+  let steps='';
+  if(isSafari){
+    steps=`<div class="istep">١. اضغط زرار <b>Share</b> 🔗 في أسفل الشاشة</div><div class="istep">٢. اختار <b>"Add to Home Screen"</b></div><div class="istep">٣. اضغط <b>"Add"</b></div>`;
+  } else if(isFF){
+    steps=`<div class="istep">Firefox لا يدعم تثبيت التطبيقات حالياً</div><div class="istep">استخدم <b>Chrome أو Edge</b> للتثبيت</div>`;
+  } else {
+    steps=`<div class="istep">١. ابحث عن أيقونة <b>⊕</b> أو <b>🖥️</b> في يمين شريط العنوان</div><div class="istep">٢. اضغط عليها واختار <b>"Install"</b></div><div class="istep">٣. اضغط <b>"Install"</b> مرة ثانية للتأكيد</div>`;
+  }
+  const m=document.createElement('div');
+  m.id='install-modal';
+  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+  m.innerHTML=`<div style="background:#fff;border-radius:16px;padding:24px 22px;max-width:320px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,.2)">
+    <div style="font-size:32px;text-align:center;margin-bottom:10px">📥</div>
+    <div style="font-size:16px;font-weight:600;color:#0C447C;text-align:center;margin-bottom:6px">تثبيت التطبيق</div>
+    <div style="font-size:12px;color:#888;text-align:center;margin-bottom:16px">اتبع الخطوات التالية</div>
+    <style>.istep{font-size:14px;color:#333;line-height:1.7;padding:6px 0;border-bottom:.5px solid #f0f0eb;direction:rtl;text-align:right}.istep:last-child{border:none}</style>
+    ${steps}
+    <button onclick="document.getElementById('install-modal').remove()" style="width:100%;margin-top:16px;padding:12px;background:#0C447C;color:#fff;border:none;border-radius:10px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:500">حسناً</button>
+  </div>`;
+  document.body.appendChild(m);
+  m.addEventListener('click',e=>{if(e.target===m)m.remove();});
 }
 
 const STATE={tab:'loading',searchQ:'',leaderboardData:[],leaderboardLoaded:false,quizMode:{active:false,sectionId:null,idx:0,questions:[],answers:[],selected:null},user:null,authScreen:'login',authError:'',authLoading:false,communityFilter:'all',questionDetail:null,showAskForm:false,communityQuestions:[],questionReplies:[],draftTitle:'',draftBody:'',draftSection:'General',draftReply:'',trackerOpenSects:[],sectId:null,lessonId:null,quizState:null,showProfileWarning:false,progress:{done:[],scores:{},mcqTotal:0,mcqRight:0},
@@ -4259,7 +4282,7 @@ function render(){
   if(STATE.tab==='loading'||STATE.tab==='login'||STATE.tab==='onboarding'){nav.style.display='none';}
   else{nav.style.display='flex';
     const active=activeNavTab();
-    const brandHeader=`<div class="desktop-brand" style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:13px;font-weight:600;color:#0C447C;letter-spacing:.5px">CMA PREP</div><div style="font-size:10px;color:#888;margin-top:1px">by Gawad</div></div>${deferredInstallPrompt&&!window.matchMedia("(display-mode: standalone)").matches?'<button onclick="installApp()" title="Install App" style="width:30px;height:30px;border-radius:8px;border:1px solid #d0d8e8;background:#E6F1FB;color:#0C447C;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0">⬇</button>':''}</div>`;
+    const brandHeader=`<div class="desktop-brand" style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:13px;font-weight:600;color:#0C447C;letter-spacing:.5px">CMA PREP</div><div style="font-size:10px;color:#888;margin-top:1px">by Gawad</div></div>${!window.matchMedia("(display-mode: standalone)").matches?'<button onclick="installApp()" title="Install App" style="width:30px;height:30px;border-radius:8px;border:1px solid #d0d8e8;background:#E6F1FB;color:#0C447C;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0">⬇</button>':''}</div>`;
     nav.innerHTML=brandHeader+TABS.map(t=>`<button class="nav-btn${t.id===active?' active':''}" onclick="navTo('${t.id}')"><span class="nav-icon">${t.icon}</span><span>${t.label}</span></button>`).join('');}
   if(STATE.tab==='chat'){setTimeout(()=>{const el=document.getElementById('chat-msgs');if(el)el.scrollTop=el.scrollHeight;},20);}
   // Start live per-question timer when on a quiz screen with unanswered question
