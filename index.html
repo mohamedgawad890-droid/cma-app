@@ -2480,6 +2480,7 @@ function getPct(){return Math.round(STATE.progress.done.length/TOTAL_LESSONS*100
 function getAcc(){const{mcqTotal,mcqRight}=STATE.progress;return mcqTotal>0?Math.round(mcqRight/mcqTotal*100):0;}
 function lessonDone(lid){return STATE.progress.done.includes(lid);}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function normalizeCase(t){const K=new Set(['GAAP','IFRS','LIFO','FIFO','WACC','ROI','NPV','IRR','CMA','US','USA','FASB','IASB','SEC','PCAOB','EPS','DM','DL','OH','SHA','AH','AP','SP','VOH','ABC','JIT','CVP','COGS','PPE','FCF','EVA','BSC','KPI','ERP','MRP','CRM','AI','ML','BI','SQL','ETL','API','AFS','HTM','OCI','FV','NOL','DTA','DTL','GDP','CPI','IPO','ETF','LBO','DCF','CAPM','IT','HR','ASC','ASU','COD','FICA','RD','EBIT','EBITDA','COSO','SOX','IRS','CEO','CFO','COO','CPA','CIA','ICFR']);return String(t).replace(/([A-Z][A-Z]+)/g,(m)=>K.has(m)?m:m.charAt(0)+m.slice(1).toLowerCase());}
 function getStudyStreak(){return loadStreak().count||0;}
 
 // ─── RENDER LESSON BLOCK ──────────────────────────────────────────────────────
@@ -3209,7 +3210,7 @@ function renderQuizMode(){
     if(sel!==null){if(i===q.a){bg='#EAF3DE';border='1px solid #639922';textC='#27500A';circBg='#c0dd97';circC='#27500A';circBorder='1px solid #639922';circTxt='✓';}
     else if(i===sel&&sel!==q.a){bg='#FCEBEB';border='1px solid #E24B4A';textC='#791F1F';circBg='#f7c1c1';circC='#791F1F';circBorder='1px solid #E24B4A';circTxt='✗';}
     else{textC='#888';}}
-    return`<div class="q-opt" onclick="selectQuizModeAnswer(${i})" style="background:${bg};border:${border};${sel===null?'cursor:pointer':'cursor:default'}"><div class="q-circle" style="background:${circBg};color:${circC};border:${circBorder}">${circTxt}</div><div class="q-text" style="color:${textC}">${esc(opt)}</div></div>`;
+    return`<div class="q-opt" onclick="selectQuizModeAnswer(${i})" style="background:${bg};border:${border};${sel===null?'cursor:pointer':'cursor:default'}"><div class="q-circle" style="background:${circBg};color:${circC};border:${circBorder}">${circTxt}</div><div class="q-text" style="color:${textC}">${esc(normalizeCase(opt))}</div></div>`;
   }).join('');
   const explanation=sel!==null?`<div style="margin-top:14px;padding:13px 14px;border-radius:10px;background:${sel===q.a?'#EAF3DE':'#FCEBEB'};border:1px solid ${sel===q.a?'#639922':'#E24B4A'}"><div style="font-size:12px;font-weight:500;color:${sel===q.a?'#27500A':'#791F1F'};margin-bottom:5px">${sel===q.a?'Correct! Well done.':'Not quite — here is why:'}</div><div style="font-size:13px;color:${sel===q.a?'#3B6D11':'#A32D2D'};line-height:1.55">${esc(q.e)}</div></div>`:''  ;
   const nextBtn=sel!==null?`<button class="btn btn-primary" onclick="nextQuizModeQuestion()" style="background:#0C447C">${qm.idx+1>=qm.questions.length?'See Results':'Next →'}</button>`:`<button class="btn" style="background:#f0f0eb;color:#bbb;cursor:not-allowed">Select an answer to continue</button>`;
@@ -3939,7 +3940,7 @@ function renderQuizSession(){
     let bg='#f5f5f0',border='.5px solid #e0e0d8',textC='#1a1a1a',circBg='#e5e5e0',circC='#666',circBorder='.5px solid #bbb',circTxt=String.fromCharCode(65+i);
     if(sel!==null){if(i===q.a){bg='#EAF3DE';border='1px solid #639922';textC='#27500A';circBg='#c0dd97';circC='#27500A';circBorder='1px solid #639922';circTxt='✓';}else if(i===sel&&sel!==q.a){bg='#FCEBEB';border='1px solid #E24B4A';textC='#791F1F';circBg='#f7c1c1';circC='#791F1F';circBorder='1px solid #E24B4A';circTxt='✗';}else{textC='#888';}}
     const cursor=sel===null?'cursor:pointer':'cursor:default';
-    return`<div class="q-opt" onclick="selectAnswer(${i})" style="background:${bg};border:${border};${cursor}"><div class="q-circle" style="background:${circBg};color:${circC};border:${circBorder}">${circTxt}</div><div class="q-text" style="color:${textC}">${esc(opt)}</div></div>`;
+    return`<div class="q-opt" onclick="selectAnswer(${i})" style="background:${bg};border:${border};${cursor}"><div class="q-circle" style="background:${circBg};color:${circC};border:${circBorder}">${circTxt}</div><div class="q-text" style="color:${textC}">${esc(normalizeCase(opt))}</div></div>`;
   }).join('');
   const explanation=sel!==null?`<div style="margin-top:14px;padding:13px 14px;border-radius:10px;background:${sel===q.a?'#EAF3DE':'#FCEBEB'};border:1px solid ${sel===q.a?'#639922':'#E24B4A'}"><div style="font-size:12px;font-weight:500;color:${sel===q.a?'#27500A':'#791F1F'};margin-bottom:5px">${sel===q.a?'Correct! Well done.':'Not quite — here is why:'}</div><div style="font-size:13px;color:${sel===q.a?'#3B6D11':'#A32D2D'};line-height:1.55">${esc(q.e)}</div></div>`:'';
   const nextBtn=sel!==null?`<button class="btn btn-primary" onclick="nextQuestion()" style="background:${sec.bar}">${qs.idx+1>=qs.questions.length?'See My Results':'Next Question →'}</button>`:`<button class="btn" style="background:#f0f0eb;color:#bbb;cursor:not-allowed">Select an answer to continue</button>`;
