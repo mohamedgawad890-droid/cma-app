@@ -2442,8 +2442,32 @@ function saveProg(p){
 function loadKey(){return localStorage.getItem('cma-api-key')||'';}
 function saveKey(k){localStorage.setItem('cma-api-key',k);}
 
-function loadLessonNote(lid){try{return localStorage.getItem('cma-note-'+lid)||'';}catch{return'';}}
-function saveLessonNote(lid,val){try{localStorage.setItem('cma-note-'+lid,val);}catch{}}
+function loadLessonNote(lid){try{return localStorage.getItem('cma-note-'+lid)||'';}catch{return '';}}
+let _noteDebounce={};
+function saveLessonNote(lid,val){
+  try{localStorage.setItem('cma-note-'+lid,val);}catch{}
+  clearTimeout(_noteDebounce[lid]);
+  _noteDebounce[lid]=setTimeout(()=>{
+    if(STATE.user&&db){
+      db.collection('notes').doc(STATE.user.uid).collection('lessons').doc(lid)
+        .set({text:val,updatedAt:firebase.firestore.FieldValue.serverTimestamp()})
+        .catch(()=>{});
+    }
+  },1500);
+}
+async function syncNoteFromCloud(lid){
+  if(!STATE.user||!db)return;
+  try{
+    const doc=await db.collection('notes').doc(STATE.user.uid).collection('lessons').doc(lid).get();
+    if(doc.exists){
+      const cloud=doc.data().text||'';
+      try{localStorage.setItem('cma-note-'+lid,cloud);}catch{}
+      const el=document.getElementById('lesson-notes-'+lid);
+      if(el&&el.value!==cloud)el.value=cloud;
+    }
+  }catch{}
+}
+
 
 function loadStreak(){try{const d=localStorage.getItem('cma-streak-v1');return d?JSON.parse(d):{count:0,lastDate:''};}catch{return{count:0,lastDate:''};}}
 function saveStreak(s){try{localStorage.setItem('cma-streak-v1',JSON.stringify(s));}catch{}}
@@ -4284,6 +4308,7 @@ function render(){
     case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'wrong-answers':html=renderWrongAnswers();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;case'formula-bank':html=renderFormulaBank();break;default:html=renderIntro();
   }
   content.innerHTML=html;
+  if(STATE.tab==='study'&&STATE.lessonId){setTimeout(()=>syncNoteFromCloud(STATE.lessonId),0);}
   if(STATE.tab==='search'){setTimeout(()=>{const inp=document.getElementById('search-input');if(inp){inp.focus();if(STATE.searchQ)updateSearchResults();}},50);}
   content.style.display='flex';content.style.flexDirection='column';content.style.overflow=STATE.tab==='chat'?'hidden':'auto';
   if(STATE.tab==='loading'||STATE.tab==='login'||STATE.tab==='onboarding'){nav.style.display='none';}
