@@ -4367,19 +4367,20 @@ async function ensureQuizzes(sectionId){
 }
 // ─────────────────────────────────────────────────────────────────────────────
 // ─── RENDER ───────────────────────────────────────────────────────────────────
-const TABS=[{id:'intro',label:'Guide',icon:'👤'},{id:'register',label:'Profile',icon:'🎓'},{id:'study',label:'Study',icon:'📚'},{id:'cbq',label:'CBQ',icon:'📝'},{id:'search',label:'Search',icon:'🔍'},{id:'quiz-mode-select',label:'Quiz',icon:'🎯'},{id:'tracker',label:'Tracker',icon:'📌'},{id:'formula-bank',label:'Formulas',icon:'📐'},{id:'leaderboard',label:'Top',icon:'🏆'},{id:'community',label:'Community',icon:'🌐'},{id:'feedback',label:'Feedback',icon:'⭐'}];
+const TABS=[{id:'intro',label:'Guide',icon:'👤'},{id:'register',label:'Profile',icon:'🎓'},{id:'study',label:'Study',icon:'📚'},{id:'cbq',label:'CBQ',icon:'📝'},{id:'mock-exam',label:'Mock',icon:'🏆'},{id:'search',label:'Search',icon:'🔍'},{id:'quiz-mode-select',label:'Quiz',icon:'🎯'},{id:'tracker',label:'Tracker',icon:'📌'},{id:'formula-bank',label:'Formulas',icon:'📐'},{id:'leaderboard',label:'Top',icon:'🏅'},{id:'community',label:'Community',icon:'🌐'},{id:'feedback',label:'Feedback',icon:'⭐'}];
 function activeNavTab(){if(STATE.tab==='quiz-session'||STATE.tab==='quiz-results'||STATE.tab==='dashboard'||STATE.tab==='lessons'||STATE.tab==='quiz')return'study';if(STATE.tab==='question-detail')return'community';if(STATE.tab==='essay-practice')return'study';return STATE.tab;}
 function render(){
   const content=document.getElementById('content-area');const nav=document.getElementById('bottom-nav');if(!content||!nav)return;
   let html='';
   switch(STATE.tab){
-    case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'wrong-answers':html=renderWrongAnswers();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;case'formula-bank':html=renderFormulaBank();break;case'cbq':html=renderCBQ();break;default:html=renderIntro();
+    case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'wrong-answers':html=renderWrongAnswers();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;case'formula-bank':html=renderFormulaBank();break;case'cbq':html=renderCBQ();break;case'mock-exam':html=renderMockExamScreen();break;default:html=renderIntro();
   }
   content.innerHTML=html;
   if(STATE.tab==='cbq'){content.style.overflow='hidden';setTimeout(()=>cbqInit(),0);}
+  if(STATE.tab==='mock-exam'){content.style.overflow='hidden';if(STATE.mockExam.status==='mcq')setTimeout(()=>renderMockMCQContent(),0);if(STATE.mockExam.status==='cbq')setTimeout(()=>mockSetupMockDrag(),0);}
   if(STATE.tab==='study'&&STATE.lessonId){setTimeout(()=>syncNoteFromCloud(STATE.lessonId),0);}
   if(STATE.tab==='search'){setTimeout(()=>{const inp=document.getElementById('search-input');if(inp){inp.focus();if(STATE.searchQ)updateSearchResults();}},50);}
-  content.style.display='flex';content.style.flexDirection='column';content.style.overflow=STATE.tab==='chat'||STATE.tab==='cbq'?'hidden':'auto';
+  content.style.display='flex';content.style.flexDirection='column';content.style.overflow=STATE.tab==='chat'||STATE.tab==='cbq'||STATE.tab==='mock-exam'?'hidden':'auto';
   if(STATE.tab==='loading'||STATE.tab==='login'||STATE.tab==='onboarding'){nav.style.display='none';}
   else{nav.style.display='flex';
     const active=activeNavTab();
@@ -4633,8 +4634,12 @@ async function submitProfile(){
 }
 
 function navTo(tab){
+  if(STATE.mockExam&&(STATE.mockExam.status==='mcq'||STATE.mockExam.status==='cbq')&&tab!=='mock-exam'){
+    if(!confirm('Leave the exam? Progress will be lost.'))return;
+    mockClearTimers();STATE.mockExam.status='idle';
+  }
   if(!STATE.user&&tab!=='login'&&tab!=='loading'&&tab!=='onboarding'&&tab!=='quiz-mode'&&tab!=='quiz-mode-select'){STATE.tab='login';render();return;}
-  if(tab!=='intro'&&tab!=='register'&&tab!=='login'&&tab!=='loading'&&tab!=='feedback'&&tab!=='community'&&tab!=='leaderboard'&&tab!=='search'&&tab!=='quiz-mode-select'&&tab!=='question-detail'&&tab!=='cbq'){
+  if(tab!=='intro'&&tab!=='register'&&tab!=='login'&&tab!=='loading'&&tab!=='feedback'&&tab!=='community'&&tab!=='leaderboard'&&tab!=='search'&&tab!=='quiz-mode-select'&&tab!=='question-detail'&&tab!=='cbq'&&tab!=='mock-exam'){
     const st=loadStudent();
     const fb=loadFeedback();
     const isComplete=st&&st.name&&st.mobile&&st.email&&st.country&&st.examdate&&st.photo&&st.university&&st.faculty&&st.gradyear;
@@ -5273,6 +5278,439 @@ function cbqRenderResults(){
   cbqSetBtn('Try Again','cbq-btn cbq-btn-primary',()=>{CBQ_S.scores={};cbqRenderList();});
 }
 // ════ END CBQ ════
+
+
+// ════════════════════════════════════════════════════════════════
+// MOCK EXAM SIMULATOR
+// CMA Part 1: 100 MCQs / 3 hrs → 2 CBQs / 1 hr
+// ════════════════════════════════════════════════════════════════
+
+function mockShuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+function mockFmtTime(s){
+  const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;
+  if(h>0)return`${h}:${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
+  return`${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
+}
+
+// ── State ─────────────────────────────────────────────────────
+if(!STATE.mockExam)STATE.mockExam={status:'idle',mcqQ:[],mcqA:{},mcqFlagged:[],mcqCurr:0,mcqTime:10800,mcqInterval:null,cbqCases:[],cbqA:{},cbqScores:{},cbqCurr:0,cbqTime:3600,cbqInterval:null,results:null,navOpen:false};
+
+function mockClearTimers(){
+  if(STATE.mockExam.mcqInterval){clearInterval(STATE.mockExam.mcqInterval);STATE.mockExam.mcqInterval=null;}
+  if(STATE.mockExam.cbqInterval){clearInterval(STATE.mockExam.cbqInterval);STATE.mockExam.cbqInterval=null;}
+}
+
+// ── Question selection ─────────────────────────────────────────
+function mockSelectMCQ(){
+  const qs=[];
+  S.forEach(sec=>{
+    let pool=[];
+    sec.lessons.forEach(l=>{if(l.quizzes&&l.quizzes.length)l.quizzes.forEach(q=>pool.push({...q,sid:sec.id,stitle:sec.title,sbar:sec.bar,sweight:sec.weight}));});
+    pool=mockShuffle(pool);
+    qs.push(...pool.slice(0,sec.weight));
+  });
+  return mockShuffle(qs);
+}
+
+function mockSelectCBQ(){
+  let pool=[];
+  CBQ_SEC_KEYS.forEach(k=>{if(CBQ_DATA[k])CBQ_DATA[k].forEach(c=>pool.push({...c,sk:k}));});
+  return mockShuffle(pool).slice(0,2);
+}
+
+// ── Start ──────────────────────────────────────────────────────
+async function startMockExam(){
+  STATE.mockExam.status='loading';render();
+  for(let i=1;i<=6;i++)await ensureQuizzes(i);
+  STATE.mockExam={
+    status:'mcq',
+    mcqQ:mockSelectMCQ(),mcqA:{},mcqFlagged:[],mcqCurr:0,mcqTime:10800,mcqInterval:null,
+    cbqCases:mockSelectCBQ(),cbqA:{},cbqScores:{},cbqCurr:0,cbqTime:3600,cbqInterval:null,
+    results:null,navOpen:false
+  };
+  render();
+  STATE.mockExam.mcqInterval=setInterval(()=>{
+    if(STATE.tab!=='mock-exam'){mockClearTimers();return;}
+    STATE.mockExam.mcqTime--;
+    const tel=document.getElementById('mock-timer');
+    if(tel){tel.textContent=mockFmtTime(STATE.mockExam.mcqTime);tel.style.color=STATE.mockExam.mcqTime<300?'#E24B4A':'#1a1a1a';}
+    mockUpdateNav();
+    if(STATE.mockExam.mcqTime<=0){clearInterval(STATE.mockExam.mcqInterval);STATE.mockExam.mcqInterval=null;mockSubmitMCQ(true);}
+  },1000);
+}
+
+// ── MCQ Interactions ───────────────────────────────────────────
+function mockAnswerQ(idx,opt){
+  if(STATE.mockExam.mcqA[idx]===opt){delete STATE.mockExam.mcqA[idx];}
+  else STATE.mockExam.mcqA[idx]=opt;
+  document.querySelectorAll('.mock-opt').forEach((el,i)=>{
+    el.classList.toggle('selected',i===opt);
+    el.classList.toggle('mock-opt-prev',STATE.mockExam.mcqA[idx]===undefined&&false);
+  });
+  mockUpdateNav();
+}
+
+function mockFlagQ(idx){
+  const fi=STATE.mockExam.mcqFlagged.indexOf(idx);
+  if(fi>=0)STATE.mockExam.mcqFlagged.splice(fi,1);
+  else STATE.mockExam.mcqFlagged.push(idx);
+  const btn=document.getElementById('mock-flag-btn');
+  if(btn){btn.textContent=STATE.mockExam.mcqFlagged.includes(idx)?'🚩 Flagged':'⚑ Flag';}
+  mockUpdateNav();
+}
+
+function mockGoToQ(idx){
+  STATE.mockExam.mcqCurr=idx;
+  STATE.mockExam.navOpen=false;
+  renderMockMCQContent();
+}
+
+function mockNavToggle(){STATE.mockExam.navOpen=!STATE.mockExam.navOpen;renderMockMCQContent();}
+
+function mockUpdateNav(){
+  const grid=document.getElementById('mock-nav-grid');
+  if(!grid)return;
+  const{mcqQ,mcqA,mcqFlagged,mcqCurr}=STATE.mockExam;
+  grid.innerHTML=mcqQ.map((_,i)=>{
+    const ans=mcqA[i]!==undefined,flag=mcqFlagged.includes(i),cur=i===mcqCurr;
+    const bg=cur?'#0C447C':flag?'#EF9F27':ans?'#185FA5':'#f0f0eb';
+    const col=cur||ans?'#fff':flag?'#fff':'#555';
+    return`<button onclick="mockGoToQ(${i})" style="width:32px;height:32px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-weight:600;background:${bg};color:${col};font-family:inherit">${i+1}</button>`;
+  }).join('');
+  const answered=Object.keys(mcqA).length;
+  const prog=document.getElementById('mock-prog');
+  if(prog)prog.textContent=`${answered}/100 answered · ${mcqFlagged.length} flagged`;
+}
+
+function renderMockMCQContent(){
+  const cont=document.getElementById('mock-mcq-content');
+  if(!cont)return;
+  const{mcqQ,mcqA,mcqFlagged,mcqCurr,navOpen}=STATE.mockExam;
+  const q=mcqQ[mcqCurr];
+  if(!q)return;
+  const flagged=mcqFlagged.includes(mcqCurr);
+  const answered=mcqA[mcqCurr];
+  const labels=['A','B','C','D'];
+
+  cont.innerHTML=`
+  <div style="flex:1;overflow-y:auto;padding:16px">
+    ${navOpen?`<div style="background:#fafaf8;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:14px">
+      <div style="font-size:12px;font-weight:600;color:#555;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">
+        <span>Question Navigator</span><span id="mock-prog" style="font-size:11px;color:#888"></span>
+      </div>
+      <div id="mock-nav-grid" style="display:grid;grid-template-columns:repeat(10,1fr);gap:4px"></div>
+      <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:#888">
+        <span>🟦 Answered</span><span>🟧 Flagged</span><span>⬜ Unanswered</span><span style="background:#0C447C;color:#fff;padding:1px 6px;border-radius:3px">Current</span>
+      </div>
+    </div>`:''}
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <span style="font-size:12px;font-weight:600;color:${q.sbar};background:${q.sbar}18;padding:3px 10px;border-radius:10px">${q.stitle}</span>
+      <button id="mock-flag-btn" onclick="mockFlagQ(${mcqCurr})" style="border:none;background:none;cursor:pointer;font-size:13px;font-weight:600;color:${flagged?'#EF9F27':'#888'};font-family:inherit;padding:4px 8px;border-radius:8px;border:.5px solid ${flagged?'#EF9F27':'#d0d0d8'}">${flagged?'🚩 Flagged':'⚑ Flag'}</button>
+    </div>
+    <div style="font-size:15px;font-weight:500;color:#1a1a1a;line-height:1.6;margin-bottom:18px">${q.q}</div>
+    <div style="display:flex;flex-direction:column;gap:9px" id="mock-opts">
+      ${q.o.map((opt,i)=>{
+        const sel=answered===i;
+        return`<div class="mock-opt" onclick="mockAnswerQ(${mcqCurr},${i})" style="padding:12px 14px;border-radius:10px;border:.5px solid ${sel?'#185FA5':'#d0d0d8'};background:${sel?'#E6F1FB':'#fafaf8'};cursor:pointer;display:flex;gap:12px;align-items:flex-start;transition:all .15s">
+          <span style="width:22px;height:22px;border-radius:50%;background:${sel?'#185FA5':'#e0e0d8'};color:${sel?'#fff':'#555'};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">${labels[i]}</span>
+          <span style="font-size:14px;color:${sel?'#0C447C':'#333'};font-weight:${sel?'500':'400'};line-height:1.45">${opt}</span>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>
+  <div style="padding:12px 16px;border-top:.5px solid #e0e0d8;background:#fff;flex-shrink:0;display:flex;gap:10px;align-items:center">
+    <button onclick="mockGoToQ(${Math.max(0,mcqCurr-1)})" ${mcqCurr===0?'disabled':''} style="padding:10px 16px;border-radius:10px;border:.5px solid #d0d0d8;background:#fff;cursor:pointer;font-size:14px;font-family:inherit;opacity:${mcqCurr===0?'.4':'1'}">← Prev</button>
+    <button onclick="mockNavToggle()" style="flex:1;padding:10px;border-radius:10px;border:.5px solid #d0d0d8;background:#f5f5f0;cursor:pointer;font-size:13px;font-weight:500;font-family:inherit"># ${mcqCurr+1}/100</button>
+    ${mcqCurr<99?`<button onclick="mockGoToQ(${mcqCurr+1})" style="padding:10px 16px;border-radius:10px;border:none;background:#185FA5;color:#fff;cursor:pointer;font-size:14px;font-family:inherit;font-weight:500">Next →</button>`
+    :`<button onclick="mockConfirmSubmitMCQ()" style="padding:10px 16px;border-radius:10px;border:none;background:#639922;color:#fff;cursor:pointer;font-size:14px;font-family:inherit;font-weight:600">Submit ✓</button>`}
+  </div>`;
+  mockUpdateNav();
+}
+
+function mockConfirmSubmitMCQ(){
+  const answered=Object.keys(STATE.mockExam.mcqA).length;
+  const unanswered=100-answered;
+  const msg=unanswered>0?`You have ${unanswered} unanswered question${unanswered>1?'s':''}. Submit anyway?`:'Submit all 100 answers?';
+  if(confirm(msg))mockSubmitMCQ(false);
+}
+
+function mockSubmitMCQ(autoSubmit){
+  mockClearTimers();
+  STATE.mockExam.status='cbq';
+  render();
+  STATE.mockExam.cbqInterval=setInterval(()=>{
+    if(STATE.tab!=='mock-exam'){mockClearTimers();return;}
+    STATE.mockExam.cbqTime--;
+    const tel=document.getElementById('mock-timer');
+    if(tel){tel.textContent=mockFmtTime(STATE.mockExam.cbqTime);tel.style.color=STATE.mockExam.cbqTime<300?'#E24B4A':'#1a1a1a';}
+    if(STATE.mockExam.cbqTime<=0){clearInterval(STATE.mockExam.cbqInterval);STATE.mockExam.cbqInterval=null;mockSubmitCBQ();}
+  },1000);
+}
+
+// ── CBQ Interactions in Mock ────────────────────────────────────
+function mockCBQPickOpt(caseIdx,qid,i){
+  if(!STATE.mockExam.cbqA[caseIdx])STATE.mockExam.cbqA[caseIdx]={};
+  STATE.mockExam.cbqA[caseIdx][qid]=i;
+  document.querySelectorAll(`[id^="mso_${caseIdx}_${qid}_"]`).forEach((el,j)=>el.classList.toggle('selected',j===i));
+}
+
+function mockCBQSetBlank(caseIdx,qid,bid,val){
+  if(!STATE.mockExam.cbqA[caseIdx])STATE.mockExam.cbqA[caseIdx]={};
+  if(!STATE.mockExam.cbqA[caseIdx][qid])STATE.mockExam.cbqA[caseIdx][qid]={};
+  STATE.mockExam.cbqA[caseIdx][qid][bid]=val;
+}
+
+function mockCBQCheck(caseIdx){
+  const cbq=STATE.mockExam.cbqCases[caseIdx];
+  const answers=STATE.mockExam.cbqA[caseIdx]||{};
+  let score=0;
+  cbq.questions.forEach(q=>{
+    let ok=false;
+    const a=answers[q.id];
+    if(q.type==='calc'){const n=parseFloat((a+'').replace(/,/g,''));ok=!isNaN(n)&&Math.abs(n-q.exact)<=(q.tol||1);const el=document.getElementById(`minp_${caseIdx}_${q.id}`);if(el){el.classList.add(ok?'correct':'wrong');el.disabled=true;}}
+    else if(q.type==='select'){ok=parseInt(a)===q.ans;document.querySelectorAll(`[id^="mso_${caseIdx}_${q.id}_"]`).forEach((el,i)=>{if(i===q.ans)el.classList.add('correct');else if(i===parseInt(a)&&!ok)el.classList.add('wrong');});}
+    else if(q.type==='blank'){const placed=a||{};ok=q.blanks.every(b=>placed[b.id]===b.ans);q.blanks.forEach(b=>{const el=document.getElementById(`mbl_${caseIdx}_${q.id}_${b.id}`);if(el){el.classList.add(placed[b.id]===b.ans?'correct':'wrong');el.disabled=true;}});}
+    else if(q.type==='drag'){const placed=a||{};ok=q.items.every(it=>placed[it]===q.correct[it]);}
+    if(ok)score++;
+    const fb=document.getElementById(`mfb_${caseIdx}_${q.id}`);
+    if(fb){fb.textContent=(ok?'✅ Correct! ':'❌ Incorrect. ')+q.fb;fb.className=`q-fb show ${ok?'ok':'no'}`;}
+  });
+  STATE.mockExam.cbqScores[caseIdx]={s:score,t:cbq.questions.length};
+  const btn=document.getElementById(`mock-cbq-check-${caseIdx}`);
+  if(btn){btn.textContent='✓ Checked';btn.disabled=true;btn.style.background='#639922';}
+  const scoreEl=document.getElementById(`mock-cbq-score-${caseIdx}`);
+  if(scoreEl)scoreEl.textContent=`${score}/${cbq.questions.length}`;
+}
+
+function renderMockCBQCase(caseIdx){
+  const cbq=STATE.mockExam.cbqCases[caseIdx];
+  if(!cbq)return'';
+  const types={calc:'CALCULATION',select:'SELECT FROM LIST',drag:'DRAG & DROP',blank:'FILL IN BLANK'};
+  const caseHTML=`<div class="case-box"><div class="case-label">📄 CASE STUDY ${caseIdx+1}</div><div class="case-text">${cbq.case.replace(/\n/g,'<br>')}</div>${cbq.exhibit?`<div class="exhibit-wrap"><div style="font-size:11px;font-weight:700;color:#185FA5;letter-spacing:.6px;padding:6px 12px;background:#E6F1FB;border-bottom:.5px solid #c0d4ea">📊 EXHIBIT</div><table class="exhibit-tbl"><tr>${cbq.exhibit.headers.map(h=>`<th>${h}</th>`).join('')}</tr>${cbq.exhibit.rows.map(r=>`<tr>${r.map((c,i)=>`<td class="${i>0?'num':''}">${c}</td>`).join('')}</tr>`).join('')}</table></div>`:''}</div>`;
+
+  const qsHTML=cbq.questions.map((q,qi)=>{
+    let body='';
+    if(q.type==='calc') body=`<div class="calc-wrap"><span class="calc-prefix">${q.pre||'$'}</span><input type="number" class="calc-input" id="minp_${caseIdx}_${q.id}" placeholder="0" step="any" oninput="if(!STATE.mockExam.cbqA[${caseIdx}])STATE.mockExam.cbqA[${caseIdx}]={};STATE.mockExam.cbqA[${caseIdx}]['${q.id}']=this.value"><span style="font-size:14px;color:#888">${q.suf||''}</span></div>`;
+    else if(q.type==='select') body=`<div class="select-opts">${q.opts.map((o,i)=>`<div class="select-opt" id="mso_${caseIdx}_${q.id}_${i}" onclick="mockCBQPickOpt(${caseIdx},'${q.id}',${i})">${o}</div>`).join('')}</div>`;
+    else if(q.type==='blank'){let txt=q.text;q.blanks.forEach(b=>{const opts=b.opts.map(o=>`<option value="${o}">${o}</option>`).join('');txt=txt.replace(`[${b.id}]`,`<select class="blank-sel" id="mbl_${caseIdx}_${q.id}_${b.id}" onchange="mockCBQSetBlank(${caseIdx},'${q.id}','${b.id}',this.value)"><option value="">—select—</option>${opts}</select>`);});body=`<div class="blank-sentence">${txt}</div>`;}
+    else if(q.type==='drag'){
+      const chips=q.items.map(it=>`<div class="drag-chip" data-mcaseidx="${caseIdx}" data-qid="${q.id}" data-item="${it}" id="mchip_${caseIdx}_${q.id}_${it.replace(/\W/g,'_')}" draggable="true">${it}</div>`).join('');
+      const zones=q.zones.map(z=>`<div class="drag-col"><div class="drag-col-label">${z}</div><div class="drop-zone" id="mzone_${caseIdx}_${q.id}_${z.replace(/\W/g,'_')}"></div></div>`).join('');
+      body=`<div class="drag-source">${chips}</div><div class="drag-area">${zones}</div>`;
+    }
+    return`<div class="q-block"><div class="q-header"><div class="q-num">${qi+1}</div><div style="flex:1"><div style="display:flex;gap:8px;align-items:center;margin-bottom:5px"><span class="q-type-badge">${types[q.type]}</span></div><div class="q-text">${q.text}</div></div></div><div class="q-body">${body}<div class="q-fb" id="mfb_${caseIdx}_${q.id}"></div></div></div>`;
+  }).join('');
+
+  const sc=STATE.mockExam.cbqScores[caseIdx];
+  return`<div style="margin-bottom:16px">${caseHTML}${qsHTML}<div style="padding:12px 16px;display:flex;gap:10px;align-items:center">
+    <span id="mock-cbq-score-${caseIdx}" style="font-size:13px;font-weight:600;color:#185FA5">${sc?`${sc.s}/${sc.t}`:''}</span>
+    <button id="mock-cbq-check-${caseIdx}" onclick="mockCBQCheck(${caseIdx})" ${sc?'disabled style="background:#639922"':''} style="flex:1;padding:12px;border-radius:10px;border:none;background:${sc?'#639922':'#185FA5'};color:#fff;cursor:pointer;font-size:14px;font-weight:600;font-family:inherit">${sc?'✓ Checked':'Check Answers'}</button>
+  </div></div>`;
+}
+
+function mockSetupMockDrag(){
+  document.querySelectorAll('[data-mcaseidx]').forEach(chip=>{
+    chip.addEventListener('dragstart',e=>{
+      cbqDragItem=chip.dataset.item;cbqDragQid=chip.dataset.qid;
+      e.dataTransfer.effectAllowed='move';chip.style.opacity='.4';
+      chip._mcaseIdx=parseInt(chip.dataset.mcaseidx);
+    });
+    chip.addEventListener('dragend',e=>{chip.style.opacity='1';});
+  });
+  document.querySelectorAll('.drop-zone').forEach(zone=>{
+    if(zone.id.startsWith('mzone_')){
+      zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('over');});
+      zone.addEventListener('dragleave',()=>zone.classList.remove('over'));
+      zone.addEventListener('drop',e=>{
+        e.preventDefault();zone.classList.remove('over');
+        if(!cbqDragItem)return;
+        const parts=zone.id.split('_');parts.shift();parts.shift();
+        const caseIdx=parseInt(parts.shift());
+        const qid=parts.shift();
+        const cbq=STATE.mockExam.cbqCases[caseIdx];
+        const q=cbq?cbq.questions.find(x=>x.id===qid):null;
+        const matchedZone=q?q.zones.find(z=>z.replace(/\W/g,'_')===parts.join('_')):null;
+        if(!matchedZone)return;
+        if(!STATE.mockExam.cbqA[caseIdx])STATE.mockExam.cbqA[caseIdx]={};
+        if(!STATE.mockExam.cbqA[caseIdx][qid])STATE.mockExam.cbqA[caseIdx][qid]={};
+        STATE.mockExam.cbqA[caseIdx][qid][cbqDragItem]=matchedZone;
+        const chip=document.getElementById(`mchip_${caseIdx}_${qid}_${cbqDragItem.replace(/\W/g,'_')}`);
+        if(chip)zone.appendChild(chip);
+        cbqDragItem=null;cbqDragQid=null;
+      });
+    }
+  });
+}
+
+function mockSubmitCBQ(){
+  mockClearTimers();
+  // Calculate MCQ score
+  const{mcqQ,mcqA}=STATE.mockExam;
+  let mcqCorrect=0;
+  const secScores={};
+  mcqQ.forEach((q,i)=>{
+    if(!secScores[q.sid])secScores[q.sid]={correct:0,total:0,title:q.stitle,bar:q.sbar,weight:q.sweight};
+    secScores[q.sid].total++;
+    if(mcqA[i]===q.a){mcqCorrect++;secScores[q.sid].correct++;}
+  });
+  // CBQ score
+  let cbqTotal=0,cbqCorrect=0;
+  Object.values(STATE.mockExam.cbqScores).forEach(sc=>{cbqTotal+=sc.t;cbqCorrect+=sc.s;});
+  STATE.mockExam.results={mcqCorrect,mcqTotal:100,secScores,cbqCorrect,cbqTotal};
+  STATE.mockExam.status='results';
+  render();
+}
+
+// ── RENDER FUNCTIONS ───────────────────────────────────────────
+function renderMockExamScreen(){
+  const me=STATE.mockExam;
+  if(me.status==='idle'||me.status==='loading') return renderMockIntro();
+  if(me.status==='mcq') return renderMockMCQ();
+  if(me.status==='cbq') return renderMockCBQScreen();
+  if(me.status==='results') return renderMockResults();
+  return renderMockIntro();
+}
+
+function renderMockIntro(){
+  const loading=STATE.mockExam.status==='loading';
+  return`<div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
+  <div style="padding:16px 16px 12px;border-bottom:.5px solid #e0e0d8;flex-shrink:0">
+    <div style="font-size:18px;font-weight:600">🏆 Mock Exam</div>
+    <div style="font-size:12px;color:#888;margin-top:3px">CMA Part 1 — Full Simulation</div>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:16px">
+    <div style="background:linear-gradient(135deg,#0C447C,#185FA5);border-radius:16px;padding:20px;color:#fff;margin-bottom:16px;text-align:center">
+      <div style="font-size:36px;margin-bottom:8px">📋</div>
+      <div style="font-size:19px;font-weight:700;margin-bottom:4px">Full Exam Simulation</div>
+      <div style="font-size:13px;opacity:.85">Conditions as close to exam day as possible</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+      <div style="background:#E6F1FB;border-radius:12px;padding:14px;text-align:center">
+        <div style="font-size:24px;font-weight:700;color:#0C447C">100</div>
+        <div style="font-size:12px;color:#555;margin-top:3px">MCQ Questions</div>
+        <div style="font-size:11px;color:#888;margin-top:2px">3 hours</div>
+      </div>
+      <div style="background:#EAF3DE;border-radius:12px;padding:14px;text-align:center">
+        <div style="font-size:24px;font-weight:700;color:#27500A">2</div>
+        <div style="font-size:12px;color:#555;margin-top:3px">CBQ Cases</div>
+        <div style="font-size:11px;color:#888;margin-top:2px">1 hour</div>
+      </div>
+    </div>
+    <div style="background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:16px">
+      <div style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:10px">📊 Question Distribution</div>
+      ${S.map(sec=>`<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <div style="width:28px;height:28px;border-radius:8px;background:${sec.bar}20;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">${sec.emoji}</div>
+        <div style="flex:1"><div style="font-size:12px;font-weight:500;color:#333">${sec.title}</div></div>
+        <div style="font-size:13px;font-weight:700;color:${sec.bar}">${sec.weight} Qs</div>
+      </div>`).join('')}
+    </div>
+    <div style="background:#FAEEDA;border:.5px solid #EF9F27;border-radius:12px;padding:12px;margin-bottom:16px;font-size:13px;color:#633806;line-height:1.6">
+      ⚠️ <strong>Rules:</strong> Once you start, the timer runs. You can flag questions and navigate freely within MCQ. After submitting MCQ, you move to CBQ — you cannot go back.
+    </div>
+    <button onclick="startMockExam()" ${loading?'disabled':''} style="width:100%;padding:15px;border-radius:12px;border:none;background:${loading?'#888':'#0C447C'};color:#fff;font-size:16px;font-weight:700;cursor:${loading?'default':'pointer'};font-family:inherit">
+      ${loading?'⏳ Loading questions...':'🚀 Start Mock Exam'}
+    </button>
+  </div>
+  </div>`;
+}
+
+function renderMockMCQ(){
+  const q=STATE.mockExam.mcqQ[STATE.mockExam.mcqCurr];
+  if(!q)return'';
+  return`<div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
+  <div style="padding:10px 16px;border-bottom:.5px solid #e0e0d8;flex-shrink:0;background:#fff;display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <div style="font-size:12px;font-weight:700;color:#555;letter-spacing:.5px">MCQ PHASE</div>
+      <div style="font-size:11px;color:#888">Question ${STATE.mockExam.mcqCurr+1} of 100</div>
+    </div>
+    <div id="mock-timer" style="font-size:22px;font-weight:700;font-family:'Courier New',monospace;color:#1a1a1a">${mockFmtTime(STATE.mockExam.mcqTime)}</div>
+    <button onclick="mockConfirmSubmitMCQ()" style="padding:8px 14px;border-radius:8px;border:none;background:#639922;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">Submit</button>
+  </div>
+  <div id="mock-mcq-content" style="display:flex;flex-direction:column;flex:1;overflow:hidden"></div>
+  </div>`;
+}
+
+function renderMockCBQScreen(){
+  const cases=STATE.mockExam.cbqCases;
+  return`<div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
+  <div style="padding:10px 16px;border-bottom:.5px solid #e0e0d8;flex-shrink:0;background:#fff;display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <div style="font-size:12px;font-weight:700;color:#639922;letter-spacing:.5px">CBQ PHASE</div>
+      <div style="font-size:11px;color:#888">2 Case-Based Questions</div>
+    </div>
+    <div id="mock-timer" style="font-size:22px;font-weight:700;font-family:'Courier New',monospace;color:#1a1a1a">${mockFmtTime(STATE.mockExam.cbqTime)}</div>
+    <button onclick="if(confirm('Submit CBQ phase and see results?'))mockSubmitCBQ()" style="padding:8px 14px;border-radius:8px;border:none;background:#185FA5;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">Finish</button>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding-bottom:16px" id="mock-cbq-scroll">
+    <div style="padding:10px 16px;background:#EAF3DE;border-bottom:.5px solid #c8e0b0;font-size:13px;color:#27500A">
+      ✅ MCQ phase complete. Answer both CBQ cases below, then tap Finish.
+    </div>
+    ${cases.map((_,i)=>renderMockCBQCase(i)).join('<div style="height:1px;background:#e0e0d8;margin:0 16px"></div>')}
+  </div>
+  </div>`;
+}
+
+function renderMockResults(){
+  const{mcqCorrect,mcqTotal,secScores,cbqCorrect,cbqTotal}=STATE.mockExam.results;
+  const mcqPct=Math.round(mcqCorrect/mcqTotal*100);
+  const cbqPct=cbqTotal?Math.round(cbqCorrect/cbqTotal*100):0;
+  // CMA weighted estimate: MCQ 75%, CBQ 25%
+  const weighted=Math.round(mcqPct*0.75+(cbqTotal?cbqPct:mcqPct)*0.25);
+  const pass=weighted>=70;
+  const passColor=weighted>=70?'#639922':weighted>=60?'#EF9F27':'#E24B4A';
+  const passMsg=weighted>=70?'On Track to Pass 🎉':weighted>=60?'Borderline — Keep Practicing 📈':'Needs More Study 📚';
+
+  return`<div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
+  <div style="padding:14px 16px 12px;border-bottom:.5px solid #e0e0d8;flex-shrink:0">
+    <div style="font-size:18px;font-weight:600">📊 Exam Results</div>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:16px;padding-bottom:80px">
+    <div style="background:${passColor}15;border:1.5px solid ${passColor}40;border-radius:14px;padding:18px;text-align:center;margin-bottom:16px">
+      <div style="font-size:42px;font-weight:800;color:${passColor}">${weighted}%</div>
+      <div style="font-size:15px;font-weight:600;color:${passColor};margin-top:4px">${passMsg}</div>
+      <div style="font-size:12px;color:#888;margin-top:6px">Weighted estimate (MCQ 75% · CBQ 25%)</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+      <div style="background:#f5f5f0;border-radius:12px;padding:14px;text-align:center">
+        <div style="font-size:11px;color:#888;margin-bottom:4px">MCQ Score</div>
+        <div style="font-size:22px;font-weight:700;color:#185FA5">${mcqCorrect}/100</div>
+        <div style="font-size:12px;color:#888">${mcqPct}%</div>
+      </div>
+      <div style="background:#f5f5f0;border-radius:12px;padding:14px;text-align:center">
+        <div style="font-size:11px;color:#888;margin-bottom:4px">CBQ Score</div>
+        <div style="font-size:22px;font-weight:700;color:#639922">${cbqTotal?`${cbqCorrect}/${cbqTotal}`:'—'}</div>
+        <div style="font-size:12px;color:#888">${cbqTotal?cbqPct+'%':'Not attempted'}</div>
+      </div>
+    </div>
+    <div style="background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:16px">
+      <div style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:12px">Section Breakdown</div>
+      ${Object.entries(secScores).sort((a,b)=>parseInt(a[0])-parseInt(b[0])).map(([sid,sc])=>{
+        const pct=Math.round(sc.correct/sc.total*100);
+        const col=pct>=70?'#639922':pct>=50?'#EF9F27':'#E24B4A';
+        return`<div style="margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <span style="font-size:13px;color:#333">${sc.title}</span>
+            <span style="font-size:13px;font-weight:600;color:${col}">${sc.correct}/${sc.total} (${pct}%)</span>
+          </div>
+          <div style="height:6px;background:#f0f0eb;border-radius:3px;overflow:hidden">
+            <div style="height:100%;width:${pct}%;background:${col};border-radius:3px;transition:width .5s"></div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div style="display:flex;gap:10px">
+      <button onclick="STATE.mockExam={status:'idle',mcqQ:[],mcqA:{},mcqFlagged:[],mcqCurr:0,mcqTime:10800,mcqInterval:null,cbqCases:[],cbqA:{},cbqScores:{},cbqCurr:0,cbqTime:3600,cbqInterval:null,results:null,navOpen:false};render();" style="flex:1;padding:13px;border-radius:10px;border:.5px solid #d0d0d8;background:#fff;cursor:pointer;font-size:14px;font-weight:500;font-family:inherit">Try Again</button>
+      <button onclick="navTo('study')" style="flex:1;padding:13px;border-radius:10px;border:none;background:#0C447C;color:#fff;cursor:pointer;font-size:14px;font-weight:600;font-family:inherit">Back to Study</button>
+    </div>
+  </div>
+  </div>`;
+}
+// ════ END MOCK EXAM ════
 
 auth.onAuthStateChanged(async(user)=>{
   if(user){
