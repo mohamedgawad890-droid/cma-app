@@ -5348,11 +5348,8 @@ async function startMockExam(){
 function mockAnswerQ(idx,opt){
   if(STATE.mockExam.mcqA[idx]===opt){delete STATE.mockExam.mcqA[idx];}
   else STATE.mockExam.mcqA[idx]=opt;
-  document.querySelectorAll('.mock-opt').forEach((el,i)=>{
-    el.classList.toggle('selected',i===opt);
-    el.classList.toggle('mock-opt-prev',STATE.mockExam.mcqA[idx]===undefined&&false);
-  });
-  mockUpdateNav();
+  // Re-render the question content so inline styles reflect the new selection
+  renderMockMCQContent();
 }
 
 function mockFlagQ(idx){
