@@ -4024,6 +4024,96 @@ function renderIntro(){
         </div>
       </div>
 
+      <!-- INSTALL GUIDE -->
+      <div class="info-section">
+        <div class="info-title">📲 How to Install This App</div>
+        <p class="info-p" style="margin-bottom:14px">Install the app for <strong>offline access</strong>, faster loading, and a native app experience — no browser bar, no distractions.</p>
+
+        <!-- Android -->
+        <div class="card" style="margin-bottom:10px;padding:0;overflow:hidden">
+          <div style="background:#e8f5e9;padding:11px 14px;display:flex;align-items:center;gap:10px;border-bottom:.5px solid #c8e6c9">
+            <span style="font-size:20px">🤖</span>
+            <div>
+              <div style="font-size:13px;font-weight:500;color:#1b5e20">Android — Chrome</div>
+              <div style="font-size:11px;color:#388e3c;margin-top:1px">Any Android phone or tablet</div>
+            </div>
+          </div>
+          <div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px">
+            ${[
+              ['1','Look for the install banner','A blue banner appears at the top of the app saying "Install CMA Prep" — tap <strong>Install</strong>.'],
+              ['2','Or tap the 3-dot menu ⋮','Open Chrome menu (top-right) → tap <strong>Add to Home screen</strong> or <strong>Install app</strong>.'],
+              ['3','Confirm in the popup','Tap <strong>Install</strong> in the dialog that appears. The app icon will be added to your home screen. ✅']
+            ].map(([n,title,desc])=>`
+            <div style="display:flex;gap:10px;align-items:flex-start">
+              <div style="width:24px;height:24px;border-radius:50%;background:#34a853;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">${n}</div>
+              <div style="flex:1">
+                <div style="font-size:13px;font-weight:500;color:#1a1a1a">${title}</div>
+                <div style="font-size:12px;color:#666;margin-top:2px;line-height:1.55">${desc}</div>
+              </div>
+            </div>`).join('')}
+          </div>
+        </div>
+
+        <!-- iOS -->
+        <div class="card" style="margin-bottom:10px;padding:0;overflow:hidden">
+          <div style="background:#e3f0ff;padding:11px 14px;display:flex;align-items:center;gap:10px;border-bottom:.5px solid #bbd7f7">
+            <span style="font-size:20px">🍎</span>
+            <div>
+              <div style="font-size:13px;font-weight:500;color:#0d3c78">iPhone / iPad — Safari</div>
+              <div style="font-size:11px;color:#1565c0;margin-top:1px">Must use Safari — Chrome on iOS doesn't support install</div>
+            </div>
+          </div>
+          <div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px">
+            ${[
+              ['1','Open the app in Safari','Copy the URL and open it in Safari — not Chrome or Firefox.'],
+              ['2','Tap the Share button','Tap the <strong>Share icon</strong> (box with arrow) at the bottom of the Safari toolbar.'],
+              ['3','Tap "Add to Home Screen"','Scroll down in the share sheet and tap <strong>Add to Home Screen</strong>.'],
+              ['4','Tap "Add" to confirm','The app name is pre-filled — just tap <strong>Add</strong> in the top-right corner. ✅']
+            ].map(([n,title,desc])=>`
+            <div style="display:flex;gap:10px;align-items:flex-start">
+              <div style="width:24px;height:24px;border-radius:50%;background:#007aff;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">${n}</div>
+              <div style="flex:1">
+                <div style="font-size:13px;font-weight:500;color:#1a1a1a">${title}</div>
+                <div style="font-size:12px;color:#666;margin-top:2px;line-height:1.55">${desc}</div>
+              </div>
+            </div>`).join('')}
+          </div>
+          <div style="background:#fff8e1;padding:10px 14px;border-top:.5px solid #ffe082;display:flex;gap:8px;align-items:flex-start">
+            <span style="font-size:14px;flex-shrink:0">⚠️</span>
+            <div style="font-size:11px;color:#e65100;line-height:1.5">On iPhone, <strong>Chrome does not support PWA installation</strong>. You must open the link in <strong>Safari</strong> for the "Add to Home Screen" option to create a real app.</div>
+          </div>
+        </div>
+
+        <!-- Desktop -->
+        <div class="card" style="margin-bottom:0;padding:0;overflow:hidden">
+          <div style="background:#f3e8ff;padding:11px 14px;display:flex;align-items:center;gap:10px;border-bottom:.5px solid #d8b4fe">
+            <span style="font-size:20px">💻</span>
+            <div>
+              <div style="font-size:13px;font-weight:500;color:#3b0764">Laptop / Desktop — Chrome or Edge</div>
+              <div style="font-size:11px;color:#7c3aed;margin-top:1px">Windows, Mac, Linux</div>
+            </div>
+          </div>
+          <div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px">
+            ${[
+              ['1','Look for the install icon in the address bar','A small monitor icon <strong>⊕</strong> or <strong>🖥</strong> appears on the right side of the address bar — click it.'],
+              ['2','Click "Install" in the popup','A small dialog will appear — click <strong>Install</strong> to confirm. The app opens in its own window.'],
+              ['3','Or install from the browser menu','Click <strong>⋮</strong> (Chrome) or <strong>···</strong> (Edge) → look for <strong>"Install CMA Part 1 Prep…"</strong> in the menu.']
+            ].map(([n,title,desc])=>`
+            <div style="display:flex;gap:10px;align-items:flex-start">
+              <div style="width:24px;height:24px;border-radius:50%;background:#8b5cf6;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">${n}</div>
+              <div style="flex:1">
+                <div style="font-size:13px;font-weight:500;color:#1a1a1a">${title}</div>
+                <div style="font-size:12px;color:#666;margin-top:2px;line-height:1.55">${desc}</div>
+              </div>
+            </div>`).join('')}
+          </div>
+          <div style="background:#f0fdf4;padding:10px 14px;border-top:.5px solid #bbf7d0;display:flex;gap:8px;align-items:flex-start">
+            <span style="font-size:14px;flex-shrink:0">💡</span>
+            <div style="font-size:11px;color:#14532d;line-height:1.5">After installing, the app opens in a standalone window — no browser toolbar, no tabs. Works offline and loads instantly.</div>
+          </div>
+        </div>
+      </div>
+
       <!-- START BUTTON -->
       <button class="btn btn-primary" onclick="navTo('study')" style="margin-top:6px;background:#0C447C;font-size:15px">
         Start Studying Now →
