@@ -219,15 +219,33 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .badge{font-size:11px;font-weight:500;padding:3px 9px;border-radius:6px;white-space:nowrap}
 .sect-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
 /* ── Mobile Install Banner ── */
-.install-banner{display:none;align-items:center;justify-content:space-between;padding:8px 14px;background:#E6F1FB;border-bottom:.5px solid #b8cde8;flex-shrink:0;gap:10px}
+.install-banner{display:none;align-items:center;justify-content:space-between;padding:11px 14px;background:linear-gradient(135deg,#0C447C,#185FA5);border-bottom:none;flex-shrink:0;gap:10px;position:relative;overflow:hidden}
+.install-banner::before{content:'';position:absolute;right:-20px;top:-20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.07);pointer-events:none}
 .install-banner.show{display:flex}
 @media(min-width:900px){.install-banner{display:none!important}}
+.install-banner-icon{font-size:26px;flex-shrink:0;line-height:1}
 .install-banner-info{flex:1;min-width:0}
-.install-banner-title{font-size:13px;font-weight:500;color:#0C447C;line-height:1.3}
-.install-banner-sub{font-size:11px;color:#4a6fa0;margin-top:1px}
+.install-banner-title{font-size:13px;font-weight:600;color:#fff;line-height:1.3}
+.install-banner-sub{font-size:11px;color:rgba(255,255,255,.75);margin-top:2px}
 .install-banner-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.install-banner-btn{padding:5px 13px;background:#0C447C;color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;white-space:nowrap}
-.install-banner-dismiss{background:none;border:none;cursor:pointer;font-size:18px;color:#4a6fa0;padding:0;line-height:1;font-family:inherit}
+.install-banner-btn{padding:7px 16px;background:#fff;color:#0C447C;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.install-banner-dismiss{background:none;border:none;cursor:pointer;font-size:20px;color:rgba(255,255,255,.6);padding:0;line-height:1;font-family:inherit}
+/* Install Guide Modal */
+.install-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;align-items:flex-end;justify-content:center}
+.install-modal-overlay.show{display:flex}
+.install-modal{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:600px;padding:24px 20px 32px;max-height:85vh;overflow-y:auto}
+.install-modal-handle{width:36px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 20px}
+.install-modal-title{font-size:17px;font-weight:700;color:#0C447C;text-align:center;margin-bottom:6px}
+.install-modal-sub{font-size:13px;color:#888;text-align:center;margin-bottom:20px}
+.install-os-tabs{display:flex;gap:8px;margin-bottom:20px}
+.install-os-tab{flex:1;padding:10px;border-radius:10px;border:1.5px solid #e0e0d8;background:#f5f5f0;cursor:pointer;font-size:13px;font-weight:500;font-family:inherit;color:#555;text-align:center;transition:all .15s}
+.install-os-tab.active{border-color:#0C447C;background:#E6F1FB;color:#0C447C}
+.install-step{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}
+.install-step-num{width:30px;height:30px;border-radius:50%;background:#0C447C;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
+.install-step-text{font-size:14px;color:#333;line-height:1.5;padding-top:4px}
+.install-step-text b{color:#0C447C}
+.install-note{background:#FFF8E6;border:.5px solid #F5D87A;border-radius:10px;padding:12px 14px;font-size:12px;color:#7A5C00;margin-top:4px;line-height:1.6}
+.install-cta-btn{width:100%;padding:14px;background:#0C447C;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:16px}
 </style>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -237,13 +255,41 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <div id="app">
   <nav class="bottom-nav" id="bottom-nav"></nav>
   <div class="install-banner" id="install-banner">
+    <div class="install-banner-icon">📲</div>
     <div class="install-banner-info">
-      <div class="install-banner-title">📲 تثبيت تطبيق CMA Prep</div>
-      <div class="install-banner-sub">يعمل بدون إنترنت · أسرع · بدون متصفح</div>
+      <div class="install-banner-title">ثبّت تطبيق CMA Prep على موبايلك</div>
+      <div class="install-banner-sub">يشتغل بدون نت · أسرع · زي أي تطبيق عادي</div>
     </div>
     <div class="install-banner-actions">
       <button class="install-banner-btn" onclick="installApp()">تثبيت</button>
       <button class="install-banner-dismiss" onclick="dismissInstallBanner()" title="إغلاق">×</button>
+    </div>
+  </div>
+  <!-- Install Guide Modal -->
+  <div class="install-modal-overlay" id="install-modal-overlay" onclick="if(event.target===this)closeInstallModal()">
+    <div class="install-modal">
+      <div class="install-modal-handle"></div>
+      <div class="install-modal-title">📲 كيف تثبّت التطبيق؟</div>
+      <div class="install-modal-sub">اختار نوع موبايلك</div>
+      <div class="install-os-tabs">
+        <button class="install-os-tab active" id="tab-android" onclick="switchInstallTab('android')">🤖 Android</button>
+        <button class="install-os-tab" id="tab-ios" onclick="switchInstallTab('ios')">🍎 iPhone</button>
+      </div>
+      <div id="install-steps-android">
+        <div class="install-step"><div class="install-step-num">١</div><div class="install-step-text">افتح الرابط في <b>Chrome</b> (مش في متصفح تاني)</div></div>
+        <div class="install-step"><div class="install-step-num">٢</div><div class="install-step-text">هيطلع معاك بانر أو اضغط على زرار <b>"تثبيت"</b> في الأعلى</div></div>
+        <div class="install-step"><div class="install-step-num">٣</div><div class="install-step-text">اضغط <b>"Add to Home Screen"</b> أو <b>"Install"</b> في الـ popup</div></div>
+        <div class="install-step"><div class="install-step-num">٤</div><div class="install-step-text">هتلاقي أيقونة CMA Prep على الشاشة الرئيسية ✅</div></div>
+        <div class="install-note">⚡ لو مش شايف زرار التثبيت، افتح قائمة Chrome (النقاط الثلاثة ⋮) واختار "Add to Home Screen"</div>
+        <button class="install-cta-btn" onclick="triggerInstall()">تثبيت دلوقتي 🚀</button>
+      </div>
+      <div id="install-steps-ios" style="display:none">
+        <div class="install-step"><div class="install-step-num">١</div><div class="install-step-text">افتح الرابط في <b>Safari</b> (مش Chrome)</div></div>
+        <div class="install-step"><div class="install-step-num">٢</div><div class="install-step-text">اضغط على أيقونة <b>Share</b> 🔗 في أسفل الشاشة</div></div>
+        <div class="install-step"><div class="install-step-num">٣</div><div class="install-step-text">اختار <b>"Add to Home Screen"</b> من القائمة</div></div>
+        <div class="install-step"><div class="install-step-num">٤</div><div class="install-step-text">اضغط <b>"Add"</b> في الركن العلوي الأيمن ✅</div></div>
+        <div class="install-note">⚠️ لازم Safari — Chrome على iPhone مش بيدعم التثبيت المباشر</div>
+      </div>
     </div>
   </div>
   <div class="content" id="content-area"></div>
@@ -2574,12 +2620,16 @@ function updateInstallBanner(){
   const b=document.getElementById('install-banner');
   if(!b)return;
   const isStandalone=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone;
-  const dismissed=localStorage.getItem('cma-install-dismissed')==='1';
-  if(!isStandalone&&!dismissed){b.classList.add('show');}
+  if(isStandalone){b.classList.remove('show');return;}
+  // Dismiss expires after 3 days (not forever)
+  const dismissedAt=parseInt(localStorage.getItem('cma-install-dismissed-at')||'0');
+  const threeDays=3*24*60*60*1000;
+  const dismissed=dismissedAt&&(Date.now()-dismissedAt<threeDays);
+  if(!dismissed){b.classList.add('show');}
   else{b.classList.remove('show');}
 }
 function dismissInstallBanner(){
-  localStorage.setItem('cma-install-dismissed','1');
+  localStorage.setItem('cma-install-dismissed-at',String(Date.now()));
   const b=document.getElementById('install-banner');
   if(b)b.classList.remove('show');
 }
@@ -2592,37 +2642,43 @@ window.addEventListener('appinstalled', () => {
   if(b)b.classList.remove('show');
   render();
 });
+function openInstallModal(){
+  const isSafari=/^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  const isIOS=/ipad|iphone|ipod/i.test(navigator.userAgent);
+  const overlay=document.getElementById('install-modal-overlay');
+  if(!overlay)return;
+  overlay.classList.add('show');
+  // Auto-select iOS tab if on Safari/iOS
+  if(isSafari||isIOS) switchInstallTab('ios');
+  else switchInstallTab('android');
+}
+function closeInstallModal(){
+  const overlay=document.getElementById('install-modal-overlay');
+  if(overlay)overlay.classList.remove('show');
+}
+function switchInstallTab(os){
+  document.getElementById('tab-android').classList.toggle('active',os==='android');
+  document.getElementById('tab-ios').classList.toggle('active',os==='ios');
+  document.getElementById('install-steps-android').style.display=os==='android'?'':'none';
+  document.getElementById('install-steps-ios').style.display=os==='ios'?'':'none';
+}
+function triggerInstall(){
+  const prompt=deferredInstallPrompt||window.__installPrompt;
+  if(prompt){
+    closeInstallModal();
+    prompt.prompt();
+    prompt.userChoice.then(()=>{deferredInstallPrompt=null;window.__installPrompt=null;render();});
+  }
+}
 function installApp(){
-  const prompt = deferredInstallPrompt || window.__installPrompt;
+  const prompt=deferredInstallPrompt||window.__installPrompt;
   if(prompt){
     prompt.prompt();
     prompt.userChoice.then(()=>{deferredInstallPrompt=null;window.__installPrompt=null;render();});
     return;
   }
-  // Show manual install instructions
-  const isSafari=/^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-  const isFF=/firefox/i.test(navigator.userAgent);
-  let steps='';
-  if(isSafari){
-    steps=`<div class="istep">١. اضغط زرار <b>Share</b> 🔗 في أسفل الشاشة</div><div class="istep">٢. اختار <b>"Add to Home Screen"</b></div><div class="istep">٣. اضغط <b>"Add"</b></div>`;
-  } else if(isFF){
-    steps=`<div class="istep">Firefox لا يدعم تثبيت التطبيقات حالياً</div><div class="istep">استخدم <b>Chrome أو Edge</b> للتثبيت</div>`;
-  } else {
-    steps=`<div class="istep">١. ابحث عن أيقونة <b>⊕</b> أو <b>🖥️</b> في يمين شريط العنوان</div><div class="istep">٢. اضغط عليها واختار <b>"Install"</b></div><div class="istep">٣. اضغط <b>"Install"</b> مرة ثانية للتأكيد</div>`;
-  }
-  const m=document.createElement('div');
-  m.id='install-modal';
-  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
-  m.innerHTML=`<div style="background:#fff;border-radius:16px;padding:24px 22px;max-width:320px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,.2)">
-    <div style="font-size:32px;text-align:center;margin-bottom:10px">📥</div>
-    <div style="font-size:16px;font-weight:600;color:#0C447C;text-align:center;margin-bottom:6px">تثبيت التطبيق</div>
-    <div style="font-size:12px;color:#888;text-align:center;margin-bottom:16px">اتبع الخطوات التالية</div>
-    <style>.istep{font-size:14px;color:#333;line-height:1.7;padding:6px 0;border-bottom:.5px solid #f0f0eb;direction:rtl;text-align:right}.istep:last-child{border:none}</style>
-    ${steps}
-    <button onclick="document.getElementById('install-modal').remove()" style="width:100%;margin-top:16px;padding:12px;background:#0C447C;color:#fff;border:none;border-radius:10px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:500">حسناً</button>
-  </div>`;
-  document.body.appendChild(m);
-  m.addEventListener('click',e=>{if(e.target===m)m.remove();});
+  // No native prompt available — show guide modal
+  openInstallModal();
 }
 
 const STATE={tab:'loading',searchQ:'',leaderboardData:[],leaderboardLoaded:false,quizMode:{active:false,sectionId:null,idx:0,questions:[],answers:[],selected:null},user:null,authScreen:'login',authError:'',authLoading:false,communityFilter:'all',questionDetail:null,showAskForm:false,communityQuestions:[],questionReplies:[],draftTitle:'',draftBody:'',draftSection:'General',draftReply:'',trackerOpenSects:[],sectId:null,lessonId:null,quizState:null,showProfileWarning:false,progress:{done:[],scores:{},mcqTotal:0,mcqRight:0},
