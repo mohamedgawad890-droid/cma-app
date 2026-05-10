@@ -4547,6 +4547,88 @@ async function ensureQuizzes(sectionId){
   }catch(e){console.error('Failed to load quizzes for section '+sid,e);}
 }
 // ─────────────────────────────────────────────────────────────────────────────
+// ─── DATA INTEGRITY VALIDATOR ─────────────────────────────────────────────────
+// Scans all loaded quiz questions for known authoring errors.
+// Runs automatically 4s after app load. Call anytime via: validateQuizData()
+// ─────────────────────────────────────────────────────────────────────────────
+function validateQuizData(silent=false){
+  const CONTEXT_PATTERNS=[
+    /using the (data|information) above/i,
+    /using the above (data|information)/i,
+    /from the above/i,
+    /previous question/i,
+    /as (shown|stated|given) above/i,
+    /refer(ring)? to (the )?above/i,
+    /data above/i,
+    /above data/i
+  ];
+  const issues=[];
+  let totalChecked=0;
+  S.forEach(sec=>{
+    sec.lessons.forEach(lesson=>{
+      if(!lesson.quizzes||!lesson.quizzes.length)return;
+      lesson.quizzes.forEach((q,idx)=>{
+        totalChecked++;
+        // Check 1: Context-dependent question
+        if(CONTEXT_PATTERNS.some(p=>p.test(q.q))){
+          issues.push({type:'CONTEXT-DEPENDENT',severity:'HIGH',
+            location:`Section ${sec.id} › ${lesson.title} › Q-index ${idx}`,
+            detail:`Question references external data: "${q.q.slice(0,80)}..."`,
+            fix:'Embed all required data directly in the question text.'});}
+        // Check 2: Answer index out of bounds
+        if(typeof q.a!=='number'||q.a<0||q.a>=(q.o||[]).length){
+          issues.push({type:'INVALID ANSWER INDEX',severity:'CRITICAL',
+            location:`Section ${sec.id} › ${lesson.title} › Q-index ${idx}`,
+            detail:`"a": ${q.a} is out of range. Options length: ${(q.o||[]).length}`,
+            fix:'Correct the "a" field to a valid index (0 to options.length - 1).'});}
+        // Check 3: Missing explanation
+        if(!q.e||q.e.trim().length<10){
+          issues.push({type:'MISSING EXPLANATION',severity:'MEDIUM',
+            location:`Section ${sec.id} › ${lesson.title} › Q-index ${idx}`,
+            detail:`Explanation is empty or too short: "${(q.e||'').slice(0,40)}"`,
+            fix:'Add a meaningful explanation to the "e" field.'});}
+        // Check 4: Insufficient options
+        if(!q.o||q.o.length<2){
+          issues.push({type:'INSUFFICIENT OPTIONS',severity:'HIGH',
+            location:`Section ${sec.id} › ${lesson.title} › Q-index ${idx}`,
+            detail:`Only ${(q.o||[]).length} option(s) found. Minimum is 2.`,
+            fix:'Add more answer options to the "o" array.'});}
+        // Check 5: Duplicate options
+        if(q.o&&q.o.length!==new Set(q.o.map(o=>o.trim().toLowerCase())).size){
+          issues.push({type:'DUPLICATE OPTIONS',severity:'MEDIUM',
+            location:`Section ${sec.id} › ${lesson.title} › Q-index ${idx}`,
+            detail:`Duplicate answer options in: "${q.q.slice(0,60)}..."`,
+            fix:'Ensure all answer options are unique.'});}
+      });
+    });
+  });
+  if(silent)return issues;
+  const crit=issues.filter(i=>i.severity==='CRITICAL').length;
+  const high=issues.filter(i=>i.severity==='HIGH').length;
+  const med=issues.filter(i=>i.severity==='MEDIUM').length;
+  if(issues.length===0){
+    console.log('%c✅ Quiz Data Integrity: PASSED — '+totalChecked+' questions scanned, 0 issues.','color:#27500A;font-weight:bold;background:#EAF3DE;padding:3px 8px;border-radius:4px');
+    return issues;}
+  console.group('%c⚠️ Quiz Data Integrity: '+issues.length+' issue(s) in '+totalChecked+' questions','color:#791F1F;font-weight:bold;background:#FCEBEB;padding:3px 8px;border-radius:4px');
+  console.log('  🔴 CRITICAL: '+crit+'   🟠 HIGH: '+high+'   🟡 MEDIUM: '+med);
+  issues.forEach((issue,i)=>{
+    const c=issue.severity==='CRITICAL'?'#791F1F':issue.severity==='HIGH'?'#854F0B':'#555';
+    console.group('%c'+(i+1)+'. ['+issue.severity+'] '+issue.type,'color:'+c+';font-weight:bold');
+    console.log('📍 Location:',issue.location);
+    console.log('📋 Detail  :',issue.detail);
+    console.log('🔧 Fix     :',issue.fix);
+    console.groupEnd();
+  });
+  console.groupEnd();
+  return issues;
+}
+// Auto-run validator after all quizzes load — non-blocking, never breaks the app
+async function runValidatorAfterLoad(){
+  try{await Promise.all([1,2,3,4,5,6].map(i=>ensureQuizzes(i)));validateQuizData();}
+  catch(e){/* silent fail */}
+}
+setTimeout(runValidatorAfterLoad,4000);
+// ─────────────────────────────────────────────────────────────────────────────
 // ─── RENDER ───────────────────────────────────────────────────────────────────
 const TABS=[{id:'intro',label:'Guide',icon:'👤'},{id:'register',label:'Profile',icon:'🎓'},{id:'study',label:'Study',icon:'📚'},{id:'cbq',label:'CBQ',icon:'📝'},{id:'mock-exam',label:'Mock',icon:'🏆'},{id:'search',label:'Search',icon:'🔍'},{id:'quiz-mode-select',label:'Quiz',icon:'🎯'},{id:'tracker',label:'Tracker',icon:'📌'},{id:'formula-bank',label:'Formulas',icon:'📐'},{id:'leaderboard',label:'Top',icon:'🏅'},{id:'community',label:'Community',icon:'🌐'},{id:'feedback',label:'Feedback',icon:'⭐'}];
 function activeNavTab(){if(STATE.tab==='quiz-session'||STATE.tab==='quiz-results'||STATE.tab==='dashboard'||STATE.tab==='lessons'||STATE.tab==='quiz')return'study';if(STATE.tab==='question-detail')return'community';if(STATE.tab==='essay-practice')return'study';return STATE.tab;}
