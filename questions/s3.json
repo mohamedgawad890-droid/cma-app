@@ -388,7 +388,7 @@
       "e": "Sq Allowed = Standard qty per unit × Actual units produced = 2 lbs × 1,000 = 2,000 lbs. This is the Benchmark — how much material Should have been used for 1,000 units."
     },
     {
-      "q": "Using the above data (Sq=2,000, Aq=2,100, SP=$6), DM Quantity Variance =",
+      "q": "Standard qty allowed (Sq) = 2,000 lbs. Actual qty used (Aq) = 2,100 lbs. Standard price (SP) = $6/lb. DM Quantity Variance =",
       "o": [
         "$600 Favorable",
         "$600 Unfavorable",
@@ -396,7 +396,7 @@
         "$300 Favorable"
       ],
       "a": 1,
-      "e": "DM Qty Variance = (2,100 − 2,000) × $6 = 100 × $6 = $600 Unfavorable (used 100 lbs more than standard)."
+      "e": "DM Quantity Variance = (Aq − Sq) × SP = (2,100 − 2,000) × $6 = 100 × $6 = $600 Unfavorable. Used 100 lbs more than standard → Unfavorable."
     },
     {
       "q": "Cheap materials causing excess waste would produce:",
@@ -621,7 +621,7 @@
       "e": "Sh Allowed = Standard hours per unit × Actual units = 2 × 500 = 1,000 hours. This is how many hours Should have been used to produce 500 units."
     },
     {
-      "q": "Using the above data (AH=1,080, Sh=1,000, Sr=$14), DL Efficiency Variance =",
+      "q": "Actual hours worked (AH) = 1,080. Standard hours allowed (SH) = 1,000. Standard rate (SR) = $14/hr. DL Efficiency Variance =",
       "o": [
         "$1,120 Favorable",
         "$1,120 Unfavorable",
@@ -629,10 +629,10 @@
         "$14,000 Unfavorable"
       ],
       "a": 1,
-      "e": "DL Efficiency Variance = (1,080 − 1,000) × $14 = 80 × $14 = $1,120 Unfavorable (used 80 more hours than standard)."
+      "e": "DL Efficiency Variance = (AH − SH) × SR = (1,080 − 1,000) × $14 = 80 × $14 = $1,120 Unfavorable. Worked 80 more hours than standard → Unfavorable."
     },
     {
-      "q": "Using the above data (Ar=$15, Sr=$14, AH=1,080), DL Rate Variance =",
+      "q": "Actual rate paid (AR) = $15/hr. Standard rate (SR) = $14/hr. Actual hours worked (AH) = 1,080. DL Rate Variance =",
       "o": [
         "$1,080 Favorable",
         "$1,080 Unfavorable",
@@ -640,7 +640,7 @@
         "$15,000 Unfavorable"
       ],
       "a": 1,
-      "e": "DL Rate Variance = ($15 − $14) × 1,080 = $1 × 1,080 = $1,080 Unfavorable (paid $1 more per hour than standard)."
+      "e": "DL Rate Variance = (AR − SR) × AH = ($15 − $14) × 1,080 = $1 × 1,080 = $1,080 Unfavorable. Paid $1 more per hour than standard → Unfavorable."
     },
     {
       "q": "A Favorable DL Rate Variance could be caused by:",

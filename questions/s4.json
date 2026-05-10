@@ -23,7 +23,7 @@
       "e": "Variable Rate = ($38,000 - $14,000) / (8,000 - 2,000) = $24,000 / 6,000 = $4.00 per unit."
     },
     {
-      "q": "Using the data above (variable rate $4.00), Fixed Cost =",
+      "q": "High-Low Method: High point = 8,000 units / $38,000. Low point = 2,000 units / $14,000. Variable rate = $4.00/unit. Fixed Cost =",
       "o": [
         "$6,000",
         "$8,000",
@@ -31,7 +31,7 @@
         "$14,000"
       ],
       "a": 0,
-      "e": "Fc = $38,000 - ($4 x 8,000) = $38,000 - $32,000 = $6,000. Verify: $14,000 - ($4 x 2,000) = $6,000."
+      "e": "Fixed Cost = Total Cost at High point − (Variable Rate × High Activity) = $38,000 − ($4 × 8,000) = $38,000 − $32,000 = $6,000. Verify using Low point: $14,000 − ($4 × 2,000) = $6,000. ✓"
     },
     {
       "q": "Monthly rent of $10,000 regardless of production level is a:",
@@ -3219,7 +3219,7 @@
       "e": "Variable Rate = (High Cost - Low Cost) / (High Activity - Low Activity) = ($50,000 - $26,000) / (10,000 - 4,000) = $24,000 / 6,000 = $4.00 per unit."
     },
     {
-      "q": "Using the above data (variable rate $4/unit), Fixed Cost =",
+      "q": "High-Low Method: High point = 10,000 units / $50,000. Low point = 4,000 units / $26,000. Variable rate = $4.00/unit. Fixed Cost =",
       "o": [
         "$6,000",
         "$10,000",
@@ -3227,7 +3227,7 @@
         "$26,000"
       ],
       "a": 1,
-      "e": "Fixed Cost = Total Cost at High point - (Variable Rate x High Activity) = $50,000 - ($4 x 10,000) = $50,000 - $40,000 = $10,000. Verify: $26,000 - ($4 x 4,000) = $10,000. Ok"
+      "e": "Fixed Cost = Total Cost at High point − (Variable Rate × High Activity) = $50,000 − ($4 × 10,000) = $50,000 − $40,000 = $10,000. Verify using Low point: $26,000 − ($4 × 4,000) = $10,000. ✓"
     },
     {
       "q": "Multiple regression is preferred over simple regression when:",
