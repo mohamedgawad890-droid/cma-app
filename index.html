@@ -170,6 +170,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .slist{list-style:none;margin:8px 0 14px}
 .slist li{display:flex;gap:10px;margin-bottom:12px;font-size:16px;color:#555;line-height:1.55;align-items:flex-start}
 .snum{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;margin-top:1px}
+/* Arabic term tooltips */
+.ar-term{border-bottom:2px dashed #378ADD;color:#0C447C;cursor:pointer;font-weight:500;display:inline}
+.ar-tip{display:none;background:#0C447C;color:#fff;font-size:12px;font-weight:500;padding:3px 10px;border-radius:7px;direction:rtl;margin:0 4px;white-space:nowrap}
+.ar-tip.show{display:inline-block}
 /* Table */
 .tbl-wrap{overflow-x:auto;margin:12px 0;border-radius:8px;border:.5px solid #e0e0d8}
 .tbl{width:100%;border-collapse:collapse;font-size:15px}
@@ -2685,6 +2689,151 @@ const STATE={tab:'loading',searchQ:'',leaderboardData:[],leaderboardLoaded:false
   chatMsgs:[{r:'a',t:"Hi! I'm Mohamed Abdelgawad, your CMA Part 1 instructor. I have 20 years of finance experience and I'm here to help you pass the CMA exam. Ask me anything! 🎓"}],
   chatLoading:false,apiKey:loadKey(),showKeyInput:false,showReset:false,chatDraft:''};
 
+// ─── ARABIC TERM TOOLTIPS ──────────────────────────────────────────────────
+const TERM_DICT={
+  // Section A — Financial Accounting & Reporting
+  'Other Comprehensive Income':'الدخل الشامل الآخر',
+  'Comprehensive Income':'الدخل الشامل',
+  'Net Realizable Value':'صافي القيمة القابلة للتحقق',
+  'Deferred Tax Liability':'التزام ضريبي مؤجل',
+  'Deferred Tax Asset':'أصل ضريبي مؤجل',
+  'Revenue Recognition':'الاعتراف بالإيراد',
+  'Performance Obligation':'التزام الأداء',
+  'Transaction Price':'سعر المعاملة',
+  'Cash Flow Statement':'قائمة التدفقات النقدية',
+  'Financing Activities':'الأنشطة التمويلية',
+  'Investing Activities':'الأنشطة الاستثمارية',
+  'Operating Activities':'الأنشطة التشغيلية',
+  'Contingent Liability':'الالتزام الطارئ',
+  'Non-current Liability':'التزام غير متداول',
+  'Non-current Asset':'أصل غير متداول',
+  'Intangible Asset':'أصل غير ملموس',
+  'Tangible Asset':'أصل ملموس',
+  'Current Liability':'التزام متداول',
+  'Current Asset':'أصل متداول',
+  'Prior Period Adjustment':'تعديل الفترة السابقة',
+  'Earnings Per Share':'ربحية السهم',
+  'Operating Lease':'إيجار تشغيلي',
+  'Finance Lease':'إيجار تمويلي',
+  'Stockholders Equity':'حقوق المساهمين',
+  'Accounts Receivable':'الذمم المدينة',
+  'Accounts Payable':'الذمم الدائنة',
+  'Preferred Stock':'الأسهم الممتازة',
+  'Treasury Stock':'أسهم الخزينة',
+  'Bonds Payable':'السندات المستحقة الدفع',
+  'Notes Payable':'أوراق الدفع',
+  'Common Stock':'الأسهم العادية',
+  'Retained Earnings':'الأرباح المحتجزة',
+  'Faithful Representation':'التمثيل الصادق',
+  'Impairment Loss':'خسارة انخفاض القيمة',
+  'Going Concern':'مبدأ الاستمرارية',
+  'Accrual Basis':'أساس الاستحقاق',
+  'Fair Value':'القيمة العادلة',
+  'Book Value':'القيمة الدفترية',
+  'Goodwill':'الشهرة التجارية',
+  'Dividends':'الأرباح الموزعة',
+  'Materiality':'الأهمية النسبية',
+  'Comparability':'قابلية المقارنة',
+  'Consistency':'الاتساق',
+  'Depreciation':'الاستهلاك',
+  'Amortization':'الإطفاء',
+  'Warranty':'الضمان',
+  'Accrual':'الاستحقاق',
+  'Inventory':'المخزون',
+  'Impairment':'انخفاض القيمة',
+  'Timeliness':'التوقيت المناسب',
+  'Relevance':'الملاءمة',
+  // Section B — Planning & Budgeting
+  'Net Present Value':'صافي القيمة الحالية',
+  'Internal Rate of Return':'معدل العائد الداخلي',
+  'Time Value of Money':'القيمة الزمنية للنقود',
+  'Discounted Cash Flow':'التدفقات النقدية المخصومة',
+  'Unfavorable Variance':'انحراف غير ملائم',
+  'Favorable Variance':'انحراف ملائم',
+  'Variance Analysis':'تحليل الانحرافات',
+  'Opportunity Cost':'تكلفة الفرصة البديلة',
+  'Production Budget':'موازنة الإنتاج',
+  'Capital Budget':'الموازنة الرأسمالية',
+  'Flexible Budget':'الموازنة المرنة',
+  'Static Budget':'الموازنة الثابتة',
+  'Master Budget':'الموازنة الرئيسية',
+  'Sales Budget':'موازنة المبيعات',
+  'Cash Budget':'الموازنة النقدية',
+  'Payback Period':'فترة الاسترداد',
+  'Relevant Cost':'التكلفة الملاءمة',
+  'Working Capital':'رأس المال العامل',
+  'Discount Rate':'معدل الخصم',
+  'Sunk Cost':'التكلفة الغارقة',
+  // Section C — Performance Management
+  'Key Performance Indicator':'مؤشر الأداء الرئيسي',
+  'Economic Value Added':'القيمة الاقتصادية المضافة',
+  'Return on Investment':'العائد على الاستثمار',
+  'Balanced Scorecard':'بطاقة الأداء المتوازن',
+  'Responsibility Center':'مركز المسؤولية',
+  'Investment Center':'مركز الاستثمار',
+  'Residual Income':'الدخل المتبقي',
+  'Transfer Price':'سعر التحويل',
+  'Benchmarking':'المقارنة المرجعية',
+  'Cost Center':'مركز التكلفة',
+  'Profit Center':'مركز الربح',
+  // Section D — Cost Management
+  'Activity-Based Costing':'محاسبة التكاليف على أساس الأنشطة',
+  'Absorption Costing':'التكاليف الكاملة (الاستيعابية)',
+  'Variable Costing':'التكاليف المتغيرة',
+  'Job Order Costing':'محاسبة تكاليف الأوامر',
+  'Process Costing':'محاسبة تكاليف المراحل',
+  'Standard Cost':'التكلفة المعيارية',
+  'Contribution Margin':'هامش المساهمة',
+  'Equivalent Units':'الوحدات المكافئة',
+  'Break-Even Point':'نقطة التعادل',
+  'Weighted Average':'المتوسط المرجح',
+  'Direct Material':'المواد المباشرة',
+  'Direct Labor':'العمالة المباشرة',
+  'Variable Cost':'التكلفة المتغيرة',
+  'Fixed Cost':'التكلفة الثابتة',
+  'Mixed Cost':'التكلفة المختلطة',
+  'Joint Cost':'التكاليف المشتركة',
+  'Overhead':'التكاليف غير المباشرة',
+  // Section E — Internal Controls
+  'Segregation of Duties':'الفصل بين المهام',
+  'Control Environment':'بيئة الرقابة',
+  'Internal Control':'الرقابة الداخلية',
+  'Risk Assessment':'تقييم المخاطر',
+  'Internal Audit':'التدقيق الداخلي',
+  'External Audit':'التدقيق الخارجي',
+  'Inherent Risk':'المخاطر الكامنة',
+  'Detection Risk':'مخاطر الاكتشاف',
+  'Control Risk':'مخاطر الرقابة',
+  'Fraud':'الاحتيال',
+  'Audit':'التدقيق',
+  // Section F — Technology & Analytics
+  'Artificial Intelligence':'الذكاء الاصطناعي',
+  'Business Intelligence':'ذكاء الأعمال',
+  'Machine Learning':'التعلم الآلي',
+  'Cloud Computing':'الحوسبة السحابية',
+  'Data Analytics':'تحليل البيانات',
+  'Data Mining':'استخراج البيانات',
+  'Cybersecurity':'الأمن السيبراني',
+  'Blockchain':'سلسلة الكتل',
+  'Big Data':'البيانات الضخمة',
+};
+function escRx(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
+function highlightTerms(text){
+  let out=esc(text);
+  const terms=Object.keys(TERM_DICT).sort((a,b)=>b.length-a.length);
+  for(const term of terms){
+    const ar=TERM_DICT[term];
+    const re=new RegExp('\\b'+escRx(term)+'(?![^<]*>)','g');
+    out=out.replace(re,`<span class="ar-term" onclick="toggleTip(this)">${term}<span class="ar-tip">${ar}</span></span>`);
+  }
+  return out;
+}
+function toggleTip(el){
+  const tip=el.querySelector('.ar-tip');if(!tip)return;
+  const wasOpen=tip.classList.contains('show');
+  document.querySelectorAll('.ar-tip.show').forEach(t=>t.classList.remove('show'));
+  if(!wasOpen)tip.classList.add('show');
+}
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 function sect(id){return S.find(s=>s.id===id);}
 
@@ -2721,12 +2870,12 @@ function renderBlock(block,sec){
   const bg=sec.bg,tx=sec.text,st=sec.strong;
   switch(block.t){
     case'h':return`<div class="lh">${esc(block.v)}</div>`;
-    case'p':return`<div class="lp">${esc(block.v)}</div>`;
+    case'p':return`<div class="lp">${highlightTerms(block.v)}</div>`;
     case'f':return`<div class="formula" style="background:${bg};border:1px solid ${tx}30"><div class="formula-lbl" style="color:${tx}">${esc(block.l)}</div><div class="formula-txt" style="color:${st}">${esc(block.v)}</div></div>`;
-    case'tip':return`<div class="tip"><div class="tip-lbl">EXAM TIP</div><div class="tip-txt">${esc(block.v)}</div></div>`;
-    case'b':return`<ul class="blist">${block.v.map(i=>`<li><span style="color:${tx};font-weight:500;flex-shrink:0">•</span><span>${esc(i)}</span></li>`).join('')}</ul>`;
-    case's':return`<ol class="slist">${block.v.map((i,j)=>`<li><span class="snum" style="background:${bg};color:${st};border:1px solid ${tx}40">${j+1}</span><span>${esc(i)}</span></li>`).join('')}</ol>`;
-    case'tbl':return`<div class="tbl-wrap"><table class="tbl"><thead><tr>${block.h.map(h=>`<th style="background:${bg};color:${st}">${esc(h)}</th>`).join('')}</tr></thead><tbody>${block.r.map(row=>`<tr>${row.map(c=>`<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+    case'tip':return`<div class="tip"><div class="tip-lbl">EXAM TIP</div><div class="tip-txt">${highlightTerms(block.v)}</div></div>`;
+    case'b':return`<ul class="blist">${block.v.map(i=>`<li><span style="color:${tx};font-weight:500;flex-shrink:0">•</span><span>${highlightTerms(i)}</span></li>`).join('')}</ul>`;
+    case's':return`<ol class="slist">${block.v.map((i,j)=>`<li><span class="snum" style="background:${bg};color:${st};border:1px solid ${tx}40">${j+1}</span><span>${highlightTerms(i)}</span></li>`).join('')}</ol>`;
+    case'tbl':return`<div class="tbl-wrap"><table class="tbl"><thead><tr>${block.h.map(h=>`<th style="background:${bg};color:${st}">${esc(h)}</th>`).join('')}</tr></thead><tbody>${block.r.map(row=>`<tr>${row.map(c=>`<td>${highlightTerms(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
     case'video':{
       const vid=block.v;
       const lbl=block.l?`<div class="formula-lbl" style="color:${tx};margin-bottom:8px">${esc(block.l)}</div>`:'';
