@@ -1,7 +1,7 @@
 // CMA Prep — Service Worker v3
 // Strategy: Network-first with cache fallback
 
-const CACHE_NAME = 'cma-prep-v3';
+const CACHE_NAME = 'cma-prep-v4';
 const OFFLINE_URLS = [
   './',
   './index.html',
