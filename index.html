@@ -255,8 +255,18 @@ const TOTAL_LESSONS=S.reduce((acc,s)=>acc+s.lessons.length,0);
 
 // ─── STATE ────────────────────────────────────────────────────────────────────
 function loadProg(){try{const d=localStorage.getItem('cma-html-v2');return d?JSON.parse(d):{done:[],lessonScores:{},mcqTotal:0,mcqRight:0};}catch{return{done:[],lessonScores:{},mcqTotal:0,mcqRight:0};}}
+
+// Item 1: _doneSet caches STATE.progress.done as a Set for O(1) lookups.
+// lessonDone() is called hundreds of times per render across 113 lessons.
+// Array.includes() = O(n) per call → Set.has() = O(1) per call.
+// Invalidated in saveProg() and whenever Firestore overwrites STATE.progress.
+let _doneSet = null;
+function _invalidateDoneSet(){ _doneSet = null; }
+function _getDoneSet(){ if(!_doneSet) _doneSet = new Set(STATE.progress.done); return _doneSet; }
+
 function saveProg(p){
   STATE.progress=p;
+  _invalidateDoneSet();
   try{localStorage.setItem('cma-html-v2',JSON.stringify(p));}catch{}
   if(STATE.user){db.collection('progress').doc(STATE.user.uid).set(p).catch(()=>{});}
   render();
@@ -658,7 +668,7 @@ function startQTimer(getStartFn){
 function stopQTimer(){if(window._qTimerInterval){clearInterval(window._qTimerInterval);window._qTimerInterval=null;}}
 function getPct(){return Math.round(STATE.progress.done.length/TOTAL_LESSONS*100);}
 function getAcc(){const{mcqTotal,mcqRight}=STATE.progress;return mcqTotal>0?Math.round(mcqRight/mcqTotal*100):0;}
-function lessonDone(lid){return STATE.progress.done.includes(lid);}
+function lessonDone(lid){ return _getDoneSet().has(lid); }
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function normalizeCase(t){const K=new Set(['GAAP','IFRS','LIFO','FIFO','WACC','ROI','NPV','IRR','CMA','US','USA','FASB','IASB','SEC','PCAOB','EPS','DM','DL','OH','SHA','AH','AP','SP','VOH','ABC','JIT','CVP','COGS','PPE','FCF','EVA','BSC','KPI','ERP','MRP','CRM','AI','ML','BI','SQL','ETL','API','AFS','HTM','OCI','FV','NOL','DTA','DTL','GDP','CPI','IPO','ETF','LBO','DCF','CAPM','IT','HR','ASC','ASU','COD','FICA','RD','EBIT','EBITDA','COSO','SOX','IRS','CEO','CFO','COO','CPA','CIA','ICFR']);return String(t).replace(/([A-Z][A-Z]+)/g,(m)=>K.has(m)?m:m.charAt(0)+m.slice(1).toLowerCase());}
 function getStudyStreak(){return loadStreak().count||0;}
@@ -2344,23 +2354,42 @@ function renderQuizSession(){
   const explanation=sel!==null?`<div style="margin-top:14px;padding:13px 14px;border-radius:10px;background:${sel===q.a?'#EAF3DE':'#FCEBEB'};border:1px solid ${sel===q.a?'#639922':'#E24B4A'}"><div style="font-size:12px;font-weight:500;color:${sel===q.a?'#27500A':'#791F1F'};margin-bottom:5px">${sel===q.a?'Correct! Well done.':'Not quite — here is why:'}</div><div style="font-size:13px;color:${sel===q.a?'#3B6D11':'#A32D2D'};line-height:1.55">${esc(q.e)}</div></div>`:'';
   const nextBtn=sel!==null?`<button class="btn btn-primary" onclick="nextQuestion()" style="background:${sec.bar}">${qs.idx+1>=qs.questions.length?'See My Results':'Next Question →'}</button>`:`<button class="btn" style="background:#f0f0eb;color:#bbb;cursor:not-allowed">Select an answer to continue</button>`;
   const timerBadge=timerBadgeHTML(qs.qTimerElapsed,sel!==null);
-  return`<div class="bh"><button class="bh-back" onclick="STATE.tab='study';STATE.quizState=null;render()">‹</button><div style="flex:1"><div style="font-size:11px;font-weight:500;color:${sec.text}">${esc(lessonTitle)}</div><div style="font-size:14px;font-weight:500">Question ${qs.idx+1} of ${qs.questions.length}</div></div>${timerBadge}</div>
-  <div style="height:5px;background:#ebebea;flex-shrink:0"><div style="height:100%;width:${barW}%;background:${sec.bar};transition:width .4s;border-radius:0 3px 3px 0"></div></div>
+  const headerTitle=qs.isRetry?'Wrong Answer Retry':lessonTitle;
+  const headerSub=qs.isRetry?`Question ${qs.idx+1} of ${qs.questions.length} · Mixed sections`:`Question ${qs.idx+1} of ${qs.questions.length}`;
+  return`<div class="bh"><button class="bh-back" onclick="STATE.tab=${qs.isRetry?`'wrong-answers'`:`'study'`};STATE.quizState=null;render()">‹</button><div style="flex:1"><div style="font-size:11px;font-weight:500;color:${sec.text}">${esc(headerTitle)}</div><div style="font-size:14px;font-weight:500">${headerSub}</div></div>${timerBadge}</div>
+  <div style="height:5px;background:#ebebea;flex-shrink:0"><div style="height:100%;width:${barW}%;background:${qs.isRetry?'#E24B4A':sec.bar};transition:width .4s;border-radius:0 3px 3px 0"></div></div>
   <div class="scroll-area pad" style="padding-top:16px"><div class="card" id="qs-question-card"><p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${esc(q.q)}</p>${opts}${explanation}</div><div style="margin-top:12px" id="qs-next-wrap">${nextBtn}</div><div style="height:20px"></div></div>`;
 }
 
 // ─── QUIZ RESULTS ─────────────────────────────────────────────────────────────
 function renderQuizResults(){
   const qs=STATE.quizState;if(!qs)return'';
-  const sec=sect(qs.sId);const correct=qs.answers.filter(a=>a.correct).length;const pctQ=Math.round(correct/qs.questions.length*100);const lessonTitle=S.flatMap(s=>s.lessons).find(l=>l.id===qs.lessonId)?.title||'';
+  const sec=sect(qs.sId);const correct=qs.answers.filter(a=>a.correct).length;const pctQ=Math.round(correct/qs.questions.length*100);
+  const lessonTitle=qs.isRetry?'Wrong Answer Retry':S.flatMap(s=>s.lessons).find(l=>l.id===qs.lessonId)?.title||'';
   const gradeEmoji=pctQ>=80?'🏆':pctQ>=60?'👍':'📚';const gradeLabel=pctQ>=80?'Excellent!':pctQ>=60?'Good work!':'Keep studying!';
   const breakdown=qs.questions.map((q,i)=>`<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;padding-bottom:${i<qs.questions.length-1?'10px':'0'};border-bottom:${i<qs.questions.length-1?'.5px solid #e0e0d8':'none'}"><span style="font-size:15px;flex-shrink:0">${qs.answers[i]?.correct?'✅':'❌'}</span><div><div style="font-size:13px;color:#333;line-height:1.4">Q${i+1}: ${esc(q.q)}</div>${!qs.answers[i]?.correct?`<div style="font-size:12px;color:#3B6D11;margin-top:3px">Correct: ${esc(q.o[q.a])}</div>`:''}</div></div>`).join('');
   const timeHTML=totalTimeHTML(qs.quizStartTime,qs.quizEndTime,qs.questionTimes);
-  return`<div class="scroll-area" style="padding:30px 16px 20px;text-align:center"><div style="font-size:52px">${gradeEmoji}</div><div style="font-size:20px;font-weight:500;margin-top:10px">${gradeLabel}</div><div style="font-size:46px;font-weight:500;color:${sec.text};margin:6px 0 2px">${pctQ}%</div><div style="font-size:14px;color:#888;margin-bottom:16px">${correct} out of ${qs.questions.length} correct</div>
-  ${timeHTML}
-  <div class="card" style="text-align:left;margin-bottom:14px"><div style="font-size:13px;font-weight:500;color:#555;margin-bottom:12px">Question Review</div>${breakdown}</div>
-  <div style="display:flex;gap:10px;margin-bottom:12px"><button class="btn btn-outline" onclick="STATE.tab='study';STATE.quizState=null;render()">Back to Study</button><button class="btn" onclick="startQuiz('${qs.lessonId}')" style="background:${sec.bar};color:#fff">Retake Quiz</button></div>
-  <button onclick="askAboutResults('${qs.lessonId}',${pctQ})" style="width:100%;padding:12px;border-radius:10px;border:1px solid ${sec.text}50;background:${sec.bg};color:${sec.strong};font-size:13px;cursor:pointer;font-family:inherit;font-weight:500">Ask Mohamed to review weak areas ↗</button><div style="height:20px"></div></div>`;
+  const actionBtns=qs.isRetry
+    ?`<div style="display:flex;gap:10px;margin-bottom:12px">
+        <button class="btn btn-outline" onclick="STATE.tab='wrong-answers';STATE.quizState=null;render()">← Wrong Answers</button>
+        <button class="btn" onclick="startWrongAnswersRetry()" style="background:#E24B4A;color:#fff">↺ Retry Again</button>
+      </div>`
+    :`<div style="display:flex;gap:10px;margin-bottom:12px">
+        <button class="btn btn-outline" onclick="STATE.tab='study';STATE.quizState=null;render()">Back to Study</button>
+        <button class="btn" onclick="startQuiz('${qs.lessonId}')" style="background:${sec.bar};color:#fff">Retake Quiz</button>
+      </div>
+      <button onclick="askAboutResults('${qs.lessonId}',${pctQ})" style="width:100%;padding:12px;border-radius:10px;border:1px solid ${sec.text}50;background:${sec.bg};color:${sec.strong};font-size:13px;cursor:pointer;font-family:inherit;font-weight:500">Ask Mohamed to review weak areas ↗</button>`;
+  return`<div class="scroll-area" style="padding:30px 16px 20px;text-align:center">
+    <div style="font-size:52px">${gradeEmoji}</div>
+    <div style="font-size:20px;font-weight:500;margin-top:10px">${gradeLabel}</div>
+    <div style="font-size:46px;font-weight:500;color:${qs.isRetry?'#E24B4A':sec.text};margin:6px 0 2px">${pctQ}%</div>
+    <div style="font-size:14px;color:#888;margin-bottom:4px">${correct} out of ${qs.questions.length} correct</div>
+    ${qs.isRetry?`<div style="font-size:12px;color:#aaa;margin-bottom:16px">Wrong Answer Retry</div>`:`<div style="font-size:12px;color:#aaa;margin-bottom:16px">${esc(lessonTitle)}</div>`}
+    ${timeHTML}
+    <div class="card" style="text-align:left;margin-bottom:14px"><div style="font-size:13px;font-weight:500;color:#555;margin-bottom:12px">Question Review</div>${breakdown}</div>
+    ${actionBtns}
+    <div style="height:20px"></div>
+  </div>`;
 }
 
 // ─── PROGRESS ─────────────────────────────────────────────────────────────────
@@ -2506,6 +2535,42 @@ function renderFormulaBank(){
   <div class="scroll-area pad" style="padding-top:4px">${items}<div style="height:20px"></div></div>`;
 }
 
+// Item 3: Wrong Answers retry quiz.
+// Collects all incorrectly-answered questions from lessonScores, shuffles them,
+// and launches them in the existing quiz-session screen with isRetry=true.
+// Does NOT overwrite lessonScores on completion — only updates aggregate mcqTotal/mcqRight.
+async function startWrongAnswersRetry(){
+  const scores=STATE.progress.lessonScores||{};
+  const wrongQs=[];
+  for(const sec of S){
+    for(const l of sec.lessons){
+      const sc=scores[l.id];
+      if(sc&&sc.answers){
+        sc.answers.forEach((ans,idx)=>{
+          const q=l.quizzes[idx];
+          if(q&&ans!==q.a) wrongQs.push({...q,_secId:sec.id,_lessonId:l.id});
+        });
+      }
+    }
+  }
+  if(wrongQs.length===0){showToast('No wrong answers to retry!','info');return;}
+  // Ensure quiz data is loaded for all sections that have wrong answers
+  const secIds=[...new Set(wrongQs.map(q=>q._secId))];
+  await Promise.all(secIds.map(id=>ensureQuizzes(id)));
+  // Shuffle
+  for(let i=wrongQs.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[wrongQs[i],wrongQs[j]]=[wrongQs[j],wrongQs[i]];}
+  STATE.quizState={
+    lessonId:null,
+    sId:wrongQs[0]._secId,  // use first question's section for color only
+    questions:wrongQs,
+    idx:0,selected:null,answers:[],
+    questionTimes:[],quizStartTime:Date.now(),qTimerStart:Date.now(),qTimerElapsed:null,
+    isRetry:true
+  };
+  STATE.tab='quiz-session';
+  render();
+}
+
 function renderWrongAnswers(){
   // Collect all wrong answers from lessonScores
   const scores=STATE.progress.lessonScores||{};
@@ -2547,7 +2612,8 @@ function renderWrongAnswers(){
   }).join('');
   return`${renderSubNav(SUB_PROGRESS,'wrong-answers')}<div class="bh"><button class="bh-back" onclick="STATE.tab='progress';render()">‹</button>
     <div style="min-width:0"><div style="font-size:15px;font-weight:500">Wrong Answers</div>
-    <div style="font-size:11px;color:#888">${total} question${total===1?'':'s'} to review</div></div></div>
+    <div style="font-size:11px;color:#888">${total} question${total===1?'':'s'} to review</div></div>
+    <button onclick="startWrongAnswersRetry()" style="padding:8px 14px;border-radius:8px;border:none;background:#E24B4A;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;flex-shrink:0">↺ Retry All</button></div>
   <div class="scroll-area pad" style="padding-top:14px">${items}<div style="height:20px"></div></div>`;
 }
 
@@ -2590,7 +2656,7 @@ function renderProgress(){
 // ─── ACTIONS ──────────────────────────────────────────────────────────────────
 function goLesson(sId){STATE.tab='study';studyGo(sId,null);}
 function markDone(lid){
-  if(!STATE.progress.done.includes(lid)){
+  if(!_getDoneSet().has(lid)){
     saveProg({...STATE.progress,done:[...STATE.progress.done,lid]});
     setTimeout(syncLeaderboard,500);
     updateStreak();
@@ -2639,12 +2705,25 @@ function selectAnswer(i){
     const exp=`<div style="margin-top:14px;padding:13px 14px;border-radius:10px;background:${i===q.a?'#EAF3DE':'#FCEBEB'};border:1px solid ${i===q.a?'#639922':'#E24B4A'}"><div style="font-size:12px;font-weight:500;color:${i===q.a?'#27500A':'#791F1F'};margin-bottom:5px">${i===q.a?'Correct! Well done.':'Not quite — here is why:'}</div><div style="font-size:13px;color:${i===q.a?'#3B6D11':'#A32D2D'};line-height:1.55">${esc(q.e)}</div></div>`;
     qCard.innerHTML=`<p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${esc(q.q)}</p>${opts}${exp}`;
     const nextWrap=document.getElementById('qs-next-wrap');
-    if(nextWrap)nextWrap.innerHTML=`<button class="btn btn-primary" onclick="nextQuestion()" style="background:${sec.bar}">${qs.idx+1>=qs.questions.length?'See My Results':'Next Question →'}</button>`;
+    if(nextWrap)nextWrap.innerHTML=`<button class="btn btn-primary" onclick="nextQuestion()" style="background:${qs.isRetry?'#E24B4A':sec.bar}">${qs.idx+1>=qs.questions.length?'See My Results':'Next Question →'}</button>`;
   } else {render();}
 }
 function nextQuestion(){
   const qs=STATE.quizState;const correct=qs.selected===qs.questions[qs.idx].a;const newAnswers=[...qs.answers,{selected:qs.selected,correct}];
-  if(qs.idx+1>=qs.questions.length){const rightCount=newAnswers.filter(a=>a.correct).length;const p=STATE.progress;const ls=p.lessonScores||{};const ansArr=newAnswers.map(a=>a.selected);saveProg({...p,lessonScores:{...ls,[qs.lessonId]:{correct:rightCount,total:qs.questions.length,answers:ansArr}},mcqTotal:p.mcqTotal+qs.questions.length,mcqRight:p.mcqRight+rightCount});const qt2=[...(qs.questionTimes||[]),qs.qTimerElapsed||0];STATE.quizState={...qs,answers:newAnswers,done:true,questionTimes:qt2,quizEndTime:Date.now()};updateStreak();STATE.tab='quiz-results';render();}
+  if(qs.idx+1>=qs.questions.length){
+    const rightCount=newAnswers.filter(a=>a.correct).length;
+    const p=STATE.progress;
+    if(qs.isRetry){
+      // Retry mode: only update aggregate stats, never overwrite lessonScores
+      saveProg({...p,mcqTotal:p.mcqTotal+qs.questions.length,mcqRight:p.mcqRight+rightCount});
+    } else {
+      const ls=p.lessonScores||{};const ansArr=newAnswers.map(a=>a.selected);
+      saveProg({...p,lessonScores:{...ls,[qs.lessonId]:{correct:rightCount,total:qs.questions.length,answers:ansArr}},mcqTotal:p.mcqTotal+qs.questions.length,mcqRight:p.mcqRight+rightCount});
+    }
+    const qt2=[...(qs.questionTimes||[]),qs.qTimerElapsed||0];
+    STATE.quizState={...qs,answers:newAnswers,done:true,questionTimes:qt2,quizEndTime:Date.now()};
+    updateStreak();STATE.tab='quiz-results';render();
+  }
   else{const qt=[...(qs.questionTimes||[]),qs.qTimerElapsed||0];STATE.quizState={...qs,idx:qs.idx+1,selected:null,answers:newAnswers,questionTimes:qt,qTimerStart:Date.now(),qTimerElapsed:null};render();}
 }
 function resetAll(){saveProg({done:[],lessonScores:{},mcqTotal:0,mcqRight:0});STATE.showReset=false;render();}
@@ -3855,7 +3934,7 @@ auth.onAuthStateChanged(async(user)=>{
         db.collection('students').doc(user.uid).get(),
         db.collection('tracker').doc(user.uid).get()
       ]);
-      if(pd.exists){STATE.progress=pd.data();try{localStorage.setItem('cma-html-v2',JSON.stringify(pd.data()));}catch{}}
+      if(pd.exists){STATE.progress=pd.data();_invalidateDoneSet();try{localStorage.setItem('cma-html-v2',JSON.stringify(pd.data()));}catch{}}
       if(sd.exists){try{localStorage.setItem('cma-student-v1',JSON.stringify(sd.data()));}catch{}}
       if(td.exists){try{localStorage.setItem('cma-tracker-v1',JSON.stringify(td.data()));}catch{}}
     }catch{}
