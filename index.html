@@ -312,6 +312,48 @@ function updateStreak(){
   saveStreak({count:newCount,lastDate:today});
 }
 
+// ── Study Time Tracking ──────────────────────────────────────────────────────
+// Records how long students spend reading lessons and taking quizzes.
+// Persists to localStorage. Displayed on the Progress screen.
+let _studyTimerStart=null;
+let _studyTimerScreen=null; // which screen is being timed
+
+function loadStudyTime(){
+  try{const d=localStorage.getItem('cma-studytime-v1');return d?JSON.parse(d):{totalMinutes:0,todayDate:'',todayMinutes:0};}
+  catch{return{totalMinutes:0,todayDate:'',todayMinutes:0};}
+}
+function saveStudyTime(d){
+  try{localStorage.setItem('cma-studytime-v1',JSON.stringify(d));}catch{}
+}
+function startStudyTimer(screen){
+  // Only start if not already timing the same screen
+  if(_studyTimerScreen===screen)return;
+  endStudyTimer(); // flush any existing session first
+  _studyTimerStart=Date.now();
+  _studyTimerScreen=screen;
+}
+function endStudyTimer(){
+  if(!_studyTimerStart)return;
+  const elapsed=Math.round((Date.now()-_studyTimerStart)/60000); // minutes
+  _studyTimerStart=null;
+  _studyTimerScreen=null;
+  if(elapsed<1)return; // ignore sessions under 1 minute
+  const st=loadStudyTime();
+  const today=new Date().toDateString();
+  const todayMin=st.todayDate===today?st.todayMinutes:0;
+  saveStudyTime({
+    totalMinutes:(st.totalMinutes||0)+elapsed,
+    todayDate:today,
+    todayMinutes:todayMin+elapsed
+  });
+}
+function fmtStudyTime(mins){
+  if(!mins||mins<1)return'0 min';
+  if(mins<60)return`${mins} min`;
+  const h=Math.floor(mins/60),m=mins%60;
+  return m>0?`${h}h ${m}m`:`${h}h`;
+}
+
 
 // ── PWA Install Prompt ──────────────────────────────────────────────────────
 function updateInstallBanner(){
@@ -702,6 +744,10 @@ function renderBlock(block,sec){
 // studyGo(sectId, lessonId) — fast within-study navigation
 // Skips nav rebuild, timer checks, and all other tab side-effects.
 function studyGo(sectId, lessonId){
+  // End timer if leaving a lesson
+  if(STATE.lessonId&&!lessonId) endStudyTimer();
+  // Start timer when entering a lesson
+  if(lessonId) startStudyTimer('lesson-'+lessonId);
   STATE.sectId = sectId;
   STATE.lessonId = lessonId;
   const content = document.getElementById('content-area');
@@ -1740,16 +1786,51 @@ async function doAuth(){
 }
 // ─── AUTH SCREENS ─────────────────────────────────────────────────────────────
 function renderLoading(){
-  return`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:40px 20px;text-align:center">
-    <img src="${PHOTO_B64}" style="width:90px;height:90px;border-radius:50%;object-fit:cover;margin-bottom:16px;border:3px solid #E6F1FB">
-    <div style="font-size:20px;font-weight:500;color:#1a1a1a;margin-bottom:4px">CMA Part 1 Prep</div>
-    <div style="font-size:13px;color:#888;margin-bottom:30px">by Mohamed Abdelgawad</div>
-    <div style="display:flex;gap:6px;align-items:center;color:#aaa;font-size:14px">
-      <div style="width:8px;height:8px;border-radius:50%;background:#378ADD;animation:blink 1s infinite"></div>
-      Loading...
+  // Skeleton that mirrors the Study screen — feels like content is about to appear
+  // rather than a blank wait. Uses the shimmer animation already in app.css.
+  const shimmer=(w,h,delay='0s',r='8px')=>
+    `<div style="height:${h};width:${w};background:#ebebea;border-radius:${r};animation:shimmer 1.3s ease-in-out infinite ${delay};flex-shrink:0"></div>`;
+  const sectionRow=()=>`
+    <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:.5px solid #f5f5f0">
+      ${shimmer('38px','38px','0s','9px')}
+      <div style="flex:1;display:flex;flex-direction:column;gap:6px">
+        ${shimmer('55%','13px')}
+        ${shimmer('35%','10px','.05s')}
+      </div>
+      ${shimmer('16px','16px','0s','4px')}
+    </div>`;
+  return`
+    <!-- Skeleton nav -->
+    <div style="height:44px;background:#fff;border-bottom:.5px solid #e0e0d8;display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0">
+      <img src="${PHOTO_B64}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;opacity:.9">
+      <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+        ${shimmer('120px','12px')}
+        ${shimmer('80px','9px','.05s')}
+      </div>
     </div>
-    <style>@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}</style>
-  </div>`;
+    <!-- Skeleton hero card -->
+    <div style="margin:14px 16px 10px;background:linear-gradient(135deg,#d8e8f5,#c8ddf0);border-radius:12px;padding:16px;overflow:hidden;position:relative">
+      <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+        ${shimmer('45%','14px','0s','6px')}
+        ${shimmer('18%','14px','.05s','6px')}
+      </div>
+      ${shimmer('100%','8px','.1s','4px')}
+      ${shimmer('70%','10px','.15s','4px')}
+    </div>
+    <!-- Skeleton section label -->
+    <div style="padding:4px 16px 8px">${shimmer('120px','11px','0s','4px')}</div>
+    <!-- Skeleton section cards -->
+    <div style="background:#fff;border:.5px solid #e0e0d8;border-radius:12px;margin:0 16px;overflow:hidden">
+      ${[0,.08,.16,.24,.3].map(d=>`
+        <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:.5px solid #f5f5f0">
+          ${shimmer('38px','38px',d+'s','9px')}
+          <div style="flex:1;display:flex;flex-direction:column;gap:7px">
+            ${shimmer(['60%','50%','70%','55%','45%'][Math.floor(d*20)]||'58%','13px',d+'s')}
+            ${shimmer('30%','10px',(d+.05)+'s')}
+          </div>
+        </div>`).join('')}
+    </div>
+    <style>@keyframes shimmer{0%,100%{opacity:.6}50%{opacity:1}}</style>`;
 }
 
 function renderOnboarding(){
@@ -2430,7 +2511,7 @@ function renderEssayPractice(){
       </div>`:''}
     </div>`;
   }).join('');
-  return`<div class="bh"><button class="bh-back" onclick="window._essayOpenIdx=null;STATE.tab='study';render()">‹</button>
+  return`<div class="bh"><button class="bh-back" onclick="window._essayOpenIdx=null;endStudyTimer();STATE.tab='quiz-mode-select';render()">‹</button>
     <div style="min-width:0"><div style="font-size:15px;font-weight:500">Essay Practice</div>
     <div style="font-size:11px;color:#888">10 exam-style essay questions · 25% of CMA score</div></div></div>
   <div class="scroll-area pad" style="padding-top:14px">
@@ -2619,6 +2700,25 @@ function renderWrongAnswers(){
 
 function renderProgress(){
   const{progress}=STATE;const pct=getPct();
+  const st=loadStudyTime();
+  const streak=loadStreak();
+  const today=new Date().toDateString();
+  const todayMin=st.todayDate===today?st.todayMinutes:0;
+  const statRow=`
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px">
+      <div style="background:#E6F1FB;border-radius:10px;padding:12px 8px;text-align:center">
+        <div style="font-size:18px;font-weight:500;color:#0C447C">${fmtStudyTime(st.totalMinutes||0)}</div>
+        <div style="font-size:10px;color:#185FA5;margin-top:3px">⏱ Total Study</div>
+      </div>
+      <div style="background:#EAF3DE;border-radius:10px;padding:12px 8px;text-align:center">
+        <div style="font-size:18px;font-weight:500;color:#27500A">${fmtStudyTime(todayMin)}</div>
+        <div style="font-size:10px;color:#3B6D11;margin-top:3px">📅 Today</div>
+      </div>
+      <div style="background:#FAEEDA;border-radius:10px;padding:12px 8px;text-align:center">
+        <div style="font-size:18px;font-weight:500;color:#854F0B">${streak.count||0}🔥</div>
+        <div style="font-size:10px;color:#BA7517;margin-top:3px">Streak</div>
+      </div>
+    </div>`;
   const cards=S.map((sec,i)=>{const done=sec.lessons.filter(l=>lessonDone(l.id)).length;const lp=Math.round(done/sec.lessons.length*100);
   return`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:${i<S.length-1?'.5px solid #f0f0eb':'none'}">
     <div style="width:30px;height:30px;border-radius:8px;background:${sec.bg};display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">${sec.emoji}</div>
@@ -2644,6 +2744,7 @@ function renderProgress(){
           <div style="height:100%;width:${pct}%;background:#fff;border-radius:3px;transition:width .6s"></div>
         </div>
       </div>
+      ${statRow}
     </div>
     <div style="background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:0 14px;margin-bottom:12px">
       ${cards}
@@ -2669,6 +2770,7 @@ function markDone(lid){
 function getNextLesson(sectId,lessonId){const sec=sect(sectId);if(!sec)return null;const idx=sec.lessons.findIndex(l=>l.id===lessonId);if(idx===-1||idx>=sec.lessons.length-1){const sIdx=S.findIndex(s=>s.id===sectId);if(sIdx===-1||sIdx>=S.length-1)return null;return{sec:S[sIdx+1],lesson:S[sIdx+1].lessons[0]};}return{sec,lesson:sec.lessons[idx+1]};}
 function doLessonQuiz(lid){startQuiz(lid);}
 async function startQuiz(lessonId){
+  startStudyTimer('quiz-'+lessonId);
   const secId=lessonId.split('-')[0];
   if(!QUIZ_CACHE[secId]){STATE.tab='loading';render();await ensureQuizzes(secId);}
   let foundLesson=null,foundSect=null;
@@ -2713,6 +2815,7 @@ function nextQuestion(){
   if(qs.idx+1>=qs.questions.length){
     const rightCount=newAnswers.filter(a=>a.correct).length;
     const p=STATE.progress;
+    endStudyTimer(); // session ends when quiz completes
     if(qs.isRetry){
       // Retry mode: only update aggregate stats, never overwrite lessonScores
       saveProg({...p,mcqTotal:p.mcqTotal+qs.questions.length,mcqRight:p.mcqRight+rightCount});
@@ -2886,7 +2989,8 @@ const SUB_PRACTICE=[
   {id:'quiz-mode-select', icon:'🎯', label:'MCQ Quiz'},
   {id:'cbq',              icon:'📝', label:'CBQ'},
   {id:'mock-exam',        icon:'🏆', label:'Mock Exam'},
-  {id:'formula-bank',     icon:'📐', label:'Formulas'}
+  {id:'formula-bank',     icon:'📐', label:'Formulas'},
+  {id:'essay-practice',   icon:'✍️', label:'Essay'}
 ];
 const SUB_PROGRESS=[
   {id:'progress',      icon:'📊', label:'Overview'},
@@ -2912,7 +3016,7 @@ function render(){
 
   let html='';
   switch(STATE.tab){
-    case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'wrong-answers':html=renderWrongAnswers();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;case'formula-bank':html=renderFormulaBank();break;case'cbq':html=renderCBQ();break;case'mock-exam':html=renderMockExamScreen();break;default:html=renderIntro();
+    case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'wrong-answers':html=renderWrongAnswers();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;case'formula-bank':html=renderFormulaBank();break;case'cbq':html=renderCBQ();break;case'mock-exam':html=renderMockExamScreen();break;case'essay-practice':html=renderEssayPractice();break;default:html=renderIntro();
   }
   content.innerHTML=html;
 
@@ -2925,6 +3029,7 @@ function render(){
   if(STATE.tab==='cbq'){content.style.overflow='hidden';setTimeout(()=>cbqInit(),0);}
   if(STATE.tab==='mock-exam'){content.style.overflow='hidden';if(STATE.mockExam.status==='mcq')setTimeout(()=>renderMockMCQContent(),0);if(STATE.mockExam.status==='cbq')setTimeout(()=>mockSetupMockDrag(),0);}
   if(STATE.tab==='study'&&STATE.lessonId){setTimeout(()=>syncNoteFromCloud(STATE.lessonId),0);}
+  if(STATE.tab==='essay-practice'){startStudyTimer('essay-practice');}
   if(STATE.tab==='search'){setTimeout(()=>{const inp=document.getElementById('search-input');if(inp){inp.focus();if(STATE.searchQ)updateSearchResults();}},50);}
   content.style.display='flex';content.style.flexDirection='column';content.style.overflow=STATE.tab==='chat'||STATE.tab==='cbq'||STATE.tab==='mock-exam'?'hidden':'auto';
   if(STATE.tab==='loading'||STATE.tab==='login'||STATE.tab==='onboarding'){nav.style.display='none';}
@@ -3185,6 +3290,8 @@ async function submitProfile(){
 }
 
 async function navTo(tab){
+  // End any active study session when navigating away
+  if(tab!=='study'&&tab!=='quiz-session') endStudyTimer();
   if(STATE.mockExam&&(STATE.mockExam.status==='mcq'||STATE.mockExam.status==='cbq')&&tab!=='mock-exam'){
     const _leaveOk=await showModal({icon:'⚠️',title:'Leave Exam?',body:'Your timer will stop and all progress will be lost.',type:'warning',confirmText:'Leave Exam',cancelText:'Stay'});
     if(!_leaveOk)return;
