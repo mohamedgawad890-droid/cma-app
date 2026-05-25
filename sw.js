@@ -1,17 +1,25 @@
-// CMA Prep — Service Worker v3
+// CMA Prep — Service Worker v5
 // Strategy: Network-first with cache fallback
 
-const CACHE_NAME = 'cma-prep-v4';
+const CACHE_NAME = 'cma-prep-v5';
 const OFFLINE_URLS = [
   './',
   './index.html',
   './cbq.html',
+  // Quiz question files (already existed)
   './questions/s1.json',
   './questions/s2.json',
   './questions/s3.json',
   './questions/s4.json',
   './questions/s5.json',
-  './questions/s6.json'
+  './questions/s6.json',
+  // Lesson content files (new in v79 — ST-1 refactor)
+  './lessons/lesson-s1.json',
+  './lessons/lesson-s2.json',
+  './lessons/lesson-s3.json',
+  './lessons/lesson-s4.json',
+  './lessons/lesson-s5.json',
+  './lessons/lesson-s6.json'
 ];
 
 self.addEventListener('install', event => {
