@@ -1006,19 +1006,23 @@ function timeAgo(ts){
 // Pagination fix: removed orderBy('createdAt') from Firestore query — it requires a
 // composite index that doesn't exist. Instead we fetch with .limit() only (no index needed)
 // and sort client-side by createdAt string, which works correctly for ISO date strings.
-// "Load More" increases the page size rather than using cursor pagination.
+// Community questions — paginated, no orderBy (avoids composite index requirement).
+// Sorted client-side. "Load More" fetches a larger page.
 const COMMUNITY_PAGE = 20;
 
 async function loadQuestions(append=false){
   if(STATE.communityLoading)return;
   STATE.communityLoading=true;
-  if(!append){STATE.communityQuestions=[];STATE.communityHasMore=false;}
-  // Track how many we want total (grows by COMMUNITY_PAGE each "Load More")
-  if(!STATE.communityPageSize)STATE.communityPageSize=COMMUNITY_PAGE;
-  if(append)STATE.communityPageSize+=COMMUNITY_PAGE;
-  render();
+  if(!append){
+    STATE.communityQuestions=[];
+    STATE.communityHasMore=false;
+    STATE.communityPageSize=COMMUNITY_PAGE;
+  } else {
+    STATE.communityPageSize=(STATE.communityPageSize||COMMUNITY_PAGE)+COMMUNITY_PAGE;
+  }
+  // NOTE: No render() here — avoids re-triggering renderCommunity() mid-fetch.
+  // The loading spinner is shown because communityLoading=true is already in STATE.
   try{
-    // No orderBy → no composite index needed. Sort client-side after fetch.
     let q=db.collection('questions').limit(STATE.communityPageSize+1);
     if(STATE.communityFilter!=='all') q=q.where('section','==',STATE.communityFilter);
     const snap=await q.get();
@@ -1027,7 +1031,10 @@ async function loadQuestions(append=false){
     STATE.communityQuestions=allDocs
       .slice(0,STATE.communityPageSize)
       .sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
-  }catch(e){console.log('Load questions error:',e);}
+  }catch(e){
+    console.error('Community load error:',e);
+    showToast('Could not load questions. Check your connection.','error');
+  }
   STATE.communityLoading=false;
   render();
 }
@@ -1230,10 +1237,9 @@ function renderCommunity(){
       ✏️ Ask a Question
     </button>`;
 
-  // Load questions if empty
-  if(STATE.communityQuestions.length===0&&!STATE._loadingCommunity&&!STATE.showAskForm){
-    STATE._loadingCommunity=true;
-    setTimeout(()=>{STATE._loadingCommunity=false;loadQuestions();},100);
+  // Trigger initial load — guard against double-calling using communityLoading state
+  if(STATE.communityQuestions.length===0&&!STATE.communityLoading&&!STATE.showAskForm){
+    setTimeout(()=>loadQuestions(),0);
   }
 
   return`${renderSubNav(SUB_ME,'community')}<div class="sh" style="padding-bottom:10px">
