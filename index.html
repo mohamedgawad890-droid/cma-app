@@ -222,6 +222,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .row-sb{display:flex;align-items:center;justify-content:space-between}
 .badge{font-size:11px;font-weight:500;padding:3px 9px;border-radius:6px;white-space:nowrap}
 .sect-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+/* ── Sub-Navigation Pills ── */
+.sub-nav{display:flex;gap:6px;padding:10px 16px 0;background:#fff;border-bottom:.5px solid #e0e0d8;flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+.sub-nav::-webkit-scrollbar{display:none}
+.sub-nav-btn{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;border:none;font-family:inherit;transition:all .15s;margin-bottom:10px}
+.sub-nav-btn.active{background:#0C447C;color:#fff}
+.sub-nav-btn:not(.active){background:#f0f0eb;color:#555}
+/* ── Profile Completion Banner ── */
+.profile-nudge{background:#E6F1FB;border:1px solid #b5d4f4;border-radius:12px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.profile-nudge-text{flex:1;font-size:13px;color:#0C447C;line-height:1.45}
+.profile-nudge-btn{padding:7px 14px;border-radius:8px;border:none;background:#0C447C;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0}
 /* ── Mobile Install Banner ── */
 .install-banner{display:none;align-items:center;justify-content:space-between;padding:11px 14px;background:linear-gradient(135deg,#0C447C,#185FA5);border-bottom:none;flex-shrink:0;gap:10px;position:relative;overflow:hidden}
 .install-banner::before{content:'';position:absolute;right:-20px;top:-20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.07);pointer-events:none}
@@ -3172,7 +3182,7 @@ function renderFeedback(){
 
   const isSubmitted=fb.comments&&fb.recommend&&fb.source&&fb.hardSection&&fb.r1&&fb.r2&&fb.r3&&fb.r4;
 
-  return`<div class="sh"><h2>Feedback & Suggestions</h2><p>Your feedback helps improve the course for everyone</p></div>
+  return`${renderSubNav(SUB_ME,'feedback')}<div class="sh"><h2>Feedback & Suggestions</h2><p>Your feedback helps improve the course for everyone</p></div>
   <div class="scroll-area pad" style="padding-top:14px">
 
     ${isSubmitted?`<div style="background:#EAF3DE;border:1px solid #639922;border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;gap:10px;align-items:center">
@@ -3466,7 +3476,7 @@ function renderCommunity(){
     setTimeout(()=>{STATE._loadingCommunity=false;loadQuestions();},100);
   }
 
-  return`<div class="sh" style="padding-bottom:10px">
+  return`${renderSubNav(SUB_ME,'community')}<div class="sh" style="padding-bottom:10px">
     <div style="display:flex;align-items:center;justify-content:space-between">
       <div><h2 style="font-size:18px;font-weight:500">Community Q&A</h2>
       <p style="font-size:12px;color:#888;margin-top:2px">Ask questions · Help each other · Learn together</p></div>
@@ -3599,13 +3609,13 @@ function renderLeaderboard(){
         render();
       }).catch(e=>console.log('LB fetch error',e));
     });
-    return`<div class="sh"><h2>Leaderboard</h2><p>Top CMA students</p></div>
+    return`${renderSubNav(SUB_PROGRESS,'leaderboard')}<div class="sh"><h2>Leaderboard</h2><p>Top CMA students</p></div>
     <div class="scroll-area" style="display:flex;align-items:center;justify-content:center;height:60%">
       <div style="text-align:center;color:#aaa"><div style="font-size:36px;margin-bottom:10px">⏳</div><div>Loading leaderboard...</div></div>
     </div>`;
   }
   
-  return`<div class="sh"><h2>Leaderboard</h2><p>Top ${lb.length} CMA students</p></div>
+  return`\${renderSubNav(SUB_PROGRESS,'leaderboard')}<div class="sh"><h2>Leaderboard</h2><p>Top ${lb.length} CMA students</p></div>
   <div class="scroll-area pad" style="padding-top:14px">
     ${myRank>0?`<div style="background:#FAEEDA;border:1px solid #EF9F2730;border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px">
       <span style="font-size:20px">🎯</span>
@@ -3660,7 +3670,24 @@ function selectQuizModeAnswer(i){
   if(STATE.quizMode.selected!==null)return;
   stopQTimer();
   STATE.quizMode.qTimerElapsed=Date.now()-STATE.quizMode.qTimerStart;
-  STATE.quizMode.selected=i;render();
+  STATE.quizMode.selected=i;
+  // #7: Targeted DOM update — only rebuild question card, not full screen
+  const qCard=document.getElementById('qm-question-card');
+  if(qCard){
+    const q=STATE.quizMode.questions[STATE.quizMode.idx];
+    const sel=i;
+    const opts=q.o.map((opt,j)=>{
+      let bg='#f5f5f0',border='.5px solid #e0e0d8',textC='#1a1a1a',circBg='#e5e5e0',circC='#666',circBorder='.5px solid #bbb',circTxt=String.fromCharCode(65+j);
+      if(j===q.a){bg='#EAF3DE';border='1px solid #639922';textC='#27500A';circBg='#c0dd97';circC='#27500A';circBorder='1px solid #639922';circTxt='✓';}
+      else if(j===sel&&sel!==q.a){bg='#FCEBEB';border='1px solid #E24B4A';textC='#791F1F';circBg='#f7c1c1';circC='#791F1F';circBorder='1px solid #E24B4A';circTxt='✗';}
+      else{textC='#888';}
+      return`<div class="q-opt" style="background:${bg};border:${border};cursor:default"><div class="q-circle" style="background:${circBg};color:${circC};border:${circBorder}">${circTxt}</div><div class="q-text" style="color:${textC}">${esc(normalizeCase(opt))}</div></div>`;
+    }).join('');
+    const exp=`<div style="margin-top:14px;padding:13px 14px;border-radius:10px;background:${sel===q.a?'#EAF3DE':'#FCEBEB'};border:1px solid ${sel===q.a?'#639922':'#E24B4A'}"><div style="font-size:12px;font-weight:500;color:${sel===q.a?'#27500A':'#791F1F'};margin-bottom:5px">${sel===q.a?'Correct! Well done.':'Not quite — here is why:'}</div><div style="font-size:13px;color:${sel===q.a?'#3B6D11':'#A32D2D'};line-height:1.55">${esc(q.e)}</div></div>`;
+    qCard.innerHTML=`<p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${esc(q.q)}</p>${opts}${exp}`;
+    const nextWrap=document.getElementById('qm-next-wrap');
+    if(nextWrap)nextWrap.innerHTML=`<button class="btn btn-primary" onclick="nextQuizModeQuestion()" style="background:#0C447C">${STATE.quizMode.idx+1>=STATE.quizMode.questions.length?'See Results ✓':'Next →'}</button>`;
+  } else {render();}
 }
 
 function nextQuizModeQuestion(){
@@ -3731,15 +3758,15 @@ function renderQuizMode(){
   </div>
   <div style="height:5px;background:#ebebea;flex-shrink:0"><div style="height:100%;width:${barW}%;background:#0C447C;transition:width .4s;border-radius:0 3px 3px 0"></div></div>
   <div class="scroll-area pad" style="padding-top:16px">
-    <div class="card"><p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${esc(q.q)}</p>${opts}${explanation}</div>
-    <div style="margin-top:12px">${nextBtn}</div>
+    <div class="card" id="qm-question-card"><p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${esc(q.q)}</p>${opts}${explanation}</div>
+    <div style="margin-top:12px" id="qm-next-wrap">${nextBtn}</div>
     <div style="height:20px"></div>
   </div>`;
 }
 
 // ── Quiz Mode Selection Screen ─────────────────────────────────────────────
 function renderQuizModeSelect(){
-  return`<div class="sh"><h2>Quiz Mode</h2><p>Practice MCQs by section or mixed exam</p></div>
+  return`${renderSubNav(SUB_PRACTICE,'quiz-mode-select')}<div class="sh"><h2>Quiz Mode</h2><p>Practice MCQs by section or mixed exam</p></div>
   <div class="scroll-area pad" style="padding-top:14px">
     <div class="card" style="margin-bottom:14px">
       <div style="font-size:14px;font-weight:500;color:#1a1a1a;margin-bottom:4px">🎯 Full CMA Mix</div>
@@ -3867,7 +3894,7 @@ function renderTracker(){
     </div>`;
   }).join('');
 
-  return`<div class="sh">
+  return`${renderSubNav(SUB_PROGRESS,'tracker')}<div class="sh">
     <h2>Topic Tracker</h2>
     <p style="font-size:12px;color:#888;margin-top:2px">Rate each topic to track your strengths and weaknesses</p>
   </div>
@@ -4081,7 +4108,7 @@ function renderLogin(){
 
 // ─── INTRO SCREEN ─────────────────────────────────────────────────────────────
 function renderIntro(){
-  return`<div class="scroll-area">
+  return`${renderSubNav(SUB_ME,'intro')}<div class="scroll-area">
     <!-- PROFILE HERO -->
     <div class="profile-hero">
       <img src="${PHOTO_B64}" class="profile-img" alt="Mohamed Abdelgawad">
@@ -4700,7 +4727,7 @@ function renderFormulaBank(){
         </div>`).join('')}
       </div>
     </div>`).join('');
-  return`<div class="sh"><h2>📐 Formula Bank</h2><p>Quick reference — all CMA Part 1 sections</p></div>
+  return`${renderSubNav(SUB_PRACTICE,'formula-bank')}<div class="sh"><h2>📐 Formula Bank</h2><p>Quick reference — all CMA Part 1 sections</p></div>
   <div class="scroll-area pad" style="padding-top:4px">${items}<div style="height:20px"></div></div>`;
 }
 
@@ -4721,7 +4748,7 @@ function renderWrongAnswers(){
   }
   const total=wrongItems.length;
   if(total===0){
-    return`<div class="bh"><button class="bh-back" onclick="STATE.tab='progress';render()">‹</button><div style="font-size:15px;font-weight:500">Wrong Answers</div></div>
+    return`${renderSubNav(SUB_PROGRESS,'wrong-answers')}<div class="bh"><button class="bh-back" onclick="STATE.tab='progress';render()">‹</button><div style="font-size:15px;font-weight:500">Wrong Answers</div></div>
     <div class="scroll-area pad" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:60px;text-align:center">
       <div style="font-size:48px;margin-bottom:16px">🎉</div>
       <div style="font-size:17px;font-weight:500;color:#1a1a1a;margin-bottom:8px">No wrong answers yet!</div>
@@ -4743,7 +4770,7 @@ function renderWrongAnswers(){
       </div>
     </div>`;
   }).join('');
-  return`<div class="bh"><button class="bh-back" onclick="STATE.tab='progress';render()">‹</button>
+  return`${renderSubNav(SUB_PROGRESS,'wrong-answers')}<div class="bh"><button class="bh-back" onclick="STATE.tab='progress';render()">‹</button>
     <div style="min-width:0"><div style="font-size:15px;font-weight:500">Wrong Answers</div>
     <div style="font-size:11px;color:#888">${total} question${total===1?'':'s'} to review</div></div></div>
   <div class="scroll-area pad" style="padding-top:14px">${items}<div style="height:20px"></div></div>`;
@@ -4765,7 +4792,7 @@ function renderProgress(){
     </div>
   </div>`;}).join('');
   const resetHTML=STATE.showReset?`<div style="background:#FCEBEB;border:1px solid #E24B4A;border-radius:10px;padding:14px 16px;margin-top:16px"><div style="font-size:13px;color:#791F1F;margin-bottom:12px;font-weight:500">This will delete all your progress. Are you sure?</div><div style="display:flex;gap:8px"><button class="btn btn-outline" onclick="STATE.showReset=false;render()" style="border-color:#A32D2D;color:#A32D2D">Cancel</button><button class="btn btn-danger" onclick="resetAll()">Yes, Reset</button></div></div>`:`<button class="btn btn-outline" onclick="STATE.showReset=true;render()" style="margin-top:16px;color:#aaa">Reset All Progress</button>`;
-  return`<div style="overflow-y:auto;flex:1;padding:0 16px">
+  return`${renderSubNav(SUB_PROGRESS,'progress')}<div style="overflow-y:auto;flex:1;padding:0 16px">
     <div style="padding:14px 0 10px">
       <div style="background:linear-gradient(135deg,#0C447C,#378ADD);border-radius:12px;padding:14px 16px;margin-bottom:12px">
         <h1 style="font-size:18px;font-weight:500;color:#fff;margin-bottom:10px">CMA Part 1 Progress</h1>
@@ -4912,8 +4939,53 @@ async function runValidatorAfterLoad(){
 setTimeout(runValidatorAfterLoad,4000);
 // ─────────────────────────────────────────────────────────────────────────────
 // ─── RENDER ───────────────────────────────────────────────────────────────────
-const TABS=[{id:'intro',label:'Guide',icon:'👤'},{id:'register',label:'Profile',icon:'🎓'},{id:'study',label:'Study',icon:'📚'},{id:'cbq',label:'CBQ',icon:'📝'},{id:'mock-exam',label:'Mock',icon:'🏆'},{id:'search',label:'Search',icon:'🔍'},{id:'quiz-mode-select',label:'Quiz',icon:'🎯'},{id:'tracker',label:'Tracker',icon:'📌'},{id:'formula-bank',label:'Formulas',icon:'📐'},{id:'leaderboard',label:'Top',icon:'🏅'},{id:'community',label:'Community',icon:'🌐'},{id:'feedback',label:'Feedback',icon:'⭐'}];
-function activeNavTab(){if(STATE.tab==='quiz-session'||STATE.tab==='quiz-results'||STATE.tab==='dashboard'||STATE.tab==='lessons'||STATE.tab==='quiz')return'study';if(STATE.tab==='question-detail')return'community';if(STATE.tab==='essay-practice')return'study';return STATE.tab;}
+// ── Primary Navigation (5 tabs) ──────────────────────────────────────────────
+const TABS=[
+  {id:'study',          label:'Study',    icon:'📚'},
+  {id:'quiz-mode-select',label:'Practice',icon:'🎯'},
+  {id:'progress',       label:'Progress', icon:'📊'},
+  {id:'search',         label:'Search',   icon:'🔍'},
+  {id:'intro',          label:'Me',       icon:'👤'}
+];
+
+// Maps every screen → its primary nav tab
+function activeNavTab(){
+  const t=STATE.tab;
+  if(t==='study'||t==='quiz-session'||t==='quiz-results'||t==='lessons'||t==='dashboard')return'study';
+  if(t==='quiz-mode-select'||t==='quiz-mode'||t==='cbq'||t==='mock-exam'||t==='formula-bank'||t==='essay-practice')return'quiz-mode-select';
+  if(t==='progress'||t==='tracker'||t==='wrong-answers'||t==='leaderboard')return'progress';
+  if(t==='search')return'search';
+  if(t==='intro'||t==='register'||t==='community'||t==='question-detail'||t==='feedback')return'intro';
+  return t;
+}
+
+// ── Sub-Navigation Renderer ───────────────────────────────────────────────────
+// items: [{id, label, icon}]  |  activeId: current STATE.tab
+function renderSubNav(items, activeId){
+  return`<div class="sub-nav">${
+    items.map(it=>`<button class="sub-nav-btn${activeId===it.id?' active':''}" onclick="navTo('${it.id}')">${it.icon} ${it.label}</button>`).join('')
+  }</div>`;
+}
+
+// Sub-nav item definitions for each group
+const SUB_PRACTICE=[
+  {id:'quiz-mode-select', icon:'🎯', label:'MCQ Quiz'},
+  {id:'cbq',              icon:'📝', label:'CBQ'},
+  {id:'mock-exam',        icon:'🏆', label:'Mock Exam'},
+  {id:'formula-bank',     icon:'📐', label:'Formulas'}
+];
+const SUB_PROGRESS=[
+  {id:'progress',      icon:'📊', label:'Overview'},
+  {id:'tracker',       icon:'📌', label:'Tracker'},
+  {id:'wrong-answers', icon:'❌', label:'Wrong Answers'},
+  {id:'leaderboard',   icon:'🏅', label:'Top Students'}
+];
+const SUB_ME=[
+  {id:'intro',     icon:'🏠', label:'Home'},
+  {id:'register',  icon:'🎓', label:'Profile'},
+  {id:'community', icon:'🌐', label:'Community'},
+  {id:'feedback',  icon:'⭐', label:'Feedback'}
+];
 function render(){
   const content=document.getElementById('content-area');const nav=document.getElementById('bottom-nav');if(!content||!nav)return;
   let html='';
@@ -4929,8 +5001,12 @@ function render(){
   if(STATE.tab==='loading'||STATE.tab==='login'||STATE.tab==='onboarding'){nav.style.display='none';}
   else{nav.style.display='flex';
     const active=activeNavTab();
-    const brandHeader=`<div class="desktop-brand" style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:13px;font-weight:600;color:#0C447C;letter-spacing:.5px">CMA Part One Prep</div><div style="font-size:10px;color:#888;margin-top:1px">With Gawad</div></div>${!window.matchMedia("(display-mode: standalone)").matches?'<button onclick="installApp()" title="Install App" style="display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:8px;border:1px solid #d0d8e8;background:#E6F1FB;color:#0C447C;cursor:pointer;font-size:12px;font-weight:500;font-family:inherit;flex-shrink:0"><span style="font-size:14px">⬇</span><span>Install App</span></button>':''}</div>`;
-    nav.innerHTML=brandHeader+TABS.map(t=>`<button class="nav-btn${t.id===active?' active':''}" onclick="navTo('${t.id}')"><span class="nav-icon">${t.icon}</span><span>${t.label}</span></button>`).join('');}
+    // #7: Only rebuild nav DOM when active group changes — avoids layout thrash
+    if(active!==render._lastNavActive){
+      render._lastNavActive=active;
+      const brandHeader=`<div class="desktop-brand" style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:13px;font-weight:600;color:#0C447C;letter-spacing:.5px">CMA Part One Prep</div><div style="font-size:10px;color:#888;margin-top:1px">With Gawad</div></div>${!window.matchMedia("(display-mode: standalone)").matches?'<button onclick="installApp()" title="Install App" style="display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:8px;border:1px solid #d0d8e8;background:#E6F1FB;color:#0C447C;cursor:pointer;font-size:12px;font-weight:500;font-family:inherit;flex-shrink:0"><span style="font-size:14px">⬇</span><span>Install App</span></button>':''}></div>`;
+      nav.innerHTML=brandHeader+TABS.map(t=>`<button class="nav-btn${t.id===active?' active':''}" onclick="navTo('${t.id}')"><span class="nav-icon">${t.icon}</span><span>${t.label}</span></button>`).join('');
+    }}
   if(STATE.tab==='chat'){setTimeout(()=>{const el=document.getElementById('chat-msgs');if(el)el.scrollTop=el.scrollHeight;},20);}
   // Start live per-question timer when on a quiz screen with unanswered question
   if(STATE.tab==='quiz-session'&&STATE.quizState&&STATE.quizState.selected===null){
@@ -4957,7 +5033,8 @@ function renderRegister(){
   const GOALS=['Pass CMA Part 1 Only','Pass Both Parts','Career Change','Promotion/Salary Increase','Personal Development'];
 
   const isComplete=st&&st.name&&st.mobile&&st.email&&st.country&&st.examdate&&st.photo&&st.university&&st.faculty&&st.gradyear;
-  const warningBanner=STATE.showProfileWarning?`<div style="background:#FCEBEB;border:1px solid #E24B4A;border-radius:12px;padding:14px 16px;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start"><span style="font-size:20px;flex-shrink:0">🔒</span><div><div style="font-size:14px;font-weight:500;color:#791F1F;margin-bottom:4px">Profile Required to Continue</div><div style="font-size:13px;color:#A32D2D;line-height:1.55">You must complete your full profile before accessing lessons, quizzes, progress tracking, or the AI chat. All fields are required. Please fill in everything below and submit to unlock the full app.</div></div></div>`:'';
+  // Profile nudge — gentle, not a blocker
+  const warningBanner=!isComplete?`<div class="profile-nudge"><span style="font-size:22px;flex-shrink:0">👋</span><div class="profile-nudge-text"><strong style="display:block;margin-bottom:2px">Complete your profile</strong>Unlock the leaderboard, community posting, and let Mohamed personalise your experience.</div><button class="profile-nudge-btn" onclick="document.getElementById('f-name')?.scrollIntoView({behavior:'smooth'})">Complete →</button></div>`:'';
 
   const profileSection = st && isComplete ? `
     <div style="background:linear-gradient(135deg,#0C447C,#378ADD);border-radius:12px;padding:16px;margin-bottom:16px;color:#fff;display:flex;align-items:center;gap:12px">
@@ -4977,7 +5054,7 @@ function renderRegister(){
   const fval=(k)=>st?esc(st[k]||''):'';
   const fsel=(k,v)=>st&&st[k]===v?'selected':'';
 
-  return`<div class="sh"><h2>Student Profile</h2><p>${isComplete?'Your profile is complete — welcome! Tap any field to update.':'Complete your profile to get started'}</p></div>
+  return`${renderSubNav(SUB_ME,'register')}<div class="sh"><h2>Student Profile</h2><p>${isComplete?'Your profile is complete — welcome! Tap any field to update.':'Complete your profile to get started'}</p></div>
   <div class="scroll-area pad" style="padding-top:14px">
     ${warningBanner}
     ${profileSection}
@@ -5184,12 +5261,9 @@ async function navTo(tab){
     if(!_leaveOk)return;
     mockClearTimers();STATE.mockExam.status='idle';
   }
-  if(!STATE.user&&tab!=='login'&&tab!=='loading'&&tab!=='onboarding'&&tab!=='quiz-mode'&&tab!=='quiz-mode-select'){STATE.tab='login';render();return;}
-  if(tab!=='intro'&&tab!=='register'&&tab!=='login'&&tab!=='loading'&&tab!=='feedback'&&tab!=='community'&&tab!=='leaderboard'&&tab!=='search'&&tab!=='quiz-mode-select'&&tab!=='question-detail'&&tab!=='cbq'&&tab!=='mock-exam'){
-    const st=loadStudent();
-    const fb=loadFeedback();
-    const isComplete=st&&st.name&&st.mobile&&st.email&&st.country&&st.examdate&&st.photo&&st.university&&st.faculty&&st.gradyear;
-    if(!isComplete){STATE.tab='register';STATE.showProfileWarning=true;render();return;}
+  // Auth guard — only login/onboarding are accessible without sign-in
+  if(!STATE.user&&tab!=='login'&&tab!=='loading'&&tab!=='onboarding'){
+    STATE.tab='login';render();return;
   }
   STATE.showProfileWarning=false;
   if(tab==='lessons'&&tab!==STATE.tab){STATE.sectId=null;STATE.lessonId=null;}
@@ -6345,10 +6419,10 @@ auth.onAuthStateChanged(async(user)=>{
       const td=await db.collection('tracker').doc(user.uid).get();
       if(td.exists){try{localStorage.setItem('cma-tracker-v1',JSON.stringify(td.data()));}catch{}}
     }catch{}
-    const st=loadStudent();const fb=loadFeedback();
-    const isComplete=st&&st.name&&st.mobile&&st.email&&st.country&&st.examdate&&st.photo&&st.university&&st.faculty&&st.gradyear;
-    STATE.tab=isComplete?'intro':'register';
-    STATE.showProfileWarning=!isComplete;
+    const st=loadStudent();
+    // Route all authenticated users to study — profile completion is encouraged, not forced
+    STATE.tab=st&&st.name?'study':'study';
+    STATE.showProfileWarning=false;
   } else {
     STATE.user=null;STATE.tab=localStorage.getItem('cma-visited')?'login':'onboarding';STATE.authLoading=false;
   }
