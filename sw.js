@@ -1,19 +1,22 @@
-// CMA Prep — Service Worker v5
+// CMA Prep — Service Worker v6
 // Strategy: Network-first with cache fallback
 
-const CACHE_NAME = 'cma-prep-v5';
+const CACHE_NAME = 'cma-prep-v6';
 const OFFLINE_URLS = [
   './',
   './index.html',
   './cbq.html',
-  // Quiz question files (already existed)
+  // v82: CSS and CBQ data are now separate files — must be cached for offline
+  './app.css',
+  './cbq-data.js',
+  // Quiz question files
   './questions/s1.json',
   './questions/s2.json',
   './questions/s3.json',
   './questions/s4.json',
   './questions/s5.json',
   './questions/s6.json',
-  // Lesson content files (new in v79 — ST-1 refactor)
+  // Lesson content files
   './lessons/lesson-s1.json',
   './lessons/lesson-s2.json',
   './lessons/lesson-s3.json',
