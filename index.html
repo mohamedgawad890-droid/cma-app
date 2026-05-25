@@ -920,6 +920,74 @@ function renderBlock(block,sec){
 
 
 // ─── STUDY SCREEN (merged Home + Lessons + Quiz) ─────────────────────────────
+// ── STUDY SCREEN — TARGETED UPDATE FUNCTIONS ─────────────────────────────────
+// ST-2: These replace render() calls within the study screen,
+// updating only content-area innerHTML instead of full page rebuild.
+
+// studyGo(sectId, lessonId) — fast within-study navigation
+// Skips nav rebuild, timer checks, and all other tab side-effects.
+function studyGo(sectId, lessonId){
+  STATE.sectId = sectId;
+  STATE.lessonId = lessonId;
+  const content = document.getElementById('content-area');
+  if(!content || STATE.tab !== 'study'){render();return;}
+  content.innerHTML = renderStudy();
+  content.style.display = 'flex';
+  content.style.flexDirection = 'column';
+  content.style.overflow = 'auto';
+  // Sync note if entering a lesson
+  if(lessonId){setTimeout(()=>syncNoteFromCloud(lessonId),0);}
+}
+
+// toggleSection(secId) — accordion expand/collapse with surgical DOM update.
+// Only touches the #sec-lessons-{id} div — zero full rebuilds.
+function toggleSection(secId){
+  const wasOpen = STATE.sectId === secId;
+  STATE.sectId = wasOpen ? null : secId;
+
+  const listEl = document.getElementById('sec-lessons-'+secId);
+  const iconEl = document.getElementById('sec-icon-'+secId);
+
+  // Fallback to full update if DOM anchors not found (e.g. first render)
+  if(!listEl){studyGo(STATE.sectId, null);return;}
+
+  if(wasOpen){
+    // Collapse
+    listEl.innerHTML = '';
+    listEl.style.display = 'none';
+    if(iconEl) iconEl.style.transform = 'rotate(0deg)';
+  } else {
+    // Expand — inject lesson list HTML
+    const sec = S.find(s=>s.id===secId);
+    if(!sec){render();return;}
+    const prog = STATE.progress;
+    const html = sec.lessons.map((l,i)=>{
+      const done = lessonDone(l.id);
+      const lsc  = (prog.lessonScores||{})[l.id];
+      const qpct = lsc ? Math.round(lsc.correct/lsc.total*100) : null;
+      return`<div style="background:${done?sec.bg:'#f8f8f6'};margin-bottom:8px;border-radius:10px;border:.5px solid ${done?sec.text+'30':'#e0e0d8'}">
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px">
+          <div style="width:28px;height:28px;border-radius:50%;background:${done?sec.bar:'#e5e5e0'};display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0;font-weight:600">${done?'✓':i+1}</div>
+          <div style="flex:1;min-width:0">
+            <div class="ellipsis" style="font-size:13px;font-weight:500;color:${done?sec.strong:'#1a1a1a'}">${i+1}. ${esc(l.title)}</div>
+            <div style="font-size:11px;color:#888;margin-top:2px">${l.dur}${lsc?` · ${qpct>=70?'✅':'🔴'} ${lsc.correct}/${lsc.total} (${qpct}%)`+' ':' · Quiz not attempted'}</div>
+          </div>
+          <div style="display:flex;gap:6px;flex-shrink:0">
+            <button onclick="event.stopPropagation();studyGo(${sec.id},'${l.id}')" title="Study Lesson" style="width:36px;height:36px;border-radius:9px;border:.5px solid ${sec.text}30;background:${done?sec.bar:'#fff'};color:${done?'#fff':sec.strong};font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">📖</button>
+            <button onclick="event.stopPropagation();doLessonQuiz('${l.id}')" title="${lsc?'Retake Quiz':'Start Quiz'}" style="width:36px;height:36px;border-radius:9px;border:.5px solid ${lsc?(qpct>=70?'#63992240':'#E24B4A40'):'#185FA540'};background:${lsc?(qpct>=70?'#EAF3DE':'#FCEBEB'):'#E6F1FB'};color:${lsc?(qpct>=70?'#27500A':'#A32D2D'):'#185FA5'};font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">🎯</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+    listEl.innerHTML = `<div style="margin-top:10px;border-top:.5px solid ${sec.text}20;padding-top:10px">
+      <div style="font-size:11px;font-weight:500;color:${sec.text};margin-bottom:8px;letter-spacing:.5px">LESSONS & QUIZZES</div>
+      ${html}
+    </div>`;
+    listEl.style.display = 'block';
+    if(iconEl) iconEl.style.transform = 'rotate(90deg)';
+  }
+}
+
 function renderStudy(){
   const{progress}=STATE;
   // ── Lesson reader ──────────────────────────────────────────────────────────
@@ -933,7 +1001,7 @@ function renderStudy(){
     if(!lesson.blocks||lesson.blocks.length===0){
       if(!LESSON_CACHE[String(sec.id)]){
         ensureLessons(sec.id).then(()=>render());
-        return`<div class="bh"><button class="bh-back" onclick="STATE.lessonId=null;render()">‹</button>
+        return`<div class="bh"><button class="bh-back" onclick="studyGo(STATE.sectId,null)">‹</button>
           <div><div style="font-size:11px;font-weight:500;color:${sec.text}">${sec.emoji} ${esc(sec.title)}</div>
           <div style="font-size:14px;font-weight:500">${esc(lesson.title)}</div></div></div>
           <div class="scroll-area pad" style="padding-top:20px">
@@ -946,12 +1014,12 @@ function renderStudy(){
       }
     }
     const lessonIdx=sec.lessons.findIndex(l=>l.id===STATE.lessonId);const done=lessonDone(lesson.id);
-    return`<div class="bh"><button class="bh-back" onclick="STATE.lessonId=null;render()">‹</button>
+    return`<div class="bh"><button class="bh-back" onclick="studyGo(STATE.sectId,null)">‹</button>
       <div style="min-width:0"><div style="font-size:11px;font-weight:500;color:${sec.text}">${sec.emoji} ${esc(sec.title)}</div>
       <div class="ellipsis" style="font-size:15px;font-weight:500;margin-top:1px">${lessonIdx+1}. ${esc(lesson.title)}</div></div></div>
     <div class="scroll-area pad"><div class="card" style="margin-top:14px;padding:4px 16px 16px">${lesson.blocks.map(b=>renderBlock(b,sec)).join('')}</div>
-    <button class="btn" onclick="markDone('${lesson.id}')" style="margin-top:14px;background:${done?'#EAF3DE':sec.bar};color:${done?'#27500A':'#fff'}">${done?'✓ Completed — Back':'Mark as Complete ✓'}</button>
-    ${(()=>{const nx=getNextLesson(sec.id,lesson.id);if(!nx)return'';return`<button class="btn btn-outline" onclick="STATE.sectId=${nx.sec.id};STATE.lessonId='${nx.lesson.id}';render()" style="margin-top:8px;border-color:#185FA520;color:#185FA5">Next: ${esc(nx.lesson.title)} →</button>`;})()}
+    <button class="btn" data-markdone="${lesson.id}" onclick="markDone('${lesson.id}')" style="margin-top:14px;background:${done?'#EAF3DE':sec.bar};color:${done?'#27500A':'#fff'}">${done?'✓ Completed — Back':'Mark as Complete ✓'}</button>
+    ${(()=>{const nx=getNextLesson(sec.id,lesson.id);if(!nx)return'';return`<button class="btn btn-outline" onclick="studyGo(${nx.sec.id},'${nx.lesson.id}')" style="margin-top:8px;border-color:#185FA520;color:#185FA5">Next: ${esc(nx.lesson.title)} →</button>`;})()}
     <div style="margin-top:12px">
       <div style="font-size:12px;font-weight:500;color:#888;margin-bottom:6px">📝 My Notes</div>
       <textarea id="lesson-notes-${lesson.id}" placeholder="Write your notes here... (saved automatically)" oninput="saveLessonNote('${lesson.id}',this.value)" style="width:100%;padding:10px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:13px;font-family:inherit;outline:none;background:#fafaf8;color:#1a1a1a;resize:vertical;line-height:1.5;box-sizing:border-box;min-height:120px" rows="7">${loadLessonNote(lesson.id)}</textarea>
@@ -977,14 +1045,14 @@ function renderStudy(){
                 <div style="font-size:11px;color:#888;margin-top:2px">${l.dur}${lsc?` · ${qpct>=70?'✅':'🔴'} ${lsc.correct}/${lsc.total} (${qpct}%)`:' · Quiz not attempted'}</div>
               </div>
               <div style="display:flex;gap:6px;flex-shrink:0">
-                <button onclick="event.stopPropagation();STATE.sectId=${sec.id};STATE.lessonId='${l.id}';render()" title="Study Lesson" style="width:36px;height:36px;border-radius:9px;border:.5px solid ${sec.text}30;background:${done?sec.bar:'#fff'};color:${done?'#fff':sec.strong};font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">📖</button>
+                <button onclick="event.stopPropagation();studyGo(${sec.id},'${l.id}')" title="Study Lesson" style="width:36px;height:36px;border-radius:9px;border:.5px solid ${sec.text}30;background:${done?sec.bar:'#fff'};color:${done?'#fff':sec.strong};font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">📖</button>
                 <button onclick="event.stopPropagation();doLessonQuiz('${l.id}')" title="${lsc?'Retake Quiz':'Start Quiz'}" style="width:36px;height:36px;border-radius:9px;border:.5px solid ${lsc?(qpct>=70?'#63992240':'#E24B4A40'):'#185FA540'};background:${lsc?(qpct>=70?'#EAF3DE':'#FCEBEB'):'#E6F1FB'};color:${lsc?(qpct>=70?'#27500A':'#A32D2D'):'#185FA5'};font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">🎯</button>
               </div>
             </div>
           </div>`}).join('')}
 
       </div>`:'' ;
-    return`<div class="card" style="cursor:pointer;border-color:${isOpen?sec.text+'60':'#e0e0d8'};border-width:${isOpen?'1px':'.5px'}" onclick="STATE.sectId=${isOpen?'null':sec.id};render()">
+    return`<div id="sec-card-${sec.id}" class="card" style="cursor:pointer;border-color:${isOpen?sec.text+'60':'#e0e0d8'};border-width:${isOpen?'1px':'.5px'}" onclick="toggleSection(${sec.id})">
       <div style="display:flex;align-items:center;gap:10px">
         <div class="sect-icon" style="background:${sec.bg}">${sec.emoji}</div>
         <div style="flex:1;min-width:0">
@@ -993,13 +1061,13 @@ function renderStudy(){
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
           <span class="badge" style="background:${sec.bg};color:${sec.strong}">${sp}%</span>
-          <span style="font-size:16px;color:#bbb;transition:transform .2s;transform:rotate(${isOpen?'90deg':'0deg'})"">›</span>
+          <span id="sec-icon-${sec.id}" style="font-size:16px;color:#bbb;transition:transform .2s;transform:rotate(${isOpen?'90deg':'0deg'})">›</span>
         </div>
       </div>
       <div style="height:4px;background:#f0f0eb;border-radius:2px;margin-top:10px;overflow:hidden">
         <div style="height:100%;width:${sp}%;background:${sec.bar};border-radius:2px"></div>
       </div>
-      ${lessonList}
+      <div id="sec-lessons-${sec.id}" style="${isOpen?'':'display:none'}">${lessonList}</div>
     </div>`;
   }).join('');
 
@@ -1722,7 +1790,7 @@ function updateSearchResults(){
     container.innerHTML=`<div style="text-align:center;padding:40px 20px;color:#aaa"><div style="font-size:36px;margin-bottom:10px">😕</div><div style="font-size:14px">No results for "<b>${esc(STATE.searchQ)}</b>"</div></div>`;
   }else{
     container.innerHTML=`<div style="font-size:12px;color:#888;margin-bottom:10px">${results.length} result${results.length>1?'s':''} for "<b>${esc(STATE.searchQ)}</b>"</div>`+
-    results.slice(0,20).map(r=>{const done=lessonDone(r.lesson.id);return`<div onclick="STATE.tab='study';STATE.sectId=${r.sec.id};STATE.lessonId='${r.lesson.id}';render()" style="background:${done?r.sec.bg:'#f8f8f6'};border:.5px solid ${done?r.sec.text+'40':'#e0e0d8'};border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer"><div style="font-size:10px;font-weight:500;color:${r.sec.text};margin-bottom:3px">${r.sec.emoji} ${esc(r.sec.title)}</div><div style="font-size:13px;font-weight:500;color:#1a1a1a">${esc(r.lesson.title)}</div><div style="font-size:11px;color:#888;margin-top:2px">${r.lesson.dur} · ${done?'✓ Completed':'Not started'}</div></div>`;}).join('');
+    results.slice(0,20).map(r=>{const done=lessonDone(r.lesson.id);return`<div onclick="STATE.tab='study';studyGo(${r.sec.id},'${r.lesson.id}')" style="background:${done?r.sec.bg:'#f8f8f6'};border:.5px solid ${done?r.sec.text+'40':'#e0e0d8'};border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer"><div style="font-size:10px;font-weight:500;color:${r.sec.text};margin-bottom:3px">${r.sec.emoji} ${esc(r.sec.title)}</div><div style="font-size:13px;font-weight:500;color:#1a1a1a">${esc(r.lesson.title)}</div><div style="font-size:11px;color:#888;margin-top:2px">${r.lesson.dur} · ${done?'✓ Completed':'Not started'}</div></div>`;}).join('');
   }
   // Update clear button
   const clearBtn=document.getElementById('search-clear');
@@ -2413,12 +2481,12 @@ function renderLessons(){
   }
   if(sectId!==null){
     const sec=sect(sectId);
-    const items=sec.lessons.map((l,i)=>{const done=lessonDone(l.id);return`<div class="card" onclick="STATE.lessonId='${l.id}';render()" style="cursor:pointer;border-color:${done?sec.text+'45':'#e0e0d8'}"><div class="row"><div style="width:32px;height:32px;border-radius:50%;background:${done?sec.bg:'#f0f0eb'};display:flex;align-items:center;justify-content:center;font-size:14px;color:${done?sec.strong:'#999'};border:1px solid ${done?sec.text+'40':'#e0e0d8'};flex-shrink:0;font-weight:500">${done?'✓':i+1}</div><div style="flex:1;min-width:0"><div class="ellipsis" style="font-size:14px;font-weight:500">${i+1}. ${esc(l.title)}</div><div style="font-size:12px;color:#888;margin-top:2px">${l.dur} · ${done?'Completed':'Not started'}</div></div><span style="color:#bbb;font-size:18px">›</span></div></div>`;}).join('');
+    const items=sec.lessons.map((l,i)=>{const done=lessonDone(l.id);return`<div class="card" onclick="STATE.tab='study';studyGo(STATE.sectId,'${l.id}')" style="cursor:pointer;border-color:${done?sec.text+'45':'#e0e0d8'}"><div class="row"><div style="width:32px;height:32px;border-radius:50%;background:${done?sec.bg:'#f0f0eb'};display:flex;align-items:center;justify-content:center;font-size:14px;color:${done?sec.strong:'#999'};border:1px solid ${done?sec.text+'40':'#e0e0d8'};flex-shrink:0;font-weight:500">${done?'✓':i+1}</div><div style="flex:1;min-width:0"><div class="ellipsis" style="font-size:14px;font-weight:500">${i+1}. ${esc(l.title)}</div><div style="font-size:12px;color:#888;margin-top:2px">${l.dur} · ${done?'Completed':'Not started'}</div></div><span style="color:#bbb;font-size:18px">›</span></div></div>`;}).join('');
     return`<div class="bh"><button class="bh-back" onclick="STATE.sectId=null;render()">‹</button><div><div style="font-size:16px;font-weight:500">${sec.emoji} ${esc(sec.title)}</div><div style="font-size:12px;color:#888;margin-top:1px">${sec.lessons.length} lessons · ${sec.weight}% of exam</div></div></div>
     <div class="scroll-area pad" style="padding-top:14px">${items}<div style="height:20px"></div></div>`;
   }
   const doneCount=STATE.progress.done.length;
-  const items=S.map(sec=>{const done=sec.lessons.filter(l=>lessonDone(l.id)).length;return`<div class="card" onclick="STATE.sectId=${sec.id};render()" style="cursor:pointer"><div class="row"><div class="sect-icon" style="background:${sec.bg}">${sec.emoji}</div><div style="flex:1;min-width:0"><div class="ellipsis" style="font-size:14px;font-weight:500">${esc(sec.title)}</div><div style="font-size:12px;color:#888;margin-top:2px">${done}/${sec.lessons.length} done · ${sec.weight}% of exam</div></div><span style="color:#bbb;font-size:18px">›</span></div></div>`;}).join('');
+  const items=S.map(sec=>{const done=sec.lessons.filter(l=>lessonDone(l.id)).length;return`<div class="card" onclick="STATE.tab='study';studyGo(${sec.id},null)" style="cursor:pointer"><div class="row"><div class="sect-icon" style="background:${sec.bg}">${sec.emoji}</div><div style="flex:1;min-width:0"><div class="ellipsis" style="font-size:14px;font-weight:500">${esc(sec.title)}</div><div style="font-size:12px;color:#888;margin-top:2px">${done}/${sec.lessons.length} done · ${sec.weight}% of exam</div></div><span style="color:#bbb;font-size:18px">›</span></div></div>`;}).join('');
   return`<div class="sh"><h2>All Lessons</h2><p>${doneCount} of ${TOTAL_LESSONS} completed</p></div><div class="scroll-area pad" style="padding-top:14px">${items}<div style="height:20px"></div></div>`;
 }
 
@@ -2722,8 +2790,18 @@ function renderProgress(){
 
 
 // ─── ACTIONS ──────────────────────────────────────────────────────────────────
-function goLesson(sId){STATE.sectId=sId;STATE.lessonId=null;STATE.tab='lessons';render();}
-function markDone(lid){if(!STATE.progress.done.includes(lid)){saveProg({...STATE.progress,done:[...STATE.progress.done,lid]});setTimeout(syncLeaderboard,500);updateStreak();}STATE.lessonId=null;render();}
+function goLesson(sId){STATE.tab='study';studyGo(sId,null);}
+function markDone(lid){
+  if(!STATE.progress.done.includes(lid)){
+    saveProg({...STATE.progress,done:[...STATE.progress.done,lid]});
+    setTimeout(syncLeaderboard,500);
+    updateStreak();
+  }
+  // Targeted: flip button appearance instantly before navigating back
+  const btn=document.querySelector('[data-markdone="'+lid+'"]');
+  if(btn){btn.textContent='✓ Saved!';btn.style.background='#EAF3DE';btn.style.color='#27500A';}
+  setTimeout(()=>studyGo(STATE.sectId,null),180);
+}
 function getNextLesson(sectId,lessonId){const sec=sect(sectId);if(!sec)return null;const idx=sec.lessons.findIndex(l=>l.id===lessonId);if(idx===-1||idx>=sec.lessons.length-1){const sIdx=S.findIndex(s=>s.id===sectId);if(sIdx===-1||sIdx>=S.length-1)return null;return{sec:S[sIdx+1],lesson:S[sIdx+1].lessons[0]};}return{sec,lesson:sec.lessons[idx+1]};}
 function doLessonQuiz(lid){startQuiz(lid);}
 async function startQuiz(lessonId){
