@@ -1,0 +1,1376 @@
+{
+  "5-1": [
+    {
+      "t": "h",
+      "v": "What Are Internal Controls?"
+    },
+    {
+      "t": "p",
+      "v": "Internal controls are processes and procedures designed to provide REASONABLE ASSURANCE that an organization achieves its objectives in operations, financial reporting, and compliance. They protect assets, ensure accurate records, and promote operational efficiency."
+    },
+    {
+      "t": "h",
+      "v": "The COSO Framework — 5 Components"
+    },
+    {
+      "t": "p",
+      "v": "The Committee of Sponsoring Organizations (COSO) framework is the gold standard for internal control. It has five integrated components:"
+    },
+    {
+      "t": "b",
+      "v": [
+        "1. Control Environment: The foundation — tone at the top, ethical values, board oversight, organizational structure, competence commitment",
+        "2. Risk Assessment: Identifying and analyzing risks that threaten achieving objectives; includes fraud risk assessment",
+        "3. Control Activities: Policies and procedures that mitigate risks — authorizations, reconciliations, physical controls, segregation of duties",
+        "4. Information & Communication: Relevant information must be identified, captured, and communicated in a timely manner",
+        "5. Monitoring Activities: Ongoing evaluations and separate evaluations to ensure controls are present and functioning"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "The COSO 17 Principles (2013 Framework)"
+    },
+    {
+      "t": "p",
+      "v": "Each of the five components contains specific PRINCIPLES that support it. All 17 principles must be present and functioning for internal control to be effective. The IMA exam tests these principles directly."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Component",
+        "#",
+        "Principle"
+      ],
+      "r": [
+        [
+          "Control Environment",
+          "1",
+          "Commitment to integrity and ethical values"
+        ],
+        [
+          "Control Environment",
+          "2",
+          "Board exercises oversight responsibility (independence from management)"
+        ],
+        [
+          "Control Environment",
+          "3",
+          "Management establishes structure, authority, and responsibility"
+        ],
+        [
+          "Control Environment",
+          "4",
+          "Commitment to attract, develop, and retain competent individuals"
+        ],
+        [
+          "Control Environment",
+          "5",
+          "Individuals are held accountable for their internal control responsibilities"
+        ],
+        [
+          "Risk Assessment",
+          "6",
+          "Specify suitable objectives (clear enough to identify related risks)"
+        ],
+        [
+          "Risk Assessment",
+          "7",
+          "Identify and analyze risks to achieving objectives"
+        ],
+        [
+          "Risk Assessment",
+          "8",
+          "Assess fraud risk specifically"
+        ],
+        [
+          "Risk Assessment",
+          "9",
+          "Identify and assess changes that could significantly impact internal control"
+        ],
+        [
+          "Control Activities",
+          "10",
+          "Select and develop control activities that mitigate risks"
+        ],
+        [
+          "Control Activities",
+          "11",
+          "Select and develop general IT controls over technology"
+        ],
+        [
+          "Control Activities",
+          "12",
+          "Deploy control activities through policies and procedures"
+        ],
+        [
+          "Information & Communication",
+          "13",
+          "Use relevant quality information to support internal control"
+        ],
+        [
+          "Information & Communication",
+          "14",
+          "Communicate internal control information internally"
+        ],
+        [
+          "Information & Communication",
+          "15",
+          "Communicate with external parties regarding internal control matters"
+        ],
+        [
+          "Monitoring Activities",
+          "16",
+          "Conduct ongoing and/or separate evaluations of internal control"
+        ],
+        [
+          "Monitoring Activities",
+          "17",
+          "Evaluate and communicate deficiencies to responsible parties"
+        ]
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips — 17 Principles: Control Environment = Principles 1–5 (ethics, board, structure, competence, accountability). Risk Assessment = 6–9 (objectives, risk id, fraud risk, change). Control Activities = 10–12 (controls, IT controls, policies). Information & Communication = 13–15 (quality info, internal, external). Monitoring = 16–17 (ongoing/separate evaluations, communicate deficiencies). All 17 must be present and functioning."
+    },
+    {
+      "t": "h",
+      "v": "Types of Control Activities"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Control Type",
+        "Description",
+        "Example"
+      ],
+      "r": [
+        [
+          "Preventive",
+          "Stop errors/fraud BEFORE they occur",
+          "Requiring dual approval for payments"
+        ],
+        [
+          "Detective",
+          "Identify errors/fraud AFTER they occur",
+          "Monthly bank reconciliations"
+        ],
+        [
+          "Corrective",
+          "Fix identified problems",
+          "Adjusting entries after finding errors"
+        ],
+        [
+          "Compensating",
+          "Alternative controls when primary isn't feasible",
+          "Manager review when segregation isn't possible"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Segregation of Duties (SOD)"
+    },
+    {
+      "t": "p",
+      "v": "The most fundamental control principle. No single person should have control over all phases of a transaction. The four key duties that must be SEPARATED:"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Authorization: Approving transactions",
+        "Recording: Entering transactions in the accounting system",
+        "Custody: Physical possession of assets",
+        "Reconciliation: Comparing records to physical assets"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Limitations of Internal Controls"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Internal controls provide only REASONABLE (not absolute) assurance",
+        "Collusion: Two or more employees working together can override controls",
+        "Management Override: Management can bypass controls — a key fraud risk",
+        "Cost-Benefit: Controls should not cost more than the benefit they provide",
+        "Human Error: Mistakes happen even with good controls in place"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "The Fraud Triangle"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Pressure/Incentive: Financial need, performance targets, personal problems",
+        "Opportunity: Weak internal controls, ability to override controls",
+        "Rationalization: Justifying the fraud ('I deserve this', 'I'll pay it back')"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: COSO has 5 components and 17 principles — Control Environment is the FOUNDATION (Principles 1–5). Segregation of Duties = most important preventive control. Preventive > Detective (better to prevent than detect). Reasonable assurance, NOT absolute assurance. Collusion and management override can bypass most controls. Fraud Triangle: Pressure + Opportunity + Rationalization. All 17 principles must be present and functioning for ICFR to be effective — the absence of any one principle is a deficiency."
+    }
+  ],
+  "5-2": [
+    {
+      "t": "h",
+      "v": "What Is Risk Assessment?"
+    },
+    {
+      "t": "p",
+      "v": "Risk assessment is the second component of the COSO framework. It involves identifying and analyzing RISKS that could prevent the organization from achieving its objectives — including financial reporting, operational, and compliance objectives."
+    },
+    {
+      "t": "h",
+      "v": "Types of Risk"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Risk Type",
+        "Description",
+        "Example"
+      ],
+      "r": [
+        [
+          "Inherent Risk",
+          "Risk level BEFORE any controls are applied",
+          "Cash is always inherently risky"
+        ],
+        [
+          "Residual Risk",
+          "Risk level AFTER controls are applied",
+          "Cash risk after reconciliations and dual controls"
+        ],
+        [
+          "Control Risk",
+          "Risk that controls fail to prevent/detect errors",
+          "Reconciler colludes with cashier"
+        ],
+        [
+          "Detection Risk",
+          "Risk that audit procedures miss a material error",
+          "Used in audit risk model"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Enterprise Risk Management (ERM) — COSO ERM Framework"
+    },
+    {
+      "t": "p",
+      "v": "ERM is a broader framework that goes beyond financial controls to manage ALL risks that could affect the organization's strategy and value creation. COSO ERM (2017) has five components:"
+    },
+    {
+      "t": "b",
+      "v": [
+        "1. Governance & Culture: Leadership sets risk appetite and culture",
+        "2. Strategy & Objective-Setting: Aligning risk appetite with strategy",
+        "3. Performance: Identifying, assessing, and prioritizing risks",
+        "4. Review & Revision: Monitoring risk management practices",
+        "5. Information, Communication & Reporting: Sharing risk information"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Risk Appetite vs. Risk Tolerance"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Term",
+        "Definition"
+      ],
+      "r": [
+        [
+          "Risk Appetite",
+          "The AMOUNT and TYPE of risk an organization is willing to accept in pursuit of its objectives — set by the board"
+        ],
+        [
+          "Risk Tolerance",
+          "The ACCEPTABLE VARIATION around the risk appetite — the operational range within which management works"
+        ],
+        [
+          "Risk Threshold",
+          "The level at which risk becomes unacceptable and triggers escalation or action"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Risk Response Strategies"
+    },
+    {
+      "t": "b",
+      "v": [
+        "AVOID: Eliminate the risk by not engaging in the activity",
+        "REDUCE: Implement controls to lower likelihood or impact",
+        "SHARE/TRANSFER: Insurance, outsourcing, hedging",
+        "ACCEPT: Acknowledge risk and do nothing (when cost > benefit)"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Inherent risk = BEFORE controls. Residual risk = AFTER controls. ERM is broader than COSO IC — covers strategy and value. Risk appetite is set by the BOARD. Four risk responses: Avoid, Reduce, Share, Accept. Risk tolerance = acceptable variation around appetite. Higher inherent risk → need stronger controls to reduce residual risk."
+    }
+  ],
+  "5-3": [
+    {
+      "t": "h",
+      "v": "Control Activities — The Third COSO Component"
+    },
+    {
+      "t": "p",
+      "v": "Control activities are the ACTIONS (policies and procedures) that help ensure management directives are carried out and that risks are mitigated to an acceptable level. They are the most visible and operational component of internal control."
+    },
+    {
+      "t": "h",
+      "v": "Categories of Control Activities"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Category",
+        "Examples"
+      ],
+      "r": [
+        [
+          "Authorization Controls",
+          "Requiring manager approval for expenses above $5,000; dual signatures on large checks"
+        ],
+        [
+          "Reconciliations",
+          "Monthly bank reconciliations; comparing physical inventory to records"
+        ],
+        [
+          "Physical Controls",
+          "Locked safes, security cameras, badge access, fencing"
+        ],
+        [
+          "Performance Reviews",
+          "Budget-to-actual variance analysis; comparing results over time"
+        ],
+        [
+          "Information Processing Controls",
+          "Edit checks, data validation, system access controls"
+        ],
+        [
+          "Segregation of Duties",
+          "Separating authorization, recording, custody, reconciliation"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Preventive vs. Detective Controls"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Type",
+        "Goal",
+        "Examples",
+        "When It Acts"
+      ],
+      "r": [
+        [
+          "Preventive",
+          "STOP errors/fraud before they occur",
+          "Dual approvals, access controls, SOD, data input validation",
+          "BEFORE transaction"
+        ],
+        [
+          "Detective",
+          "FIND errors/fraud after they occur",
+          "Bank reconciliations, audits, exception reports, variance analysis",
+          "AFTER transaction"
+        ],
+        [
+          "Corrective",
+          "FIX identified problems",
+          "Adjusting entries, system patches, disciplinary action",
+          "AFTER detection"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Hard vs. Soft Controls"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Hard Controls (Formal): Written policies, system access restrictions, approval workflows — easily observable and testable",
+        "Soft Controls (Informal): Ethical culture, management integrity, employee competence, tone at top — harder to observe but equally important"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Key Control Activities for Common Business Processes"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Cash Receipts: Daily deposits, restrictive endorsements on checks, independent reconciliation",
+        "Purchasing/AP: Purchase orders, three-way match (PO, receiving report, invoice), separation of purchasing from payment",
+        "Payroll: HR approval for hiring/pay rates, separate payroll preparation and distribution, regular review of payroll register",
+        "Fixed Assets: Capitalization policy, periodic physical inventory, authorized approval for acquisitions/disposals"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Control activities = the ACTIONS (policies/procedures) that mitigate risks. Preventive is BETTER than detective. Three-way match = PO + Receiving Report + Invoice. SOD is the MOST important preventive control. Physical controls protect ASSETS. Reconciliations are DETECTIVE. Authorization = who can approve. Remember: hard controls are formal/documented; soft controls relate to culture."
+    }
+  ],
+  "5-4": [
+    {
+      "t": "h",
+      "v": "IT Controls — Why They Matter"
+    },
+    {
+      "t": "p",
+      "v": "Modern businesses rely on information systems for virtually all financial transactions. Weak IT controls can undermine ALL other internal controls. The CMA exam tests both general IT controls (GITC) and application controls."
+    },
+    {
+      "t": "h",
+      "v": "General IT Controls (GITC)"
+    },
+    {
+      "t": "p",
+      "v": "GITC apply to the overall IT environment and provide the foundation for all application controls:"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "GITC Category",
+        "Description",
+        "Examples"
+      ],
+      "r": [
+        [
+          "Access Controls",
+          "Who can access systems, data, and programs",
+          "User IDs, passwords, multi-factor authentication, role-based access"
+        ],
+        [
+          "Change Management",
+          "Controlling changes to programs and systems",
+          "Testing requirements, change authorization, documentation"
+        ],
+        [
+          "Computer Operations",
+          "Ensuring systems run as intended",
+          "Backup procedures, job scheduling, incident response"
+        ],
+        [
+          "IT Security",
+          "Protecting data from threats",
+          "Firewalls, encryption, anti-virus, intrusion detection"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Application Controls"
+    },
+    {
+      "t": "p",
+      "v": "Application controls are SPECIFIC to individual systems/applications and ensure completeness, accuracy, and validity of transactions:"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Input Controls: Data validation, format checks, range checks, completeness checks — ensure accurate data entry",
+        "Processing Controls: Run-to-run totals, batch controls — ensure data is processed completely and accurately",
+        "Output Controls: Review of output reports, distribution controls — ensure output is complete and goes to right people"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Segregation of Duties in IT"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Systems Analyst: Designs system specifications",
+        "Programmer: Writes and modifies code",
+        "Computer Operator: Runs the system day-to-day",
+        "Data Entry: Inputs transaction data",
+        "These functions must be SEPARATED — no one should both program AND operate a system"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Cloud Computing Controls"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Data residency: Where is data physically stored?",
+        "Shared responsibility model: Cloud provider secures infrastructure; client secures data/applications",
+        "Key risks: Vendor dependency, data breach, compliance with regulations",
+        "SOC Reports (SOC 1, SOC 2): Third-party assurance reports on service organization controls"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "CIA Security Triad"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Principle",
+        "Definition",
+        "Control Examples"
+      ],
+      "r": [
+        [
+          "Confidentiality",
+          "Data accessible only to AUTHORIZED users",
+          "Encryption, access controls, need-to-know"
+        ],
+        [
+          "Integrity",
+          "Data is ACCURATE and complete — not tampered with",
+          "Hash functions, digital signatures, audit trails"
+        ],
+        [
+          "Availability",
+          "Systems are ACCESSIBLE when needed",
+          "Redundancy, backups, disaster recovery"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "COBIT — IT Governance Framework"
+    },
+    {
+      "t": "p",
+      "v": "COBIT (Control Objectives for Information and Related Technologies) is the leading IT GOVERNANCE framework, developed by ISACA. While COSO provides the internal control framework for the whole organization, COBIT provides the governance and management framework specifically for ENTERPRISE IT. The two frameworks are complementary — COBIT maps to and extends COSO for the IT environment."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "COBIT Governance Objective",
+        "Purpose"
+      ],
+      "r": [
+        [
+          "Evaluate, Direct & Monitor (EDM)",
+          "Board-level governance — set IT direction, evaluate IT investments, monitor IT performance"
+        ],
+        [
+          "Align, Plan & Organize (APO)",
+          "Strategic IT planning — align IT with business strategy, manage resources"
+        ],
+        [
+          "Build, Acquire & Implement (BAI)",
+          "Implement IT solutions — acquire and deploy technology and changes"
+        ],
+        [
+          "Deliver, Service & Support (DSS)",
+          "Deliver IT services — ensure security, service continuity, and support"
+        ],
+        [
+          "Monitor, Evaluate & Assess (MEA)",
+          "Monitor IT performance and controls — assess compliance"
+        ]
+      ]
+    },
+    {
+      "t": "b",
+      "v": [
+        "COBIT applies IT governance principles: stakeholder needs, covering the enterprise end-to-end, applying a single integrated framework, enabling a holistic approach, separating governance from management",
+        "COBIT vs COSO: COSO = broad internal control framework for the entire organization; COBIT = IT-specific governance and control framework. COBIT maps its control objectives to COSO components",
+        "COBIT vs ITIL: COBIT = governance and control (WHAT to do); ITIL = IT service management best practices (HOW to deliver services)",
+        "Key concept: COBIT helps management ensure IT aligns with business objectives, resources are used responsibly, and IT risks are managed appropriately"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: GITC = GENERAL controls (apply to all systems). Application controls = SPECIFIC to one application. Input → Processing → Output. CIA Triad: Confidentiality, Integrity, Availability. In IT SOD: Analyst, Programmer, Operator, Data Entry must be separated. SOC 2 = service organization security and availability. Encryption protects CONFIDENTIALITY. Audit trails protect INTEGRITY. COBIT = IT GOVERNANCE framework (ISACA) — complementary to COSO; covers Evaluate/Direct/Monitor, Align/Plan/Organize, Build/Acquire/Implement, Deliver/Service/Support, Monitor/Evaluate/Assess. COBIT = governance (WHAT); ITIL = IT service delivery (HOW)."
+    }
+  ],
+  "5-5": [
+    {
+      "t": "h",
+      "v": "Why SOX Was Enacted"
+    },
+    {
+      "t": "p",
+      "v": "The Sarbanes-Oxley Act (SOX) was enacted in 2002 following major corporate scandals (Enron, WorldCom, Tyco). It was designed to restore investor confidence by strengthening corporate governance, financial reporting integrity, and accountability of management."
+    },
+    {
+      "t": "h",
+      "v": "Key SOX Provisions"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Section",
+        "Requirement",
+        "Who Is Responsible"
+      ],
+      "r": [
+        [
+          "Section 302",
+          "CEO and CFO must PERSONALLY CERTIFY accuracy of financial reports",
+          "CEO & CFO"
+        ],
+        [
+          "Section 404",
+          "Management must ASSESS and REPORT on internal controls over financial reporting (ICFR); external auditor must attest",
+          "Management + External Auditor"
+        ],
+        [
+          "Section 409",
+          "Companies must DISCLOSE material changes on a RAPID BASIS (real-time disclosure)",
+          "Management"
+        ],
+        [
+          "Section 906",
+          "Criminal penalties for knowingly certifying false reports — up to $5M fine, 20 years prison",
+          "CEO & CFO"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Section 404 — Internal Control over Financial Reporting (ICFR)"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Management must establish, maintain, and ASSESS the effectiveness of ICFR",
+        "External auditors of large accelerated filers must ATTEST to management's assessment",
+        "Framework used: COSO — the standard for evaluating ICFR",
+        "Annual report must include management's conclusion on whether ICFR is EFFECTIVE"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "The Audit Committee"
+    },
+    {
+      "t": "b",
+      "v": [
+        "SOX requires ALL audit committee members to be INDEPENDENT directors",
+        "At least one member must be a 'financial expert'",
+        "Audit committee oversees the external auditor (not management)",
+        "Audit committee is the primary point of contact for internal and external auditors",
+        "Whistleblower programs: audit committee must establish procedures for anonymous reporting"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Prohibited Auditor Activities (under SOX)"
+    },
+    {
+      "t": "b",
+      "v": [
+        "External auditors CANNOT provide certain non-audit services to audit clients: bookkeeping, financial IS design, appraisal, actuarial services, internal audit outsourcing, management/HR functions, legal services",
+        "Lead audit partner must ROTATE every 5 years",
+        "Audit firm cannot audit a company if the CEO/CFO worked for that firm in the past year"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: SOX Section 302 = CEO/CFO certify. Section 404 = management assesses ICFR, auditor attests. Section 409 = rapid disclosure. Section 906 = criminal penalties. Audit committee = ALL independent, at least one financial expert. External auditors CANNOT do internal audit outsourcing. Lead partner rotates every 5 YEARS. SOX applies to PUBLIC companies (SEC registrants)."
+    }
+  ],
+  "5-6": [
+    {
+      "t": "h",
+      "v": "What Is Internal Audit?"
+    },
+    {
+      "t": "p",
+      "v": "Internal auditing is an INDEPENDENT, OBJECTIVE assurance and consulting activity designed to add value and improve an organization's operations. It helps organizations achieve objectives by evaluating risk management, control, and governance processes."
+    },
+    {
+      "t": "h",
+      "v": "Internal Audit vs. External Audit"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Characteristic",
+        "Internal Audit",
+        "External Audit"
+      ],
+      "r": [
+        [
+          "Purpose",
+          "Improve operations, evaluate risk/control/governance",
+          "Express opinion on financial statements"
+        ],
+        [
+          "Reports to",
+          "Board/Audit Committee (independently)",
+          "Shareholders and public (external)"
+        ],
+        [
+          "Appointed by",
+          "Board/Audit Committee",
+          "Shareholders (approved by audit committee)"
+        ],
+        [
+          "Independence",
+          "Organizational independence within the company",
+          "Independence from the company"
+        ],
+        [
+          "Standards",
+          "IIA Standards (Institute of Internal Auditors)",
+          "PCAOB (public) / AICPA (private)"
+        ],
+        [
+          "Frequency",
+          "Ongoing — continuous activity",
+          "Annual (primarily)"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "IIA Definition of Internal Auditing"
+    },
+    {
+      "t": "p",
+      "v": "The Institute of Internal Auditors (IIA) defines internal auditing as providing assurance and consulting — evaluating the adequacy and effectiveness of governance, risk management, and control processes."
+    },
+    {
+      "t": "h",
+      "v": "Types of Internal Audit Engagements"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Assurance Engagements: Objective assessment of evidence — financial audits, operational audits, compliance audits, IT audits",
+        "Consulting Engagements: Advisory services — process improvement recommendations, control design advice",
+        "Fraud Investigations: Respond to fraud allegations and quantify losses",
+        "Compliance Audits: Verify adherence to laws, regulations, and policies"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Internal Audit Charter & Independence"
+    },
+    {
+      "t": "b",
+      "v": [
+        "The internal audit CHARTER defines the purpose, authority, and responsibility of the internal audit function",
+        "Chief Audit Executive (CAE) must report FUNCTIONALLY to the Audit Committee (not management) for true independence",
+        "Internal auditors must be INDEPENDENT of the activities they audit — no operational responsibilities",
+        "Dual reporting: administratively to CEO, functionally to Audit Committee"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Risk-Based Audit Planning"
+    },
+    {
+      "t": "p",
+      "v": "Modern internal audit uses a RISK-BASED approach: focus audit resources on the HIGHEST RISK areas where controls may be weakest and consequences of failure are greatest."
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Internal audit reports to AUDIT COMMITTEE (functionally) — not to management. External audit reports to SHAREHOLDERS. IIA = standards for internal audit. CAE = Chief Audit Executive. Assurance ≠ Consulting (both valid IA activities). Independence = no operational responsibilities. Risk-based audit = focus on HIGH RISK areas. Internal audit adds VALUE — not just checks compliance."
+    }
+  ],
+  "5-7": [
+    {
+      "t": "h",
+      "v": "Types of Fraud"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Fraud Type",
+        "Description",
+        "Examples"
+      ],
+      "r": [
+        [
+          "Asset Misappropriation",
+          "THEFT of company assets — most common (89% of cases)",
+          "Cash skimming, larceny, payroll fraud, expense reimbursement fraud, inventory theft"
+        ],
+        [
+          "Financial Statement Fraud",
+          "Intentional MISSTATEMENT of financial statements — least common but highest dollar impact",
+          "Overstate revenue, understate expenses, hide liabilities, manipulate reserves"
+        ],
+        [
+          "Corruption",
+          "Misuse of position for personal gain at expense of employer",
+          "Bribery, kickbacks, conflicts of interest, bid rigging"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "The Fraud Triangle (Review & Extension)"
+    },
+    {
+      "t": "b",
+      "v": [
+        "PRESSURE (Incentive): Financial need, lifestyle pressures, performance targets, bonuses tied to results",
+        "OPPORTUNITY: Weak controls, ability to override controls, access to assets without oversight",
+        "RATIONALIZATION: Justifying theft — 'I deserve it,' 'I'll pay it back,' 'Everyone does it'",
+        "Note: The Fraud DIAMOND adds a 4th element — CAPABILITY (skills, authority, knowledge to commit and conceal fraud)"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Red Flags of Fraud"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Behavioral: Lavish lifestyle beyond known salary, reluctance to take vacation, excessive overtime (to cover tracks), unusual emotional stress",
+        "Financial: Unexplained variances, missing documents, altered documents, duplicate payments",
+        "Control: Override of controls, bypassing normal procedures, excessive journal entries, round-number transactions"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Fraud Detection Methods"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Method",
+        "Description"
+      ],
+      "r": [
+        [
+          "Data Analytics",
+          "Benford's Law analysis, duplicate payment detection, outlier identification"
+        ],
+        [
+          "Surprise Audits",
+          "Unannounced audits catch fraudsters off-guard"
+        ],
+        [
+          "Whistleblower Hotlines",
+          "Anonymous reporting — most frauds discovered this way (40%+ per ACFE)"
+        ],
+        [
+          "Management Review",
+          "Variance analysis, unexpected fluctuations investigation"
+        ],
+        [
+          "Physical Inventory",
+          "Regular counts to detect asset theft"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Benford's Law"
+    },
+    {
+      "t": "p",
+      "v": "In naturally occurring datasets, the FIRST DIGIT follows a predictable pattern: '1' appears ~30% of the time, '2' ~18%, and higher digits less frequently. Fraudsters often use round numbers or numbers just below approval thresholds — these show unusual digit frequencies that Benford's Law can detect."
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Asset misappropriation = MOST COMMON fraud (89%). Financial statement fraud = MOST COSTLY per case. Fraud Triangle: Pressure + Opportunity + Rationalization. Fraud Diamond adds CAPABILITY. Whistleblower hotlines detect the MOST frauds. Benford's Law: first digit '1' = ~30%. Skimming = theft BEFORE recording. Larceny = theft AFTER recording. Surprise audits are very effective deterrents."
+    }
+  ],
+  "5-8": [
+    {
+      "t": "h",
+      "v": "What Is Corporate Governance?"
+    },
+    {
+      "t": "p",
+      "v": "Corporate governance is the SYSTEM of rules, practices, and processes by which a company is directed and controlled. It balances the interests of stakeholders including shareholders, management, customers, suppliers, financiers, government, and the community."
+    },
+    {
+      "t": "h",
+      "v": "The Board of Directors"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Elected by SHAREHOLDERS — represents their interests",
+        "Primary duties: Hire/fire CEO, set strategy, oversee risk management, approve major decisions",
+        "FIDUCIARY DUTY to act in shareholders' best interests",
+        "Independent directors: No current/recent financial relationship with company — required for audit, compensation, and nominating committees"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Board Committees"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Committee",
+        "Composition",
+        "Primary Responsibilities"
+      ],
+      "r": [
+        [
+          "Audit Committee",
+          "ALL independent directors; at least 1 financial expert",
+          "Oversees financial reporting, internal controls, external audit, internal audit, SOX compliance"
+        ],
+        [
+          "Compensation Committee",
+          "Majority or all independent directors",
+          "Sets executive pay — prevents self-dealing by management"
+        ],
+        [
+          "Nominating/Governance Committee",
+          "Independent directors",
+          "Identifies board candidates, governance policies"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Agency Problem & Principal-Agent Conflict"
+    },
+    {
+      "t": "p",
+      "v": "The AGENCY PROBLEM arises when AGENTS (management) make decisions on behalf of PRINCIPALS (shareholders), but their interests diverge. Management may maximize their own compensation/job security at shareholders' expense."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Solutions: Align incentives (stock options, performance pay), board oversight, transparent disclosure, executive compensation tied to long-term performance",
+        "Moral hazard: Agents take excessive risks knowing others bear the consequences",
+        "Adverse selection: Difficulty selecting honest and competent agents upfront"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Executive Compensation & Governance"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Say-on-pay: Shareholders vote (advisory) on executive compensation packages",
+        "Clawback provisions: Recover compensation paid based on restated financials",
+        "Stock ownership requirements: Executives must hold significant equity to align interests",
+        "Dodd-Frank Act (2010): Enhanced disclosure of CEO pay ratio, clawback rules, say-on-pay"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Stakeholder Theory vs. Shareholder Theory"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Theory",
+        "Focus",
+        "Implication"
+      ],
+      "r": [
+        [
+          "Shareholder Theory (Friedman)",
+          "Maximize SHAREHOLDER VALUE — primary goal",
+          "Short-term financial focus, profit maximization"
+        ],
+        [
+          "Stakeholder Theory",
+          "Balance interests of ALL stakeholders (employees, customers, community, environment)",
+          "Long-term sustainability, ESG considerations, CSR"
+        ]
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Board = elected by SHAREHOLDERS. Agency problem = management (agent) vs shareholders (principal). Audit committee = ALL independent + 1 financial expert. Say-on-pay = ADVISORY vote (not binding). Clawback = recover compensation after restatement. Fiduciary duty = loyalty + care. Independent directors: no financial relationship with company. Stakeholder theory > shareholder theory for long-term sustainability."
+    }
+  ],
+  "5-9": [
+    {
+      "t": "h",
+      "v": "Ethics in Organizations"
+    },
+    {
+      "t": "p",
+      "v": "Ethics refers to moral principles governing behavior. Strong organizational ethics is a KEY component of the COSO Control Environment — without it, all other controls are undermined. The IMA (Institute of Management Accountants) governs management accountants' conduct through its Statement of Ethical Professional Practice (also informally known as the IMA Code of Ethics)."
+    },
+    {
+      "t": "h",
+      "v": "IMA Statement of Ethical Professional Practice — Four Principles"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Principle",
+        "Definition",
+        "Examples"
+      ],
+      "r": [
+        [
+          "Honesty",
+          "Being truthful, candid, and free from deception",
+          "Reporting accurate results even when unfavorable"
+        ],
+        [
+          "Fairness",
+          "Being objective and avoiding conflicts of interest",
+          "Disclosing relationships that could affect independence"
+        ],
+        [
+          "Objectivity",
+          "Providing unbiased information and analysis",
+          "Not skewing analysis to support a predetermined conclusion"
+        ],
+        [
+          "Responsibility",
+          "Fulfilling professional obligations and duties",
+          "Meeting deadlines, maintaining competence, reporting wrongdoing"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "IMA Standards of Ethical Conduct"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Competence: Maintain professional knowledge, perform duties per applicable laws and standards, provide accurate information",
+        "Confidentiality: Keep information confidential except when authorized or legally obligated to disclose",
+        "Integrity: Avoid conflicts of interest, refuse gifts that would influence behavior, communicate unfavorable news",
+        "Credibility: Disclose all relevant information, disclose delays or deficiencies"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "IMA Conflict Resolution Process"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Step 1: Discuss with immediate supervisor (unless supervisor is involved)",
+        "Step 2: Escalate to next level management / CFO",
+        "Step 3: Contact IMA Ethics Hotline (anonymous) for confidential guidance",
+        "Step 4: Consult attorney regarding legal obligations",
+        "Last resort: RESIGN if the issue cannot be resolved ethically — do NOT prepare or sign documents known to be misleading"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Compliance Programs"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Code of conduct: Written statement of company values and expected behaviors",
+        "Ethics training: Regular training for all employees",
+        "Whistleblower hotlines: Anonymous reporting channels for suspected violations",
+        "Ethics officer/Chief Compliance Officer: Oversees the program",
+        "Monitoring and enforcement: Regular audits, disciplinary procedures"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Foreign Corrupt Practices Act (FCPA)"
+    },
+    {
+      "t": "p",
+      "v": "The FCPA prohibits US companies and individuals from BRIBING foreign government officials to obtain or retain business. It also requires accurate books/records and adequate internal controls (the accounting provisions apply to all public companies, even those not engaged in bribery)."
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: IMA Statement of Ethical Professional Practice — Four Principles: Honesty, Fairness, Objectivity, Responsibility. Four Standards: Competence, Confidentiality, Integrity, Credibility. Conflict resolution: go up the chain, then IMA hotline, then resign — NEVER falsify documents. FCPA = anti-bribery law for US companies dealing with FOREIGN officials. Confidentiality standard: keep info secret UNLESS legally required to disclose. Integrity = avoiding conflicts of interest."
+    }
+  ],
+  "5-10": [
+    {
+      "t": "h",
+      "v": "Monitoring — The Fifth COSO Component"
+    },
+    {
+      "t": "p",
+      "v": "Monitoring ensures that internal controls CONTINUE to operate effectively over time. Controls can deteriorate due to personnel changes, process changes, or new risks. Monitoring catches these deteriorations before they lead to significant failures."
+    },
+    {
+      "t": "h",
+      "v": "Types of Monitoring Activities"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Type",
+        "Description",
+        "Examples"
+      ],
+      "r": [
+        [
+          "Ongoing Monitoring",
+          "Built into ROUTINE operations — continuous feedback",
+          "Supervisory review, automated system alerts, exception reports, daily reconciliations"
+        ],
+        [
+          "Separate Evaluations",
+          "Periodic INDEPENDENT assessments",
+          "Internal audit reviews, self-assessments, external audits, SOX 404 assessments"
+        ],
+        [
+          "Management Review",
+          "Regular review by management",
+          "Budget variance reviews, operational metrics, KPI dashboards"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Control Deficiencies"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Level",
+        "Definition",
+        "Reporting Requirement"
+      ],
+      "r": [
+        [
+          "Control Deficiency",
+          "Design or operation of control does not allow detection/prevention of misstatements",
+          "Reported to management"
+        ],
+        [
+          "Significant Deficiency",
+          "Less severe than material weakness but still important — warrants attention from those charged with governance",
+          "Reported to audit committee and external auditor"
+        ],
+        [
+          "Material Weakness",
+          "SIGNIFICANT deficiency (or combination) that results in REASONABLE POSSIBILITY of material misstatement in FS",
+          "Must be reported publicly in annual report; external auditor must report"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Evaluating Control Effectiveness"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Tests of DESIGN: Would the control, if operating as designed, prevent or detect a material misstatement?",
+        "Tests of OPERATING EFFECTIVENESS: Is the control actually operating as designed, consistently and by the right people?",
+        "Walkthroughs: Tracing a transaction from beginning to end — both design and operating effectiveness"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Key Performance Indicators (KPIs) for Controls"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Number of control failures reported per period",
+        "Percentage of reconciliations completed on time",
+        "Audit findings — number and severity",
+        "Days to remediate control deficiencies",
+        "Percentage of employees completing ethics training"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Remediation of Control Deficiencies"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Identify root cause (not just symptom)",
+        "Design and implement improved control",
+        "Test the new control",
+        "Monitor to confirm remediation is effective",
+        "Document for SOX/audit purposes"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: COSO Monitoring = 5th component — ensures controls CONTINUE to work. Ongoing monitoring = built into daily operations. Separate evaluations = periodic independent reviews. Three levels: Deficiency < Significant Deficiency < Material Weakness. MATERIAL WEAKNESS = must be disclosed publicly. Tests of design vs. tests of operating effectiveness. Walkthrough = trace one transaction end-to-end. Remediation requires ROOT CAUSE analysis."
+    }
+  ],
+  "5-11": [
+    {
+      "t": "h",
+      "v": "Why Business Continuity Planning?"
+    },
+    {
+      "t": "p",
+      "v": "Business Continuity Planning (BCP) ensures an organisation can continue CRITICAL OPERATIONS during and after a disaster or disruption. It is a key INTERNAL CONTROL over operational risk. Without BCP, even a short disruption can cause catastrophic financial and reputational damage."
+    },
+    {
+      "t": "h",
+      "v": "BCP vs Disaster Recovery Plan (DRP)"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Aspect",
+        "Business Continuity Plan (BCP)",
+        "Disaster Recovery Plan (DRP)"
+      ],
+      "r": [
+        [
+          "Scope",
+          "ENTIRE organisation — all critical business functions",
+          "Focused primarily on IT systems and data recovery"
+        ],
+        [
+          "Goal",
+          "Keep the business RUNNING during and after a disruption",
+          "RESTORE IT systems and data after a disaster"
+        ],
+        [
+          "Examples covered",
+          "Operations, supply chain, HR, customer service, communications",
+          "Servers, databases, networks, applications"
+        ],
+        [
+          "Timing",
+          "Prevention and ongoing operations",
+          "Post-disaster restoration"
+        ],
+        [
+          "Relationship",
+          "BCP is broader — DRP is a SUBSET of BCP",
+          "Part of the overall BCP"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Business Impact Analysis (BIA)"
+    },
+    {
+      "t": "p",
+      "v": "The foundation of BCP. A BIA identifies CRITICAL BUSINESS FUNCTIONS and quantifies the financial and operational impact of disruptions over time."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Identify critical processes: which functions are essential to operations and revenue?",
+        "Determine Maximum Tolerable Downtime (MTD): how long can each function be interrupted before causing irreversible damage?",
+        "Prioritise recovery: functions with lower MTD must be restored first",
+        "Quantify impact: financial losses, regulatory penalties, reputational damage per hour/day of downtime"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Key Recovery Metrics"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Metric",
+        "Definition",
+        "Implication"
+      ],
+      "r": [
+        [
+          "Recovery Time Objective (RTO)",
+          "Maximum ACCEPTABLE TIME to restore a system or process after a failure",
+          "If RTO = 4 hours, systems must be back online within 4 hours"
+        ],
+        [
+          "Recovery Point Objective (RPO)",
+          "Maximum acceptable data LOSS measured in time — how far back can you roll back?",
+          "If RPO = 1 hour, backups must exist at least every hour"
+        ],
+        [
+          "Maximum Tolerable Downtime (MTD)",
+          "Absolute maximum time a business function can be disrupted before catastrophic damage",
+          "MTD ≥ RTO (RTO must be within MTD)"
+        ],
+        [
+          "Mean Time to Recover (MTTR)",
+          "Average actual time taken to restore a system after a failure",
+          "Measures recovery capability historically"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "IT Recovery Site Strategies"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Site Type",
+        "Description",
+        "Cost",
+        "Recovery Speed"
+      ],
+      "r": [
+        [
+          "Hot Site",
+          "Fully equipped, mirrored backup facility — systems running in real time",
+          "HIGHEST cost",
+          "FASTEST — hours or less"
+        ],
+        [
+          "Warm Site",
+          "Partially equipped facility — hardware ready, software/data must be loaded",
+          "Moderate cost",
+          "Moderate — hours to days"
+        ],
+        [
+          "Cold Site",
+          "Empty facility with power/connectivity — all equipment must be brought in",
+          "LOWEST cost",
+          "SLOWEST — days to weeks"
+        ],
+        [
+          "Cloud Backup",
+          "Data and applications hosted in cloud — accessible from anywhere",
+          "Subscription-based",
+          "Fast — depends on connectivity"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "BCP Testing Methods"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Tabletop Exercise: Discussion-based walkthrough of scenarios — no actual systems involved. Cheapest and most common",
+        "Simulation Test: Team acts out a disaster scenario and follows the BCP procedures",
+        "Parallel Test: Backup systems activated alongside live systems to verify they work without disrupting operations",
+        "Full Interruption Test: Actual systems shut down and BCP fully executed — highest risk, most realistic"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Threat Categories in BCP"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Natural disasters: floods, earthquakes, hurricanes, fires",
+        "Technology failures: system crashes, ransomware, power outages, network failures",
+        "Human threats: cyberattacks, employee sabotage, terrorism",
+        "Pandemic/epidemic: mass workforce unavailability",
+        "Supply chain disruption: key vendor failure"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: BCP = entire business continuity. DRP = IT subset of BCP. RTO = how quickly systems must be back (time to recover). RPO = how much data loss is acceptable (time since last backup). Hot site = fastest, most expensive. Cold site = slowest, cheapest. BIA identifies critical functions and MTD. Always test the BCP — untested plans often fail. MTD ≥ RTO always."
+    }
+  ]
+}

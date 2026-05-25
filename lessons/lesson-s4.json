@@ -1,0 +1,3844 @@
+{
+  "4-1": [
+    {
+      "t": "h",
+      "v": "What Is Cost Behavior?"
+    },
+    {
+      "t": "p",
+      "v": "Cost behavior describes how costs change as activity levels change. Understanding cost behavior is essential for budgeting, decision-making, and performance evaluation."
+    },
+    {
+      "t": "h",
+      "v": "1. Variable Costs"
+    },
+    {
+      "t": "p",
+      "v": "Variable costs change proportionally with activity. They are CONSTANT PER UNIT but change in TOTAL."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Activity",
+        "Total Variable Cost",
+        "Cost Per Unit"
+      ],
+      "r": [
+        [
+          "1,000 units",
+          "$5,000",
+          "$5"
+        ],
+        [
+          "2,000 units",
+          "$10,000",
+          "$5"
+        ],
+        [
+          "3,000 units",
+          "$15,000",
+          "$5"
+        ]
+      ]
+    },
+    {
+      "t": "b",
+      "v": [
+        "Examples: Direct Materials, Sales Commissions, Packaging",
+        "Key rule: Total changes — Per unit stays the same"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "2. Fixed Costs"
+    },
+    {
+      "t": "p",
+      "v": "Fixed costs remain CONSTANT IN TOTAL regardless of activity. Cost per unit decreases as production increases."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Activity",
+        "Total Fixed Cost",
+        "Cost Per Unit"
+      ],
+      "r": [
+        [
+          "1,000 units",
+          "$10,000",
+          "$10.00"
+        ],
+        [
+          "2,000 units",
+          "$10,000",
+          "$5.00"
+        ],
+        [
+          "4,000 units",
+          "$10,000",
+          "$2.50"
+        ]
+      ]
+    },
+    {
+      "t": "b",
+      "v": [
+        "Examples: Rent, Insurance, Salaries, Depreciation",
+        "Key rule: Total stays the same — Per unit changes"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "3. Mixed Costs (Semi-Variable)"
+    },
+    {
+      "t": "p",
+      "v": "Mixed costs contain BOTH a fixed AND variable component. They must be separated using analytical methods."
+    },
+    {
+      "t": "f",
+      "l": "Mixed Cost Formula",
+      "v": "Y = a + bX   |   Y = Total Cost, a = Fixed, b = Variable Rate, X = Activity"
+    },
+    {
+      "t": "p",
+      "v": "Example: Electricity bill = $500 base (fixed) + $0.10 per KWH (variable). At 3,000 KWH: Y = $500 + ($0.10 x 3,000) = $800."
+    },
+    {
+      "t": "h",
+      "v": "High-Low Method"
+    },
+    {
+      "t": "s",
+      "v": [
+        "Step 1: Variable Rate = (High Cost - Low Cost) / (High Activity - Low Activity)",
+        "Step 2: Fixed Cost = Total Cost at High Point - (Variable Rate x High Activity)",
+        "Step 3: Write the equation: Y = Fixed Cost + (Variable Rate x X)"
+      ]
+    },
+    {
+      "t": "p",
+      "v": "Example: High = 10,000 units / $45,000. Low = 4,000 units / $21,000. Variable Rate = ($45,000-$21,000)/(10,000-4,000) = $4.00/unit. Fixed Cost = $45,000 - ($4 x 10,000) = $5,000. Equation: Y = $5,000 + $4.00X"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Cost Type",
+        "Total Behavior",
+        "Per Unit Behavior",
+        "Examples"
+      ],
+      "r": [
+        [
+          "Variable",
+          "Changes proportionally",
+          "Constant",
+          "Direct Materials, Commissions"
+        ],
+        [
+          "Fixed",
+          "Constant",
+          "Changes (inversely)",
+          "Rent, Insurance, Salaries"
+        ],
+        [
+          "Mixed",
+          "Changes (partially)",
+          "Changes",
+          "Electricity, Phone, Maintenance"
+        ]
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Variable cost = constant per unit. Fixed cost = constant in total. High-Low weakness = uses only 2 data points. Regression Analysis is more accurate. Sunk costs = ALWAYS irrelevant. Opportunity costs = ALWAYS relevant."
+    },
+    {
+      "t": "h",
+      "v": "Other Important Cost Types"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Cost Type",
+        "Definition",
+        "Decision Relevance"
+      ],
+      "r": [
+        [
+          "Explicit (Out-of-Pocket)",
+          "Cash payment involved — wages, rent, materials",
+          "Recorded in accounting books"
+        ],
+        [
+          "Implicit (Imputed)",
+          "No cash payment — not recorded",
+          "Owner's time, use of own capital"
+        ],
+        [
+          "Opportunity Cost",
+          "Benefit LOST by not choosing the best alternative",
+          "ALWAYS relevant in decisions"
+        ],
+        [
+          "Sunk Cost",
+          "Already incurred — cannot be recovered",
+          "ALWAYS irrelevant in decisions"
+        ],
+        [
+          "Carrying Cost",
+          "Cost of holding inventory — storage, insurance, obsolescence",
+          "Relevant in inventory decisions"
+        ],
+        [
+          "Committed Cost",
+          "Long-term infrastructure — hard to change",
+          "Largely unavoidable in short run"
+        ],
+        [
+          "Discretionary Cost",
+          "Can be started/stopped — advertising, R&D, training",
+          "Management can control"
+        ],
+        [
+          "Marginal Cost",
+          "Additional cost to produce ONE more unit",
+          "Relevant for output decisions"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Cost Object, Cost Pool, Allocation Base & Cost Driver"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Term",
+        "Definition",
+        "Example"
+      ],
+      "r": [
+        [
+          "Cost Object",
+          "Anything for which cost is separately measured",
+          "Product, customer, department"
+        ],
+        [
+          "Cost Pool",
+          "Group of indirect costs using the same allocation base",
+          "All factory overhead costs"
+        ],
+        [
+          "Allocation Base",
+          "The cost driver used to allocate indirect costs",
+          "Direct labor hours, machine hours"
+        ],
+        [
+          "Cost Driver",
+          "Factor that CAUSES costs to be incurred",
+          "Number of setups, orders, inspections"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Step Costs & Relevant Range"
+    },
+    {
+      "t": "p",
+      "v": "Step costs remain FIXED within a range then JUMP when activity crosses a threshold. Step-fixed = wide steps (add a supervisor). Step-variable = narrow steps (resemble variable)."
+    },
+    {
+      "t": "p",
+      "v": "Relevant Range: The activity range where cost behavior assumptions are VALID. Outside this range, fixed costs may change and variable rates may differ."
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Sunk costs = ALWAYS irrelevant. Opportunity costs = ALWAYS relevant (even if not recorded). Explicit = cash paid and recorded. Implicit = no cash payment. Cost driver CAUSES costs. Allocation base IS the cost driver used to allocate indirect costs. Relevant range = where Y = a + bX holds true."
+    }
+  ],
+  "4-2": [
+    {
+      "t": "h",
+      "v": "Why Do We Need Costing Methods?"
+    },
+    {
+      "t": "p",
+      "v": "Before diving into specific costing systems, it is essential to understand the FRAMEWORK of cost measurement and cost accumulation. Two fundamental decisions drive how a company designs its costing system."
+    },
+    {
+      "t": "h",
+      "v": "Two Key Decisions in Costing"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Decision 1 — Cost Accumulation: How are costs collected? Job Order Costing (by job) OR Process Costing (by department/process)",
+        "Decision 2 — Cost Measurement: How are costs measured? Actual Costing, Normal Costing, OR Standard Costing"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Cost Accumulation Systems"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "System",
+        "Products",
+        "Cost Tracking",
+        "Examples"
+      ],
+      "r": [
+        [
+          "Job Order Costing",
+          "Unique/custom",
+          "Per job or batch",
+          "Construction, custom furniture, printing"
+        ],
+        [
+          "Process Costing",
+          "Identical/homogeneous",
+          "Per process/department",
+          "Oil refining, beverages, cement"
+        ],
+        [
+          "Hybrid (Operation Costing)",
+          "Partially standardized",
+          "Batch level",
+          "Clothing with custom finishing"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Cost Measurement Methods"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Method",
+        "DM & DL",
+        "Overhead",
+        "Pros / Cons"
+      ],
+      "r": [
+        [
+          "Actual Costing",
+          "Actual costs",
+          "Actual overhead",
+          "Most accurate / Overhead only known at year-end — slow"
+        ],
+        [
+          "Normal Costing",
+          "Actual costs",
+          "Predetermined rate x actual activity",
+          "Timely / Small over/under-applied OH difference"
+        ],
+        [
+          "Standard Costing",
+          "Standard costs",
+          "Standard rate x standard activity",
+          "Best for control / Variances reveal inefficiencies"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Product Costs vs Period Costs — Quick Review"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Cost Type",
+        "Definition",
+        "Examples",
+        "Treatment"
+      ],
+      "r": [
+        [
+          "Product Costs",
+          "Costs to MAKE the product",
+          "DM, DL, MOH",
+          "Inventory → COGS when sold"
+        ],
+        [
+          "Period Costs",
+          "All other costs — NOT manufacturing",
+          "Selling, G&A, interest",
+          "Expensed immediately"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "The Cost of Quality Framework — Integration"
+    },
+    {
+      "t": "p",
+      "v": "All costing methods must consider quality costs. Whether using job order, process, or ABC costing, prevention and appraisal costs are product costs while failure costs are typically period costs (unless internal failures occur during production)."
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Job Order = unique products. Process Costing = identical products. Operation Costing = hybrid (both). Normal Costing uses POHR — most common in practice. Standard Costing = budgeted costs used for variance analysis. Product costs = DM + DL + MOH only. Period costs = everything else. All three measurement methods end up at the same point: actual costs — they just get there differently."
+    },
+    {
+      "t": "h",
+      "v": "Setting Standards — Ideal vs Practical"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Standard Type",
+        "Definition",
+        "Practical Use"
+      ],
+      "r": [
+        [
+          "Ideal (Perfection)",
+          "Maximum efficiency — no waste, no breaks, no defects",
+          "Motivational benchmark only — rarely achievable"
+        ],
+        [
+          "Practical (Currently Attainable)",
+          "Achievable under normal, efficient conditions allowing for normal waste and downtime",
+          "Used for budgeting and variance analysis — most common"
+        ],
+        [
+          "Historical",
+          "Based on past actual performance",
+          "May perpetuate inefficiencies from prior periods"
+        ]
+      ]
+    },
+    {
+      "t": "p",
+      "v": "Most companies use PRACTICAL STANDARDS for variance analysis because they are achievable yet challenging. Ideal standards may demotivate workers when variances are always unfavorable."
+    },
+    {
+      "t": "h",
+      "v": "How the Three Costing Methods Converge"
+    },
+    {
+      "t": "p",
+      "v": "All three methods (Actual, Normal, Standard) end at the same place — COGS on the income statement. They differ only in TIMING and HOW overhead is assigned. At year-end, over/under-applied overhead adjustments bring all methods to the same actual cost."
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Job Order = unique products. Process Costing = identical products. Operation Costing = hybrid (both). Normal Costing uses POHR — most common in practice. Standard Costing = budgeted costs used for variance analysis. Product costs = DM + DL + MOH only. Period costs = everything else. Practical standards most commonly used. Ideal standards = aspirational benchmark."
+    }
+  ],
+  "4-3": [
+    {
+      "t": "h",
+      "v": "The Manufacturing Cost Flow"
+    },
+    {
+      "t": "p",
+      "v": "Understanding how costs flow through a manufacturing company is fundamental to cost accounting. Costs flow through three inventory accounts before becoming an expense on the income statement."
+    },
+    {
+      "t": "f",
+      "l": "Cost Flow",
+      "v": "Raw Materials → Work-in-Process (WIP) → Finished Goods → Cost of Goods Sold"
+    },
+    {
+      "t": "h",
+      "v": "The Cost of Goods Manufactured (COGM) Statement"
+    },
+    {
+      "t": "s",
+      "v": [
+        "Start: Beginning WIP Inventory",
+        "+ Direct Materials Used (Beginning RM + Purchases - Ending RM)",
+        "+ Direct Labor",
+        "+ Manufacturing Overhead Applied",
+        "= Total Manufacturing Costs",
+        "+ Beginning WIP",
+        "- Ending WIP",
+        "= Cost of Goods Manufactured (COGM)"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Cost of Goods Sold (COGS) Calculation"
+    },
+    {
+      "t": "f",
+      "l": "COGS Formula",
+      "v": "COGS = Beginning Finished Goods + COGM - Ending Finished Goods"
+    },
+    {
+      "t": "h",
+      "v": "Full Example"
+    },
+    {
+      "t": "p",
+      "v": "Raw Materials: Beginning $10,000, Purchases $40,000, Ending $8,000. DL $25,000. MOH $15,000. WIP: Beginning $5,000, Ending $7,000. FG: Beginning $12,000, Ending $9,000."
+    },
+    {
+      "t": "s",
+      "v": [
+        "DM Used = $10,000 + $40,000 - $8,000 = $42,000",
+        "Total Mfg Costs = $42,000 + $25,000 + $15,000 = $82,000",
+        "COGM = $82,000 + $5,000 - $7,000 = $80,000",
+        "COGS = $12,000 + $80,000 - $9,000 = $83,000"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Prime Cost vs Conversion Cost"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Cost Category",
+        "Components",
+        "Purpose"
+      ],
+      "r": [
+        [
+          "Prime Cost",
+          "DM + DL",
+          "Direct/traceable manufacturing costs"
+        ],
+        [
+          "Conversion Cost",
+          "DL + MOH",
+          "Costs to CONVERT RM into finished product"
+        ],
+        [
+          "Total Product Cost",
+          "DM + DL + MOH",
+          "Full cost to manufacture a unit"
+        ]
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: COGM flows to COGS through Finished Goods. Three inventory accounts: Raw Materials → WIP → Finished Goods. Prime Cost = DM + DL. Conversion Cost = DL + MOH (DL appears in BOTH). Period costs (selling & admin) do NOT flow through inventory — expensed immediately. Manufacturing costs are ALWAYS product costs."
+    },
+    {
+      "t": "h",
+      "v": "Customer Life-Cycle Costing"
+    },
+    {
+      "t": "p",
+      "v": "Looks at total cost of ownership from the CUSTOMER'S perspective — all costs the buyer incurs during the entire time they own and use the product."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Purchase price",
+        "Installation & setup",
+        "Operating costs (energy, supplies)",
+        "Maintenance & repairs over product life",
+        "Disposal / decommissioning at end of life"
+      ]
+    },
+    {
+      "t": "p",
+      "v": "Example: Machine costs $50,000. Over 10 years: energy $20,000, maintenance $15,000, disposal $5,000. Customer life-cycle cost = $90,000 — not just $50,000."
+    },
+    {
+      "t": "b",
+      "v": [
+        "A cheaper purchase price may have HIGHER operating costs → higher total cost of ownership",
+        "Companies use Customer LCC as a competitive tool: lowest total cost = selling point",
+        "Customer additional costs are NOT part of the company's life-cycle cost — they are separate"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Customer LCC = buyer's perspective (purchase + operating + maintenance + disposal). Company LCC = seller's perspective (R&D + design + manufacturing + marketing + support). Neither is required by GAAP — both are internal management tools."
+    }
+  ],
+  "4-4": [
+    {
+      "t": "h",
+      "v": "What Are Joint Products?"
+    },
+    {
+      "t": "p",
+      "v": "Joint products arise from a SINGLE production process that simultaneously produces TWO OR MORE products. The costs incurred before the split-off point are called JOINT COSTS and cannot be directly traced to individual products."
+    },
+    {
+      "t": "f",
+      "l": "Key Terms",
+      "v": "Split-off Point: Where joint products become separately identifiable | Joint Costs: Costs incurred BEFORE split-off | Separable Costs: Costs incurred AFTER split-off for a specific product"
+    },
+    {
+      "t": "h",
+      "v": "Methods of Allocating Joint Costs"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Method",
+        "Basis",
+        "Formula",
+        "Best For"
+      ],
+      "r": [
+        [
+          "Physical Units",
+          "Volume (lbs, gallons)",
+          "Joint Cost x (Product Units / Total Units)",
+          "Simple, same physical measure"
+        ],
+        [
+          "Sales Value at Split-off",
+          "Market value at split-off",
+          "Joint Cost x (Product Sales Value / Total Sales Value)",
+          "Most common — reflects economic value"
+        ],
+        [
+          "Net Realizable Value (NRV)",
+          "Final sales price - separable costs",
+          "Joint Cost x (Product NRV / Total NRV)",
+          "When products need further processing"
+        ],
+        [
+          "Constant Gross Margin %",
+          "Maintains same gross margin for all",
+          "More complex calculation",
+          "Rare on exams"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Sales Value at Split-off Example"
+    },
+    {
+      "t": "p",
+      "v": "Joint costs $90,000. Product A: 1,000 units at $60/unit = $60,000. Product B: 1,000 units at $40/unit = $40,000. Total = $100,000."
+    },
+    {
+      "t": "s",
+      "v": [
+        "Product A allocation = $90,000 x ($60,000/$100,000) = $54,000",
+        "Product B allocation = $90,000 x ($40,000/$100,000) = $36,000"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Should We Process Further? — Sell or Process Decision"
+    },
+    {
+      "t": "f",
+      "l": "Process Further Rule",
+      "v": "Process further ONLY if: Incremental Revenue > Incremental Separable Costs | Joint costs are IRRELEVANT (sunk costs)"
+    },
+    {
+      "t": "p",
+      "v": "Example: Product X sells at split-off for $50. Can be processed further for $20 more to sell at $80. Incremental revenue = $30. Incremental cost = $20. Profit = $10. → Process further!"
+    },
+    {
+      "t": "h",
+      "v": "By-Products"
+    },
+    {
+      "t": "b",
+      "v": [
+        "By-products: Minor outputs from joint production with relatively low sales value",
+        "Two accounting methods:",
+        "1. Net Realizable Value Method: By-product NRV reduces joint costs allocated to main products",
+        "2. Production Method: By-product recognized as revenue when produced"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Joint costs are SUNK at split-off — NEVER relevant for sell-or-process decisions. Only INCREMENTAL revenues and costs after split-off matter. Sales Value at Split-off is the most common allocation method. NRV method: NRV = Final Price - Separable Costs. By-products have LOW relative value. Physical units method ignores market value — may distort profitability."
+    },
+    {
+      "t": "h",
+      "v": "Constant Gross Margin % Method"
+    },
+    {
+      "t": "p",
+      "v": "Allocates joint costs so ALL products end up with the SAME gross margin percentage as the overall combined gross margin."
+    },
+    {
+      "t": "s",
+      "v": [
+        "Step 1: Overall GM% = (Total Revenue - Total Costs) / Total Revenue",
+        "Step 2: Each product's Gross Profit = Revenue x GM%",
+        "Step 3: Each product's COGS = Revenue - Gross Profit",
+        "Step 4: Joint cost allocation = COGS - Separable costs"
+      ]
+    },
+    {
+      "t": "p",
+      "v": "Example: Joint costs $100,000. Product A: revenue $120,000, separable $10,000. Product B: revenue $80,000, separable $15,000. Total costs = $125,000. GM% = $75,000/$200,000 = 37.5%. Product A COGS = $120,000 x 62.5% = $75,000. Joint cost A = $75,000 - $10,000 = $65,000."
+    },
+    {
+      "t": "h",
+      "v": "By-Product Journal Entries — Production vs Sales Method"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Step",
+        "Production Method",
+        "Sales Method"
+      ],
+      "r": [
+        [
+          "At production",
+          "Dr. By-Product Inventory (NRV) | Cr. WIP — Main Product",
+          "No entry"
+        ],
+        [
+          "Transfer to FG",
+          "Dr. FG (reduced cost) | Cr. WIP",
+          "Dr. FG (full cost) | Cr. WIP"
+        ],
+        [
+          "At sale",
+          "Dr. Cash | Cr. By-Product Inventory + Gain",
+          "Dr. Cash | Cr. Other Income"
+        ]
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Constant GM% = all products get same gross margin %. Production Method = by-product NRV reduces main product cost at production. Sales Method = recognized as income when sold. By-product NRV = Sales Price - Additional Processing Costs."
+    }
+  ],
+  "4-5": [
+    {
+      "t": "h",
+      "v": "What Are By-Products?"
+    },
+    {
+      "t": "p",
+      "v": "By-products are LOW-VALUE outputs that arise naturally from producing the main product. They emerge from the same joint production process but have relatively minor economic significance compared to the main product."
+    },
+    {
+      "t": "b",
+      "v": [
+        "By-products have LOW relative sales value compared to main products",
+        "Emerge from the same production process — cannot be separately produced",
+        "Examples: sawdust from lumber, molasses from sugar refining, glycerin from soap production"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Net Realizable Value (NRV) of By-Product"
+    },
+    {
+      "t": "f",
+      "l": "NRV Formula",
+      "v": "NRV = Estimated Sales Price - Additional Processing Costs after Split-off"
+    },
+    {
+      "t": "h",
+      "v": "Method 1: Production Method (Recognized at Production)"
+    },
+    {
+      "t": "p",
+      "v": "By-product NRV is recognized as soon as it is PRODUCED and DEDUCTED from the main product's cost."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Step",
+        "Journal Entry"
+      ],
+      "r": [
+        [
+          "Record joint manufacturing costs",
+          "Dr. WIP – Joint 200,000 | Cr. Materials/Labor/OH 200,000"
+        ],
+        [
+          "Recognize by-product at production",
+          "Dr. Inventory – By-Product (NRV) 12,000 | Cr. WIP – Main Product 12,000"
+        ],
+        [
+          "Transfer main product to FG",
+          "Dr. FG – Main Product 188,000 | Cr. WIP 188,000"
+        ],
+        [
+          "Sell by-product",
+          "Dr. Cash 15,000 | Cr. By-Product Inventory 12,000 | Cr. Revenue/Gain 3,000"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Method 2: Sales Method (Recognized at Sale)"
+    },
+    {
+      "t": "p",
+      "v": "No entry is made for by-product until it is SOLD. Joint costs remain fully assigned to the main product."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Step",
+        "Journal Entry"
+      ],
+      "r": [
+        [
+          "Record joint costs",
+          "Dr. WIP 200,000 | Cr. Materials/Labor/OH 200,000"
+        ],
+        [
+          "Transfer to FG",
+          "Dr. FG – Main Product 200,000 | Cr. WIP 200,000"
+        ],
+        [
+          "Sell by-product",
+          "Dr. Cash 15,000 | Cr. Other Income 15,000"
+        ],
+        [
+          "Processing costs",
+          "Dr. Processing Expense 3,000 | Cr. Cash 3,000"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Production Method vs Sales Method — Key Differences"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Feature",
+        "Production Method",
+        "Sales Method"
+      ],
+      "r": [
+        [
+          "When recognized",
+          "At time of PRODUCTION",
+          "At time of SALE"
+        ],
+        [
+          "Effect on main product",
+          "Reduces main product cost",
+          "No effect on main product cost"
+        ],
+        [
+          "Inventory",
+          "By-product shown as inventory",
+          "No by-product inventory recorded"
+        ],
+        [
+          "Income timing",
+          "Revenue matched to production",
+          "Revenue matched to sale"
+        ]
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: By-products = LOW relative value. NRV = Sales Price - Additional Processing Costs. Production Method: Dr. By-Product Inventory / Cr. WIP (reduces main product cost). Sales Method: no entry until sold, then Other Income. Main difference: WHEN recognized."
+    }
+  ],
+  "4-6": [
+    {
+      "t": "h",
+      "v": "What Is Process Costing?"
+    },
+    {
+      "t": "p",
+      "v": "Process Costing is used when companies produce LARGE QUANTITIES of IDENTICAL products continuously through a series of processes. Examples: chemicals, paint, beverages, paper, cement, and food processing."
+    },
+    {
+      "t": "h",
+      "v": "Key Difference from Job Costing"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Feature",
+        "Job Order Costing",
+        "Process Costing"
+      ],
+      "r": [
+        [
+          "Products",
+          "Unique / custom",
+          "Identical / homogeneous"
+        ],
+        [
+          "Cost tracking",
+          "Per job",
+          "Per process/department"
+        ],
+        [
+          "Unit cost",
+          "Calculated per job",
+          "Average cost per equivalent unit"
+        ],
+        [
+          "Examples",
+          "Custom furniture, construction",
+          "Oil refining, beverages, cement"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Equivalent Units of Production (EUP)"
+    },
+    {
+      "t": "p",
+      "v": "Since some units are partially complete at period-end (Work-in-Process), we convert them to EQUIVALENT UNITS — the number of complete units that could have been produced with the same effort."
+    },
+    {
+      "t": "f",
+      "l": "Equivalent Units (Weighted Average)",
+      "v": "EUP = Completed Units + (Ending WIP Units x % Completion)"
+    },
+    {
+      "t": "p",
+      "v": "IMPORTANT: Materials and Conversion costs may have DIFFERENT completion %s. Materials are often added at the START (100%) while conversion (labor + overhead) accumulates gradually."
+    },
+    {
+      "t": "h",
+      "v": "Weighted Average Method vs FIFO"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Weighted Average: Combines beginning WIP costs with current period costs. Simpler. EUP = units completed + ending WIP x %complete.",
+        "FIFO: Keeps beginning WIP costs separate. EUP = (Beginning WIP x % left to complete) + Units started and completed + (Ending WIP x % complete)."
+      ]
+    },
+    {
+      "t": "h",
+      "v": "5-Step Process Costing Procedure"
+    },
+    {
+      "t": "s",
+      "v": [
+        "Step 1: Summarize the flow of physical units",
+        "Step 2: Calculate Equivalent Units of Production (EUP)",
+        "Step 3: Summarize total costs to account for",
+        "Step 4: Calculate cost per equivalent unit",
+        "Step 5: Assign costs to completed units and ending WIP"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Example (Weighted Average)"
+    },
+    {
+      "t": "p",
+      "v": "Completed: 3,800 units. Ending WIP: 700 units (60% conversion). Total costs: DM $42,000, Conversion $28,000. DM added at start (100%)."
+    },
+    {
+      "t": "s",
+      "v": [
+        "EUP (DM): 3,800 + (700 x 100%) = 4,500 units",
+        "EUP (Conversion): 3,800 + (700 x 60%) = 4,220 units",
+        "Cost/EUP (DM): $42,000 / 4,500 = $9.33",
+        "Cost/EUP (Conv): $28,000 / 4,220 = $6.64",
+        "Total Cost/Unit: $9.33 + $6.64 = $15.97"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Process costing = identical products. Job costing = unique products. Weighted average is simpler. FIFO is more accurate. Materials at START = 100% complete. Conversion accumulates gradually. Normal spoilage = product cost. Abnormal spoilage = period cost (loss)."
+    },
+    {
+      "t": "h",
+      "v": "Weighted Average vs FIFO Method"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Feature",
+        "Weighted Average",
+        "FIFO"
+      ],
+      "r": [
+        [
+          "EUP",
+          "Combines prior + current period work",
+          "Separates prior from current"
+        ],
+        [
+          "Cost per EUP",
+          "Averages ALL costs (prior + current)",
+          "Uses ONLY current period costs"
+        ],
+        [
+          "Simplicity",
+          "Simpler",
+          "More complex"
+        ],
+        [
+          "Accuracy",
+          "Less accurate when costs change",
+          "More accurate — reflects current period"
+        ],
+        [
+          "BWIP",
+          "Mixed into current costs",
+          "Kept separate — completed first"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Normal vs Abnormal Spoilage — Detailed"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Type",
+        "Definition",
+        "Cost Treatment",
+        "Controllable?"
+      ],
+      "r": [
+        [
+          "Normal Spoilage",
+          "Expected — part of the process",
+          "Allocated to GOOD units — product cost",
+          "No — unavoidable"
+        ],
+        [
+          "Abnormal Spoilage",
+          "Exceeds normal — should NOT occur",
+          "Expensed as LOSS on income statement",
+          "Yes — management can prevent"
+        ]
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Weighted Average = simpler, mixes periods. FIFO = more accurate, separates periods. Normal spoilage = product cost (in good units). Abnormal spoilage = period cost (loss on income statement). Both Weighted Average and FIFO EUP calculations ARE testable — master both methods and the 5-step procedure."
+    }
+  ],
+  "4-7": [
+    {
+      "t": "h",
+      "v": "What Is CVP Analysis?"
+    },
+    {
+      "t": "p",
+      "v": "Cost-Volume-Profit (CVP) analysis examines the relationship between COSTS, VOLUME, and PROFIT. It is one of the most powerful tools in management accounting for break-even analysis, target profit planning, pricing decisions, and understanding business risk. CVP uses the VARIABLE COSTING framework."
+    },
+    {
+      "t": "h",
+      "v": "Key CVP Formulas"
+    },
+    {
+      "t": "f",
+      "l": "Contribution Margin (CM)",
+      "v": "CM = Sales Revenue − Variable Costs | CM per unit = Selling Price − Variable Cost per unit"
+    },
+    {
+      "t": "f",
+      "l": "Contribution Margin Ratio (CMR)",
+      "v": "CMR = CM / Sales Revenue = CM per unit / Selling Price per unit"
+    },
+    {
+      "t": "f",
+      "l": "Break-Even Point (Units)",
+      "v": "BEP (units) = Fixed Costs / CM per unit"
+    },
+    {
+      "t": "f",
+      "l": "Break-Even Point (Dollars)",
+      "v": "BEP ($) = Fixed Costs / CMR"
+    },
+    {
+      "t": "f",
+      "l": "Target Profit (Units)",
+      "v": "Units needed = (Fixed Costs + Target Profit) / CM per unit"
+    },
+    {
+      "t": "f",
+      "l": "Target Profit (Dollars)",
+      "v": "Sales $ needed = (Fixed Costs + Target Profit) / CMR"
+    },
+    {
+      "t": "h",
+      "v": "Worked Example"
+    },
+    {
+      "t": "p",
+      "v": "Selling price $50/unit. Variable cost $30/unit. Fixed costs $80,000. Target profit $20,000."
+    },
+    {
+      "t": "s",
+      "v": [
+        "CM per unit = $50 − $30 = $20",
+        "CMR = $20 / $50 = 40%",
+        "BEP (units) = $80,000 / $20 = 4,000 units",
+        "BEP ($) = $80,000 / 0.40 = $200,000",
+        "Target profit units = ($80,000 + $20,000) / $20 = 5,000 units",
+        "Target profit $ = ($80,000 + $20,000) / 0.40 = $250,000"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Margin of Safety"
+    },
+    {
+      "t": "f",
+      "l": "Margin of Safety (Units)",
+      "v": "MOS (units) = Actual Units − Break-Even Units"
+    },
+    {
+      "t": "f",
+      "l": "Margin of Safety (%)",
+      "v": "MOS% = (Actual Sales − BEP Sales) / Actual Sales × 100"
+    },
+    {
+      "t": "p",
+      "v": "The margin of safety shows how far sales can fall before the company begins losing money. If actual sales = 6,000 units and BEP = 4,000 units: MOS = 2,000 units. MOS% = 2,000/6,000 = 33.3%."
+    },
+    {
+      "t": "h",
+      "v": "Operating Leverage"
+    },
+    {
+      "t": "f",
+      "l": "Degree of Operating Leverage (DOL)",
+      "v": "DOL = Contribution Margin / Net Operating Income"
+    },
+    {
+      "t": "p",
+      "v": "High DOL = high fixed costs relative to variable costs. A company with DOL of 5 will see a 5% change in profit for every 1% change in sales. High DOL = more risk but more reward when sales increase."
+    },
+    {
+      "t": "h",
+      "v": "CVP Assumptions"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Costs can be separated into fixed and variable components",
+        "Selling price is constant regardless of volume",
+        "Fixed costs remain constant within the relevant range",
+        "Variable cost per unit is constant",
+        "For multi-product: the sales mix stays constant",
+        "All production is sold (no inventory changes)"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Multi-Product Break-Even"
+    },
+    {
+      "t": "p",
+      "v": "When a company sells multiple products, use the WEIGHTED AVERAGE CM based on the sales mix."
+    },
+    {
+      "t": "f",
+      "l": "Weighted Avg CMR",
+      "v": "Wtd Avg CMR = (Product A CMR × Sales Mix %) + (Product B CMR × Sales Mix %) + ..."
+    },
+    {
+      "t": "f",
+      "l": "Multi-Product BEP",
+      "v": "BEP ($) = Total Fixed Costs / Weighted Average CMR"
+    },
+    {
+      "t": "p",
+      "v": "Example: Product A CMR=50%, Product B CMR=30%. Sales mix: A=60%, B=40%. Wtd Avg CMR = (50%×60%) + (30%×40%) = 30% + 12% = 42%. Fixed costs $84,000. BEP = $84,000/42% = $200,000."
+    },
+    {
+      "t": "h",
+      "v": "CVP Graph"
+    },
+    {
+      "t": "b",
+      "v": [
+        "The Total Revenue line starts at zero and rises with slope = selling price",
+        "The Total Cost line starts at Fixed Costs on the y-axis and rises with slope = variable cost per unit",
+        "Break-even point = intersection of TR and TC lines",
+        "Area to the left of BEP = loss zone",
+        "Area to the right of BEP = profit zone"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: CM = Revenue − Variable Costs (NOT gross profit). CMR = CM/Revenue. BEP units = FC/CM per unit. BEP dollars = FC/CMR. Target profit: add target to numerator. MOS = actual − BEP. DOL = CM/NOI. High DOL = more volatile earnings. Multi-product: use weighted average CMR. CVP assumes constant selling price, constant VC/unit, constant FC total within relevant range."
+    }
+  ],
+  "4-8": [
+    {
+      "t": "h",
+      "v": "What Is Job Order Costing?"
+    },
+    {
+      "t": "p",
+      "v": "Job Order Costing accumulates costs separately for each unique job, order, or batch. It is used when products are distinct and customizable — such as custom furniture, construction projects, printing, or professional services."
+    },
+    {
+      "t": "h",
+      "v": "Three Components of Product Cost"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Direct Materials (DM): Raw materials traced directly to the job",
+        "Direct Labor (DL): Labor wages directly associated with the job",
+        "Manufacturing Overhead (MOH): Indirect costs applied using a predetermined rate"
+      ]
+    },
+    {
+      "t": "f",
+      "l": "Total Job Cost",
+      "v": "Total Job Cost = Direct Materials + Direct Labor + Applied Overhead"
+    },
+    {
+      "t": "h",
+      "v": "Predetermined Overhead Rate (POHR)"
+    },
+    {
+      "t": "p",
+      "v": "Since actual overhead is not known during production, companies calculate a POHR at the start of the year to apply overhead to jobs."
+    },
+    {
+      "t": "f",
+      "l": "Predetermined Overhead Rate",
+      "v": "POHR = Estimated Total Manufacturing Overhead / Estimated Total Activity Base (e.g., Direct Labor Hours)"
+    },
+    {
+      "t": "f",
+      "l": "Applied Overhead",
+      "v": "Applied OH = POHR x Actual Activity Used by the Job"
+    },
+    {
+      "t": "h",
+      "v": "Over/Under Applied Overhead"
+    },
+    {
+      "t": "f",
+      "l": "Over/Under Applied Overhead",
+      "v": "Difference = Applied Overhead - Actual Overhead | Over-applied: Applied > Actual | Under-applied: Applied < Actual"
+    },
+    {
+      "t": "p",
+      "v": "At year-end, the difference is disposed of — typically closed to Cost of Goods Sold (COGS) for small amounts, or prorated between WIP, FG, and COGS for large amounts."
+    },
+    {
+      "t": "h",
+      "v": "Job Cost Sheet"
+    },
+    {
+      "t": "p",
+      "v": "Each job has a Job Cost Sheet tracking all DM, DL, and OH charges. This is the subsidiary ledger for Work-in-Process (WIP) inventory."
+    },
+    {
+      "t": "h",
+      "v": "Worked Example"
+    },
+    {
+      "t": "p",
+      "v": "Estimated MOH: $240,000. Estimated DL Hours: 60,000. POHR = $240,000 / 60,000 = $4 per DLH. Job #101: DM $5,000, DL $3,000 (750 hrs), Applied OH = 750 x $4 = $3,000. Total Job Cost = $5,000 + $3,000 + $3,000 = $11,000."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Item",
+        "Amount",
+        "Notes"
+      ],
+      "r": [
+        [
+          "Direct Materials",
+          "$5,000",
+          "Traced to job via requisition"
+        ],
+        [
+          "Direct Labor",
+          "$3,000",
+          "750 hrs x $4/hr"
+        ],
+        [
+          "Applied Overhead",
+          "$3,000",
+          "750 DLH x $4 POHR"
+        ],
+        [
+          "Total Job Cost",
+          "$11,000",
+          "Cost of Job #101"
+        ]
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Job costing = UNIQUE products. Process costing = IDENTICAL products. POHR is set at YEAR START using estimates. Over-applied = CREDIT balance in MOH account. Under-applied = DEBIT balance. Closed to COGS at year-end."
+    },
+    {
+      "t": "h",
+      "v": "Operation Costing"
+    },
+    {
+      "t": "p",
+      "v": "Operation Costing is a HYBRID system combining elements of BOTH Job Order and Process Costing. It is used when products are produced in batches where all units in a batch share the same conversion process, but direct materials differ between batches (or product types)."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Feature",
+        "Job Order Costing",
+        "Process Costing",
+        "Operation Costing"
+      ],
+      "r": [
+        [
+          "Products",
+          "Unique, custom",
+          "Identical, homogeneous",
+          "Batches — similar but with material differences"
+        ],
+        [
+          "Direct Materials",
+          "Traced to each job",
+          "Averaged across all units",
+          "Traced separately per WORK ORDER (batch)"
+        ],
+        [
+          "Conversion Costs (DL+OH)",
+          "Traced to each job",
+          "Averaged across departments",
+          "Averaged across units in the batch — like process costing"
+        ],
+        [
+          "Industries",
+          "Custom furniture, construction",
+          "Oil refining, chemicals",
+          "Apparel, food processing, electronics assembly"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "How Operation Costing Works"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Work Orders: Each batch has a work order (similar to a job cost sheet) that tracks the batch",
+        "Direct Materials: Charged specifically to each work order based on the materials used for that batch",
+        "Conversion Costs: Applied uniformly to all units in the batch using a department rate (like process costing)",
+        "Result: Batches with expensive materials have higher unit costs; conversion costs per unit are the same for all batches passing through the same operation"
+      ]
+    },
+    {
+      "t": "f",
+      "l": "Unit Cost under Operation Costing",
+      "v": "Unit Cost = (Direct Materials for the Work Order / Units in Batch) + (Conversion Cost Rate × Equivalent Units)"
+    },
+    {
+      "t": "p",
+      "v": "Example: A clothing manufacturer produces Work Order A (wool coats) and Work Order B (cotton shirts) through the same Cutting and Sewing departments. Both batches use the same labor and machines — so conversion costs per unit are identical. But wool costs $30/unit and cotton costs $8/unit — so DM is traced separately to each work order."
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Operation costing = HYBRID of job and process. DM traced per WORK ORDER (like job costing). Conversion costs averaged per unit (like process costing). Used for BATCH manufacturing with different materials but same conversion process. Industries: apparel, food, electronics. Key phrase to identify: 'produced in batches with different materials but same operations.'"
+    },
+    {
+      "t": "h",
+      "v": "Life-Cycle Costing"
+    },
+    {
+      "t": "p",
+      "v": "Life-cycle costing accumulates ALL costs associated with a product during its ENTIRE LIFE — from design through disposal. Used for pricing decisions and profitability analysis."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Upstream Costs (before production): R&D, design, prototyping, testing",
+        "Manufacturing Costs: DM, DL, MOH, purchasing",
+        "Downstream Costs (after production): Marketing, distribution, customer service, warranties, disposal"
+      ]
+    },
+    {
+      "t": "p",
+      "v": "Key difference: Life-cycle costing treats pre-production and after-sale costs as PRODUCT COSTS. Traditional costing treats them as period costs expensed when incurred."
+    },
+    {
+      "t": "h",
+      "v": "Customer Life-Cycle Costing"
+    },
+    {
+      "t": "p",
+      "v": "Looks at total cost of ownership from the CUSTOMER's perspective: purchase price + installation + operating costs + maintenance + disposal."
+    },
+    {
+      "t": "p",
+      "v": "Example: Machine costs $50,000. Energy $20,000, maintenance $15,000, disposal $5,000 over 10 years. Customer life-cycle cost = $90,000 — not just $50,000."
+    },
+    {
+      "t": "h",
+      "v": "Target Costing"
+    },
+    {
+      "t": "f",
+      "l": "Target Cost Formula",
+      "v": "Target Cost = Target Selling Price - Desired Profit Margin"
+    },
+    {
+      "t": "p",
+      "v": "Market-driven approach: start with what customers will pay, subtract required profit, result = maximum allowable cost. Engineers design the product to hit this cost target."
+    },
+    {
+      "t": "b",
+      "v": [
+        "80-90% of product costs are LOCKED IN during the design phase",
+        "Value Engineering: systematically redesign to achieve target cost without sacrificing quality",
+        "Traditional costing = cost-plus pricing (cost + markup). Target costing = price-minus approach"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Life-cycle costing includes ALL phases including pre-production and disposal. 80-90% of costs locked in at DESIGN — cheapest time to reduce costs. Customer LCC = buyer's total ownership cost. Target Cost = Price - Profit. Value engineering bridges gap between estimated and target cost."
+    }
+  ],
+  "4-9": [
+    {
+      "t": "h",
+      "v": "What Is Manufacturing Overhead?"
+    },
+    {
+      "t": "p",
+      "v": "Manufacturing Overhead (MOH) includes ALL manufacturing costs that cannot be directly traced to specific products. Unlike Direct Materials and Direct Labor, overhead must be ALLOCATED using a systematic method."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Examples: Factory rent, utilities, depreciation, indirect labor, insurance, maintenance",
+        "Cannot be traced directly to a product — must be allocated",
+        "Includes BOTH fixed and variable components"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Departmental vs Plant-wide Overhead Rates"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Approach",
+        "Description",
+        "When to Use"
+      ],
+      "r": [
+        [
+          "Single Plant-wide Rate",
+          "One rate for entire factory",
+          "Simple products, homogeneous processes"
+        ],
+        [
+          "Departmental Rates",
+          "Separate rate for each department",
+          "Products pass through different departments with different overhead levels"
+        ],
+        [
+          "Activity-Based Costing",
+          "Rate per activity driver",
+          "Diverse products, modern manufacturing"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Overhead Allocation Bases"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Direct Labor Hours (DLH): Most traditional — works when labor-intensive",
+        "Direct Labor Cost: % of DL cost",
+        "Machine Hours: Best for automated/capital-intensive operations",
+        "Units Produced: Simple but only valid for single-product companies"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Departmental Overhead Rate Example"
+    },
+    {
+      "t": "p",
+      "v": "Dept A (Labor-intensive): Overhead $200,000, DLH 40,000. Rate = $5/DLH. Dept B (Automated): Overhead $300,000, MH 60,000. Rate = $5/MH. Job uses 10 DLH in Dept A and 5 MH in Dept B. Applied OH = (10 x $5) + (5 x $5) = $50 + $25 = $75."
+    },
+    {
+      "t": "h",
+      "v": "Service Department Cost Allocation"
+    },
+    {
+      "t": "p",
+      "v": "Service departments (HR, IT, Maintenance) support production departments but don't directly make products. Their costs must be allocated to production departments before calculating product costs."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Method",
+        "Description",
+        "Accuracy"
+      ],
+      "r": [
+        [
+          "Direct Method",
+          "Allocates service costs directly to production departments only",
+          "Simplest — ignores inter-service usage"
+        ],
+        [
+          "Step-down Method",
+          "Allocates in sequence; once allocated, a dept receives no more",
+          "Moderate accuracy"
+        ],
+        [
+          "Reciprocal Method",
+          "Recognizes ALL inter-service relationships using simultaneous equations",
+          "Most accurate — most complex"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Over/Under Applied Overhead — Year-End Disposition"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Small amount: Close entire balance to Cost of Goods Sold",
+        "Large amount: Prorate between WIP Inventory, Finished Goods Inventory, and COGS based on their relative balances"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Direct Method is simplest — ignores reciprocal services between service depts. Reciprocal Method is most accurate. Step-down is in between. Machine hours best for automated plants. DLH best for labor-intensive. Under-applied OH = costs UNDERSTATED in products — adjust COGS upward. Over-applied OH = costs OVERSTATED — adjust COGS downward."
+    },
+    {
+      "t": "h",
+      "v": "Overhead Variances"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Variance",
+        "Formula",
+        "Favorable When"
+      ],
+      "r": [
+        [
+          "Variable OH Spending",
+          "Actual VOH - (Standard Rate x Actual Hours)",
+          "Actual rate < Standard rate"
+        ],
+        [
+          "Variable OH Efficiency",
+          "(Actual Hours - Std Hours Allowed) x Standard Rate",
+          "Fewer hours used than standard"
+        ],
+        [
+          "Fixed OH Budget (Spending)",
+          "Actual Fixed OH - Budgeted Fixed OH",
+          "Actual costs < Budget"
+        ],
+        [
+          "Fixed OH Volume",
+          "Budgeted Fixed OH - Applied Fixed OH",
+          "Produced more than planned"
+        ]
+      ]
+    },
+    {
+      "t": "f",
+      "l": "Total OH Variance",
+      "v": "Total = Actual OH - Applied OH | Favorable: Applied > Actual (over-applied) | Unfavorable: Actual > Applied (under-applied)"
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Variable OH Efficiency Variance driven by LABOR hours (same driver as DL efficiency variance). Fixed OH Volume Variance = production more/less than capacity level in POHR. Over-applied OH = credit balance in MOH = favorable. Under-applied = debit balance = unfavorable."
+    }
+  ],
+  "4-10": [
+    {
+      "t": "h",
+      "v": "Accounting for Overhead — Complete Flow"
+    },
+    {
+      "t": "p",
+      "v": "Factory overhead includes ALL manufacturing costs that cannot be directly traced to specific units. The accounting flow involves two accounts: Manufacturing Overhead Control (actual) and Manufacturing Overhead Applied (applied)."
+    },
+    {
+      "t": "f",
+      "l": "Predetermined OH Rate (POHR)",
+      "v": "POHR = Budgeted Manufacturing Overhead / Budgeted Activity Level"
+    },
+    {
+      "t": "h",
+      "v": "Step 1 — Record Actual Overhead"
+    },
+    {
+      "t": "s",
+      "v": [
+        "Dr. Manufacturing Overhead Control (actual OH incurred)",
+        "Cr. Cash / Accounts Payable / Accumulated Depreciation / etc.",
+        "Example: Actual OH $51,000 → Dr. MOH Control 51,000 | Cr. Various 51,000"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Step 2 — Apply Overhead to Production"
+    },
+    {
+      "t": "s",
+      "v": [
+        "Dr. Work-in-Process (applied OH)",
+        "Cr. Manufacturing Overhead Applied",
+        "Example: POHR $20/DLH x 2,400 actual DLH = $48,000 applied → Dr. WIP 48,000 | Cr. MOH Applied 48,000"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Step 3 — Determine Under/Overapplied"
+    },
+    {
+      "t": "f",
+      "l": "Under/Overapplied",
+      "v": "Under-applied: Actual OH > Applied OH → Debit balance in MOH | Over-applied: Applied OH > Actual OH → Credit balance"
+    },
+    {
+      "t": "h",
+      "v": "Step 4 — Dispose of Variance"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Situation",
+        "Method",
+        "Journal Entry"
+      ],
+      "r": [
+        [
+          "Small (immaterial)",
+          "Write off to COGS",
+          "Dr/Cr COGS for full variance amount"
+        ],
+        [
+          "Large (material)",
+          "Prorate to WIP, FG, COGS",
+          "Allocate based on ending balances of each account"
+        ]
+      ]
+    },
+    {
+      "t": "p",
+      "v": "Proration Example: Underapplied $3,000. WIP $20,000 (10%), FG $30,000 (15%), COGS $150,000 (75%). WIP gets $300, FG gets $450, COGS gets $2,250."
+    },
+    {
+      "t": "h",
+      "v": "Overhead Variances"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Variance",
+        "Formula",
+        "Favorable When"
+      ],
+      "r": [
+        [
+          "Variable OH Spending",
+          "Actual VOH - (Std Rate x Actual Hrs)",
+          "Actual rate < Standard"
+        ],
+        [
+          "Variable OH Efficiency",
+          "(Actual Hrs - Std Hrs Allowed) x Std Rate",
+          "Fewer hours than standard"
+        ],
+        [
+          "Fixed OH Budget",
+          "Actual Fixed OH - Budgeted Fixed OH",
+          "Actual < Budget"
+        ],
+        [
+          "Fixed OH Volume",
+          "Budgeted Fixed OH - Applied Fixed OH",
+          "Produced more than planned"
+        ]
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: MOH Control = actual (debit). MOH Applied = applied (credit). Under-applied = debit balance. Over-applied = credit balance. Immaterial → close to COGS. Material → prorate to WIP/FG/COGS. Fixed OH Volume Variance = production more/less than budgeted capacity."
+    }
+  ],
+  "4-11": [
+    {
+      "t": "h",
+      "v": "Why ABC? The Problem with Traditional Costing"
+    },
+    {
+      "t": "p",
+      "v": "Traditional costing uses a SINGLE overhead rate based on volume (e.g., direct labor hours). This works when products are simple. But in modern manufacturing with diverse products, a single rate DISTORTS costs — high-volume products get over-costed, low-volume/complex products get under-costed."
+    },
+    {
+      "t": "h",
+      "v": "What Is Activity-Based Costing?"
+    },
+    {
+      "t": "p",
+      "v": "ABC assigns overhead costs more accurately by identifying ACTIVITIES that consume resources and using MULTIPLE cost drivers to trace costs to products. It answers: What actually causes costs?"
+    },
+    {
+      "t": "h",
+      "v": "ABC vs Traditional Costing"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Feature",
+        "Traditional Costing",
+        "Activity-Based Costing"
+      ],
+      "r": [
+        [
+          "Overhead rates",
+          "One plant-wide rate",
+          "Multiple rates (one per activity)"
+        ],
+        [
+          "Cost drivers",
+          "Volume-based (DLH, units)",
+          "Activity-based (setups, orders, inspections)"
+        ],
+        [
+          "Accuracy",
+          "Lower — distorts costs",
+          "Higher — reflects actual resource use"
+        ],
+        [
+          "Complexity",
+          "Simple",
+          "More complex"
+        ],
+        [
+          "Best for",
+          "Simple, single-product firms",
+          "Diverse products, modern manufacturing"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "4 Levels of Activity in ABC"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Unit-level: Activities performed FOR EACH unit (e.g., machine hours, direct labor)",
+        "Batch-level: Activities performed FOR EACH BATCH (e.g., machine setups, quality inspections)",
+        "Product-level: Activities supporting a specific PRODUCT LINE (e.g., product design, engineering changes)",
+        "Facility-level: Activities supporting the ENTIRE FACILITY (e.g., plant security, building maintenance) — NOT assigned to products"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "ABC Process — Step by Step"
+    },
+    {
+      "t": "s",
+      "v": [
+        "Step 1: Identify the major activities (cost pools)",
+        "Step 2: Determine the cost driver for each activity",
+        "Step 3: Calculate Activity Rate = Pool Cost / Cost Driver Quantity",
+        "Step 4: Apply to each product: Activity Rate x Product Usage of Cost Driver",
+        "Step 5: Calculate total overhead per unit"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Example"
+    },
+    {
+      "t": "p",
+      "v": "Machine setup pool $60,000 with 300 setups. Activity rate = $60,000/300 = $200/setup. Product A needs 60 setups: $200 x 60 = $12,000. Product B needs 240 setups: $200 x 240 = $48,000. Traditional costing based on DL hours would distort this significantly."
+    },
+    {
+      "t": "h",
+      "v": "Benefits and Limitations of ABC"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Benefits: More accurate product costs, better pricing decisions, identifies non-value-added activities, supports process improvement",
+        "Limitations: Expensive to implement, requires significant data collection, not required by GAAP for external reporting, may be too complex for simple companies"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: ABC uses MULTIPLE cost pools and drivers. Traditional uses ONE rate. Unit-level varies with units. Batch-level with batches. Product-level with product line. Facility-level is NOT assigned to products. ABC corrects: high-volume = over-costed, low-volume/complex = under-costed under traditional costing."
+    },
+    {
+      "t": "h",
+      "v": "Activity-Based Management (ABM)"
+    },
+    {
+      "t": "p",
+      "v": "ABM uses the COST INFORMATION FROM ABC to MANAGE and IMPROVE the business — not just to cost products. While ABC answers 'What do things cost?', ABM answers 'How can we reduce those costs and improve efficiency?'"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "ABM Type",
+        "Focus",
+        "Examples"
+      ],
+      "r": [
+        [
+          "Operational ABM",
+          "Eliminate or reduce non-value-added activities",
+          "Eliminate unnecessary inspections, reduce setup times, streamline order processing"
+        ],
+        [
+          "Strategic ABM",
+          "Use ABC data for long-term decisions",
+          "Product mix optimization, customer profitability, pricing, outsourcing decisions"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Non-Value-Added (NVA) Activities — ABM Target"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Scheduling — waiting for production to start",
+        "Moving — transporting materials between locations",
+        "Waiting — idle time between processes",
+        "Inspecting — checking for defects after the fact",
+        "Storing — holding inventory unnecessarily",
+        "Reworking — correcting defects"
+      ]
+    },
+    {
+      "t": "p",
+      "v": "ABM process: (1) Identify all activities using ABC, (2) Classify each as VA or NVA, (3) Eliminate or reduce NVA activities, (4) Benchmark remaining activities against best practices, (5) Continuously monitor and improve."
+    },
+    {
+      "t": "h",
+      "v": "ABM and Customer Profitability"
+    },
+    {
+      "t": "p",
+      "v": "ABM extends ABC logic to CUSTOMERS — assigning activity costs to customers based on the resources they consume. High-maintenance customers (many orders, returns, service calls) may be unprofitable despite high revenue."
+    },
+    {
+      "t": "f",
+      "l": "Customer Profitability",
+      "v": "Customer Profit = Revenue from Customer − COGS − Cost of Activities to Serve Customer"
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: ABM = using ABC data for MANAGEMENT decisions. Operational ABM = reduce/eliminate NVA activities. Strategic ABM = product mix, pricing, customer selection using ABC info. NVA activities = waste (moving, waiting, storing, inspecting). ABC tells us WHERE costs occur; ABM tells us WHAT TO DO about them. Customer profitability analysis = ABM applied to customers."
+    },
+    {
+      "t": "h",
+      "v": "The 4 ABC Activity Levels"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Level",
+        "Driven By",
+        "Examples",
+        "Cost Driver"
+      ],
+      "r": [
+        [
+          "Unit-level",
+          "Each unit produced",
+          "DM, DL, machine power",
+          "Units produced"
+        ],
+        [
+          "Batch-level",
+          "Each batch/setup",
+          "Machine setups, purchase orders, inspection per batch",
+          "Number of batches/setups"
+        ],
+        [
+          "Product-level",
+          "Each product line",
+          "Product engineering, product advertising",
+          "Number of products"
+        ],
+        [
+          "Facility-level",
+          "Overall facility",
+          "Plant rent, general management, building depreciation",
+          "Cannot be traced — allocated arbitrarily"
+        ]
+      ]
+    },
+    {
+      "t": "b",
+      "v": [
+        "Unit-level: varies with EVERY unit",
+        "Batch-level: varies with every BATCH (not every unit) — high-volume products benefit from batch economies",
+        "Product-level: supports a product line regardless of how many batches or units",
+        "Facility-level: necessary for overall operations — most difficult to assign to products"
+      ]
+    },
+    {
+      "t": "f",
+      "l": "Two-Stage ABC",
+      "v": "Stage 1: Resource Consumption Driver → allocates resources TO activities | Stage 2: Activity Consumption Driver → allocates activity costs TO products"
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Facility-level costs CANNOT be meaningfully traced to individual products. Batch-level costs driven by number of setups/batches, NOT units. Resource Consumption Driver = resources to activities. Activity Consumption Driver = activities to products/cost objects."
+    }
+  ],
+  "4-12": [
+    {
+      "t": "h",
+      "v": "Variable Costing vs Absorption Costing"
+    },
+    {
+      "t": "p",
+      "v": "Two methods exist for treating Fixed Manufacturing Overhead (Fixed MOH) in product costing. The difference affects inventory valuation and operating income when production differs from sales."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Feature",
+        "Variable Costing",
+        "Absorption Costing"
+      ],
+      "r": [
+        [
+          "Fixed MOH treatment",
+          "PERIOD cost — expensed immediately",
+          "PRODUCT cost — included in inventory"
+        ],
+        [
+          "Required by GAAP/IFRS",
+          "No (internal use only)",
+          "Yes (external reporting)"
+        ],
+        [
+          "Income affected by",
+          "Sales volume only",
+          "Both sales AND production volume"
+        ],
+        [
+          "Inventory includes",
+          "DM + DL + Variable MOH only",
+          "DM + DL + Variable MOH + Fixed MOH"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Key Formulas"
+    },
+    {
+      "t": "f",
+      "l": "Absorption Costing Unit Cost",
+      "v": "Unit Cost = DM + DL + Variable MOH + (Fixed MOH / Units Produced)"
+    },
+    {
+      "t": "f",
+      "l": "Variable Costing Unit Cost",
+      "v": "Unit Cost = DM + DL + Variable MOH only (Fixed MOH is a period cost)"
+    },
+    {
+      "t": "h",
+      "v": "Income Difference — The Key Rule"
+    },
+    {
+      "t": "f",
+      "l": "Reconciliation",
+      "v": "Absorption NI − Variable NI = Fixed MOH in Ending Inventory − Fixed MOH in Beginning Inventory"
+    },
+    {
+      "t": "h",
+      "v": "Full Reconciliation Example (with Beginning Inventory)"
+    },
+    {
+      "t": "p",
+      "v": "Fixed MOH $60,000. Produced 6,000 units. Sold 7,000 units. Beginning FG = 2,000 units. Ending FG = 1,000 units. Fixed MOH/unit = $60,000/6,000 = $10/unit."
+    },
+    {
+      "t": "s",
+      "v": [
+        "Fixed MOH in Ending Inventory = 1,000 × $10 = $10,000",
+        "Fixed MOH in Beginning Inventory = 2,000 × $10 = $20,000",
+        "Difference = $10,000 − $20,000 = −$10,000",
+        "Absorption NI is $10,000 LOWER than Variable NI",
+        "(Because inventory DECREASED — more fixed MOH released from beginning inventory than deferred in ending inventory)"
+      ]
+    },
+    {
+      "t": "p",
+      "v": "Rule of Thumb: Inventory INCREASES (prod > sales) → Absorption NI is HIGHER. Inventory DECREASES (sales > prod) → Absorption NI is LOWER. Inventory constant → NI is equal."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Production > Sales: Absorption NI > Variable NI (fixed MOH deferred in inventory)",
+        "Production < Sales: Absorption NI < Variable NI (fixed MOH released from inventory)",
+        "Production = Sales: Absorption NI = Variable NI (no difference)"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Example"
+    },
+    {
+      "t": "p",
+      "v": "Fixed MOH $60,000. Produced 10,000 units. Sold 8,000 units. Fixed MOH/unit = $6. Ending inventory = 2,000 units."
+    },
+    {
+      "t": "s",
+      "v": [
+        "Absorption: Fixed MOH in ending inventory = 2,000 x $6 = $12,000 (deferred)",
+        "Variable: All $60,000 expensed immediately",
+        "Absorption NI is $12,000 HIGHER than Variable NI"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Contribution Margin Income Statement (Variable Costing)"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Line",
+        "Amount"
+      ],
+      "r": [
+        [
+          "Sales Revenue",
+          "$XXX"
+        ],
+        [
+          "- Variable Cost of Goods Sold",
+          "($XXX)"
+        ],
+        [
+          "= Gross Contribution Margin",
+          "$XXX"
+        ],
+        [
+          "- Variable Selling & Admin",
+          "($XXX)"
+        ],
+        [
+          "= Contribution Margin",
+          "$XXX"
+        ],
+        [
+          "- Fixed Manufacturing Overhead",
+          "($XXX)"
+        ],
+        [
+          "- Fixed Selling & Admin",
+          "($XXX)"
+        ],
+        [
+          "= Net Operating Income",
+          "$XXX"
+        ]
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Absorption = GAAP required. Variable = management use only. When production > sales, absorption shows HIGHER income. Fixed MOH is the ONLY difference between the two methods. Contribution Margin format = variable costing income statement. Gross Profit format = absorption costing income statement."
+    },
+    {
+      "t": "h",
+      "v": "Advantages & Limitations"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "",
+        "Absorption",
+        "Variable"
+      ],
+      "r": [
+        [
+          "Advantages",
+          "GAAP required · Full cost per unit · Matches costs to revenue",
+          "Transparent profit impact · Better CVP · No production manipulation"
+        ],
+        [
+          "Limitations",
+          "Income manipulated by overproduction · Misleading when sales are low",
+          "Not GAAP-compliant · Requires fixed/variable separation"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Super-Variable (Throughput) Costing — The 3rd Method"
+    },
+    {
+      "t": "p",
+      "v": "Throughput costing treats ONLY direct materials as product costs. ALL other costs (DL, variable OH, fixed OH) are period costs expensed immediately."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Method",
+        "Product Costs",
+        "Inventory Value"
+      ],
+      "r": [
+        [
+          "Absorption",
+          "DM + DL + Variable MOH + Fixed MOH",
+          "Highest"
+        ],
+        [
+          "Variable",
+          "DM + DL + Variable MOH",
+          "Middle"
+        ],
+        [
+          "Throughput",
+          "Direct Materials ONLY",
+          "Lowest"
+        ]
+      ]
+    },
+    {
+      "t": "f",
+      "l": "Throughput Contribution",
+      "v": "Throughput = Sales Revenue - Direct Materials | Used in Theory of Constraints (TOC)"
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: 3 methods ranked by inventory: Absorption > Variable > Throughput. Throughput = DM only as product cost. Absorption manipulation: produce MORE than you sell → defer fixed costs → higher income. Variable costing eliminates this manipulation since all fixed OH is expensed immediately."
+    }
+  ],
+  "4-13": [
+    {
+      "t": "h",
+      "v": "What Are Shared Service Departments?"
+    },
+    {
+      "t": "p",
+      "v": "HR, IT, Legal, and Maintenance departments SUPPORT production departments but do not directly make products. Their costs must be allocated to user departments to achieve accurate product costing and fair performance evaluation."
+    },
+    {
+      "t": "h",
+      "v": "Single-Rate vs Dual-Rate Method"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Feature",
+        "Single-Rate",
+        "Dual-Rate"
+      ],
+      "r": [
+        [
+          "Fixed costs allocated by",
+          "Actual usage",
+          "BUDGETED usage"
+        ],
+        [
+          "Variable costs allocated by",
+          "Actual usage",
+          "ACTUAL usage"
+        ],
+        [
+          "Complexity",
+          "Simple",
+          "More accurate"
+        ],
+        [
+          "Cost signal",
+          "May distort fixed cost signals",
+          "Accurate — fixed = committed capacity"
+        ]
+      ]
+    },
+    {
+      "t": "f",
+      "l": "Single Rate",
+      "v": "Rate = Total Budgeted Cost / Budgeted Activity Base | Allocation = Rate × Actual Usage"
+    },
+    {
+      "t": "p",
+      "v": "Single-Rate Example: IT total cost $120,000. Budgeted hours 12,000. Rate = $10/hr. Dept A uses 3,000 hrs → $30,000 allocated."
+    },
+    {
+      "t": "h",
+      "v": "Dual-Rate Method — Example"
+    },
+    {
+      "t": "p",
+      "v": "IT fixed costs $80,000. Variable rate $0.50/hr. Total budgeted hours 12,000. Dept A: budgeted 3,000 hrs, actual 3,200 hrs."
+    },
+    {
+      "t": "s",
+      "v": [
+        "Fixed allocation = $80,000 × (3,000/12,000) = $20,000 (BUDGETED usage)",
+        "Variable allocation = $0.50 × 3,200 = $1,600 (ACTUAL usage)",
+        "Total Dept A = $21,600"
+      ]
+    },
+    {
+      "t": "p",
+      "v": "KEY INSIGHT — Why Dual-Rate Is Better: Under Single-Rate, if Dept A cuts actual usage, its fixed cost allocation drops — but the company's total fixed IT costs don't change. This sends a WRONG signal. Dual-Rate fixes this: fixed costs based on budgeted (committed) capacity stay constant. Managers cannot 'game' their fixed allocation by reducing actual usage."
+    },
+    {
+      "t": "h",
+      "v": "Three Methods for Multiple Service Departments"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Method",
+        "Reciprocal Services?",
+        "Accuracy",
+        "Complexity"
+      ],
+      "r": [
+        [
+          "Direct",
+          "Ignored completely",
+          "Lowest",
+          "Simplest"
+        ],
+        [
+          "Step-Down",
+          "Partial (sequence matters)",
+          "Moderate",
+          "Medium"
+        ],
+        [
+          "Reciprocal",
+          "Fully recognized — simultaneous equations",
+          "Highest",
+          "Most complex"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Direct Method"
+    },
+    {
+      "t": "p",
+      "v": "Allocates service costs ONLY to production departments, completely IGNORING services between service departments. Simplest but least accurate."
+    },
+    {
+      "t": "p",
+      "v": "Example: IT ($60,000) serves HR 20% and Production 80%. Maintenance ($40,000) serves HR 10% and Production 90%. Under Direct Method: Ignore IT→HR and Maintenance→HR. IT to Production = $60,000 × 100% = $60,000. Maintenance to Production = $40,000 × 100% = $40,000. Total to Production = $100,000."
+    },
+    {
+      "t": "h",
+      "v": "Step-Down Method"
+    },
+    {
+      "t": "p",
+      "v": "Allocates service departments in SEQUENCE. The first department allocated can assign costs to OTHER service departments before being closed. Once a department is closed, it receives NO MORE costs. More accurate than Direct; less than Reciprocal."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Order MATTERS — allocate the department that serves the MOST other departments FIRST",
+        "Once a department is closed, it cannot receive additional allocations",
+        "Captures some reciprocal services — but not all"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Reciprocal Method"
+    },
+    {
+      "t": "p",
+      "v": "Uses SIMULTANEOUS EQUATIONS to fully recognize ALL mutual services between service departments. Most accurate but most complex. Set up equations: Total Cost of each service dept = Its own cost + % of other service dept it receives."
+    },
+    {
+      "t": "p",
+      "v": "Example: IT cost $60,000, receives 15% of Maintenance. Maintenance cost $40,000, receives 10% of IT. Equations: IT = $60,000 + 0.15M. M = $40,000 + 0.10(IT). Solve simultaneously → allocate the solved totals to production departments."
+    },
+    {
+      "t": "h",
+      "v": "Accuracy Ranking"
+    },
+    {
+      "t": "f",
+      "l": "Accuracy",
+      "v": "Reciprocal (best) > Step-Down (moderate) > Direct (simplest)"
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Dual-Rate: fixed by BUDGETED usage, variable by ACTUAL usage. Single-Rate: everything by actual usage. Direct Method: ignores ALL inter-service. Step-Down: partial, ORDER matters. Reciprocal: simultaneous equations, MOST accurate. Key exam point: Dual-Rate prevents managers from gaming their fixed allocation by cutting actual usage — fixed costs are committed capacity costs regardless of actual consumption."
+    }
+  ],
+  "4-14": [
+    {
+      "t": "h",
+      "v": "What Are Standard Costs?"
+    },
+    {
+      "t": "p",
+      "v": "Standard costs are PREDETERMINED BENCHMARKS for what costs SHOULD BE under efficient operating conditions. When actual costs differ from standard costs, the difference is a VARIANCE. Variance analysis tells management WHERE costs got out of control and WHY."
+    },
+    {
+      "t": "h",
+      "v": "Direct Materials Variances"
+    },
+    {
+      "t": "f",
+      "l": "DM Price Variance",
+      "v": "DM Price Variance = (Actual Price − Standard Price) × Actual Quantity PURCHASED | F if AP < SP"
+    },
+    {
+      "t": "f",
+      "l": "DM Quantity (Usage) Variance",
+      "v": "DM Quantity Variance = (Actual Qty Used − Standard Qty Allowed) × Standard Price | F if AQ < SQ"
+    },
+    {
+      "t": "p",
+      "v": "Note: Price variance is calculated at PURCHASE (for timely reporting). Quantity variance is calculated at USE. Standard Qty Allowed = Standard qty per unit × Actual units produced."
+    },
+    {
+      "t": "h",
+      "v": "DM Variance Example"
+    },
+    {
+      "t": "p",
+      "v": "Standard: 2 lbs per unit at $5/lb. Actual: Produced 1,000 units. Purchased 2,100 lbs at $4.80/lb. Used 2,050 lbs."
+    },
+    {
+      "t": "s",
+      "v": [
+        "DM Price Variance = ($4.80 − $5.00) × 2,100 = (−$0.20) × 2,100 = $420 Favorable",
+        "Standard Qty Allowed = 2 × 1,000 = 2,000 lbs",
+        "DM Quantity Variance = (2,050 − 2,000) × $5.00 = 50 × $5 = $250 Unfavorable"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Direct Labor Variances"
+    },
+    {
+      "t": "f",
+      "l": "DL Rate Variance",
+      "v": "DL Rate Variance = (Actual Rate − Standard Rate) × Actual Hours | F if AR < SR"
+    },
+    {
+      "t": "f",
+      "l": "DL Efficiency Variance",
+      "v": "DL Efficiency Variance = (Actual Hours − Standard Hours Allowed) × Standard Rate | F if AH < SH"
+    },
+    {
+      "t": "p",
+      "v": "Standard Hours Allowed = Standard hours per unit × Actual units produced."
+    },
+    {
+      "t": "h",
+      "v": "DL Variance Example"
+    },
+    {
+      "t": "p",
+      "v": "Standard: 0.5 hours per unit at $18/hr. Actual: Produced 1,000 units. Actual hours 480 hrs at $19/hr."
+    },
+    {
+      "t": "s",
+      "v": [
+        "DL Rate Variance = ($19 − $18) × 480 = $1 × 480 = $480 Unfavorable",
+        "Standard Hours Allowed = 0.5 × 1,000 = 500 hrs",
+        "DL Efficiency Variance = (480 − 500) × $18 = (−20) × $18 = $360 Favorable"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Four Overhead Variances"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Variance",
+        "Formula",
+        "Favorable When"
+      ],
+      "r": [
+        [
+          "Variable OH Spending",
+          "Actual VOH − (Std Rate × Actual Hrs)",
+          "Actual rate < Standard"
+        ],
+        [
+          "Variable OH Efficiency",
+          "(Actual Hrs − Std Hrs Allowed) × Std Rate",
+          "Fewer hours than standard"
+        ],
+        [
+          "Fixed OH Budget",
+          "Actual Fixed OH − Budgeted Fixed OH",
+          "Actual < Budget"
+        ],
+        [
+          "Fixed OH Volume",
+          "Budgeted Fixed OH − Applied Fixed OH",
+          "Produced more than planned"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Responsibility for Variances"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Variance",
+        "Typically Responsible",
+        "Common Causes"
+      ],
+      "r": [
+        [
+          "DM Price",
+          "Purchasing dept",
+          "Better supplier deal, rush orders, market price change"
+        ],
+        [
+          "DM Quantity",
+          "Production dept",
+          "Waste, spoilage, poor quality materials, untrained workers"
+        ],
+        [
+          "DL Rate",
+          "HR / Payroll",
+          "Using skilled workers for routine tasks, overtime premium"
+        ],
+        [
+          "DL Efficiency",
+          "Production supervisor",
+          "Machine breakdowns, poor scheduling, learning curve effects"
+        ],
+        [
+          "Fixed OH Budget",
+          "Department managers",
+          "Actual fixed costs differing from budget"
+        ],
+        [
+          "Fixed OH Volume",
+          "Production planning",
+          "Actual production above or below planned capacity"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Journal Entries — Standard Cost System"
+    },
+    {
+      "t": "s",
+      "v": [
+        "Purchase DM: Dr. Raw Materials (std price) + Dr/Cr DM Price Variance | Cr. Accounts Payable (actual)",
+        "Use DM: Dr. WIP (std qty × std price) + Dr/Cr DM Qty Variance | Cr. Raw Materials",
+        "DL: Dr. WIP (std hrs × std rate) + Dr/Cr DL Rate + DL Eff Variances | Cr. Wages Payable",
+        "Apply OH: Dr. WIP (std hrs × std rate) | Cr. MOH Applied",
+        "Record actual OH: Dr. MOH Control | Cr. Various",
+        "Year-end: Dr/Cr OH variances | Cr/Dr COGS (or prorate)"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Favorable vs Unfavorable"
+    },
+    {
+      "t": "p",
+      "v": "FAVORABLE variance = actual cost < standard cost = good news. UNFAVORABLE variance = actual cost > standard cost = bad news. BUT: a favorable price variance from buying cheap materials can CAUSE an unfavorable quantity variance if the cheap materials have more waste."
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Price/Rate variances = calculated at the ACTUAL quantity (purchased for DM, worked for DL). Qty/Efficiency variances = compared at STANDARD price/rate. Standard Qty/Hours Allowed = standard per unit × ACTUAL units produced (not budgeted). Favorable = actual < standard. Unfavorable = actual > standard. Overhead Volume Variance = only exists under ABSORPTION costing — measures production vs planned capacity."
+    }
+  ],
+  "4-15": [
+    {
+      "t": "h",
+      "v": "Why Cost Estimation?"
+    },
+    {
+      "t": "p",
+      "v": "Managers need to predict future costs for budgeting, pricing, and decisions. Cost estimation methods determine the fixed and variable components of a mixed cost. The three main methods are: High-Low, Scatter Diagram, and Regression Analysis."
+    },
+    {
+      "t": "h",
+      "v": "Comparison of Methods"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Method",
+        "Data Used",
+        "Accuracy",
+        "Complexity"
+      ],
+      "r": [
+        [
+          "High-Low",
+          "2 data points only",
+          "Lowest — may be distorted by outliers",
+          "Very simple"
+        ],
+        [
+          "Scatter Diagram",
+          "All data points (visual)",
+          "Moderate — subjective line fitting",
+          "Simple"
+        ],
+        [
+          "Regression Analysis",
+          "All data points (statistical)",
+          "HIGHEST — objective, uses all data",
+          "More complex but standard"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Regression Analysis"
+    },
+    {
+      "t": "p",
+      "v": "Regression analysis uses statistical techniques to fit the BEST LINE through all data points. It gives the most accurate cost equation by minimizing the sum of squared deviations."
+    },
+    {
+      "t": "f",
+      "l": "Regression Cost Equation",
+      "v": "Y = a + bX   |   a = Fixed Cost (intercept), b = Variable Cost Rate (slope), X = Activity Level"
+    },
+    {
+      "t": "h",
+      "v": "Key Regression Statistics"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Statistic",
+        "Meaning",
+        "Good Value"
+      ],
+      "r": [
+        [
+          "R² (Coefficient of Determination)",
+          "% of cost variation EXPLAINED by the activity driver",
+          "Close to 1.0 (100%) is best"
+        ],
+        [
+          "R (Correlation Coefficient)",
+          "Strength and direction of relationship",
+          "Close to +1 or -1"
+        ],
+        [
+          "t-statistic",
+          "Statistical significance of each variable",
+          "> 2 is generally significant"
+        ],
+        [
+          "p-value",
+          "Probability the result is due to chance",
+          "< 0.05 (5%) is significant"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Multiple Regression"
+    },
+    {
+      "t": "p",
+      "v": "Simple regression uses ONE independent variable (e.g., machine hours). Multiple regression uses TWO OR MORE variables to predict cost — more accurate when costs are driven by multiple factors."
+    },
+    {
+      "t": "p",
+      "v": "Example: Total cost = $5,000 + $3(machine hours) + $2(labor hours). Both machine hours AND labor hours drive costs."
+    },
+    {
+      "t": "h",
+      "v": "Learning Curve Effect"
+    },
+    {
+      "t": "p",
+      "v": "As workers gain experience producing a product, labor time per unit DECREASES. Each time CUMULATIVE production DOUBLES, average labor hours per unit decrease by a fixed percentage (the learning rate)."
+    },
+    {
+      "t": "f",
+      "l": "Cumulative Average-Time Model",
+      "v": "When cumulative output doubles, AVERAGE time per unit = previous average × learning rate"
+    },
+    {
+      "t": "f",
+      "l": "Incremental Unit-Time Model",
+      "v": "When cumulative output doubles, INCREMENTAL (last) unit time = previous last unit time × learning rate"
+    },
+    {
+      "t": "h",
+      "v": "Two Learning Curve Models Compared"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Units",
+        "Cumulative Avg Model (80%)",
+        "Incremental Unit Model (80%)"
+      ],
+      "r": [
+        [
+          "1 unit",
+          "100 hrs (avg)",
+          "100 hrs (last unit)"
+        ],
+        [
+          "2 units",
+          "80 hrs avg (160 total)",
+          "80 hrs for 2nd unit only"
+        ],
+        [
+          "4 units",
+          "64 hrs avg (256 total)",
+          "64 hrs for 4th unit only"
+        ],
+        [
+          "8 units",
+          "51.2 hrs avg (409.6 total)",
+          "51.2 hrs for 8th unit only"
+        ]
+      ]
+    },
+    {
+      "t": "p",
+      "v": "KEY DIFFERENCE: Cumulative Average Model applies the learning rate to the AVERAGE of all units produced. Incremental Unit Model applies the learning rate to the LAST UNIT produced. The cumulative average model is more commonly tested on the CMA exam."
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Regression is MOST accurate — uses all data points. High-Low is LEAST accurate — only 2 points. R² close to 1.0 = strong relationship. R² = 0.85 means 85% of cost variation is explained by the activity. Learning curve: output doubles → average time drops by learning %. 80% learning curve is common exam example."
+    }
+  ],
+  "4-16": [
+    {
+      "t": "h",
+      "v": "What Is Supply Chain Management?"
+    },
+    {
+      "t": "p",
+      "v": "Supply Chain Management (SCM) coordinates the flow of materials, information, and money from RAW MATERIAL SUPPLIERS through MANUFACTURERS to END CUSTOMERS. The goal is to optimize the entire chain — not just individual companies."
+    },
+    {
+      "t": "h",
+      "v": "Key SCM Concepts"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Concept",
+        "Description"
+      ],
+      "r": [
+        [
+          "Supply Chain",
+          "All companies involved from raw materials to end customer"
+        ],
+        [
+          "Upstream activities",
+          "Suppliers and raw materials (before the company)"
+        ],
+        [
+          "Downstream activities",
+          "Distribution, retailers, end customers (after the company)"
+        ],
+        [
+          "Bullwhip Effect",
+          "Small demand variations amplified upstream — causing excess inventory"
+        ],
+        [
+          "Vendor-Managed Inventory",
+          "Supplier monitors and replenishes customer's inventory automatically"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "The Value Chain (Porter's Model)"
+    },
+    {
+      "t": "p",
+      "v": "Michael Porter's Value Chain identifies PRIMARY and SUPPORT activities that create value for customers. Cost management focuses on optimizing each activity."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Primary Activities (directly create value): Inbound Logistics → Operations → Outbound Logistics → Marketing & Sales → Service",
+        "Support Activities (enable primary activities): Firm Infrastructure, HR Management, Technology Development, Procurement"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Value-Added vs Non-Value-Added Activities"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Type",
+        "Definition",
+        "Action"
+      ],
+      "r": [
+        [
+          "Value-Added (VA)",
+          "Customer WILLINGLY pays for it — changes form, fit, or function",
+          "Keep and optimize"
+        ],
+        [
+          "Non-Value-Added (NVA)",
+          "Customer would NOT pay for it if they knew — waste",
+          "Eliminate or reduce"
+        ],
+        [
+          "Business Non-Value-Added",
+          "Required by business but not valued by customer (e.g., accounting, compliance)",
+          "Minimize"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Business Process Improvement Tools"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Process Mapping / Flowcharts: Visualize the current process to identify waste and bottlenecks",
+        "Benchmarking: Comparing performance to best-in-class competitors or industry standards",
+        "Business Process Reengineering (BPR): Radical redesign of processes for dramatic improvement",
+        "Kaizen: Continuous small improvements by all employees",
+        "Six Sigma (DMAIC): Define, Measure, Analyze, Improve, Control"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Value Chain = Primary + Support activities. Primary activities directly create value. Non-value-added activities = waste → eliminate. Bullwhip effect = demand distortion growing upstream. Benchmarking = comparing to best practices. BPR = radical redesign (vs Kaizen = gradual improvement). SCM goal = optimize the ENTIRE chain, not just one company. Customer defines what is value-added."
+    },
+    {
+      "t": "h",
+      "v": "What Is Lean Management?"
+    },
+    {
+      "t": "p",
+      "v": "Lean management is a philosophy focused on ELIMINATING WASTE and creating value for the customer. Originating from the Toyota Production System, lean identifies seven types of waste (TIMWOOD) and works to eliminate them."
+    },
+    {
+      "t": "h",
+      "v": "7 Types of Waste (TIMWOOD)"
+    },
+    {
+      "t": "b",
+      "v": [
+        "T — Transportation: Moving materials unnecessarily",
+        "I — Inventory: Excess stock tying up capital",
+        "M — Motion: Unnecessary worker movement",
+        "W — Waiting: Idle time between processes",
+        "O — Overproduction: Making more than needed",
+        "O — Over-processing: More work than required",
+        "D — Defects: Errors requiring rework or scrap"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Just-in-Time (JIT) System"
+    },
+    {
+      "t": "p",
+      "v": "JIT is a pull-based production system where materials and products are produced or purchased ONLY when needed — in the exact quantity needed, at the exact time needed."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Feature",
+        "Traditional System",
+        "JIT System"
+      ],
+      "r": [
+        [
+          "Inventory",
+          "Large safety stock",
+          "Minimal — near zero",
+          ""
+        ],
+        [
+          "Production trigger",
+          "Push (produce to forecast)",
+          "Pull (produce on demand)",
+          ""
+        ],
+        [
+          "Defects",
+          "Acceptable defect rate",
+          "Zero defects goal",
+          ""
+        ],
+        [
+          "Supplier relationship",
+          "Many suppliers, competitive",
+          "Few trusted suppliers, long-term",
+          ""
+        ],
+        [
+          "Setup time",
+          "Long",
+          "Minimized",
+          ""
+        ],
+        [
+          "Quality",
+          "Inspect after production",
+          "Built-in quality (TQM)",
+          " "
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "JIT Benefits & Risks"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Benefits: Reduced inventory costs, less waste, faster production, higher quality, lower storage costs",
+        "Risks: Supply chain disruptions can halt production (no buffer stock), requires reliable suppliers, needs stable demand"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Kanban System"
+    },
+    {
+      "t": "p",
+      "v": "Kanban is the signal system used in JIT. Cards (kanban) authorize production or movement of materials only when needed — preventing overproduction."
+    },
+    {
+      "t": "h",
+      "v": "Theory of Constraints (TOC)"
+    },
+    {
+      "t": "p",
+      "v": "TOC focuses on identifying and managing the BOTTLENECK (constraint) — the process limiting overall throughput. The 5 steps: Identify → Exploit → Subordinate → Elevate → Repeat."
+    },
+    {
+      "t": "f",
+      "l": "Throughput Contribution",
+      "v": "Throughput = Sales Revenue - Direct Materials (variable costs only)"
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: JIT = pull system (demand-driven). Traditional = push system (forecast-driven). JIT goal: zero inventory, zero defects. 7 wastes = TIMWOOD. Kanban = authorization card for JIT. TOC bottleneck = the WEAKEST LINK — focus all improvement efforts here. JIT requires reliable suppliers and stable demand. Main JIT risk = supply disruption."
+    },
+    {
+      "t": "h",
+      "v": "Lean Thinking — The 5 Principles"
+    },
+    {
+      "t": "b",
+      "v": [
+        "1. Specify Value: Define value from the CUSTOMER'S perspective — what are they willing to pay for?",
+        "2. Identify the Value Stream: Map ALL processes delivering the product — identify waste in the entire flow",
+        "3. Create Continuous Flow: Production flows SMOOTHLY without interruption or queuing",
+        "4. Establish Pull: Produce ONLY what is needed, WHEN it is needed — demand-driven (JIT)",
+        "5. Pursue Perfection: Continuously strive for zero waste, zero defects — kaizen mindset"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "SMED — Single Minute Exchange of Dies"
+    },
+    {
+      "t": "p",
+      "v": "Reduces machine SETUP/CHANGEOVER time to under 10 minutes (single-digit minutes)."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Internal tasks: Done while machine is STOPPED — convert to external where possible",
+        "External tasks: Done while machine is RUNNING — prepare beforehand",
+        "Benefits: Faster response to demand, smaller batch sizes, less downtime, supports JIT"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Lean Work Cells & Poka-Yoke"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Lean Work Cells: U-shaped workstations. Workers cross-trained for multiple tasks. Reduces walking waste, improves communication, allows quick rebalancing",
+        "Poka-Yoke (Mistake Proofing): Devices/methods that PREVENT errors or immediately detect them. Examples: plug that only fits one way, sensors that stop machines if parts missing. Goal: eliminate possibility of human error"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Backflush Costing — JIT Accounting"
+    },
+    {
+      "t": "p",
+      "v": "Traditional costing records costs at each stage (purchase → WIP → finished goods). Backflush costing DELAYS recording until products are COMPLETED or SOLD, then 'flushes back' to assign costs."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Used with JIT because inventory is near zero — no need for detailed WIP tracking",
+        "Trigger point: completion of goods OR sale of goods",
+        "Eliminates most WIP journal entries — greatly simplifies accounting",
+        "Weakness: Less detailed cost information during production"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Lean 5 Principles: Value → Value Stream → Flow → Pull → Perfection. SMED = setup time under 10 minutes. Internal = machine stopped. External = machine running. Poka-yoke = PREVENTS errors. Backflush costing = used with JIT, records costs at completion/sale not each stage. JIT is PULL; Traditional MRP is PUSH."
+    }
+  ],
+  "4-17": [
+    {
+      "t": "h",
+      "v": "Enterprise Resource Planning (ERP)"
+    },
+    {
+      "t": "p",
+      "v": "ERP systems integrate ALL business functions — finance, manufacturing, HR, sales, procurement, and inventory — into ONE unified database. This eliminates data silos and provides real-time information across the organization."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Feature",
+        "Traditional Systems",
+        "ERP System"
+      ],
+      "r": [
+        [
+          "Data",
+          "Separate databases per department",
+          "Single integrated database"
+        ],
+        [
+          "Information flow",
+          "Manual transfers between systems",
+          "Automatic, real-time"
+        ],
+        [
+          "Consistency",
+          "Data conflicts between departments",
+          "One version of the truth"
+        ],
+        [
+          "Examples",
+          "Separate accounting, HR, inventory",
+          "SAP, Oracle, Microsoft Dynamics"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Material Requirements Planning (MRP)"
+    },
+    {
+      "t": "p",
+      "v": "MRP is a PUSH-based production planning system that uses the Master Production Schedule (MPS) to determine WHAT materials to order, HOW MUCH to order, and WHEN to order them."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Master Production Schedule (MPS): What finished products to make and when",
+        "Bill of Materials (BOM): List of all components needed to make each product",
+        "Inventory Records: Current stock on hand and on order",
+        "MRP Output: Purchase orders and production orders"
+      ]
+    },
+    {
+      "t": "f",
+      "l": "Net Requirements",
+      "v": "Net Requirements = Gross Requirements - On-hand Inventory - Scheduled Receipts"
+    },
+    {
+      "t": "h",
+      "v": "MRP II (Manufacturing Resource Planning)"
+    },
+    {
+      "t": "p",
+      "v": "MRP II extends MRP to include CAPACITY PLANNING, labor scheduling, machine scheduling, and financial planning. It integrates manufacturing with the broader business."
+    },
+    {
+      "t": "h",
+      "v": "ERP vs MRP vs MRP II"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "System",
+        "Scope",
+        "Focus"
+      ],
+      "r": [
+        [
+          "MRP",
+          "Materials only",
+          "What/when to order materials"
+        ],
+        [
+          "MRP II",
+          "Manufacturing resources",
+          "Materials + capacity + labor + finance"
+        ],
+        [
+          "ERP",
+          "Entire enterprise",
+          "All business functions integrated"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Benefits & Risks of ERP"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Benefits: Real-time data, eliminates duplicate entry, better decision-making, improved inventory management, integrated financial reporting",
+        "Risks: Very expensive to implement, long implementation time (1-3 years), requires major process changes, data migration challenges, high training costs, implementation failures are common"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: MRP = materials planning only (push system). MRP II = adds capacity and labor. ERP = entire enterprise integration. MRP uses BOM + MPS + inventory records. Net Requirements = Gross Requirements - On Hand - Scheduled Receipts. ERP biggest risk = implementation failure (cost overruns, disruption). JIT = pull system; MRP = push system."
+    }
+  ],
+  "4-18": [
+    {
+      "t": "h",
+      "v": "Types of Capacity"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Capacity Type",
+        "Definition",
+        "Use"
+      ],
+      "r": [
+        [
+          "Theoretical Capacity",
+          "Maximum output under PERFECT conditions — 24/7, no breaks, no defects",
+          "Theoretical benchmark only"
+        ],
+        [
+          "Practical Capacity",
+          "Theoretical capacity minus NORMAL downtime (breaks, maintenance, holidays)",
+          "Realistic maximum achievable"
+        ],
+        [
+          "Normal Capacity",
+          "Average expected capacity over 2-3 years considering seasonal fluctuations",
+          "Used for budgeting and POHR calculation"
+        ],
+        [
+          "Actual Capacity",
+          "Capacity actually used in the current period",
+          "Actual results"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Relevant Costing for Short-term Decisions"
+    },
+    {
+      "t": "p",
+      "v": "Relevant costs are FUTURE costs that DIFFER between alternatives. Irrelevant costs are the same regardless of the decision and should be IGNORED."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Cost Type",
+        "Relevant?",
+        "Reason"
+      ],
+      "r": [
+        [
+          "Sunk costs",
+          "NEVER",
+          "Already incurred — cannot be changed"
+        ],
+        [
+          "Opportunity costs",
+          "ALWAYS",
+          "Real economic cost of choosing one alternative"
+        ],
+        [
+          "Future differential costs",
+          "YES",
+          "Differ between alternatives — affect the decision"
+        ],
+        [
+          "Allocated fixed costs",
+          "Usually NO",
+          "Same total regardless of decision"
+        ],
+        [
+          "Avoidable costs",
+          "YES",
+          "Can be eliminated by choosing an alternative"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Make or Buy Decision"
+    },
+    {
+      "t": "p",
+      "v": "Should we make a component internally or buy it from an outside supplier?"
+    },
+    {
+      "t": "f",
+      "l": "Make or Buy Rule",
+      "v": "Buy if: Outside Price < Avoidable Cost to Make | Consider qualitative factors (quality, reliability, strategic importance)"
+    },
+    {
+      "t": "h",
+      "v": "Special Order Decision"
+    },
+    {
+      "t": "p",
+      "v": "Should we accept a one-time order below normal selling price?"
+    },
+    {
+      "t": "f",
+      "l": "Special Order Rule",
+      "v": "Accept if: Special Order Price > Variable Cost per unit (AND there is excess capacity) | Fixed costs are irrelevant if capacity exists"
+    },
+    {
+      "t": "h",
+      "v": "Keep or Drop a Segment"
+    },
+    {
+      "t": "p",
+      "v": "Should we eliminate an unprofitable product, division, or segment?"
+    },
+    {
+      "t": "f",
+      "l": "Keep or Drop Rule",
+      "v": "Drop ONLY if: Avoidable fixed costs + lost CM > 0 (i.e., dropping improves profit) | Allocated fixed costs are IRRELEVANT"
+    },
+    {
+      "t": "h",
+      "v": "Constrained Resource Decision"
+    },
+    {
+      "t": "p",
+      "v": "When production is limited by a scarce resource, maximize contribution margin PER UNIT OF CONSTRAINT (not per unit of product)."
+    },
+    {
+      "t": "f",
+      "l": "Ranking with Constraint",
+      "v": "Rank products by: CM per unit of scarce resource = CM per unit / Resource units required per unit"
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Relevant costs = future + differential. Sunk costs NEVER relevant. Opportunity costs ALWAYS relevant. Special order: accept if price > variable cost AND excess capacity exists. Make or Buy: compare outside price to AVOIDABLE costs only. Keep or Drop: allocated fixed costs are IRRELEVANT. Constraint decision: rank by CM per unit of constraint, not CM per unit."
+    }
+  ],
+  "4-19": [
+    {
+      "t": "h",
+      "v": "Outsourcing Decisions"
+    },
+    {
+      "t": "p",
+      "v": "Outsourcing means having an EXTERNAL supplier perform an activity previously done internally. It is a strategic decision that goes beyond simple cost comparison — it involves competitive advantage, risk, and long-term strategy."
+    },
+    {
+      "t": "h",
+      "v": "Financial Analysis: Make vs Outsource"
+    },
+    {
+      "t": "f",
+      "l": "Outsource Decision Rule",
+      "v": "Outsource if: Outside Cost < Total Avoidable Internal Cost (variable + avoidable fixed costs)"
+    },
+    {
+      "t": "p",
+      "v": "Key: Only AVOIDABLE costs are relevant. Allocated fixed costs that continue regardless are IRRELEVANT."
+    },
+    {
+      "t": "h",
+      "v": "Qualitative Factors in Outsourcing"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Quality control: Can supplier maintain required quality standards?",
+        "Reliability: Will deliveries be on time? Supply chain risk?",
+        "Confidentiality: Will proprietary information be protected?",
+        "Core competency: Is this activity a strategic competitive advantage? (Don't outsource core competencies!)",
+        "Flexibility: Can we quickly switch back if needed?",
+        "Workforce impact: Effect on employee morale and retention"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Strategic Cost Management"
+    },
+    {
+      "t": "p",
+      "v": "Strategic cost management aligns COST MANAGEMENT decisions with the company's COMPETITIVE STRATEGY. There are two basic strategies:"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Strategy",
+        "Focus",
+        "Cost Management Emphasis"
+      ],
+      "r": [
+        [
+          "Cost Leadership",
+          "Be the lowest-cost producer",
+          "Aggressive cost reduction, efficiency, economies of scale"
+        ],
+        [
+          "Differentiation",
+          "Offer unique value customers pay premium for",
+          "Invest in quality, R&D, service — don't cut costs that support differentiation"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Customer Profitability Analysis"
+    },
+    {
+      "t": "p",
+      "v": "Not all customers are equally profitable. Using ABC principles, customer profitability analysis assigns costs to CUSTOMERS (not products) based on the resources they consume."
+    },
+    {
+      "t": "b",
+      "v": [
+        "High-maintenance customers (many orders, returns, calls) cost more to serve",
+        "Simple analysis: Contribution Margin from customer - Cost to serve that customer",
+        "Result: Identify profitable vs unprofitable customers — consider dropping or repricing for unprofitable ones"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Balanced Scorecard & Strategy"
+    },
+    {
+      "t": "p",
+      "v": "The Balanced Scorecard (BSC) translates strategy into MEASURABLE objectives across 4 perspectives: Financial, Customer, Internal Process, and Learning & Growth. It connects daily operations to long-term strategic goals."
+    },
+    {
+      "t": "h",
+      "v": "Balanced Scorecard — Full Coverage"
+    },
+    {
+      "t": "p",
+      "v": "The Balanced Scorecard (BSC), developed by Kaplan and Norton, is a STRATEGIC PERFORMANCE MANAGEMENT system that translates an organisation's strategy into measurable objectives across four perspectives. It balances financial and non-financial measures, and short-term and long-term objectives."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Perspective",
+        "Question Asked",
+        "Typical Measures"
+      ],
+      "r": [
+        [
+          "Financial",
+          "How do we look to shareholders?",
+          "Revenue growth, ROI, EVA, profit margin, cost reduction"
+        ],
+        [
+          "Customer",
+          "How do customers see us?",
+          "Market share, customer satisfaction, retention, on-time delivery, defect rate"
+        ],
+        [
+          "Internal Process",
+          "What must we excel at internally?",
+          "Cycle time, quality rate, process efficiency, innovation pipeline"
+        ],
+        [
+          "Learning & Growth",
+          "Can we continue to improve?",
+          "Employee training hours, skills gap, technology capability, employee satisfaction"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Strategy Maps and Cause-Effect Relationships"
+    },
+    {
+      "t": "p",
+      "v": "A STRATEGY MAP links the four BSC perspectives in a cause-effect chain. The logic flows UPWARD: Learning & Growth ENABLES better Internal Processes → which DELIVERS better Customer outcomes → which DRIVES Financial results."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Example chain: Employee training (L&G) → faster production cycle time (Process) → better on-time delivery (Customer) → higher customer retention (Customer) → increased revenue (Financial)",
+        "Every non-financial measure should have a logical path to financial results",
+        "Strategy maps make the strategy VISIBLE and testable — management can see if their assumptions hold"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Leading vs Lagging Indicators"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Type",
+        "Definition",
+        "Example"
+      ],
+      "r": [
+        [
+          "Lagging",
+          "Results already achieved — look backward",
+          "Revenue, net income, ROI, customer satisfaction score"
+        ],
+        [
+          "Leading",
+          "Predictors of future results — look forward",
+          "Training hours, process improvement rate, R&D investment, employee skills gap"
+        ]
+      ]
+    },
+    {
+      "t": "p",
+      "v": "BSC uses BOTH — lagging indicators confirm past performance, leading indicators predict and drive future performance. Relying only on financial (lagging) measures misses the drivers of future success."
+    },
+    {
+      "t": "h",
+      "v": "BSC and Performance Compensation"
+    },
+    {
+      "t": "p",
+      "v": "When BSC measures are linked to compensation, employees are motivated to improve ACROSS ALL FOUR perspectives — not just short-term financial results. This prevents the common trap of cutting costs (good for short-term finance) at the expense of customer service, quality, or employee development (bad long-term)."
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: BSC = 4 perspectives (Financial, Customer, Internal Process, Learning & Growth). Strategy map = cause-effect chain upward from L&G to Financial. Lagging = past results. Leading = future predictors. Both are needed. BSC prevents overemphasis on short-term financial metrics at the expense of long-term performance drivers. Kaplan & Norton developed the BSC."
+    },
+    {
+      "t": "h",
+      "v": "Accounting Process Redesign"
+    },
+    {
+      "t": "p",
+      "v": "As organisations adopt lean and process improvement initiatives, the accounting systems themselves must be REDESIGNED to support — rather than hinder — these improvements. Traditional accounting processes often create non-value-added work that contradicts lean principles."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Traditional Accounting",
+        "Redesigned Lean Accounting"
+      ],
+      "r": [
+        [
+          "Detailed variance reports encouraging local optimisation",
+          "Simplified reporting focused on system-level performance"
+        ],
+        [
+          "Standard costing encouraging overproduction to absorb fixed costs",
+          "Throughput or value-stream costing aligned with lean flow"
+        ],
+        [
+          "Monthly batch reporting — information arrives too late",
+          "Real-time or weekly visual reporting on the shop floor"
+        ],
+        [
+          "Complex journal entries for every inventory movement",
+          "Backflush costing — record costs only at completion"
+        ],
+        [
+          "Departmental cost reports encouraging local efficiency",
+          "Value-stream P&L reports showing end-to-end performance"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Key Principles of Accounting Process Redesign"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Eliminate non-value-added accounting tasks: If a report is not used for decisions, eliminate it",
+        "Simplify transaction processing: Backflush costing, combined journal entries, automated data capture",
+        "Align with lean: The accounting system should SUPPORT lean behaviour — not incentivise batch production or inventory build-up",
+        "Visual management: Replace complex reports with simple visual scorecards visible on the shop floor",
+        "Faster feedback: Managers need performance data in hours/days — not at month-end"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Accounting process redesign = applying BPR/lean thinking to the ACCOUNTING FUNCTION itself. Traditional standard costing can conflict with lean by rewarding overproduction. Backflush costing supports JIT/lean. The goal: accounting should add value and support operational decisions — eliminate reports and transactions nobody uses."
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Outsource if outside cost < avoidable internal cost. Allocated fixed costs IRRELEVANT. Don't outsource CORE COMPETENCIES. Cost leadership = minimize costs. Differentiation = invest to maintain uniqueness. Customer profitability = CM - cost to serve. BSC = 4 perspectives (Financial, Customer, Process, Learning). Strategy drives cost management decisions."
+    }
+  ],
+  "4-20": [
+    {
+      "t": "h",
+      "v": "What Is Process Analysis?"
+    },
+    {
+      "t": "p",
+      "v": "Process analysis examines how work flows through an organization to identify inefficiencies, waste, and opportunities for improvement. It is a core tool in lean management and business process improvement."
+    },
+    {
+      "t": "h",
+      "v": "Process Mapping (Flowcharts)"
+    },
+    {
+      "t": "p",
+      "v": "Process maps visually document every step in a process — showing inputs, activities, decisions, and outputs. They reveal where waste occurs and where improvements can be made."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Current State Map: Documents the process AS IT IS TODAY — reveals all waste and inefficiencies",
+        "Future State Map: Shows the IDEAL process after improvements are implemented",
+        "Gap Analysis: Identifies what needs to change to move from current to future state"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Value Stream Mapping (VSM)"
+    },
+    {
+      "t": "p",
+      "v": "VSM is a lean tool that maps the ENTIRE flow of materials and information from supplier to customer. It shows both value-added and non-value-added time, identifying waste in the entire value stream."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Metric",
+        "Definition"
+      ],
+      "r": [
+        [
+          "Cycle Time",
+          "Time to complete ONE unit from start to finish"
+        ],
+        [
+          "Lead Time",
+          "Total time from customer order to delivery (includes waiting)"
+        ],
+        [
+          "Process Time",
+          "Actual time spent working on the product (value-added)"
+        ],
+        [
+          "Takt Time",
+          "Available production time / Customer demand rate — the production PACE needed"
+        ],
+        [
+          "Value-Added Ratio",
+          "Process Time / Lead Time — higher is better"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Takt Time"
+    },
+    {
+      "t": "f",
+      "l": "Takt Time",
+      "v": "Takt Time = Available Production Time / Customer Demand Rate"
+    },
+    {
+      "t": "p",
+      "v": "Example: Available time = 480 minutes/day. Customer demand = 120 units/day. Takt Time = 480/120 = 4 minutes/unit. Production must complete one unit every 4 minutes to meet demand."
+    },
+    {
+      "t": "h",
+      "v": "Throughput & Bottleneck Analysis"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Throughput: Rate at which the system produces output",
+        "Bottleneck: The slowest process step — limits overall throughput",
+        "Improving any non-bottleneck step does NOT improve overall throughput",
+        "Only improving the bottleneck increases overall system output"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Theory of Constraints (TOC) — Full Coverage"
+    },
+    {
+      "t": "p",
+      "v": "The Theory of Constraints (Eliyahu Goldratt) states that every system has at least ONE constraint (bottleneck) that limits its performance. Rather than optimising every process, managers should focus ALL improvement efforts on the CONSTRAINT."
+    },
+    {
+      "t": "h",
+      "v": "The 5 Steps of TOC"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Step",
+        "Action",
+        "Description"
+      ],
+      "r": [
+        [
+          "1. Identify",
+          "Find the constraint",
+          "Locate the bottleneck — the process limiting overall throughput"
+        ],
+        [
+          "2. Exploit",
+          "Get the most out of it",
+          "Maximise output from the constraint without major investment — eliminate downtime, prioritise the right products"
+        ],
+        [
+          "3. Subordinate",
+          "Align everything else",
+          "All other processes must support the constraint — feed it at its pace, don't overproduce upstream"
+        ],
+        [
+          "4. Elevate",
+          "Increase constraint capacity",
+          "Invest to expand bottleneck capacity — add machinery, overtime, outsource the bottleneck operation"
+        ],
+        [
+          "5. Repeat",
+          "Find the new constraint",
+          "Once the bottleneck is resolved, a NEW constraint emerges — restart the 5-step process"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Throughput Costing (Super-Variable Costing)"
+    },
+    {
+      "t": "p",
+      "v": "Throughput costing (also called super-variable costing) is the costing approach aligned with TOC. It treats ONLY direct materials as truly variable. All other costs — including direct labor and ALL overhead — are treated as FIXED period costs."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Cost Method",
+        "Product Cost includes",
+        "Period Cost includes"
+      ],
+      "r": [
+        [
+          "Absorption Costing",
+          "DM + DL + Fixed OH + Variable OH",
+          "SGA only"
+        ],
+        [
+          "Variable Costing",
+          "DM + DL + Variable OH",
+          "Fixed OH + SGA"
+        ],
+        [
+          "Throughput Costing",
+          "Direct Materials ONLY",
+          "DL + ALL OH (fixed & variable) + SGA"
+        ]
+      ]
+    },
+    {
+      "t": "f",
+      "l": "Throughput Contribution",
+      "v": "Throughput Contribution = Sales Revenue - Direct Materials Cost"
+    },
+    {
+      "t": "f",
+      "l": "Net Profit (TOC)",
+      "v": "Net Profit = Throughput Contribution - Total Operating Expenses (all other costs)"
+    },
+    {
+      "t": "h",
+      "v": "TOC Product Mix Decision — Throughput Margin per Bottleneck Hour"
+    },
+    {
+      "t": "p",
+      "v": "When the bottleneck limits capacity, produce the product with the HIGHEST throughput contribution per bottleneck hour first."
+    },
+    {
+      "t": "f",
+      "l": "Throughput per Bottleneck Hour",
+      "v": "Throughput per Bottleneck Hour = Throughput Contribution / Bottleneck Hours Required per Unit"
+    },
+    {
+      "t": "p",
+      "v": "Example: Product A — Sales $100, DM $40, bottleneck hours 2 → Throughput/hour = ($100-$40)/2 = $30/hr. Product B — Sales $80, DM $20, bottleneck hours 1 → Throughput/hour = ($80-$20)/1 = $60/hr. Prioritise Product B despite lower total contribution."
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: TOC 5 Steps: Identify → Exploit → Subordinate → Elevate → Repeat. Throughput costing = ONLY direct materials are product cost. All other costs (even DL) are PERIOD costs. Throughput Contribution = Revenue - DM only. Rank products by throughput per BOTTLENECK HOUR (not total contribution margin). TOC philosophy: the whole system is only as fast as its slowest step."
+    },
+    {
+      "t": "tip",
+      "v": "Process Analysis Tips: Takt Time = Available Time / Demand Rate — sets the production pace. Cycle Time = time per unit. Lead Time includes ALL time (including waiting). Value-Added Ratio = Process Time / Lead Time. VSM shows material AND information flows. Bottleneck limits throughput — focus improvement there first. Current state map shows waste; future state map shows the ideal."
+    }
+  ],
+  "4-21": [
+    {
+      "t": "h",
+      "v": "What Are Quality Costs?"
+    },
+    {
+      "t": "p",
+      "v": "Quality costs are costs associated with PREVENTING, DETECTING, and CORRECTING poor quality. The CMA exam extensively tests the four categories of quality costs and the trade-offs between them."
+    },
+    {
+      "t": "h",
+      "v": "Four Categories of Quality Costs"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Category",
+        "When Incurred",
+        "Examples",
+        "Goal"
+      ],
+      "r": [
+        [
+          "Prevention",
+          "Before defects occur",
+          "Quality training, process design, supplier evaluation, quality circles",
+          "Prevent defects from happening"
+        ],
+        [
+          "Appraisal",
+          "During/after production to DETECT defects",
+          "Inspection, testing, auditing, statistical quality control",
+          "Find defects before shipping"
+        ],
+        [
+          "Internal Failure",
+          "Defects found BEFORE delivery to customer",
+          "Rework, scrap, downtime, re-inspection",
+          "Cost of defects caught internally"
+        ],
+        [
+          "External Failure",
+          "Defects found AFTER delivery to customer",
+          "Warranty, returns, recalls, lost customers, legal costs",
+          "Most expensive — customer already affected"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "The Quality Cost Trade-off"
+    },
+    {
+      "t": "p",
+      "v": "Investing MORE in Prevention and Appraisal REDUCES Failure costs. The goal is to find the optimal total quality cost level."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Prevention + Appraisal = Costs of CONFORMANCE (doing it right)",
+        "Internal Failure + External Failure = Costs of NON-CONFORMANCE (fixing mistakes)",
+        "External failure is the MOST EXPENSIVE category — defects reach the customer",
+        "Prevention is the CHEAPEST long-term strategy"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Total Quality Management (TQM)"
+    },
+    {
+      "t": "b",
+      "v": [
+        "TQM philosophy: Build quality IN from the start — everyone is responsible",
+        "Zero defects goal: Continuous improvement toward perfection",
+        "Kaizen: Japanese philosophy of continuous small improvements",
+        "Six Sigma: Statistical approach targeting 3.4 defects per million opportunities"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Quality Cost Report"
+    },
+    {
+      "t": "p",
+      "v": "Companies prepare quality cost reports showing the % of each category to total sales. A well-managed quality program has HIGH prevention/appraisal costs and LOW failure costs. Total quality costs should decrease over time as quality improves."
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: 4 categories — Prevention, Appraisal, Internal Failure, External Failure. Prevention + Appraisal = Conformance costs. Internal + External Failure = Non-conformance costs. External failure is MOST EXPENSIVE. Prevention is CHEAPEST long-term. TQM = everyone responsible, zero defects goal. Kaizen = continuous improvement. More prevention spending → less failure spending."
+    },
+    {
+      "t": "h",
+      "v": "TQM Tools & Techniques"
+    },
+    {
+      "t": "b",
+      "v": [
+        "1. Quality Circles: Small employee groups meeting regularly to identify and solve quality problems — empowers workers",
+        "2. Statistical Quality Control (SQC): Control charts to monitor processes. In-control = random variation within limits. Out-of-control = assignable cause exists",
+        "3. Histograms: Bar charts showing frequency distribution of quality measurements",
+        "4. Pareto Diagram (80/20 Rule): Ranks defects from most to least frequent. 80% of problems come from 20% of causes — focus on vital few",
+        "5. Cause-and-Effect Diagram (Ishikawa / Fishbone): Maps root causes of quality problems. Categories: Manpower, Methods, Machines, Materials (4 Ms)"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Kaizen Costing"
+    },
+    {
+      "t": "p",
+      "v": "Kaizen (改善) means 'continuous improvement' in Japanese. Kaizen costing applies this philosophy directly to COST MANAGEMENT — setting cost REDUCTION targets each period and continuously working to achieve them through small, incremental improvements."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Feature",
+        "Standard Costing",
+        "Kaizen Costing"
+      ],
+      "r": [
+        [
+          "Philosophy",
+          "Maintain current standards — investigate variances",
+          "Continuously REDUCE costs below current actuals"
+        ],
+        [
+          "Cost Targets",
+          "Set annually based on standard specifications",
+          "Set as incremental reductions from current actual costs each period"
+        ],
+        [
+          "Variance Analysis",
+          "Actual vs Standard — find deviations",
+          "Actual vs Target Reduction — did we improve enough?"
+        ],
+        [
+          "Focus",
+          "Control — keep costs at standard",
+          "Improvement — continuously lower the cost baseline"
+        ],
+        [
+          "Time horizon",
+          "Annual budget cycle",
+          "Continuous — monthly or quarterly improvement cycles"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "How Kaizen Costing Works"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Step 1 — Set reduction target: Management sets a cost reduction percentage (e.g., reduce unit cost by 3% per quarter)",
+        "Step 2 — Identify opportunities: Teams analyse processes to find waste elimination, efficiency gains, materials savings",
+        "Step 3 — Implement improvements: Small changes are made continuously — no big capital investment required",
+        "Step 4 — Measure results: Actual costs tracked against the reduction target each period",
+        "Step 5 — Reset baseline: Achieved cost level becomes the new baseline for the NEXT period's reduction target"
+      ]
+    },
+    {
+      "t": "p",
+      "v": "Key distinction: Kaizen costing is applied DURING the production phase (after the product is designed), making incremental improvements to existing processes. This contrasts with Target Costing which sets cost targets BEFORE and DURING design."
+    },
+    {
+      "t": "f",
+      "l": "Kaizen Cost Target",
+      "v": "Kaizen Target Cost = Current Actual Cost × (1 - Reduction Rate%)"
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Kaizen = continuous SMALL improvements during production. Standard costing = maintain standards. Kaizen costing = continuously REDUCE the cost baseline. Target costing = cost target set at DESIGN stage. Kaizen variance = actual cost reduction vs target reduction (not actual vs standard). Kaizen is linked to lean and TQM philosophy — eliminate waste incrementally. 'Kai' = change, 'Zen' = good."
+    },
+    {
+      "t": "h",
+      "v": "Total Productive Maintenance (TPM)"
+    },
+    {
+      "t": "p",
+      "v": "TPM is a maintenance philosophy that aims for ZERO BREAKDOWNS, ZERO DEFECTS, and ZERO ACCIDENTS by making equipment maintenance EVERYONE's responsibility — not just the maintenance department."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "TPM Pillar",
+        "Description"
+      ],
+      "r": [
+        [
+          "Autonomous Maintenance",
+          "Operators perform routine maintenance on their own equipment — cleaning, lubricating, inspecting"
+        ],
+        [
+          "Planned Maintenance",
+          "Scheduled preventive maintenance before failures occur"
+        ],
+        [
+          "Focused Improvement",
+          "Cross-functional teams eliminate specific equipment losses"
+        ],
+        [
+          "Overall Equipment Effectiveness (OEE)",
+          "Key TPM metric: OEE = Availability × Performance Rate × Quality Rate"
+        ]
+      ]
+    },
+    {
+      "t": "f",
+      "l": "OEE Formula",
+      "v": "OEE = Availability × Performance Rate × Quality Rate | 100% OEE = perfect production (never achieved in practice)"
+    },
+    {
+      "t": "p",
+      "v": "TPM Goal: Move from REACTIVE maintenance (fix when broken) to PROACTIVE maintenance (prevent failures before they occur). Reduces waste from machine downtime, reduced speed, and defects caused by poor equipment condition."
+    },
+    {
+      "t": "h",
+      "v": "ISO 9000 Quality Standards"
+    },
+    {
+      "t": "b",
+      "v": [
+        "ISO 9000 = internationally recognized quality management standards (International Organization for Standardization)",
+        "ISO 9001 = main certification standard — specifies requirements for a QUALITY MANAGEMENT SYSTEM",
+        "Certifies that PROCESSES are consistently managed — NOT that products are defect-free",
+        "Key principles: Customer focus, leadership, process approach, continual improvement",
+        "Benefits: International recognition, customer confidence, competitive advantage"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Pareto = 80% of defects from 20% of causes — focus on vital few. Ishikawa = identifies ROOT CAUSES — 4 Ms: Manpower, Methods, Machines, Materials. Control chart: points outside limits = process OUT of control. ISO 9001 = process certification (not product quality). Quality Circles = employee-driven continuous improvement."
+    }
+  ]
+}

@@ -1,0 +1,1800 @@
+{
+  "6-0": [
+    {
+      "t": "h",
+      "v": "What Is an Accounting Information System (AIS)?"
+    },
+    {
+      "t": "p",
+      "v": "An AIS collects, stores, and processes financial and accounting data to provide information to decision makers. The AIS supports ALL business transactions through interconnected TRANSACTION CYCLES — the full flow from business event to financial statement."
+    },
+    {
+      "t": "h",
+      "v": "The Five Major Transaction Cycles"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Cycle",
+        "Business Function",
+        "Key Documents"
+      ],
+      "r": [
+        [
+          "Revenue-to-Cash",
+          "Sales order → delivery → invoice → collection",
+          "Sales order, shipping document, invoice, remittance advice"
+        ],
+        [
+          "Expenditure",
+          "Purchase requisition → PO → receipt → payment",
+          "Purchase requisition, purchase order, receiving report, vendor invoice"
+        ],
+        [
+          "Production",
+          "Production order → materials → labour → costing",
+          "BOM, materials requisition, job cost sheet, production report"
+        ],
+        [
+          "HR & Payroll",
+          "Hire → record time → calculate → disburse",
+          "Timesheets, payroll register, earnings statements"
+        ],
+        [
+          "Financing",
+          "Issue debt/equity → record → service debt",
+          "Loan agreements, stock certificates, amortisation schedules"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "1. Revenue-to-Cash Cycle"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Trigger: Customer places order (sales order created)",
+        "Credit check: Creditworthiness verified before accepting the order",
+        "Picking & Shipping: Warehouse picks goods; shipping document created",
+        "Billing: Invoice sent to customer (accounts receivable created)",
+        "Collection: Customer pays; cash applied to AR",
+        "Key controls: Credit approval, segregation of billing/collection, lockbox systems, reconcile AR to GL"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "2. Expenditure Cycle"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Trigger: Department identifies need → purchase requisition created",
+        "Purchase Order (PO): Purchasing department issues PO to approved vendor",
+        "Receiving: Goods received; Receiving Report created (3-way match: PO + Receiving Report + Vendor Invoice)",
+        "Accounts Payable: Invoice recorded; payment approved",
+        "Disbursement: Payment issued to vendor",
+        "Key controls: 3-way match, segregation of duties (ordering/receiving/paying), competitive bidding, approved vendor list"
+      ]
+    },
+    {
+      "t": "f",
+      "l": "3-Way Match",
+      "v": "Purchase Order + Receiving Report + Vendor Invoice must ALL agree before payment is approved"
+    },
+    {
+      "t": "h",
+      "v": "3. Production Cycle"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Production Planning: Master Production Schedule drives material and capacity planning",
+        "Materials Requisition: Raw materials released from storeroom to production (authorised document)",
+        "Job Cost Sheet: Records DM, DL, and OH applied to each job or batch",
+        "Completion: Finished goods transferred from WIP to Finished Goods inventory",
+        "Costing: Standard vs actual costs compared; variances calculated",
+        "Key controls: Pre-numbered materials requisitions, access controls on storeroom, periodic physical inventory counts"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "4. HR & Payroll Cycle"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Hire: Employment authorised by HR — separate from payroll processing",
+        "Time Recording: Timesheets or time clocks capture hours worked",
+        "Payroll Calculation: Gross pay calculated; deductions applied (taxes, benefits)",
+        "Payroll Disbursement: Cheques or direct deposits issued",
+        "Payroll Register: Complete record of all payroll transactions",
+        "Key controls: HR authorises hires (separate from payroll dept), supervisors approve timesheets, imprest payroll account, limit access to payroll master file"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "5. Financing Cycle"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Debt issuance: Board authorises borrowing; loan agreement executed; cash received",
+        "Interest accrual and payment: Monthly interest expense recorded; payments made per schedule",
+        "Equity issuance: Board authorises share issuance; subscription and collection recorded",
+        "Dividend payments: Board declares dividend; payments made to shareholders",
+        "Key controls: Board authorisation for all financing, independent confirmation with lenders, reconcile debt schedules to GL"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "The General Ledger & Reporting System"
+    },
+    {
+      "t": "p",
+      "v": "All five cycles feed into the GENERAL LEDGER — the central repository of all accounting entries. The general ledger serves as the basis for financial statement preparation. ERP systems automate this integration, posting transactions from each cycle to the GL in real time."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Sub-ledger",
+        "Feeds GL Account"
+      ],
+      "r": [
+        [
+          "AR Subsidiary Ledger",
+          "Accounts Receivable (control account)"
+        ],
+        [
+          "AP Subsidiary Ledger",
+          "Accounts Payable (control account)"
+        ],
+        [
+          "Inventory Sub-ledger",
+          "Inventory accounts"
+        ],
+        [
+          "Fixed Asset Register",
+          "PP&E accounts"
+        ],
+        [
+          "Payroll Register",
+          "Salaries expense & payroll liabilities"
+        ]
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: 5 cycles — Revenue-to-Cash, Expenditure, Production, HR/Payroll, Financing. 3-Way Match = PO + Receiving Report + Vendor Invoice (MUST match before payment). Key control: SEPARATE the functions of ordering, receiving, and paying (SOD). Payroll: HR hires (separate from payroll); supervisors approve time. Production: materials requisition authorises release from storeroom. All cycles feed the General Ledger."
+    }
+  ],
+  "6-1": [
+    {
+      "t": "h",
+      "v": "The Role of Technology in Modern Finance"
+    },
+    {
+      "t": "p",
+      "v": "Technology and data analytics have transformed management accounting. Finance professionals are now expected to extract insights from large datasets, use BI tools, understand ERP systems, and evaluate cybersecurity risks. The CMA exam tests these competencies under Section 6."
+    },
+    {
+      "t": "h",
+      "v": "Four Types of Analytics"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Type",
+        "Question It Answers",
+        "Complexity",
+        "Example"
+      ],
+      "r": [
+        [
+          "Descriptive",
+          "What happened?",
+          "Low",
+          "Sales report showing last quarter revenue"
+        ],
+        [
+          "Diagnostic",
+          "Why did it happen?",
+          "Medium",
+          "Drill-down analysis of why sales dropped"
+        ],
+        [
+          "Predictive",
+          "What will happen?",
+          "High",
+          "Forecasting next quarter sales using regression"
+        ],
+        [
+          "Prescriptive",
+          "What should we do?",
+          "Highest",
+          "Optimization model recommending pricing strategy"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Key Data Concepts"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Structured Data: Organized in rows/columns (databases, spreadsheets) — easy to analyze",
+        "Unstructured Data: No predefined format (emails, social media, videos) — requires special tools",
+        "Big Data: High Volume, Velocity, and Variety (the 3 Vs) — too large for traditional databases",
+        "Data Warehouse: Central repository of integrated data from multiple sources for analysis and reporting",
+        "Data Mining: Discovering patterns and relationships in large datasets using statistical tools"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "ERP Systems"
+    },
+    {
+      "t": "p",
+      "v": "Enterprise Resource Planning (ERP) systems integrate ALL business processes into one system — finance, HR, supply chain, manufacturing, and sales share a SINGLE database. Examples: SAP, Oracle, Microsoft Dynamics."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Benefits: Real-time data, eliminates data silos, improves accuracy, automates processes",
+        "Risks: High implementation cost, data migration challenges, requires extensive training",
+        "Internal Control consideration: ERP requires strong IT controls (access controls, audit trails)"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Cybersecurity & IT Controls"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Confidentiality: Data accessible only to authorized users",
+        "Integrity: Data is accurate and complete, not tampered with",
+        "Availability: Systems are accessible when needed (uptime)",
+        "Key controls: Access controls, encryption, firewalls, backup procedures, disaster recovery plans"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Emerging Technologies"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Robotic Process Automation (RPA): Software robots automating repetitive rule-based tasks (e.g., invoice processing, bank reconciliations)",
+        "Artificial Intelligence (AI) & Machine Learning: Detecting patterns, anomalies, and fraud in financial data",
+        "Blockchain: Distributed ledger providing transparent, tamper-proof transaction records",
+        "Cloud Computing: On-demand access to computing resources — reduces IT infrastructure costs"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: 4 types of analytics in order: Descriptive → Diagnostic → Predictive → Prescriptive (complexity increases). Big Data = 3 Vs (Volume, Velocity, Variety). ERP integrates ALL business functions into ONE database. RPA automates REPETITIVE tasks. Blockchain = immutable distributed ledger. CIA Triad for cybersecurity: Confidentiality, Integrity, Availability."
+    }
+  ],
+  "6-2": [
+    {
+      "t": "h",
+      "v": "What Is Data Governance?"
+    },
+    {
+      "t": "p",
+      "v": "Data governance is the overall MANAGEMENT of data availability, usability, integrity, and security. It ensures data is accurate, consistent, and trustworthy across the organization — critical for management decision-making."
+    },
+    {
+      "t": "h",
+      "v": "Data Quality Dimensions"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Dimension",
+        "Definition",
+        "Example of Failure"
+      ],
+      "r": [
+        [
+          "Accuracy",
+          "Data correctly represents reality",
+          "Customer address recorded incorrectly"
+        ],
+        [
+          "Completeness",
+          "All required data is present",
+          "Missing revenue figures in a report"
+        ],
+        [
+          "Consistency",
+          "Data is uniform across systems",
+          "Different totals in HR vs. payroll for same employees"
+        ],
+        [
+          "Timeliness",
+          "Data is available when needed",
+          "Month-end close takes 15 days instead of 3"
+        ],
+        [
+          "Validity",
+          "Data conforms to defined formats/rules",
+          "Date field contains text instead of a date"
+        ],
+        [
+          "Uniqueness",
+          "No duplicate records",
+          "Same vendor entered twice with slightly different names"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Master Data Management (MDM)"
+    },
+    {
+      "t": "p",
+      "v": "MDM creates a SINGLE AUTHORITATIVE SOURCE ('golden record') for key business data — customers, vendors, products, employees. This eliminates conflicting data across systems and ensures all departments work from the same information."
+    },
+    {
+      "t": "h",
+      "v": "Data Lifecycle Management"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Creation/Capture: Data enters the organization through transactions, forms, sensors",
+        "Storage: Databases, data warehouses, data lakes",
+        "Processing & Analysis: ETL (Extract, Transform, Load) processes prepare data for analysis",
+        "Archiving: Older data moved to lower-cost storage",
+        "Deletion/Retention: Data retained per legal/regulatory requirements, then securely deleted"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Data Stewardship"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Data Owner: Business executive accountable for data quality in their domain",
+        "Data Steward: Operational role — day-to-day management of data quality, definitions, and standards",
+        "Data Custodian: IT role — technical management, storage, and security of data",
+        "Chief Data Officer (CDO): Enterprise-level leadership of data strategy and governance"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: 6 data quality dimensions — Accuracy, Completeness, Consistency, Timeliness, Validity, Uniqueness. MDM = single golden record for master data. ETL = Extract, Transform, Load. Data Owner = accountable (business). Data Steward = operational quality management. Poor data quality = garbage in, garbage out."
+    }
+  ],
+  "6-3": [
+    {
+      "t": "h",
+      "v": "ERP Architecture & Modules"
+    },
+    {
+      "t": "p",
+      "v": "ERP systems are modular — organizations implement the modules they need. All modules share a SINGLE integrated database, enabling real-time data flow across the enterprise."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "ERP Module",
+        "Key Functions"
+      ],
+      "r": [
+        [
+          "Financial Accounting (FI)",
+          "General ledger, accounts payable, accounts receivable, asset accounting, financial statements"
+        ],
+        [
+          "Controlling (CO)",
+          "Cost centers, profit centers, internal orders, profitability analysis"
+        ],
+        [
+          "Sales & Distribution (SD)",
+          "Order management, pricing, billing, customer master data"
+        ],
+        [
+          "Materials Management (MM)",
+          "Procurement, inventory management, vendor master, goods receipt"
+        ],
+        [
+          "Human Resources (HR)",
+          "Payroll, time management, organizational management"
+        ],
+        [
+          "Production Planning (PP)",
+          "Manufacturing orders, capacity planning, bill of materials"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "ERP Implementation Approaches"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Approach",
+        "Description",
+        "Risk Level"
+      ],
+      "r": [
+        [
+          "Big Bang",
+          "ALL modules go live simultaneously on one date",
+          "Highest risk — entire company transitions at once"
+        ],
+        [
+          "Phased Rollout",
+          "Modules or business units go live in stages",
+          "Lower risk — problems are isolated"
+        ],
+        [
+          "Parallel Running",
+          "Old and new systems run simultaneously until new is proven",
+          "Safest — but costly to run two systems"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "ERP Benefits & Risks"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Benefits: Real-time data, eliminates silos, process automation, improved controls via audit trails and role-based access",
+        "Risks: High cost, change management resistance, data migration complexity, customization makes upgrades difficult, over-reliance risk"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "ERP & Internal Controls"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Segregation of duties configured via role-based access — one person cannot approve AND process payment",
+        "Automated three-way match: ERP matches PO, receiving report, and invoice automatically",
+        "Audit trails: All transactions logged with user ID and timestamp",
+        "Change management controls: Program changes require authorization and testing"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: ERP = ONE database for ALL modules. Big bang = highest risk. Parallel running = safest but most expensive. Key benefits: real-time data, no silos, automation. Key risks: cost, change management, data migration. ERP SOD = role-based access. Three-way match automatable in ERP."
+    }
+  ],
+  "6-4": [
+    {
+      "t": "h",
+      "v": "What Is Business Intelligence (BI)?"
+    },
+    {
+      "t": "p",
+      "v": "Business Intelligence converts RAW DATA into MEANINGFUL INSIGHTS for business decision-making. BI tools help managers monitor performance, identify trends, and make data-driven decisions."
+    },
+    {
+      "t": "h",
+      "v": "Data Storage Types"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Storage Type",
+        "Scope",
+        "Data Type",
+        "Users"
+      ],
+      "r": [
+        [
+          "Data Warehouse",
+          "Enterprise-wide — all business data",
+          "Structured, cleaned, integrated",
+          "All business users"
+        ],
+        [
+          "Data Mart",
+          "Subject-specific — one department",
+          "Subset of data warehouse",
+          "One department (e.g., Finance)"
+        ],
+        [
+          "Data Lake",
+          "Enterprise-wide — raw data",
+          "Structured AND unstructured, raw",
+          "Data scientists, advanced analysts"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "OLAP vs. OLTP"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "System",
+        "Purpose",
+        "Example"
+      ],
+      "r": [
+        [
+          "OLTP (Online Transaction Processing)",
+          "Recording day-to-day transactions with speed and integrity",
+          "ERP recording a sales order"
+        ],
+        [
+          "OLAP (Online Analytical Processing)",
+          "Analyzing large datasets for decision support",
+          "Finance analyzing 5 years of sales by region"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Key BI Concepts"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Dashboard: Visual display of KPIs — real-time performance monitoring",
+        "Drill-down: Go from summary to detail (total sales → by region → by product → by customer)",
+        "Slice and Dice: Analyzing data from different dimensions (time, geography, product line)",
+        "Balanced Scorecard: Links KPIs to strategic objectives across four perspectives: Financial, Customer, Internal Process, Learning & Growth"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Data Warehouse = structured, clean — for BI reporting. Data Lake = raw, unstructured + structured — for data scientists. Data Mart = subset of DW for one department. OLTP = transactions (ERP). OLAP = analysis (BI). Dashboard = visual KPI monitoring. Drill-down = summary to detail. BSC four perspectives: Financial, Customer, Internal Process, Learning & Growth."
+    }
+  ],
+  "6-5": [
+    {
+      "t": "h",
+      "v": "Regression Analysis for Cost Estimation"
+    },
+    {
+      "t": "p",
+      "v": "Regression analysis identifies relationships between variables. In management accounting, it is used for COST ESTIMATION — finding the relationship between costs and cost drivers."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Type",
+        "Formula",
+        "Use Case"
+      ],
+      "r": [
+        [
+          "Simple Linear Regression",
+          "Y = a + bX",
+          "Total cost = Fixed cost + (Variable rate × Activity)"
+        ],
+        [
+          "Multiple Regression",
+          "Y = a + b₁X₁ + b₂X₂ + ...",
+          "Total cost driven by multiple cost drivers"
+        ],
+        [
+          "R² (Coefficient of Determination)",
+          "0 to 1 — % of variation in Y explained by X",
+          "R²=0.85 means 85% of cost variation explained by the driver"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Time Series Analysis"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Trend: Long-term upward or downward movement",
+        "Seasonal: Predictable patterns within a year (retail peaks in Q4)",
+        "Cyclical: Multi-year economic cycles",
+        "Random/Irregular: Unpredictable one-time events"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Sampling Methods"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Random: Every item has equal probability — most statistically valid",
+        "Systematic: Every nth item selected",
+        "Stratified: Population divided into groups; random sample from each — ensures subgroups represented",
+        "Cluster: Randomly select entire clusters — efficient for geographically dispersed populations"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Hypothesis Testing"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Null Hypothesis (H₀): No difference or relationship exists",
+        "p-value: If p < 0.05, reject H₀ (result statistically significant at 95% confidence)",
+        "Type I Error: Rejecting a TRUE null hypothesis (false positive)",
+        "Type II Error: Failing to reject a FALSE null hypothesis (false negative)"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Data Visualization"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Chart Type",
+        "Best Used For"
+      ],
+      "r": [
+        [
+          "Bar/Column",
+          "Comparing categories"
+        ],
+        [
+          "Line Chart",
+          "Trends over time"
+        ],
+        [
+          "Pie Chart",
+          "Parts of a whole (max 5-6 slices)"
+        ],
+        [
+          "Scatter Plot",
+          "Correlation between two variables"
+        ],
+        [
+          "Heat Map",
+          "Patterns across two dimensions"
+        ]
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Y = a + bX. 'a' = fixed cost. 'b' = variable cost per unit. R² closer to 1 = better fit. Stratified = ensures subgroups represented. Type I = false positive. Type II = false negative. Line chart = trends. Scatter plot = correlation. Time series: Trend + Seasonal + Cyclical + Random."
+    }
+  ],
+  "6-6": [
+    {
+      "t": "h",
+      "v": "Common Cyber Threats"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Threat",
+        "Description"
+      ],
+      "r": [
+        [
+          "Phishing",
+          "Deceptive emails tricking users into revealing credentials or authorizing wire transfers"
+        ],
+        [
+          "Ransomware",
+          "Malware that encrypts files and demands ransom for the key"
+        ],
+        [
+          "Social Engineering",
+          "Manipulating PEOPLE into divulging confidential information"
+        ],
+        [
+          "SQL Injection",
+          "Inserting malicious code into database queries to access unauthorized data"
+        ],
+        [
+          "Man-in-the-Middle",
+          "Intercepting communications between two parties"
+        ],
+        [
+          "Denial of Service (DoS)",
+          "Overwhelming a system with traffic until it crashes"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Cybersecurity Controls"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Preventive: Firewalls, multi-factor authentication (MFA), encryption, access controls, security awareness training",
+        "Detective: Intrusion detection systems (IDS), log monitoring, SIEM, vulnerability scanning",
+        "Corrective: Incident response plan, disaster recovery, patch management, system restoration from backups"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Encryption Types"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Symmetric: Same key for encryption AND decryption — fast but key distribution is a challenge",
+        "Asymmetric (Public Key): Public key encrypts, private key decrypts — used for HTTPS/TLS",
+        "Hash Functions: One-way transformation — verifies data integrity (SHA-256)"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Cybersecurity Frameworks"
+    },
+    {
+      "t": "b",
+      "v": [
+        "NIST Cybersecurity Framework: Identify, Protect, Detect, Respond, Recover",
+        "ISO 27001: International standard for information security management systems",
+        "SOC 2 Reports: Auditor report on service organization controls — Security, Availability, Processing Integrity, Confidentiality, Privacy"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Phishing = fake emails to steal credentials. Ransomware = encrypts files, demands payment. MFA = best preventive control. Asymmetric encryption: PUBLIC key encrypts, PRIVATE key decrypts. Hash = one-way, verifies INTEGRITY. NIST CSF: Identify, Protect, Detect, Respond, Recover. SOC 2 = 5 Trust Services Criteria."
+    }
+  ],
+  "6-7": [
+    {
+      "t": "h",
+      "v": "Cloud Service Models"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Model",
+        "What's Provided",
+        "Customer Manages",
+        "Examples"
+      ],
+      "r": [
+        [
+          "IaaS",
+          "Virtual servers, storage, networking",
+          "OS, applications, data",
+          "AWS EC2, Azure VMs"
+        ],
+        [
+          "PaaS",
+          "Development platform, runtime environment",
+          "Applications and data only",
+          "Heroku, Google App Engine"
+        ],
+        [
+          "SaaS",
+          "Complete applications over the internet",
+          "Just user configuration",
+          "Microsoft 365, Salesforce, SAP Cloud"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Cloud Deployment Models"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Model",
+        "Description"
+      ],
+      "r": [
+        [
+          "Public Cloud",
+          "Resources shared among multiple organizations — cost-efficient, scalable"
+        ],
+        [
+          "Private Cloud",
+          "Dedicated infrastructure for one organization — most secure, for sensitive data"
+        ],
+        [
+          "Hybrid Cloud",
+          "Mix of public and private — flexibility + security"
+        ],
+        [
+          "Community Cloud",
+          "Shared by organizations with common requirements (e.g., government)"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Cloud Benefits & Risks for Finance"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Benefits: Converts CapEx to OpEx, scalability, accessibility from anywhere, built-in disaster recovery, automatic updates",
+        "Risks: Data security (encryption in transit and at rest required), compliance/GDPR data residency, vendor lock-in, shared responsibility model"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Shared Responsibility Model"
+    },
+    {
+      "t": "p",
+      "v": "Cloud provider secures the INFRASTRUCTURE (physical data centers, hardware, networking). The CUSTOMER secures their DATA, access controls, application configurations, and compliance."
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: IaaS = virtual servers (you manage OS up). PaaS = development platform (you manage apps). SaaS = complete software (you manage config only). Cloud converts CapEx to OpEx. Shared responsibility: provider secures infrastructure, customer secures DATA. GDPR = data residency risk. Private cloud = most secure."
+    }
+  ],
+  "6-8": [
+    {
+      "t": "h",
+      "v": "What Is Blockchain?"
+    },
+    {
+      "t": "p",
+      "v": "Blockchain is a DISTRIBUTED, DECENTRALIZED LEDGER recording transactions across many computers so records CANNOT BE ALTERED retroactively. Each block contains data, a timestamp, and a cryptographic hash of the previous block."
+    },
+    {
+      "t": "h",
+      "v": "Key Blockchain Characteristics"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Decentralized: No single controlling authority — copies held by many nodes",
+        "Immutable: Once recorded, data cannot be changed without altering all subsequent blocks",
+        "Transparent: All participants can view the ledger (public blockchains)",
+        "Consensus Mechanism: New blocks added only when the network agrees (Proof of Work, Proof of Stake)",
+        "Cryptographic Security: Each block linked to the previous via hash — tampering is computationally infeasible"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Types of Blockchain"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Type",
+        "Access",
+        "Finance Use"
+      ],
+      "r": [
+        [
+          "Public",
+          "Open to anyone (Bitcoin, Ethereum)",
+          "Cryptocurrency, NFTs"
+        ],
+        [
+          "Private (Permissioned)",
+          "Restricted to invited participants (Hyperledger)",
+          "Supply chain finance, interbank settlements"
+        ],
+        [
+          "Consortium",
+          "Governed by a group of organizations (R3 Corda)",
+          "Trade finance, insurance"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Smart Contracts & Finance Applications"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Smart Contracts: Self-executing programs that automatically execute terms when conditions are met — no intermediary",
+        "Finance applications: Faster cross-border payments, supply chain tracking, trade finance automation, real-time immutable audit trails, eliminating reconciliation between counterparties"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Cryptocurrency Accounting — Current US GAAP (ASU 2023-08, Effective 2025)"
+    },
+    {
+      "t": "p",
+      "v": "FASB ASU 2023-08 took effect for fiscal years beginning after December 15, 2024 (i.e., January 2025 for calendar-year companies). This standard fundamentally changed how qualifying crypto assets are measured."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Treatment",
+        "Pre-ASU 2023-08 (Old)",
+        "Post-ASU 2023-08 (Current GAAP)"
+      ],
+      "r": [
+        [
+          "Classification",
+          "Indefinite-lived intangible asset (ASC 350)",
+          "Still intangible but measured at FAIR VALUE"
+        ],
+        [
+          "Initial measurement",
+          "Cost (purchase price)",
+          "Fair value at acquisition"
+        ],
+        [
+          "Subsequent measurement",
+          "Cost less impairment — no write-up when FV recovers",
+          "Fair value each reporting period — gains AND losses recognized"
+        ],
+        [
+          "Income statement impact",
+          "Impairment losses only (one-direction)",
+          "Unrealized gains AND losses recognized each period through net income"
+        ],
+        [
+          "Which assets qualify",
+          "N/A (all crypto was intangible)",
+          "Fungible crypto traded on active markets with no contractual rights (e.g., Bitcoin, Ether) — non-qualifying crypto still uses old intangible model"
+        ]
+      ]
+    },
+    {
+      "t": "b",
+      "v": [
+        "KEY POINT: Under current GAAP (post-ASU 2023-08), qualifying crypto is measured at FAIR VALUE through net income — both increases AND decreases are recognized each period",
+        "Non-qualifying crypto assets (those not fungible or not traded on active markets) continue under old ASC 350 intangible model",
+        "Disclosure: entities must disclose crypto asset holdings, cost basis, fair value, and restrictions",
+        "This is a SIGNIFICANT change — financial statements of crypto-holding companies now show volatile fair value gains/losses each quarter"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Blockchain = IMMUTABLE, DECENTRALIZED ledger. Public = open (Bitcoin). Private = permissioned (enterprise finance). Smart contracts = self-executing code. Key accounting benefit = eliminates reconciliation. Cross-border payments: faster + cheaper than SWIFT. Consensus = network agreement to add blocks. CRYPTO ACCOUNTING (ASU 2023-08, effective 2025): qualifying crypto = FAIR VALUE through net income each period. Old treatment (intangible, cost, no write-up) was pre-2025. Current GAAP = recognize both unrealized gains AND losses."
+    }
+  ],
+  "6-9": [
+    {
+      "t": "h",
+      "v": "Types of Machine Learning"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Type",
+        "How It Learns",
+        "Finance Application"
+      ],
+      "r": [
+        [
+          "Supervised Learning",
+          "Learns from LABELED training data — told correct answers",
+          "Credit scoring, fraud detection (label: fraud/not fraud)"
+        ],
+        [
+          "Unsupervised Learning",
+          "Finds PATTERNS in unlabeled data",
+          "Customer segmentation, anomaly detection"
+        ],
+        [
+          "Reinforcement Learning",
+          "Learns through TRIAL AND ERROR with rewards/penalties",
+          "Algorithmic trading, dynamic pricing"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "AI Applications in Finance"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Fraud Detection: ML models analyze transaction attributes in real-time to flag anomalies",
+        "Credit Risk Assessment: ML scores applications using hundreds of variables",
+        "Financial Forecasting: AI analyzes historical patterns + external data for better forecasts",
+        "Accounts Payable Automation: AI reads invoices (OCR + NLP), matches to POs, routes for approval",
+        "Audit Analytics: AI reviews 100% of transactions to identify control failures",
+        "Natural Language Processing (NLP): Reads contracts, financial filings, news for risk signals"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "AI Risks & Limitations"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Bias: Models trained on biased historical data produce biased outputs",
+        "Black Box Problem: Complex models cannot explain their decisions — regulatory challenge",
+        "Data Quality: AI is only as good as its training data — garbage in, garbage out",
+        "Overfitting: Model performs well on training data but poorly on new data",
+        "Model Drift: As the real world changes, model accuracy degrades — requires retraining"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Generative AI in Finance"
+    },
+    {
+      "t": "p",
+      "v": "Generative AI (Gen AI) uses large language models (LLMs) to generate text, code, and analysis from prompts. Unlike traditional ML (which predicts or classifies), Gen AI creates new content. By 2025-2026 it is actively deployed across finance functions."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Finance Use Case",
+        "How Gen AI Helps",
+        "Key Governance Requirement"
+      ],
+      "r": [
+        [
+          "Management commentary",
+          "Auto-draft variance analysis narratives from structured data — analyst reviews and approves",
+          "Human review before any external publication"
+        ],
+        [
+          "Contract analysis",
+          "Extract payment terms, obligations, and risk clauses from thousands of contracts",
+          "Verify extracted data — LLMs can miss nuances or hallucinate terms"
+        ],
+        [
+          "Board/investor reports",
+          "Draft first versions of financial presentations and summaries",
+          "CFO sign-off; material facts must be verified against source data"
+        ],
+        [
+          "Regulatory filing review",
+          "Scan 10-Ks and 10-Qs for specific disclosures or changes from prior period",
+          "Auditor cannot rely solely on AI output — must perform independent procedures"
+        ],
+        [
+          "FP&A scenario narratives",
+          "Generate written explanations of forecast assumptions and scenario outcomes",
+          "Model assumptions must be documented and reviewed by finance team"
+        ],
+        [
+          "Audit support",
+          "Draft audit evidence summaries; flag anomalies in large datasets for auditor review",
+          "Auditor remains responsible for professional judgment and conclusions"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Gen AI Risks Specific to Finance"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Hallucination: LLMs confidently state incorrect facts — financial figures or regulatory citations may be fabricated. Always verify AI-generated numbers against source systems",
+        "Accountability gap: If AI drafts a financial disclosure with an error, management remains legally accountable (SOX 302/906). AI does not shift legal responsibility",
+        "Data privacy: Inputting non-public financial data (unreleased earnings, M&A details) into public LLMs may constitute material non-public information (MNPI) disclosure — use private/enterprise deployments",
+        "Model transparency: LLMs cannot explain WHY they produced a specific output — creates challenges for audit trail and regulatory review",
+        "Overreliance: Finance professionals may stop critically evaluating outputs — institutional knowledge atrophies"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Supervised = labeled data. Unsupervised = finds patterns (anomaly detection). Reinforcement = trial and error. NLP = reads text (contracts, filings). Black box = cannot explain decisions. Overfitting = good on training data, poor on new data. Model drift = accuracy degrades as world changes. Gen AI (LLMs) = generates text/analysis from prompts — NOT a replacement for judgment. Key Gen AI risks: hallucination (fabricates facts), accountability gap (management still liable), MNPI risk (don't input confidential data into public AI). Always require human review of AI-generated financial content."
+    }
+  ],
+  "6-10": [
+    {
+      "t": "h",
+      "v": "What Is RPA?"
+    },
+    {
+      "t": "p",
+      "v": "RPA uses SOFTWARE ROBOTS to automate REPETITIVE, RULE-BASED, high-volume tasks by mimicking human interactions with digital systems — clicking, reading, typing, copying data — without requiring changes to underlying systems."
+    },
+    {
+      "t": "h",
+      "v": "Finance & Accounting RPA Use Cases"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Accounts Payable: Extracting invoice data, matching to POs, routing for approval, posting to ERP",
+        "Accounts Receivable: Sending payment reminders, reconciling payments, applying cash to invoices",
+        "Month-End Close: Pulling data from multiple systems, preparing journal entries, generating reports",
+        "Bank Reconciliation: Downloading bank statements, matching transactions, flagging exceptions",
+        "Financial Reporting: Aggregating data from multiple sources, formatting reports, distributing to stakeholders"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "RPA Benefits & Risks"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Benefits: Works 24/7, eliminates data entry errors, processes in seconds, scales instantly for peak periods, complete audit trail of every bot action",
+        "Risks: Bots break when underlying systems change (maintenance burden), security of bot credentials, exception handling requires human escalation, automating flawed processes amplifies errors"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "RPA vs. AI"
+    },
+    {
+      "t": "p",
+      "v": "RPA handles STRUCTURED, RULE-BASED tasks. AI handles UNSTRUCTURED data and JUDGMENT-BASED tasks. Together (intelligent automation = RPA + AI), they can handle invoice reading (AI extracts unstructured data) + processing (RPA handles rule-based posting)."
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: RPA = software robots mimicking human UI actions. Best for: repetitive, rule-based, structured, high-volume. NOT suitable for: judgment, exceptions, unstructured data. Key finance uses: AP/AR, bank reconciliation, month-end close. Key risk: bots break when UI changes. RPA works on TOP of existing systems — no API integration needed. Complete audit trails."
+    }
+  ],
+  "6-11": [
+    {
+      "t": "h",
+      "v": "IT Infrastructure Overview"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Model",
+        "Description",
+        "Finance Context"
+      ],
+      "r": [
+        [
+          "On-Premise",
+          "Servers at the company's own facilities",
+          "Full control, high maintenance, capital investment"
+        ],
+        [
+          "Hosted/Co-location",
+          "Company owns hardware at third-party data center",
+          "Reduced maintenance, shared physical security"
+        ],
+        [
+          "Cloud",
+          "Provider owns and manages hardware; company rents capacity",
+          "OpEx model, scalable, provider manages infrastructure"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Network Security Components"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Firewall: Filters incoming and outgoing network traffic based on security rules",
+        "VPN (Virtual Private Network): Encrypted tunnel over internet for secure remote access",
+        "DMZ: Network segment between internet and internal network — hosts public-facing servers",
+        "IDS/IPS: Intrusion Detection/Prevention System — monitors traffic for suspicious activity"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Database Concepts"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Relational Database (RDBMS): Structured tables with relationships — SQL language (Oracle, SQL Server)",
+        "NoSQL: Flexible schema for unstructured/semi-structured data (MongoDB, Cassandra)",
+        "ACID Properties: Atomicity (all-or-nothing), Consistency (valid state after each transaction), Isolation (concurrent transactions don't interfere), Durability (committed transactions permanently saved)"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Disaster Recovery"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Concept",
+        "Definition"
+      ],
+      "r": [
+        [
+          "RTO (Recovery Time Objective)",
+          "Maximum acceptable TIME to restore systems after failure"
+        ],
+        [
+          "RPO (Recovery Point Objective)",
+          "Maximum acceptable DATA LOSS — how old can restored data be?"
+        ],
+        [
+          "Hot Site",
+          "Fully operational backup — failover in minutes (highest cost)"
+        ],
+        [
+          "Warm Site",
+          "Partially configured — hours to activate (moderate cost)"
+        ],
+        [
+          "Cold Site",
+          "Empty facility — days to activate (lowest cost)"
+        ]
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: RTO = time to restore. RPO = acceptable data loss. Hot site = fastest (highest cost). Cold site = slowest (lowest cost). Firewall = network traffic filter. VPN = encrypted remote access. ACID = Atomicity, Consistency, Isolation, Durability. Relational DB = structured, SQL. NoSQL = unstructured/flexible."
+    }
+  ],
+  "6-12": [
+    {
+      "t": "h",
+      "v": "SDLC Phases"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Phase",
+        "Key Activities",
+        "Control Focus"
+      ],
+      "r": [
+        [
+          "1. Planning",
+          "Scope, feasibility, cost-benefit analysis",
+          "Secure authorization and budget approval"
+        ],
+        [
+          "2. Analysis",
+          "Gather user requirements",
+          "Stakeholder sign-off on requirements"
+        ],
+        [
+          "3. Design",
+          "System architecture, security design, UI design",
+          "Build security and controls INTO the design"
+        ],
+        [
+          "4. Development",
+          "Programming, unit testing",
+          "Segregate programmers from production"
+        ],
+        [
+          "5. Testing",
+          "Integration testing, user acceptance testing (UAT)",
+          "Independent testing; users confirm requirements"
+        ],
+        [
+          "6. Implementation",
+          "Deploy to production, data migration, training",
+          "Controlled go-live; rollback plan"
+        ],
+        [
+          "7. Maintenance",
+          "Bug fixes, patches, enhancements",
+          "Change management controls"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Agile vs. Waterfall"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Methodology",
+        "Approach",
+        "Best For"
+      ],
+      "r": [
+        [
+          "Waterfall",
+          "Linear, sequential — complete each phase before next",
+          "Well-defined, stable requirements (compliance systems)"
+        ],
+        [
+          "Agile",
+          "Iterative sprints — working software delivered frequently",
+          "Complex, evolving requirements (analytics dashboards)"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Change Management Controls"
+    },
+    {
+      "t": "b",
+      "v": [
+        "All changes to production must be AUTHORIZED — no unauthorized modifications",
+        "Testing required: Unit test → Integration test → UAT before production",
+        "SOD: Programmers do NOT have access to production — separate deployment team",
+        "Documentation: What changed, why, who approved, when deployed",
+        "Emergency changes: Fast-track process with after-the-fact documentation — still requires authorization",
+        "Rollback plan: Ability to reverse changes if problems emerge"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "DevSecOps — Security Embedded in the CI/CD Pipeline"
+    },
+    {
+      "t": "p",
+      "v": "DevSecOps is the modern evolution of 'security by design' — it operationalizes security by embedding automated security checks DIRECTLY INTO the CI/CD (Continuous Integration / Continuous Deployment) pipeline, so every code commit is automatically tested for security vulnerabilities without slowing development."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Stage in Pipeline",
+        "DevSecOps Security Activity",
+        "Example Tool / Check"
+      ],
+      "r": [
+        [
+          "Code commit (every push)",
+          "SAST — Static Application Security Testing scans source code for vulnerabilities before it builds",
+          "Checkmarx, SonarQube detect SQL injection patterns in code"
+        ],
+        [
+          "Build",
+          "Dependency scanning — checks third-party libraries for known vulnerabilities (CVEs)",
+          "OWASP Dependency-Check flags outdated libraries with known exploits"
+        ],
+        [
+          "Test environment",
+          "DAST — Dynamic Application Security Testing attacks the running application to find runtime vulnerabilities",
+          "OWASP ZAP, Burp Suite test the running app for input validation failures"
+        ],
+        [
+          "Infrastructure as Code (IaC)",
+          "IaC security scanning checks cloud configuration files for misconfigurations before deployment",
+          "Checkov flags AWS S3 buckets configured for public access"
+        ],
+        [
+          "Production deploy",
+          "Runtime security monitoring — detect anomalies in the live application",
+          "RASP (Runtime Application Self-Protection) blocks attacks in real time"
+        ]
+      ]
+    },
+    {
+      "t": "b",
+      "v": [
+        "Key principle: 'Shift left' — move security testing EARLIER in the pipeline (to the left on the timeline), when defects are cheapest to fix",
+        "DevSecOps vs Security by Design: Security by Design = an SDLC philosophy (plan security in the design phase). DevSecOps = the OPERATIONAL IMPLEMENTATION using automation — security gates that cannot be bypassed in the deployment pipeline",
+        "Finance relevance: DevSecOps is particularly important for finance systems where a vulnerability in a payment API or ERP interface could be exploited to divert funds or exfiltrate customer data",
+        "SOX compliance: automated security gates in CI/CD pipelines provide evidence of IT change controls — every commit is tested and the results are logged for audit"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Security controls must be built in during DESIGN (security by design). DevSecOps = operational implementation — automated security gates (SAST, DAST, dependency scanning) in the CI/CD pipeline so every code change is security-tested before deployment. 'Shift left' = test security earlier (cheaper to fix). Programmers must NOT have access to PRODUCTION (SOD). UAT = users confirm system meets requirements. Waterfall = sequential. Agile = iterative sprints. All changes authorized + tested + documented. Emergency changes = still require authorization."
+    }
+  ],
+  "6-13": [
+    {
+      "t": "h",
+      "v": "What Is Digital Finance Transformation?"
+    },
+    {
+      "t": "p",
+      "v": "Digital finance transformation integrates DIGITAL TECHNOLOGIES into the finance function to fundamentally change how finance teams operate — moving from backward-looking scorekeeping to forward-looking strategic partnership."
+    },
+    {
+      "t": "h",
+      "v": "The Finance Transformation Journey"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Stage",
+        "Finance Capability",
+        "Technology"
+      ],
+      "r": [
+        [
+          "Foundational",
+          "Basic recording and reporting",
+          "ERP, spreadsheets"
+        ],
+        [
+          "Operational Excellence",
+          "Efficient, accurate close process",
+          "Advanced ERP, workflow automation"
+        ],
+        [
+          "Analytics-Driven",
+          "Insights for decision support",
+          "BI tools, data warehouse, RPA"
+        ],
+        [
+          "Strategic Partner",
+          "Forward-looking planning and business advisory",
+          "AI, predictive analytics, integrated planning"
+        ],
+        [
+          "Digital Native",
+          "Real-time finance, autonomous processes",
+          "Cloud-native ERP, AI/ML, blockchain, IoT"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Key Digital Finance Capabilities"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Continuous Accounting: Automated reconciliations and journal entries throughout the month — eliminate month-end crunch",
+        "Integrated Business Planning (IBP): Finance, operations, and HR planning synchronized on a single real-time platform",
+        "Finance Shared Services / GBS: Centralizing transactional finance with automation in low-cost centers",
+        "Real-Time Reporting: Management dashboards updated continuously"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "The Evolving Finance Role & Change Management"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Finance spends less time on data collection (automated) and more time on analysis, business partnering, and strategic advice",
+        "New skills required: data literacy, analytics tools, storytelling with data",
+        "Biggest barrier to transformation: PEOPLE — resistance to change, lack of skills — not technology",
+        "Leadership sponsorship critical: CFO must champion the transformation"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Transformation moves finance from scorekeeping to strategic partnership. Continuous accounting = automated reconciliations throughout the month (not just month-end). IBP = integrated planning across finance, ops, HR. Finance new role = data-driven trusted advisor. Biggest barrier = PEOPLE resistance to change, not technology."
+    }
+  ],
+  "6-14": [
+    {
+      "t": "h",
+      "v": "Cyber Risk Management Process"
+    },
+    {
+      "t": "b",
+      "v": [
+        "1. IDENTIFY: Catalog all digital assets — classify by sensitivity and criticality",
+        "2. ASSESS: Evaluate threats and vulnerabilities. Risk = Likelihood × Impact",
+        "3. RESPOND: Implement controls aligned with risk appetite (accept, mitigate, transfer, avoid)",
+        "4. MONITOR: Continuous monitoring, vulnerability scanning, penetration testing",
+        "5. RECOVER: Incident response plan, communication plan, forensics, restoration"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Key Cybersecurity Regulations for Finance"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Regulation",
+        "Key Requirement",
+        "Penalty"
+      ],
+      "r": [
+        [
+          "SOX Section 404",
+          "IT controls that support ICFR — cybersecurity failures = potential material weakness",
+          "Restatement, SOX disclosure"
+        ],
+        [
+          "GDPR (EU)",
+          "Breach notification within 72 hours; data protection requirements",
+          "Up to 4% of global annual revenue"
+        ],
+        [
+          "PCI DSS",
+          "12 security requirements for cardholder data",
+          "Card network fines; loss of card processing"
+        ],
+        [
+          "SEC Rules (2023)",
+          "Disclose material cybersecurity incidents within 4 business days",
+          "SEC enforcement action"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Penetration Testing vs. Vulnerability Assessment"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Vulnerability Assessment: Automated scanning to IDENTIFY known weaknesses — like checking if doors are unlocked",
+        "Penetration Testing: Ethical hackers EXPLOIT vulnerabilities — actually try to break in to test real defenses",
+        "Bug Bounty Programs: Companies pay external researchers to find and report vulnerabilities",
+        "Red Team / Blue Team: Red team attacks; blue team defends — tests detection and response"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Cyber risk = Likelihood × Impact. Cyber insurance = transfers residual risk. GDPR breach notification = 72 hours. SEC rules = material incident disclosure in 4 business days. SOX 404 = IT controls part of ICFR. PCI DSS = credit card data. Pen test = ethical hackers EXPLOIT. Vulnerability assessment = identifies weaknesses only."
+    }
+  ],
+  "6-15": [
+    {
+      "t": "h",
+      "v": "Key Data Privacy Regulations"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Regulation",
+        "Jurisdiction",
+        "Key Requirements",
+        "Max Penalty"
+      ],
+      "r": [
+        [
+          "GDPR",
+          "European Union",
+          "Lawful basis, data subject rights, 72-hr breach notification, data minimization",
+          "4% of global revenue or €20M"
+        ],
+        [
+          "CCPA/CPRA",
+          "California, USA",
+          "Right to know, right to delete, right to opt-out of data sale",
+          "$7,500 per intentional violation"
+        ],
+        [
+          "GLBA",
+          "US (financial institutions)",
+          "Privacy notices, safeguards rule — protect non-public personal financial information",
+          "Criminal penalties"
+        ],
+        [
+          "PCI DSS",
+          "Global (card payments)",
+          "12 security requirements for cardholder data",
+          "Card network fines; loss of card processing"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Data Subject Rights (GDPR)"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Right to Access: Request a copy of their personal data",
+        "Right to Rectification: Correct inaccurate data",
+        "Right to Erasure ('Right to be Forgotten'): Request deletion — with conditions",
+        "Right to Data Portability: Receive data in machine-readable format",
+        "Right to Object: Object to processing for direct marketing",
+        "Right to Restriction: Limit processing while a dispute is resolved"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Privacy by Design & Data Retention"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Privacy by Design: Build privacy protections INTO systems and processes from the start — mandated by GDPR Art. 25",
+        "Data Minimization: Collect only what you need for the stated purpose",
+        "Storage Limitation: Keep data only as long as necessary",
+        "Financial records retention: SEC requires 7 years (public companies); IRS requires 3-7 years for tax records",
+        "Secure deletion: Physical destruction or cryptographic erasure"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: GDPR = EU. Right to be Forgotten = Right to Erasure. CCPA = California. GLBA = US financial institutions. PCI DSS = 12 requirements, credit card data. Privacy by Design = build privacy in from the START. Data minimization = collect only what is needed. Financial records = 7 years (SEC). GDPR max fine = 4% global revenue."
+    }
+  ],
+  "6-16": [
+    {
+      "t": "h",
+      "v": "Internet of Things (IoT) in Finance"
+    },
+    {
+      "t": "b",
+      "v": [
+        "IoT = physical devices (sensors, RFID tags) transmitting real-time data",
+        "Finance applications: real-time inventory tracking (RFID), asset tracking, usage-based billing, predictive maintenance cost planning",
+        "Accounting impact: near-real-time inventory valuation; continuous asset monitoring",
+        "Risk: IoT devices expand the cybersecurity attack surface — each device is a potential entry point"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Digital Twins"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Digital twin = a virtual REAL-TIME REPLICA of a physical asset, process, or system updated from sensor data",
+        "Finance applications: simulate financial impact of operational changes BEFORE implementation — test 'what-if' scenarios",
+        "Manufacturing: predict equipment failures — reduce maintenance costs and unplanned downtime"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Quantum Computing"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Uses quantum mechanics (superposition, entanglement) to solve complex problems exponentially faster",
+        "Finance potential: portfolio optimization, risk modeling, fraud detection",
+        "Critical risk: Quantum could BREAK current encryption — 'Q-Day' preparation requires migrating to quantum-resistant algorithms (NIST post-quantum cryptography)"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "5G & Edge Computing"
+    },
+    {
+      "t": "b",
+      "v": [
+        "5G: ultra-fast wireless connectivity enabling real-time data from IoT devices and remote locations",
+        "Edge Computing: data processed CLOSE TO WHERE IT IS GENERATED (at the device) — reduces latency and bandwidth vs. sending everything to a central cloud",
+        "Finance impact: real-time transaction processing at remote locations, faster fraud detection"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Gartner Hype Cycle"
+    },
+    {
+      "t": "p",
+      "v": "Innovation Trigger → Peak of Inflated Expectations → Trough of Disillusionment → Slope of Enlightenment → Plateau of Productivity. Finance teams should be cautious of technologies at the Peak — wait for the Plateau before major investment."
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: IoT = physical devices + real-time data. RFID = asset/inventory tracking. Digital twin = virtual replica updated in real-time. Quantum = breaks current encryption (Q-Day). Prepare with post-quantum cryptography. Edge computing = process data AT THE SOURCE, reduces latency. 5G enables real-time IoT. Hype Cycle: Peak → Trough → Plateau."
+    }
+  ],
+  "6-17": [
+    {
+      "t": "h",
+      "v": "IT Audit Objectives"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Reliability: Do IT systems produce accurate, complete financial data?",
+        "Security: Are systems and data protected from unauthorized access?",
+        "Integrity: Is data processed completely and accurately?",
+        "Availability: Are systems accessible when needed?",
+        "Compliance: Do IT systems comply with SOX, GDPR, and other regulations?"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "SOC Reports"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Report",
+        "Purpose",
+        "Users"
+      ],
+      "r": [
+        [
+          "SOC 1",
+          "Controls relevant to USER ENTITIES' financial reporting (ICFR)",
+          "External auditors of companies using the service"
+        ],
+        [
+          "SOC 2",
+          "Controls over Security, Availability, Processing Integrity, Confidentiality, Privacy (5 Trust Services Criteria)",
+          "Management, regulators, business partners"
+        ],
+        [
+          "SOC 3",
+          "Same as SOC 2 but PUBLIC — general use",
+          "Marketing, general public"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Computer-Assisted Audit Techniques (CAATs)"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Generalized Audit Software (GAS): IDEA, ACL/Galvanize — analyzes 100% of transactions to find anomalies, duplicates, gaps in sequences",
+        "Test Data: Input specially designed test transactions to verify controls respond correctly",
+        "Parallel Simulation: Re-process actual transactions using auditor's own program — compare to system output",
+        "Embedded Audit Modules: Audit code built INTO the production system — monitors transactions continuously"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: SOC 1 = financial reporting controls. SOC 2 = 5 Trust Services (Security, Availability, Processing Integrity, Confidentiality, Privacy). SOC 3 = public version of SOC 2. GAS (IDEA, ACL) = analyzes 100% of data. Test data = tests controls. Embedded audit module = continuous monitoring. IT audit evaluates: reliability, security, integrity, availability, compliance."
+    }
+  ],
+  "6-18": [
+    {
+      "t": "h",
+      "v": "IT Governance Frameworks"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Framework",
+        "Purpose"
+      ],
+      "r": [
+        [
+          "COBIT (Control Objectives for IT)",
+          "IT governance — aligns IT with business goals; 40 objectives across governance and management (ISACA)"
+        ],
+        [
+          "ITIL (IT Infrastructure Library)",
+          "IT service management best practices — Service Strategy, Design, Transition, Operation, Improvement"
+        ],
+        [
+          "ISO 38500",
+          "International standard for IT governance by governing bodies — six principles"
+        ],
+        [
+          "TOGAF",
+          "Enterprise architecture framework — aligning IT and business architecture"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Technology Investment Analysis"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Total Cost of Ownership (TCO): ALL costs over technology's life — purchase, implementation, training, maintenance, support, replacement",
+        "ROI: (Benefits − Costs) / Costs × 100%. Benefits include cost savings, productivity gains, risk reduction",
+        "Payback Period: Time to recover the initial investment from net benefits",
+        "NPV: Present value of all future benefits minus costs — preferred for multi-year investments (accounts for time value of money)"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Build vs. Buy vs. Cloud"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Option",
+        "When to Choose",
+        "Key Tradeoff"
+      ],
+      "r": [
+        [
+          "Build (Custom)",
+          "Unique competitive requirement not available off-shelf",
+          "Perfect fit vs. high cost and long timeline"
+        ],
+        [
+          "Buy (Off-the-Shelf)",
+          "Standard business processes (HR, accounting)",
+          "Lower cost, faster implementation vs. may not fit perfectly"
+        ],
+        [
+          "Cloud/SaaS",
+          "Standard processes + low maintenance desired",
+          "OpEx model, scalable vs. data security and customization limits"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Innovation Management"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Sustaining Innovation: Improving existing products/processes — incremental, lower risk",
+        "Disruptive Innovation (Christensen): New technology that transforms an industry — initially inferior but eventually displaces incumbents (cloud vs. on-premise ERP)",
+        "MVP (Minimum Viable Product): Launch basic version quickly, get user feedback, iterate — reduces wasted development effort"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: COBIT = IT governance (aligns IT with business). ITIL = IT service management. TCO = total cost over life (not just purchase). NPV preferred for multi-year investments. Build = custom, highest cost. Buy = off-shelf, standard. SaaS = lowest maintenance, OpEx. Disruptive innovation = initially inferior, eventually displaces. MVP = launch fast, iterate. Innovation portfolio: 70% sustaining, 20% adjacent, 10% transformational."
+    }
+  ]
+}

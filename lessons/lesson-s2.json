@@ -1,0 +1,2188 @@
+{
+  "2-1": [
+    {
+      "t": "h",
+      "v": "What Is Strategic Planning?"
+    },
+    {
+      "t": "p",
+      "v": "Strategic planning is the process that provides guidance regarding WHAT an organization needs to do to achieve its goals. It sets the direction of operations and answers: Who, What, When, Where, and How."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Aligns decisions with objectives",
+        "Enhances coordination and control",
+        "Responds proactively to change",
+        "Leads to superior performance vs. competitors"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Types of Plans"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Type",
+        "Time Horizon",
+        "Who Sets It",
+        "Focus"
+      ],
+      "r": [
+        [
+          "Strategic",
+          "Long-term (5+ years)",
+          "Top executives / Board",
+          "Overall direction, mission, vision"
+        ],
+        [
+          "Tactical",
+          "Intermediate (1–3 years)",
+          "Middle management",
+          "Department goals, resource allocation"
+        ],
+        [
+          "Operational",
+          "Short-term (daily/weekly/monthly)",
+          "Front-line managers",
+          "Day-to-day activities, procedures"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Mission, Vision & Goals"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Term",
+        "Definition",
+        "Example"
+      ],
+      "r": [
+        [
+          "Mission",
+          "WHY the organization exists — its core purpose",
+          "'Deliver the best customer experience'"
+        ],
+        [
+          "Vision",
+          "WHERE the organization wants to be in the future",
+          "'Be the global leader in...'"
+        ],
+        [
+          "Goals",
+          "Broad, long-term outcomes to achieve the mission",
+          "Increase market share by 20%"
+        ],
+        [
+          "Objectives",
+          "Specific, measurable steps toward goals",
+          "Launch 3 new products by Q3"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Competitive Advantage & Shareholder Value"
+    },
+    {
+      "t": "p",
+      "v": "The main goal of strategic planning: achieve SUPERIOR PERFORMANCE vs. competitors, leading to higher profitability and shareholder value."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Competitive Advantage: Offering greater value (better service, lower cost) → higher profitability",
+        "Sources: Natural resources, skilled labor, location, technology, barriers to entry",
+        "Shareholder Value: Created through capital appreciation + dividends",
+        "Short-term vs long-term trade-offs: Cutting R&D = short-term gain, long-term risk (no innovation)"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "The Strategic Planning Process"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Step 1: Establish mission and vision",
+        "Step 2: Analyze external environment (opportunities & threats)",
+        "Step 3: Analyze internal environment (strengths & weaknesses)",
+        "Step 4: Formulate strategies",
+        "Step 5: Implement strategies",
+        "Step 6: Monitor and evaluate performance"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Strategic = 5+ years. Tactical = 1-3 years. Operational = daily/weekly. Mission = why we exist. Vision = future state. Goals = broad, long-term. Objectives = specific, measurable. Superior performance → higher profitability → shareholder value. Short-term cost cutting can destroy long-term competitive advantage."
+    }
+  ],
+  "2-2": [
+    {
+      "t": "h",
+      "v": "Layers of the External Environment"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Layer",
+        "Description",
+        "Examples"
+      ],
+      "r": [
+        [
+          "Industry Environment",
+          "Most direct impact on competition",
+          "Competitors, suppliers, customers, substitutes"
+        ],
+        [
+          "National Environment",
+          "Country-level factors",
+          "Laws, taxes, economic growth, political stability"
+        ],
+        [
+          "International Environment",
+          "Global forces",
+          "Currency rates, trade agreements, global competition"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "PESTLE Analysis"
+    },
+    {
+      "t": "p",
+      "v": "PESTLE identifies external factors that affect the organization's strategy:"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Factor",
+        "Examples"
+      ],
+      "r": [
+        [
+          "Political",
+          "Government regulations, trade policy, political stability, taxes"
+        ],
+        [
+          "Economic",
+          "GDP growth, interest rates, inflation, unemployment, exchange rates"
+        ],
+        [
+          "Social",
+          "Demographics, culture, attitudes, education levels, lifestyle trends"
+        ],
+        [
+          "Technological",
+          "R&D, automation, digital transformation, patents, innovation rate"
+        ],
+        [
+          "Legal",
+          "Employment law, safety regulations, IP law, consumer protection"
+        ],
+        [
+          "Environmental",
+          "Climate change, sustainability regulations, carbon footprint, green energy"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Porter's 5 Forces — Industry Analysis"
+    },
+    {
+      "t": "p",
+      "v": "Porter's 5 Forces model analyzes the competitive intensity and attractiveness of an industry:"
+    },
+    {
+      "t": "b",
+      "v": [
+        "1. Threat of New Entrants: High barriers to entry = less threat (economies of scale, patents, capital requirements)",
+        "2. Bargaining Power of Suppliers: Few suppliers or unique inputs = higher supplier power",
+        "3. Bargaining Power of Buyers: Many alternatives or large buyers = higher buyer power",
+        "4. Threat of Substitutes: Alternative products that meet same need = limits pricing power",
+        "5. Rivalry Among Existing Competitors: Many competitors, slow growth, high fixed costs = intense rivalry"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Internal Environment Analysis"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Core Competencies: Unique capabilities that give competitive advantage — hard for competitors to imitate",
+        "Resource-Based View: Competitive advantage comes from valuable, rare, inimitable, non-substitutable resources (VRIN)",
+        "Value Chain Analysis: Identifying where value is created and costs can be reduced internally"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: PESTLE = 6 external factors (Political, Economic, Social, Technological, Legal, Environmental). Porter's 5 Forces: New Entrants + Suppliers + Buyers + Substitutes + Rivalry. High rivalry = less attractive industry. Core competencies = VRIN (Valuable, Rare, Inimitable, Non-substitutable). External analysis = opportunities & threats. Internal analysis = strengths & weaknesses."
+    }
+  ],
+  "2-3": [
+    {
+      "t": "h",
+      "v": "SWOT Analysis"
+    },
+    {
+      "t": "p",
+      "v": "SWOT = Strengths, Weaknesses, Opportunities, Threats. Used to align internal capabilities with external conditions to formulate competitive strategies."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Component",
+        "Internal/External",
+        "Positive/Negative",
+        "Action"
+      ],
+      "r": [
+        [
+          "Strengths",
+          "Internal",
+          "Positive — what we do well",
+          "Use to exploit Opportunities"
+        ],
+        [
+          "Weaknesses",
+          "Internal",
+          "Negative — areas to improve",
+          "Address to avoid Threats"
+        ],
+        [
+          "Opportunities",
+          "External",
+          "Positive — favorable conditions",
+          "Match with Strengths"
+        ],
+        [
+          "Threats",
+          "External",
+          "Negative — unfavorable conditions",
+          "Defend with Strengths"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Levels of Strategy"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Level",
+        "Focus",
+        "Examples"
+      ],
+      "r": [
+        [
+          "Functional-Level",
+          "Internal operations: manufacturing, marketing, HR",
+          "Improve efficiency, quality, innovation"
+        ],
+        [
+          "Business-Level",
+          "Market positioning, product strategy",
+          "Cost leadership, differentiation, focus"
+        ],
+        [
+          "Corporate-Level",
+          "Portfolio management, diversification",
+          "Acquisitions, divestitures, vertical integration"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Porter's Generic Competitive Strategies"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Strategy",
+        "How",
+        "Target",
+        "Risk"
+      ],
+      "r": [
+        [
+          "Cost Leadership",
+          "Lowest-cost producer",
+          "Broad market",
+          "Cost advantage lost if technology changes"
+        ],
+        [
+          "Differentiation",
+          "Unique value customers pay premium for",
+          "Broad market",
+          "Imitation by competitors"
+        ],
+        [
+          "Focus (Cost)",
+          "Lowest cost in a niche segment",
+          "Narrow market",
+          "Niche may disappear"
+        ],
+        [
+          "Focus (Differentiation)",
+          "Unique value in a niche",
+          "Narrow market",
+          "Larger competitors enter niche"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "The Balanced Scorecard"
+    },
+    {
+      "t": "p",
+      "v": "The BSC translates strategy into MEASURABLE objectives across 4 perspectives:"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Perspective",
+        "Question",
+        "Example Metrics"
+      ],
+      "r": [
+        [
+          "Financial",
+          "How do we look to shareholders?",
+          "Revenue growth, ROI, EVA, profit margin"
+        ],
+        [
+          "Customer",
+          "How do customers see us?",
+          "Satisfaction, market share, retention, NPS"
+        ],
+        [
+          "Internal Process",
+          "What must we excel at?",
+          "Cycle time, defect rate, process efficiency"
+        ],
+        [
+          "Learning & Growth",
+          "Can we continue to improve?",
+          "Employee training, innovation rate, R&D"
+        ]
+      ]
+    },
+    {
+      "t": "p",
+      "v": "BSC connects daily operations to long-term strategic goals. Financial perspective is the OUTCOME — the other 3 are drivers."
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: SWOT — Strengths & Weaknesses = internal. Opportunities & Threats = external. Porter's Generic Strategies: Cost Leadership (low cost, broad), Differentiation (unique, broad), Focus (narrow niche). BSC 4 perspectives: Financial, Customer, Internal Process, Learning & Growth. BSC = translates strategy into measurable metrics."
+    }
+  ],
+  "2-4": [
+    {
+      "t": "h",
+      "v": "PEST Analysis"
+    },
+    {
+      "t": "p",
+      "v": "PEST is a simplified version of PESTLE focusing on 4 macro-environmental factors:"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Factor",
+        "Key Considerations"
+      ],
+      "r": [
+        [
+          "Political",
+          "Government regulations, trade policy, employment laws, political stability, tax policy"
+        ],
+        [
+          "Economic",
+          "Exchange rates, interest rates, inflation, economic growth, business cycle, unemployment"
+        ],
+        [
+          "Social",
+          "Cultural attitudes, demographics, education, population growth, lifestyle trends"
+        ],
+        [
+          "Technological",
+          "R&D pace, automation, digital disruption, patent protection, technology transfer"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Benchmarking"
+    },
+    {
+      "t": "p",
+      "v": "Benchmarking = comparing your processes, performance, or products against BEST-IN-CLASS standards to identify improvement opportunities."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Type",
+        "Comparison Against",
+        "Purpose"
+      ],
+      "r": [
+        [
+          "Internal Benchmarking",
+          "Best-performing division within the company",
+          "Identify and spread internal best practices"
+        ],
+        [
+          "Competitive Benchmarking",
+          "Direct competitors",
+          "Understand relative competitive position"
+        ],
+        [
+          "Functional Benchmarking",
+          "Best-in-class in a function (any industry)",
+          "Learn superior practices regardless of industry"
+        ],
+        [
+          "Generic Benchmarking",
+          "Any organization with similar processes",
+          "Broadest learning — cross-industry innovation"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Theory of Constraints (TOC)"
+    },
+    {
+      "t": "p",
+      "v": "TOC focuses on identifying and managing the BOTTLENECK — the single constraint limiting overall system throughput. Steps: Identify → Exploit → Subordinate → Elevate → Repeat."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Throughput = Sales Revenue - Direct Materials",
+        "Exploit the bottleneck: maximize its output first",
+        "Subordinate: all other processes serve the bottleneck's pace",
+        "Elevate: if still constrained, invest to expand bottleneck capacity"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Gap Analysis"
+    },
+    {
+      "t": "p",
+      "v": "Gap analysis identifies the difference between CURRENT state and DESIRED state. Used in strategic planning to determine what needs to change to achieve goals."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Current state: Where are we now?",
+        "Desired state: Where do we want to be?",
+        "Gap: The difference — what needs to change?",
+        "Action plan: How do we close the gap?"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Scenario Planning"
+    },
+    {
+      "t": "p",
+      "v": "Scenario planning develops multiple alternative futures ('scenarios') and strategies for each. Unlike forecasting (one outcome), scenario planning prepares for MULTIPLE possible futures."
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: PEST = 4 factors (Political, Economic, Social, Technological). Benchmarking 4 types: Internal, Competitive, Functional, Generic. TOC = focus on the BOTTLENECK. Throughput = Revenue - DM. Gap analysis = current vs desired state. Scenario planning = multiple possible futures. BPR = radical redesign (not incremental)."
+    }
+  ],
+  "2-5": [
+    {
+      "t": "h",
+      "v": "What Is a Budget?"
+    },
+    {
+      "t": "p",
+      "v": "A budget is a QUANTITATIVE plan for a specified period, expressing management's goals in financial terms. It is developed in ADVANCE of the operating period based on assumptions and forecasts."
+    },
+    {
+      "t": "h",
+      "v": "Purposes of Budgeting"
+    },
+    {
+      "t": "b",
+      "v": [
+        "1. Planning: Forces management to think ahead and set realistic goals",
+        "2. Communication: Communicates goals and expectations across the organization",
+        "3. Coordination: Aligns different departments toward common objectives",
+        "4. Control: Provides benchmarks for measuring actual performance",
+        "5. Motivation: Gives managers targets to work toward",
+        "6. Performance Evaluation: Budget vs actual comparisons identify variances"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "The Planning-Budgeting-Control Cycle"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Step",
+        "Description"
+      ],
+      "r": [
+        [
+          "Planning",
+          "Set long/short-term goals and strategic direction"
+        ],
+        [
+          "Budgeting",
+          "Convert plans into quantitative targets (the 'Profit Plan')"
+        ],
+        [
+          "Execution",
+          "Budgets become operational guidelines for the period"
+        ],
+        [
+          "Performance Evaluation",
+          "Compare actual results to budget — analyze variances"
+        ],
+        [
+          "Reforecasting",
+          "Adjust budgets based on new information for next cycle"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Types of Budgets"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Type",
+        "Description"
+      ],
+      "r": [
+        [
+          "Static (Master) Budget",
+          "Fixed for one planned activity level — does not change with actual activity"
+        ],
+        [
+          "Flexible Budget",
+          "ADJUSTS to actual activity level — used for performance evaluation"
+        ],
+        [
+          "Rolling (Continuous) Budget",
+          "Always covers a fixed future period (e.g., always 12 months ahead) — updated monthly"
+        ],
+        [
+          "Zero-Based Budget",
+          "Every expense must be justified from ZERO each period — no automatic carry-over"
+        ],
+        [
+          "Activity-Based Budget",
+          "Uses ABC cost drivers to build budget — more accurate for overhead"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Participative vs. Top-Down Budgeting"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Approach",
+        "Who Sets Budget",
+        "Advantage",
+        "Disadvantage"
+      ],
+      "r": [
+        [
+          "Participative (Bottom-Up)",
+          "Managers who will be responsible",
+          "More realistic, higher buy-in, better motivation",
+          "Managers may pad budgets (budget slack)"
+        ],
+        [
+          "Top-Down",
+          "Senior management",
+          "Aligned with strategy, efficient",
+          "Less buy-in, may be unrealistic at operational level"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Behavioral Aspects of Budgeting"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Budget Slack: Managers intentionally understate revenues or overstate costs to make targets easier to achieve",
+        "Dysfunctional Behavior: Gaming the budget — spending all budget at year-end to avoid cuts next year",
+        "Budgetary Bias: Consistent over or under-estimation in budget submissions",
+        "Solution: Stretch goals, participation, and regular review can reduce slack"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Budget Committee and Goal Congruence"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Budget Committee: a cross-functional team (CFO + senior managers) that sets budget guidelines, resolves interdepartmental conflicts, and APPROVES the final master budget. Ensures strategic alignment across all departments.",
+        "Goal Congruence: when individual managers' personal goals ALIGN with the organization's goals. A well-designed budget system motivates managers to make decisions that benefit the ENTIRE company — not just their own department.",
+        "Misaligned incentives → dysfunctional behaviour (e.g., manager rejects a profitable project because it would dilute their division's ROI percentage)."
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Ratchet Effect & Reducing Budget Slack"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Ratchet Effect: consistently achieving budget targets leads to TIGHTER targets next year. This motivates managers to hit budget — but NOT exceed it — to avoid a harder target next year.",
+        "Management responses to reduce slack: analytical review (compare against industry benchmarks), zero-based justification requirements, linking budgets to external market data, linking compensation to actual vs flexible (not static) budget.",
+        "Budget vs Forecast distinction: BUDGET = what we PLAN to spend (a target, set before the period). FORECAST = what we NOW EXPECT to happen given current information (an estimate, updated throughout the period). A budget is motivational; a forecast is informational."
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Flexible budget = ADJUSTS to actual activity. Static budget = FIXED at planned activity. Rolling budget = always covers same future period (updated monthly). Participative budgeting = higher motivation but risk of budget slack. Budget slack = understating revenues/overstating costs. Zero-based = justify ALL expenses each period. Goal congruence = individual goals align with organizational goals. Ratchet effect = consistent achievement leads to tighter future targets. Budget = plan (target); forecast = expectation (informational)."
+    }
+  ],
+  "2-6": [
+    {
+      "t": "h",
+      "v": "What Are Standard Costs?"
+    },
+    {
+      "t": "p",
+      "v": "Standard costs are PREDETERMINED (planned) costs of manufacturing one unit under NORMAL operating conditions. They serve as benchmarks for budgeting, variance analysis, and performance control."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Standard cost = Standard Input Quantity × Standard Price per Input",
+        "Also called budgeted costs or planned costs — used interchangeably on the CMA exam",
+        "Used for DM, DL, and overhead — all three components of product cost"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Types of Standards"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Type",
+        "Definition",
+        "Level",
+        "Use"
+      ],
+      "r": [
+        [
+          "Ideal (Theoretical)",
+          "Perfect conditions — no waste, breakdowns, or idle time",
+          "Very tight — hard to achieve",
+          "Motivational benchmark only"
+        ],
+        [
+          "Practical (Attainable)",
+          "Achievable with NORMAL effort — allows for expected inefficiency",
+          "Challenging but achievable",
+          "Most common for budgeting and control"
+        ],
+        [
+          "Historical",
+          "Based on past actual performance — average of prior periods",
+          "May perpetuate past inefficiencies",
+          "Baseline only — not best practice"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Setting Direct Materials Standards"
+    },
+    {
+      "t": "f",
+      "l": "DM Standard Cost per Unit",
+      "v": "Standard Price per lb × Standard Quantity per unit | Standard Price = Purchase price + Freight + Handling | Standard Quantity = Amount needed + Normal waste/spoilage"
+    },
+    {
+      "t": "h",
+      "v": "Setting Direct Labor Standards"
+    },
+    {
+      "t": "f",
+      "l": "DL Standard Cost per Unit",
+      "v": "Standard Rate per hour × Standard Hours per unit | Standard Rate = Base wage + Payroll taxes + Benefits | Standard Hours = Time for task + Normal idle/setup time"
+    },
+    {
+      "t": "h",
+      "v": "Setting Overhead Standards"
+    },
+    {
+      "t": "f",
+      "l": "Overhead Standard",
+      "v": "Predetermined OH Rate × Standard Activity Allowed for actual output | POHR = Budgeted OH / Budgeted Activity Level"
+    },
+    {
+      "t": "h",
+      "v": "Variance Analysis Overview"
+    },
+    {
+      "t": "p",
+      "v": "Comparing ACTUAL costs to STANDARD costs reveals VARIANCES that indicate efficiency or inefficiency:"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Variance",
+        "Formula",
+        "Favorable When"
+      ],
+      "r": [
+        [
+          "DM Price Variance",
+          "(Actual Price - Standard Price) × Actual Qty Purchased",
+          "Actual < Standard"
+        ],
+        [
+          "DM Quantity Variance",
+          "(Actual Qty Used - Standard Qty Allowed) × Standard Price",
+          "Actual < Standard"
+        ],
+        [
+          "DL Rate Variance",
+          "(Actual Rate - Standard Rate) × Actual Hours",
+          "Actual < Standard"
+        ],
+        [
+          "DL Efficiency Variance",
+          "(Actual Hours - Standard Hours Allowed) × Standard Rate",
+          "Actual < Standard"
+        ]
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Practical standards = most common. Ideal = perfect conditions (unachievable). DM Price Variance = purchasing efficiency. DM Quantity Variance = production efficiency. DL Rate = wage rate efficiency. DL Efficiency = labor time efficiency. Favorable = actual cost LESS than standard. Unfavorable = actual cost MORE than standard."
+    }
+  ],
+  "2-7": [
+    {
+      "t": "h",
+      "v": "What Is Forecasting?"
+    },
+    {
+      "t": "p",
+      "v": "Forecasting estimates FUTURE conditions to support planning and budgeting. All budgets are based on PREMISES — assumptions about what will happen in the future. Relevant premises vary by department."
+    },
+    {
+      "t": "h",
+      "v": "Quantitative Forecasting Methods"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Method",
+        "Description",
+        "Best For"
+      ],
+      "r": [
+        [
+          "Simple Moving Average",
+          "Average of the most recent N periods",
+          "Stable data, no trend"
+        ],
+        [
+          "Weighted Moving Average",
+          "Recent periods get more weight than older ones",
+          "Data with some trend"
+        ],
+        [
+          "Exponential Smoothing",
+          "Weighted average where weights decay exponentially",
+          "Responsive to recent changes"
+        ],
+        [
+          "Linear Regression",
+          "Statistical best-fit line: Y = a + bX",
+          "When one variable predicts another"
+        ],
+        [
+          "Time Series Analysis",
+          "Decompose into trend, seasonal, cyclical, random components",
+          "Seasonal patterns"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Qualitative Forecasting Methods"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Method",
+        "Description"
+      ],
+      "r": [
+        [
+          "Delphi Method",
+          "Expert panel reaches consensus through anonymous rounds of questionnaires — no groupthink"
+        ],
+        [
+          "Executive Opinion",
+          "Senior management judgment combined",
+          "Market Research",
+          "Customer surveys, focus groups"
+        ],
+        [
+          "Sales Force Composite",
+          "Bottom-up: sales reps estimate their territory sales"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Exponential Smoothing Formula"
+    },
+    {
+      "t": "f",
+      "l": "Exponential Smoothing",
+      "v": "F(t+1) = α × A(t) + (1 − α) × F(t) | α = smoothing constant (0 to 1) | A(t) = Actual value this period | F(t) = Previous forecast"
+    },
+    {
+      "t": "p",
+      "v": "Example: α = 0.3. Last period actual = 120. Last period forecast = 110. New forecast = 0.3 × 120 + 0.7 × 110 = 36 + 77 = 113."
+    },
+    {
+      "t": "b",
+      "v": [
+        "α close to 1.0 (e.g., 0.9): HIGH weight to recent data → forecast reacts quickly to changes",
+        "α close to 0 (e.g., 0.1): HIGH weight to historical data → smooth, stable forecast, reacts slowly",
+        "No data to drop or add — uses ALL history but with exponentially declining weights"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Moving Average — Numerical Example"
+    },
+    {
+      "t": "p",
+      "v": "3-period simple moving average. Period 1=100, 2=110, 3=120. Forecast for period 4 = (100+110+120)/3 = 110. When period 4 actual = 130: period 5 forecast = (110+120+130)/3 = 120. Period 1 is dropped."
+    },
+    {
+      "t": "p",
+      "v": "Naive forecast: use the MOST RECENT actual period as the next period's forecast. If period 4 = 130, naive forecast for period 5 = 130. Simplest possible method — zero analytical effort."
+    },
+    {
+      "t": "h",
+      "v": "Linear Regression — Key Concepts"
+    },
+    {
+      "t": "f",
+      "l": "Regression Equation",
+      "v": "Y = a + bX | a = Fixed cost (Y-intercept) | b = Variable cost rate (slope) | X = Activity level (cost driver)"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Statistic",
+        "Meaning",
+        "Good Value"
+      ],
+      "r": [
+        [
+          "R (Correlation)",
+          "Strength and direction of X-Y relationship",
+          "-1 to +1; close to ±1 is strong"
+        ],
+        [
+          "R² (Coefficient of Determination)",
+          "% of variation in Y explained by X",
+          "0.90+ = strong; 0.70–0.89 = moderate; < 0.70 = weak"
+        ],
+        [
+          "p-value",
+          "Probability result is due to chance",
+          "< 0.05 = statistically significant"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Time Series Components"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Trend (T): Long-term upward or downward direction",
+        "Seasonal (S): Regular variations within a year (e.g., holiday sales)",
+        "Cyclical (C): Longer-term economic cycles (years)",
+        "Random/Irregular (I): Unpredictable variations — cannot be forecast"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Regression = most accurate quantitative method. R² close to 1 = strong predictor. Delphi = anonymous experts (prevents groupthink). Moving average = smooths data. Exponential smoothing = gives more weight to recent data. Time series = Trend + Seasonal + Cyclical + Random. Regression best for cost estimation and demand forecasting."
+    }
+  ],
+  "2-8": [
+    {
+      "t": "h",
+      "v": "What Is a Learning Curve?"
+    },
+    {
+      "t": "p",
+      "v": "A learning curve describes how LABOR EFFICIENCY IMPROVES as workers gain experience producing a product. As cumulative output DOUBLES, average labor time per unit decreases by a fixed percentage (the learning rate)."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Early production = high cost and low productivity",
+        "Over time = workers learn → performance improves",
+        "Rate of improvement decreases as experience grows — learning slows down",
+        "Most significant for: complex, labor-intensive, first-time production runs"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Two Models of Learning Curves"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Model",
+        "Applies To",
+        "Formula"
+      ],
+      "r": [
+        [
+          "Cumulative Average Time Model",
+          "Average time per unit (cumulative)",
+          "When output doubles: New Avg Time = Previous Avg × Learning %"
+        ],
+        [
+          "Incremental Unit Time Model",
+          "Time for the LAST unit only (marginal)",
+          "When output doubles: Last unit time = Previous last unit × Learning %"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Cumulative Average Model — Example (80% Learning Rate)"
+    },
+    {
+      "t": "p",
+      "v": "1st unit = 100 hours. Learning rate = 80%."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Cumulative Units",
+        "Average Hours/Unit",
+        "Total Hours"
+      ],
+      "r": [
+        [
+          "1",
+          "100 hrs",
+          "100 hrs"
+        ],
+        [
+          "2 (doubled)",
+          "100 × 80% = 80 hrs",
+          "160 hrs"
+        ],
+        [
+          "4 (doubled)",
+          "80 × 80% = 64 hrs",
+          "256 hrs"
+        ],
+        [
+          "8 (doubled)",
+          "64 × 80% = 51.2 hrs",
+          "409.6 hrs"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Applications of Learning Curves"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Production planning and budgeting: forecast labor hours as production increases",
+        "Labor cost forecasting: costs drop predictably as volume grows",
+        "Contract bidding: price competitively by anticipating future cost reductions",
+        "Setting standard costs: standards should reflect learning curve effects for new products",
+        "Make-or-buy decisions: in-house production may become cheaper over time as learning occurs",
+        "Capital budgeting: project future savings from learning effects"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Limitations of Learning Curves"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Applies mainly to LABOR-INTENSIVE processes — automation reduces learning effect",
+        "Assumes continuous production — disruptions reset learning",
+        "Different workers learn at different rates",
+        "Not applicable to routine, repetitive simple tasks where maximum efficiency is already reached"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Cumulative Average Model = when output doubles, average time per unit decreases by learning %. Incremental Unit Model = last unit time decreases. 80% learning curve: 1 unit=100hrs, 2 units avg=80hrs, 4 units avg=64hrs. Total hours = average × cumulative units. Learning curves most relevant for NEW products and LABOR-INTENSIVE work."
+    }
+  ],
+  "2-9": [
+    {
+      "t": "h",
+      "v": "What Is Probability?"
+    },
+    {
+      "t": "p",
+      "v": "Probability is a numerical measure of the LIKELIHOOD that a specific event will occur. Used in forecasting, decision-making, budgeting, and risk analysis."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Range: 0 (impossible) to 1 (certain) — or 0% to 100%",
+        "All outcome probabilities must SUM to 1 (100%)",
+        "Example: P(rain) = 40%, P(no rain) = 60%. Total = 100%."
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Expected Value"
+    },
+    {
+      "t": "f",
+      "l": "Expected Value (EV)",
+      "v": "EV = Σ (Outcome × Probability of that Outcome) | Sum of each possible outcome multiplied by its probability"
+    },
+    {
+      "t": "p",
+      "v": "Example: Project A: 40% chance of $100,000 profit, 60% chance of $20,000 profit. EV = (0.40 × $100,000) + (0.60 × $20,000) = $40,000 + $12,000 = $52,000."
+    },
+    {
+      "t": "h",
+      "v": "Sensitivity Analysis"
+    },
+    {
+      "t": "p",
+      "v": "Sensitivity analysis tests how SENSITIVE the outcome is to changes in key assumptions. It answers: 'What if this variable changes by 10%?'"
+    },
+    {
+      "t": "b",
+      "v": [
+        "One-way sensitivity: change ONE variable at a time",
+        "Best/Base/Worst case analysis: test optimistic, likely, and pessimistic scenarios",
+        "Break-even sensitivity: find the value where the decision changes"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Decision Trees"
+    },
+    {
+      "t": "p",
+      "v": "A decision tree is a visual diagram mapping DECISIONS and their possible OUTCOMES with associated probabilities. Used for complex sequential decisions."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Square nodes = Decision points (choices management makes)",
+        "Circle nodes = Chance events (outcomes driven by probability)",
+        "Calculate: work RIGHT to LEFT — find expected value at each chance node",
+        "Choose the branch with highest expected value at decision nodes"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Standard Deviation & Risk"
+    },
+    {
+      "t": "p",
+      "v": "Standard deviation measures the SPREAD (variability) of possible outcomes around the expected value. Higher standard deviation = MORE RISK."
+    },
+    {
+      "t": "f",
+      "l": "Coefficient of Variation",
+      "v": "CV = Standard Deviation / Expected Value | Measures risk per unit of return — useful for comparing projects"
+    },
+    {
+      "t": "h",
+      "v": "Monte Carlo Simulation"
+    },
+    {
+      "t": "p",
+      "v": "Monte Carlo simulation runs THOUSANDS of scenarios with random values for uncertain variables to generate a DISTRIBUTION of possible outcomes. More sophisticated than sensitivity analysis — shows probability distribution of results."
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: EV = Σ(outcome × probability). Probabilities must sum to 1. Decision trees: work right to left, choose highest EV. Standard deviation = risk measure. Higher CV = higher relative risk. Sensitivity = change one variable. Monte Carlo = thousands of random trials → distribution of outcomes. Use EV for decision-making under uncertainty."
+    }
+  ],
+  "2-10": [
+    {
+      "t": "h",
+      "v": "Master Budget Overview"
+    },
+    {
+      "t": "p",
+      "v": "The Master Budget (Static Budget) summarizes management's complete financial and operating plans for one fiscal year. It is STATIC — prepared for ONE planned activity level and does NOT change with actual activity."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Operating Budgets: Sales, production, DM, DL, OH, S&A → leads to Budgeted Income Statement",
+        "Financial Budgets: Cash budget, capital expenditures → leads to Budgeted Balance Sheet and Cash Flow Statement"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Budget Methodologies Comparison"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Method",
+        "Starting Point",
+        "Key Feature",
+        "Best For"
+      ],
+      "r": [
+        [
+          "Incremental (Traditional)",
+          "Prior year budget + adjustments",
+          "Simple, fast",
+          "Stable environments"
+        ],
+        [
+          "Zero-Based (ZBB)",
+          "Zero — justify ALL expenses",
+          "Eliminates waste, very thorough",
+          "Cost reduction initiatives"
+        ],
+        [
+          "Activity-Based (ABB)",
+          "Activity drivers (ABC)",
+          "Links budget to cost drivers",
+          "Complex overhead environments"
+        ],
+        [
+          "Kaizen",
+          "Prior year + improvement targets",
+          "Builds continuous improvement in",
+          "Lean organizations"
+        ],
+        [
+          "Flexible Budget",
+          "Standard costs × actual activity",
+          "Adjusts to actual volume",
+          "Performance evaluation"
+        ],
+        [
+          "Project Budget",
+          "Specific project activities",
+          "Project-specific start/end",
+          "Capital projects, R&D"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Zero-Based Budgeting (ZBB) — Deep Dive"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Requires every expense justified from ZERO — no automatic carry-over",
+        "Decision packages: managers create packages for each activity at different levels (minimum, current, enhanced)",
+        "Senior management ranks packages and funds based on strategic priorities",
+        "Advantage: eliminates entrenched spending, focuses on value",
+        "Disadvantage: very time-consuming, requires major management effort"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Activity-Based Budgeting (ABB)"
+    },
+    {
+      "t": "p",
+      "v": "ABB uses ABC cost drivers to build the budget bottom-up. If sales forecast = 10,000 units and each unit requires 2 machine setups, budget for setups = 20,000 setups × cost per setup."
+    },
+    {
+      "t": "h",
+      "v": "Flexible Budget"
+    },
+    {
+      "t": "f",
+      "l": "Flexible Budget Cost",
+      "v": "= (Standard Variable Cost per unit × Actual Units) + Budgeted Fixed Costs"
+    },
+    {
+      "t": "p",
+      "v": "Example: Static budget for 10,000 units. Actual = 9,000 units. Variable cost $5/unit. Fixed $20,000. Flexible budget cost = ($5 × 9,000) + $20,000 = $65,000. Comparing actual to FLEXIBLE budget is fair — same activity level."
+    },
+    {
+      "t": "h",
+      "v": "Budget vs Forecast — An Important Distinction"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Feature",
+        "Budget",
+        "Forecast"
+      ],
+      "r": [
+        [
+          "Purpose",
+          "A PLAN — a target to motivate and guide action",
+          "An ESTIMATE — what management now expects to happen"
+        ],
+        [
+          "When prepared",
+          "Before the period begins",
+          "Continuously updated during the period as conditions change"
+        ],
+        [
+          "Changes during period?",
+          "Typically fixed (static) — not revised mid-year",
+          "Yes — updated as new information arrives"
+        ],
+        [
+          "Management role",
+          "Motivational — managers are held accountable to it",
+          "Informational — helps with planning and resource decisions"
+        ],
+        [
+          "Example",
+          "Annual budget approved in December",
+          "Q3 rolling forecast updated in September"
+        ]
+      ]
+    },
+    {
+      "t": "p",
+      "v": "Continuous (Perpetual) Budget vs Periodic Budget: A PERIODIC budget is prepared once for the full year and remains unchanged. A CONTINUOUS (perpetual or rolling) budget always covers a fixed future horizon (e.g., 12 months) by adding a new period as each old one expires. Rolling budgets ensure management always has a current forward view."
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: ZBB = justify ALL from zero (most time-consuming). Incremental = prior year + %. ABB = uses cost drivers. Kaizen = builds improvement targets. Flexible budget = (Std Variable Rate × Actual Units) + Fixed. Use flexible budget (not static) for FAIR performance evaluation at different activity levels. Budget = plan (motivational, set before period). Forecast = estimate (informational, updated during period). Rolling budget = always covers same forward horizon by adding new periods."
+    }
+  ],
+  "2-11": [
+    {
+      "t": "h",
+      "v": "The Budgeting Cycle"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Phase 1 — Planning: Forecasts & assumptions, set long/short-term goals",
+        "Phase 2 — Implementation: Convert plans into specific operating and financial budgets",
+        "Phase 3 — Performance Evaluation: Compare actual results vs. budget, analyze variances",
+        "Phase 4 — Reforecasting: Adjust budget based on new information",
+        "Continuous cycle — every budget period feeds into the next"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "The Annual Profit Plan (Master Budget) Components"
+    },
+    {
+      "t": "p",
+      "v": "The profit plan starts with the SALES BUDGET (the starting point — everything flows from sales) and builds through supporting schedules:"
+    },
+    {
+      "t": "h",
+      "v": "Step 1: Sales Budget"
+    },
+    {
+      "t": "f",
+      "l": "Sales Budget",
+      "v": "Budgeted Sales Units × Budgeted Selling Price per Unit = Budgeted Sales Revenue"
+    },
+    {
+      "t": "h",
+      "v": "Step 2: Production Budget"
+    },
+    {
+      "t": "f",
+      "l": "Production Budget",
+      "v": "Units to Produce = Budgeted Sales Units + Desired Ending FG Inventory - Beginning FG Inventory"
+    },
+    {
+      "t": "h",
+      "v": "Step 3: Direct Materials Budget"
+    },
+    {
+      "t": "f",
+      "l": "DM Budget",
+      "v": "DM to Purchase = (DM needed for production + Desired Ending RM Inventory - Beginning RM Inventory) × Standard Price"
+    },
+    {
+      "t": "h",
+      "v": "Step 4: Direct Labor Budget"
+    },
+    {
+      "t": "f",
+      "l": "DL Budget",
+      "v": "Budgeted DL Hours = Units to Produce × Standard DL Hours per Unit | Budgeted DL Cost = DL Hours × Standard Rate per Hour"
+    },
+    {
+      "t": "h",
+      "v": "Step 5: Manufacturing Overhead Budget"
+    },
+    {
+      "t": "f",
+      "l": "MOH Budget",
+      "v": "Budgeted OH = (Variable OH Rate × Budgeted Activity) + Budgeted Fixed OH"
+    },
+    {
+      "t": "h",
+      "v": "Step 6: Selling & Administrative (S&A) Budget"
+    },
+    {
+      "t": "p",
+      "v": "Includes variable S&A costs (commissions, delivery) and fixed S&A costs (salaries, rent, advertising). These are PERIOD COSTS — not included in product cost."
+    },
+    {
+      "t": "h",
+      "v": "Step 7: Budgeted Income Statement"
+    },
+    {
+      "t": "s",
+      "v": [
+        "Sales Revenue (from Sales Budget)",
+        "- Cost of Goods Sold (DM + DL + MOH)",
+        "= Gross Profit",
+        "- Selling & Administrative Expenses",
+        "= Operating Income"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Sales Budget = FIRST and MOST IMPORTANT — all others depend on it. Production = Sales + Ending FG - Beginning FG. DM purchases = DM needed + Ending RM - Beginning RM. DL budget = Production units × std hours × std rate. MOH = variable rate × activity + fixed OH. S&A = period costs (not in product cost)."
+    }
+  ],
+  "2-12": [
+    {
+      "t": "h",
+      "v": "The Complete Budget Preparation Sequence"
+    },
+    {
+      "t": "p",
+      "v": "After the operating budgets (Units 11), the financial budgets complete the master budget:"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Step 8: Capital Expenditure Budget",
+        "Step 9: Cash Budget",
+        "Step 10: Budgeted Balance Sheet",
+        "Step 11: Budgeted Statement of Cash Flows"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Capital Expenditure Budget"
+    },
+    {
+      "t": "p",
+      "v": "Plans for purchases of LONG-TERM ASSETS (PP&E). Separate from the operating budget because capital items are capitalized and depreciated, not expensed immediately."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Major capital investments require separate analysis (NPV, IRR)",
+        "Capital budget feeds depreciation expense into the operating budget",
+        "Links strategic investment plans to the financial budget"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Cash Budget — The Most Important Financial Budget"
+    },
+    {
+      "t": "p",
+      "v": "The cash budget tracks CASH INFLOWS and OUTFLOWS to ensure the company has sufficient liquidity."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Section",
+        "Components"
+      ],
+      "r": [
+        [
+          "Cash Inflows",
+          "Beginning cash balance + Cash collected from customers"
+        ],
+        [
+          "Cash Outflows",
+          "DM purchases paid + DL paid + OH paid (ex. depreciation) + S&A paid + Capital expenditures + Debt repayments"
+        ],
+        [
+          "Net Cash",
+          "Cash Inflows - Cash Outflows"
+        ],
+        [
+          "Financing",
+          "Borrow if below minimum; repay if above"
+        ]
+      ]
+    },
+    {
+      "t": "f",
+      "l": "Cash Collected from Customers",
+      "v": "= Cash Sales + Collections on credit sales (based on collection pattern)"
+    },
+    {
+      "t": "p",
+      "v": "Example collection pattern: 60% collected in month of sale, 35% next month, 5% uncollectible. January sales = $100,000 → $60,000 collected in Jan, $35,000 in Feb."
+    },
+    {
+      "t": "h",
+      "v": "Budgeted Balance Sheet"
+    },
+    {
+      "t": "p",
+      "v": "Projects the ENDING BALANCE SHEET at the end of the budget period. Uses beginning balances plus all budgeted transactions (purchases, depreciation, payments, revenues)."
+    },
+    {
+      "t": "h",
+      "v": "Operating vs Capital Budgets"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Feature",
+        "Operating Budget",
+        "Capital Budget"
+      ],
+      "r": [
+        [
+          "Time horizon",
+          "One year (short-term)",
+          "Multiple years (long-term)",
+          ""
+        ],
+        [
+          "Items",
+          "Revenue, operating costs, OH",
+          "Property, plant & equipment"
+        ],
+        [
+          "Expensed",
+          "In period incurred",
+          "Depreciated over useful life"
+        ],
+        [
+          "Approval",
+          "Department managers",
+          "Senior management/board"
+        ]
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Cash budget = cash inflows vs outflows. Depreciation is NOT a cash outflow — exclude from cash payments. Collection pattern: apply % to credit sales. Capital expenditure = long-term assets. Capital budget items are CAPITALIZED (not expensed). Budgeted balance sheet uses BEGINNING balances + all budgeted changes."
+    }
+  ],
+  "2-13": [
+    {
+      "t": "h",
+      "v": "Purpose of Ongoing Budgetary Reporting"
+    },
+    {
+      "t": "p",
+      "v": "Once a budget is approved, it becomes the BENCHMARK for measuring actual performance. Throughout the year, organizations compare actual results to budget to identify VARIANCES and take corrective action."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Period-specific comparison: Monthly or quarterly actual vs budget",
+        "Cumulative (YTD) comparison: Year-to-date actual vs year-to-date budget",
+        "Provides early warning of problems — allows timely corrective action",
+        "Improves future budgeting accuracy"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Variance Reporting"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Variance Type",
+        "Definition",
+        "Action"
+      ],
+      "r": [
+        [
+          "Favorable (F)",
+          "Revenue: Actual > Budget | Cost: Actual < Budget",
+          "Investigate — may be sustainable or one-time"
+        ],
+        [
+          "Unfavorable (U)",
+          "Revenue: Actual < Budget | Cost: Actual > Budget",
+          "Investigate — identify cause and corrective action"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Flexible Budget Analysis — Variance Decomposition"
+    },
+    {
+      "t": "p",
+      "v": "Comparing actual to FLEXIBLE budget separates variances into:"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Variance",
+        "What It Measures",
+        "Formula"
+      ],
+      "r": [
+        [
+          "Sales Volume Variance",
+          "Effect of selling MORE or FEWER units than budgeted",
+          "(Actual Units - Budgeted Units) × Budgeted CM per unit"
+        ],
+        [
+          "Sales Price Variance",
+          "Effect of PRICE being different from budget",
+          "(Actual Price - Budgeted Price) × Actual Units"
+        ],
+        [
+          "Flexible Budget Variance",
+          "Efficiency — was cost per unit higher or lower?",
+          "Actual Cost - Flexible Budget Cost"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Management by Exception"
+    },
+    {
+      "t": "p",
+      "v": "Managers focus attention on SIGNIFICANT VARIANCES — those that exceed a threshold (e.g., >$10,000 or >5%). Routine, immaterial variances are not investigated. This allows efficient use of management time."
+    },
+    {
+      "t": "h",
+      "v": "Responsibility Reporting"
+    },
+    {
+      "t": "p",
+      "v": "Each manager receives a report showing ONLY the costs they CONTROL. Senior managers see aggregated totals; operational managers see detailed line items for their area."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Controllable costs: Manager can directly influence — INCLUDE in their report",
+        "Uncontrollable costs: Cannot be influenced by this manager — EXCLUDE from their evaluation",
+        "Example: Production manager controls DM, DL, variable OH — NOT fixed rent allocated from corporate"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Residual Income (RI) — An Alternative to ROI"
+    },
+    {
+      "t": "f",
+      "l": "Residual Income",
+      "v": "RI = Operating Income − (Required Rate of Return × Invested Assets)"
+    },
+    {
+      "t": "p",
+      "v": "RI measures profit earned ABOVE the minimum required return. A positive RI means the division is creating value beyond the minimum threshold."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Measure",
+        "Formula",
+        "Advantage",
+        "Limitation"
+      ],
+      "r": [
+        [
+          "ROI",
+          "Operating Income / Invested Assets",
+          "Simple, easy to compare across divisions",
+          "Goal congruence problem — managers reject positive-NPV projects that dilute their ROI"
+        ],
+        [
+          "Residual Income",
+          "Operating Income − (Required Rate × Assets)",
+          "Avoids ROI goal congruence problem — managers accept any project where RI > 0",
+          "Not comparable across divisions of different size"
+        ],
+        [
+          "EVA",
+          "After-tax NOPAT − (WACC × Invested Capital)",
+          "Most complete value creation measure",
+          "Most complex — requires adjustments to accounting data"
+        ]
+      ]
+    },
+    {
+      "t": "p",
+      "v": "ROI Goal Congruence Problem: A division with 20% ROI will REJECT a 15% project (because it dilutes the 20% average), even though the company's cost of capital is 10% and the project creates value. RI solves this — the 15% project produces positive RI (15% − 10% = 5% × assets) so the manager accepts it."
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Flexible budget analysis separates Volume Variance (units sold) from Flexible Budget Variance (efficiency). Management by exception = focus on significant variances. Responsibility reporting = only CONTROLLABLE costs evaluated. Favorable cost variance = actual < budget. Unfavorable = actual > budget. ROI = income/assets. RI = income − (required rate × assets). RI solves ROI's goal congruence problem. Positive RI = value created above minimum threshold."
+    }
+  ],
+  "2-14": [
+    {
+      "t": "h",
+      "v": "4 Main Calculation Question Types on the CMA Exam"
+    },
+    {
+      "t": "h",
+      "v": "Type 1: Flexible Budget Amount"
+    },
+    {
+      "t": "f",
+      "l": "Flexible Budget",
+      "v": "= (Standard Variable Cost per unit × Actual Activity) + Budgeted Fixed Costs"
+    },
+    {
+      "t": "p",
+      "v": "Example: Standard VC = $5/unit. Actual production = 12,000 units. Fixed OH = $30,000. Flexible budget = ($5 × 12,000) + $30,000 = $90,000."
+    },
+    {
+      "t": "h",
+      "v": "Type 2: Units to Produce or Purchase"
+    },
+    {
+      "t": "f",
+      "l": "Production Budget",
+      "v": "Units to Produce = Sales + Ending FG - Beginning FG"
+    },
+    {
+      "t": "f",
+      "l": "DM Purchase",
+      "v": "Units to Purchase = Production × DM/unit + Ending RM - Beginning RM"
+    },
+    {
+      "t": "p",
+      "v": "Example: Sales 10,000. Ending FG 2,000. Beginning FG 1,500. Units to produce = 10,000 + 2,000 - 1,500 = 10,500."
+    },
+    {
+      "t": "h",
+      "v": "Type 3: Budget Variance Calculations"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Variance",
+        "Formula"
+      ],
+      "r": [
+        [
+          "DM Price Variance",
+          "(Actual Price - Std Price) × Actual Qty Purchased"
+        ],
+        [
+          "DM Quantity Variance",
+          "(Actual Qty - Std Qty Allowed) × Std Price"
+        ],
+        [
+          "DL Rate Variance",
+          "(Actual Rate - Std Rate) × Actual Hours"
+        ],
+        [
+          "DL Efficiency Variance",
+          "(Actual Hours - Std Hours Allowed) × Std Rate"
+        ],
+        [
+          "Sales Price Variance",
+          "(Actual Price - Budgeted Price) × Actual Units"
+        ],
+        [
+          "Sales Volume Variance",
+          "(Actual Units - Budgeted Units) × Budgeted CM per unit"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Type 4: Comprehensive Budget Problems"
+    },
+    {
+      "t": "p",
+      "v": "Multi-step problems combining several budgets. Always follow the sequence:"
+    },
+    {
+      "t": "s",
+      "v": [
+        "Step 1: Sales Budget → Revenue",
+        "Step 2: Production Budget → Units",
+        "Step 3: DM/DL/OH Budgets → Costs",
+        "Step 4: Budgeted Income Statement → Operating Income",
+        "Step 5: Cash Budget → Cash position"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Key Formulas Summary"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Formula",
+        "Calculation"
+      ],
+      "r": [
+        [
+          "Budgeted COGS",
+          "Beginning FG + Budgeted production cost - Ending FG"
+        ],
+        [
+          "Gross Profit",
+          "Sales Revenue - COGS"
+        ],
+        [
+          "Operating Income",
+          "Gross Profit - S&A Expenses"
+        ],
+        [
+          "Cash collections",
+          "Cash sales + Collections on prior credit sales"
+        ]
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Always identify FAVORABLE vs UNFAVORABLE. F = actual BETTER than standard. U = actual WORSE. DM/DL variances: Price/Rate = PURCHASING efficiency. Quantity/Efficiency = USAGE efficiency. Static budget = fixed quantity. Flexible budget = adjusts to actual quantity. Sales volume variance uses CM (not price) per unit."
+    }
+  ],
+  "2-15": [
+    {
+      "t": "h",
+      "v": "Pro Forma Financial Statements"
+    },
+    {
+      "t": "p",
+      "v": "Pro forma means 'AS IF' — projected financial statements showing expected results IF a planned action occurs. Used for planning and decision-making, NOT historical reporting."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Pro forma Income Statement: projected revenues, costs, and profits",
+        "Pro forma Balance Sheet: projected assets, liabilities, and equity",
+        "Pro forma Statement of Cash Flows: projected cash generation",
+        "Used for: merger analysis, new product launches, expansion decisions, financing requests"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Sales Forecasting for Top-Level Planning"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Start with historical data, adjusted for future expectations",
+        "Internal factors: capacity, product lifecycle, pricing strategy",
+        "External factors: market growth, competition, economic conditions",
+        "Multiple methods: trend analysis, regression, market research, sales force composite"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Sensitivity Analysis & Scenario Analysis"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Tool",
+        "Description",
+        "Output"
+      ],
+      "r": [
+        [
+          "Sensitivity Analysis",
+          "Change ONE variable — observe effect on outcome",
+          "'If sales drop 10%, operating income falls by $X'"
+        ],
+        [
+          "Scenario Analysis",
+          "Define complete alternative scenarios (best/base/worst)",
+          "Three complete financial projections"
+        ],
+        [
+          "Break-even Analysis",
+          "Find the activity level where income = 0",
+          "Break-even units/revenue"
+        ],
+        [
+          "What-if Analysis",
+          "Interactive modeling of multiple assumptions",
+          "Range of possible outcomes"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Long-Range Planning"
+    },
+    {
+      "t": "p",
+      "v": "Long-range (strategic) plans typically cover 3–5+ years. They set the framework within which annual budgets are prepared."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Annual budget = detailed 1-year plan within the long-range framework",
+        "Long-range plan = directional — less detailed, more strategic",
+        "Rolling forecasts update the long-range view as conditions change",
+        "Key inputs: growth assumptions, capital investment plans, market forecasts"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "CVP as a Planning Tool — Quick Reference"
+    },
+    {
+      "t": "p",
+      "v": "CVP analysis (covered fully in Cost Management Section D) is applied in top-level planning to answer critical planning questions. Key formulas for reference:"
+    },
+    {
+      "t": "f",
+      "l": "Break-Even",
+      "v": "BEP (units) = Fixed Costs / CM per unit | BEP ($) = Fixed Costs / CMR"
+    },
+    {
+      "t": "f",
+      "l": "Target Profit",
+      "v": "Units = (Fixed Costs + Target Profit) / CM per unit"
+    },
+    {
+      "t": "f",
+      "l": "Margin of Safety",
+      "v": "MOS% = (Actual Sales − BEP Sales) / Actual Sales × 100"
+    },
+    {
+      "t": "h",
+      "v": "Segment Profitability Analysis"
+    },
+    {
+      "t": "p",
+      "v": "Top-level planning includes analysing SEGMENT PROFITABILITY — evaluating whether individual product lines, divisions, customers, or regions are contributing to overall profitability."
+    },
+    {
+      "t": "f",
+      "l": "Segment Margin",
+      "v": "Segment Margin = Revenue − Variable Costs − Segment-Specific Fixed Costs (AVOIDABLE)"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Common/allocated fixed costs are EXCLUDED from segment margin — they continue regardless",
+        "A segment should be DROPPED only if its segment margin is NEGATIVE (it is destroying value)",
+        "A positive segment margin = segment covers its own costs and contributes to common overhead",
+        "Customer segment analysis: Revenue − COGS − Cost to serve = Customer Profitability"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Pro Forma Financial Statements — Applications"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Merger/Acquisition analysis: project combined company financials before committing",
+        "New product launch: project income, cash flow, and balance sheet impacts",
+        "Bank loan applications: pro forma statements show lenders expected future performance",
+        "Capital investment decisions: project all three statements over the investment horizon",
+        "Restructuring scenarios: compare pro formas under different strategic options"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Pro forma = projected statements for 'what if' planning scenarios. Scenario analysis = multiple complete scenarios (best/base/worst). Sensitivity = change ONE variable. Segment margin = revenue − variable costs − AVOIDABLE fixed costs only. Drop a segment if segment margin is NEGATIVE. Long-range plan = 3-5+ years. Annual budget = 1-year implementation of long-range plan. CVP formulas reviewed here — full CVP coverage is in Cost Management Section D."
+    }
+  ],
+  "2-16": [
+    {
+      "t": "h",
+      "v": "What Is Capital Budgeting?"
+    },
+    {
+      "t": "p",
+      "v": "Capital budgeting is the process of evaluating and selecting long-term investments (capital projects) that will generate returns beyond one year. Examples: new equipment, buildings, acquisitions, product launches. The goal: allocate scarce capital to maximise shareholder value."
+    },
+    {
+      "t": "h",
+      "v": "Key Cash Flow Concepts"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Use INCREMENTAL after-tax cash flows — changes caused by the project, not sunk costs",
+        "Initial investment: purchase price + installation + training + working capital increase",
+        "Annual operating cash flows: after-tax net income + depreciation (non-cash add-back)",
+        "Terminal cash flows: salvage value + recovery of working capital at project end",
+        "Sunk costs ALWAYS irrelevant — already spent regardless of decision",
+        "Opportunity costs ALWAYS relevant — value of best alternative foregone"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "1. Net Present Value (NPV)"
+    },
+    {
+      "t": "f",
+      "l": "NPV",
+      "v": "NPV = PV of all future cash inflows − Initial Investment | Accept if NPV ≥ 0 | Reject if NPV < 0"
+    },
+    {
+      "t": "p",
+      "v": "NPV discounts all future cash flows at the REQUIRED RATE OF RETURN (cost of capital). It directly measures the VALUE CREATED by the project in today's dollars."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Best method — theoretically superior; maximises shareholder wealth",
+        "Considers ALL cash flows and the time value of money",
+        "Independent projects: accept all with NPV ≥ 0",
+        "Mutually exclusive: choose the project with HIGHEST positive NPV"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "2. Internal Rate of Return (IRR)"
+    },
+    {
+      "t": "f",
+      "l": "IRR Decision Rule",
+      "v": "Accept if IRR ≥ Required Rate of Return (hurdle rate) | Reject if IRR < Required Rate"
+    },
+    {
+      "t": "p",
+      "v": "IRR is the discount rate that makes NPV = 0 (the breakeven rate of return). Found by trial-and-error or interpolation."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Independent projects: accept if IRR ≥ cost of capital",
+        "Mutually exclusive: IRR can give conflicting signals — use NPV instead when they conflict",
+        "Reinvestment assumption: IRR assumes cash flows reinvested at IRR rate; NPV assumes reinvestment at cost of capital (more realistic)"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "3. Payback Period"
+    },
+    {
+      "t": "f",
+      "l": "Payback Period",
+      "v": "Payback = Years until cumulative cash inflows = Initial Investment"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Simple to calculate and explain",
+        "IGNORES time value of money and cash flows after payback — major weakness",
+        "IGNORES profitability — a project can recover its cost quickly but earn nothing after",
+        "Used as a RISK measure — shorter payback = less exposure",
+        "Discounted Payback Period: uses discounted cash flows — addresses time value but still ignores post-payback flows"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "4. Profitability Index (PI)"
+    },
+    {
+      "t": "f",
+      "l": "Profitability Index",
+      "v": "PI = PV of Future Cash Flows / Initial Investment | Accept if PI ≥ 1.0"
+    },
+    {
+      "t": "p",
+      "v": "PI measures VALUE CREATED PER DOLLAR INVESTED. Useful for RANKING projects under CAPITAL RATIONING (limited budget) — rank by PI and fund from highest PI down."
+    },
+    {
+      "t": "h",
+      "v": "5. Accounting Rate of Return (ARR)"
+    },
+    {
+      "t": "f",
+      "l": "ARR",
+      "v": "ARR = Average Annual Net Income / Average (or Initial) Investment"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Based on ACCOUNTING income (not cash flows) — ignores time value",
+        "Least preferred method for capital budgeting decisions",
+        "May conflict with NPV/IRR because it uses accrual income, not cash flows"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Method Comparison"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Method",
+        "Time Value?",
+        "Cash Flows?",
+        "Best For"
+      ],
+      "r": [
+        [
+          "NPV",
+          "YES",
+          "ALL",
+          "Primary decision — value created"
+        ],
+        [
+          "IRR",
+          "YES",
+          "ALL",
+          "Express return as a % for communication"
+        ],
+        [
+          "Payback",
+          "NO",
+          "Pre-payback only",
+          "Risk screening — quick liquidity check"
+        ],
+        [
+          "Discounted Payback",
+          "YES",
+          "Pre-payback only",
+          "Risk screening with TVM"
+        ],
+        [
+          "PI",
+          "YES",
+          "ALL",
+          "Ranking under capital rationing"
+        ],
+        [
+          "ARR",
+          "NO",
+          "NO (uses income)",
+          "Simple benchmark — NOT recommended"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Weighted Average Cost of Capital (WACC)"
+    },
+    {
+      "t": "p",
+      "v": "WACC is the REQUIRED RATE OF RETURN (discount rate) used in NPV analysis. It represents the blended return demanded by ALL capital providers (equity holders AND debt holders), weighted by their proportion of total capital."
+    },
+    {
+      "t": "f",
+      "l": "WACC Formula",
+      "v": "WACC = (E/V × Re) + (D/V × Rd × (1 − Tax Rate)) | E = Market value of equity | D = Market value of debt | V = E + D | Re = Cost of equity | Rd = Pre-tax cost of debt"
+    },
+    {
+      "t": "p",
+      "v": "The (1 − Tax Rate) factor reflects the TAX SHIELD on debt — interest expense is tax-deductible, reducing the after-tax cost of debt. Example: 8% pre-tax debt rate, 25% tax rate → after-tax cost of debt = 8% × (1 − 0.25) = 6%."
+    },
+    {
+      "t": "b",
+      "v": [
+        "WACC = the minimum return a project must earn to satisfy all capital providers",
+        "If project IRR > WACC → accept. If IRR < WACC → reject",
+        "If NPV is positive using WACC as discount rate → project creates value above the minimum required"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "After-Tax Cash Flows — Key Adjustments"
+    },
+    {
+      "t": "f",
+      "l": "Depreciation Tax Shield",
+      "v": "Annual Tax Savings = Annual Depreciation × Tax Rate | This is a CASH INFLOW in the after-tax analysis"
+    },
+    {
+      "t": "f",
+      "l": "After-Tax Salvage Value",
+      "v": "After-Tax SV = Salvage Value − (Salvage Value − Book Value) × Tax Rate | If sold ABOVE book value → pay tax on gain | If sold BELOW book value → tax saving on loss"
+    },
+    {
+      "t": "p",
+      "v": "Example: Asset purchased for $100,000. Book value at disposal = $20,000. Sold for $50,000. Tax rate = 30%. Gain on disposal = $50,000 − $20,000 = $30,000. Tax on gain = $30,000 × 30% = $9,000. After-tax SV = $50,000 − $9,000 = $41,000."
+    },
+    {
+      "t": "h",
+      "v": "Modified IRR (MIRR)"
+    },
+    {
+      "t": "p",
+      "v": "MIRR addresses IRR's reinvestment assumption problem. Traditional IRR assumes cash flows are reinvested at the IRR rate (often unrealistic). MIRR explicitly assumes reinvestment at the COST OF CAPITAL. MIRR generally gives a more realistic and conservative return estimate. When NPV and MIRR conflict, still use NPV as the primary decision tool."
+    },
+    {
+      "t": "h",
+      "v": "NPV Profile and Crossover Rate"
+    },
+    {
+      "t": "p",
+      "v": "An NPV profile plots NPV against various discount rates. For mutually exclusive projects, the NPV profiles may cross at a CROSSOVER RATE. Below the crossover rate, one project has higher NPV; above it, the other does. Always choose based on NPV at your ACTUAL WACC — not based on which has higher NPV across all discount rates."
+    },
+    {
+      "t": "h",
+      "v": "Post-Audit of Capital Projects"
+    },
+    {
+      "t": "p",
+      "v": "A post-audit (post-completion audit) is a follow-up review AFTER a capital project is implemented. It compares actual cash flows to the original projections."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Timing: typically 1–2 years after project implementation",
+        "Purpose: accountability, improve future estimates, detect problems early",
+        "Benefits: reduces optimism bias (managers know projections will be checked), improves quality of future capital proposals",
+        "Limitations: difficult to isolate individual project cash flows from total business activity; sunk cost argument may distort results",
+        "Key lesson from HOCK: the post-audit is a CONTROL mechanism — it closes the loop between capital budgeting decisions and actual outcomes"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: NPV = best method. IRR = discount rate making NPV = 0. Accept if IRR ≥ hurdle rate (WACC). WACC = blended cost of capital (equity + after-tax debt). Payback ignores TVM and post-payback flows. PI = PV/Investment — used for capital rationing. If NPV and IRR conflict on mutually exclusive → follow NPV. Sunk costs NEVER relevant. Opportunity costs ALWAYS relevant. Working capital recovered at project end. Depreciation Tax Shield = Depreciation × Tax Rate (cash inflow). After-tax salvage = SV minus tax on gain. Post-audit closes the control loop on capital decisions. MIRR corrects IRR's reinvestment assumption."
+    }
+  ]
+}

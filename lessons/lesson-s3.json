@@ -1,0 +1,1789 @@
+{
+  "3-1": [
+    {
+      "t": "h",
+      "v": "What Is Variance Analysis?"
+    },
+    {
+      "t": "p",
+      "v": "Variance analysis is the process of comparing ACTUAL results with BUDGETED (standard) amounts for the same period. It identifies differences so management can investigate causes and take corrective action."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Identify areas where performance differs from expectations",
+        "Support management by exception — focus on significant variances",
+        "Help improve efficiency, cost control, and decision-making"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Management by Exception"
+    },
+    {
+      "t": "p",
+      "v": "A management system where only SIGNIFICANT deviations from the budget are reported. Benefits: saves time, identifies unfavorable and favorable trends. Limitations: minor but consistent trends may be missed; too many variances can cause confusion."
+    },
+    {
+      "t": "h",
+      "v": "Standard Costs"
+    },
+    {
+      "t": "p",
+      "v": "The predetermined cost of producing one unit under EXPECTED conditions. Components: Direct Materials (Qty × Price), Direct Labor (Hours × Rate), Manufacturing Overhead (Predetermined rate)."
+    },
+    {
+      "t": "h",
+      "v": "Levels of Activity for Standard Costs"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Level",
+        "Description",
+        "Notes"
+      ],
+      "r": [
+        [
+          "Ideal (Theoretical)",
+          "No downtime, waste, or inefficiency",
+          "Unrealistic — not used for budgeting"
+        ],
+        [
+          "Practical (Attainable)",
+          "Ideal minus normal downtime & learning curve",
+          "Most common — challenging but achievable"
+        ],
+        [
+          "Normal",
+          "Average expected output over several years",
+          "Smooths seasonal fluctuations"
+        ],
+        [
+          "Master Budget Capacity",
+          "Planned utilization for next budget period",
+          "Used for short-term planning"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Sources for Setting Standards"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Source",
+        "Benefit",
+        "Limitation"
+      ],
+      "r": [
+        [
+          "Activity Analysis",
+          "Most accurate — uses time-and-motion studies",
+          "Time-consuming and costly"
+        ],
+        [
+          "Engineering Studies",
+          "Scientifically measures each task and resource requirement",
+          "Expensive; assumes ideal conditions"
+        ],
+        [
+          "Historical Data",
+          "Low cost, realistic — based on past actuals",
+          "May perpetuate past inefficiencies"
+        ],
+        [
+          "Benchmarking",
+          "Encourages competitiveness against best-in-class",
+          "May not perfectly fit company's processes"
+        ],
+        [
+          "Target Costing",
+          "Market-driven — starts with price and works backward",
+          "Requires process innovation to hit cost target"
+        ],
+        [
+          "Market-Based Standards",
+          "Driven by competitor pricing or customer willingness to pay",
+          "External; may not reflect internal capabilities"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Three Levels of Variance Analysis"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Level",
+        "Name",
+        "Detail"
+      ],
+      "r": [
+        [
+          "1",
+          "Static Budget Variances",
+          "Least detail — compare actual to master budget"
+        ],
+        [
+          "2",
+          "Flexible Budget & Sales Volume Variances",
+          "Adjusts for actual activity; separates price/efficiency from volume"
+        ],
+        [
+          "3",
+          "Input Variances & Mix/Quantity",
+          "Most detailed — price, efficiency, mix, yield for each input"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Favorable vs Unfavorable Rules"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Revenue/Income: Positive = Favorable (F); Negative = Unfavorable (U)",
+        "Costs/Expenses: Positive = Unfavorable (U); Negative = Favorable (F)"
+      ]
+    },
+    {
+      "t": "f",
+      "l": "Static Budget Variance",
+      "v": "Variance = Actual − Budget"
+    },
+    {
+      "t": "f",
+      "l": "Flexible Budget Variance",
+      "v": "Flexible Budget Variance = Actual Results − Flexible Budget"
+    },
+    {
+      "t": "f",
+      "l": "Sales Volume Variance",
+      "v": "Sales Volume Variance = Flexible Budget − Static Budget"
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Standard costs = predetermined costs under NORMAL conditions. Practical standard = most common. Management by exception = focus on significant variances. Level 1 = static budget. Level 2 = flexible budget + volume. Level 3 = input (price + efficiency + mix + yield). Fixed costs stay same in flexible budgets within relevant range."
+    }
+  ],
+  "3-2": [
+    {
+      "t": "h",
+      "v": "Introduction to Manufacturing Input Variances"
+    },
+    {
+      "t": "p",
+      "v": "Manufacturing input variances are differences between ACTUAL costs and STANDARD costs allowed for the actual level of output. They appear on a PRODUCTION variance report (based on units produced, not sold)."
+    },
+    {
+      "t": "h",
+      "v": "Total Direct Materials Variance"
+    },
+    {
+      "t": "f",
+      "l": "Total DM Variance",
+      "v": "Total DM Variance = (AP × AQ) − (SP × SQ) | AP = Actual Price, AQ = Actual Qty Used, SP = Standard Price, SQ = Standard Qty Allowed for actual output"
+    },
+    {
+      "t": "h",
+      "v": "DM Price Variance"
+    },
+    {
+      "t": "f",
+      "l": "DM Price Variance",
+      "v": "(AP − SP) × AQ | Positive = Unfavorable (paid more) | Negative = Favorable (paid less)"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Cause",
+        "Unfavorable / Favorable"
+      ],
+      "r": [
+        [
+          "Market price increases",
+          "Unfavorable"
+        ],
+        [
+          "Poor purchasing decisions",
+          "Unfavorable"
+        ],
+        [
+          "Market price decreases",
+          "Favorable"
+        ],
+        [
+          "Better supplier negotiations",
+          "Favorable"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "DM Quantity (Efficiency) Variance"
+    },
+    {
+      "t": "f",
+      "l": "DM Quantity Variance",
+      "v": "(AQ − SQ) × SP | Positive = Unfavorable (used more) | Negative = Favorable (used less)"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Cause",
+        "Unfavorable / Favorable"
+      ],
+      "r": [
+        [
+          "Low quality materials",
+          "Unfavorable"
+        ],
+        [
+          "Poor machine maintenance",
+          "Unfavorable"
+        ],
+        [
+          "Abnormal spoilage / theft",
+          "Unfavorable"
+        ],
+        [
+          "Better quality materials",
+          "Favorable"
+        ],
+        [
+          "Improved worker performance",
+          "Favorable"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Materials Purchase Price Variance"
+    },
+    {
+      "t": "f",
+      "l": "Purchase Price Variance",
+      "v": "(AP − SP) × Quantity PURCHASED (not used) | Benefits: identifies purchasing problems immediately"
+    },
+    {
+      "t": "h",
+      "v": "Relationship Between Variances"
+    },
+    {
+      "t": "f",
+      "l": "Relationship",
+      "v": "Price Variance + Quantity Variance = Total DM Variance"
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: DM Price Variance uses AQ PURCHASED. DM Quantity Variance uses AQ USED vs SQ ALLOWED for actual output. SQ Allowed = Standard qty per unit × Actual units produced. Both variances use STANDARD PRICE as the common denominator for the quantity variance. Investigate ALL significant variances — both favorable and unfavorable."
+    }
+  ],
+  "3-3": [
+    {
+      "t": "h",
+      "v": "Total Direct Labor Variance"
+    },
+    {
+      "t": "f",
+      "l": "Total DL Variance",
+      "v": "Total DL Variance = (AR × AH) − (SR × SH) | AR = Actual Rate, AH = Actual Hours, SR = Standard Rate, SH = Standard Hours Allowed for actual output"
+    },
+    {
+      "t": "h",
+      "v": "DL Rate Variance (Price Variance)"
+    },
+    {
+      "t": "f",
+      "l": "DL Rate Variance",
+      "v": "(AR − SR) × AH | Positive = Unfavorable (paid more) | Negative = Favorable (paid less)"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Cause",
+        "Direction"
+      ],
+      "r": [
+        [
+          "Wage increases without updating standards",
+          "Unfavorable"
+        ],
+        [
+          "Poor wage rate projections",
+          "Unfavorable"
+        ],
+        [
+          "Using higher-skilled workers at premium rates",
+          "Unfavorable"
+        ],
+        [
+          "Paying lower wages than standard",
+          "Favorable"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "DL Efficiency Variance (Quantity Variance)"
+    },
+    {
+      "t": "f",
+      "l": "DL Efficiency Variance",
+      "v": "(AH − SH) × SR | Positive = Unfavorable (more hours used) | Negative = Favorable (fewer hours used)"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Cause",
+        "Direction"
+      ],
+      "r": [
+        [
+          "Inexperienced or untrained workers",
+          "Unfavorable"
+        ],
+        [
+          "Poor material quality slowing production",
+          "Unfavorable"
+        ],
+        [
+          "Equipment breakdowns",
+          "Unfavorable"
+        ],
+        [
+          "Skilled workers exceeding expectations",
+          "Favorable"
+        ],
+        [
+          "Better training and improved methods",
+          "Favorable"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Relationship Between Variances"
+    },
+    {
+      "t": "f",
+      "l": "Relationship",
+      "v": "Total DL Variance = Rate Variance + Efficiency Variance"
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: DL Rate Variance = actual rate vs standard × actual hours worked. DL Efficiency Variance = actual hours vs standard hours allowed × STANDARD rate. Standard hours allowed = standard hours per unit × actual units produced. Buying cheaper DM may increase DL inefficiency (rework). Variances often interrelated."
+    }
+  ],
+  "3-4": [
+    {
+      "t": "h",
+      "v": "Introduction"
+    },
+    {
+      "t": "p",
+      "v": "When MORE THAN ONE type of direct material or more than one WAGE CLASS of labor is used, the Quantity Variance is further broken into MIX and YIELD variances."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Single input: Total → Price + Quantity",
+        "Multiple inputs: Total → Price + (Mix + Yield)",
+        "Mix Variance = change in proportion of inputs used",
+        "Yield Variance = change in total inputs used vs standard"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Mix Variance"
+    },
+    {
+      "t": "f",
+      "l": "Mix Variance",
+      "v": "Mix Variance = (WASP_AM − WASP_SM) × Total AQ | WASP_AM = Weighted Avg Std Price of Actual Mix | WASP_SM = Weighted Avg Std Price of Standard Mix"
+    },
+    {
+      "t": "p",
+      "v": "Interpretation: Positive = Unfavorable (using more of HIGH-cost inputs). Negative = Favorable (using more of LOW-cost inputs)."
+    },
+    {
+      "t": "h",
+      "v": "How to Calculate WASP"
+    },
+    {
+      "t": "b",
+      "v": [
+        "WASP for Actual Mix (WASP_AM): Multiply actual qty of each input × its standard price, add all, divide by total actual qty",
+        "WASP for Standard Mix (WASP_SM): Multiply standard qty allowed of each input × its standard price, add all, divide by total standard qty allowed"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Worked Example — WASP Calculation"
+    },
+    {
+      "t": "p",
+      "v": "Standard mix for 1,000 units of output: Material A = 600 kg at $4/kg standard; Material B = 400 kg at $10/kg standard. Total standard qty = 1,000 kg. Actual usage: Material A = 500 kg; Material B = 550 kg. Total actual qty = 1,050 kg."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "",
+        "Material A",
+        "Material B",
+        "Total"
+      ],
+      "r": [
+        [
+          "Standard qty allowed",
+          "600 kg",
+          "400 kg",
+          "1,000 kg"
+        ],
+        [
+          "Actual qty used",
+          "500 kg",
+          "550 kg",
+          "1,050 kg"
+        ],
+        [
+          "Standard price",
+          "$4/kg",
+          "$10/kg",
+          "—"
+        ],
+        [
+          "Std cost at actual qty",
+          "500×$4=$2,000",
+          "550×$10=$5,500",
+          "$7,500"
+        ],
+        [
+          "Std cost at std qty",
+          "600×$4=$2,400",
+          "400×$10=$4,000",
+          "$6,400"
+        ]
+      ]
+    },
+    {
+      "t": "f",
+      "l": "WASP_AM (actual mix)",
+      "v": "$7,500 ÷ 1,050 kg = $7.143/kg"
+    },
+    {
+      "t": "f",
+      "l": "WASP_SM (standard mix)",
+      "v": "$6,400 ÷ 1,000 kg = $6.40/kg"
+    },
+    {
+      "t": "f",
+      "l": "Mix Variance",
+      "v": "(WASP_AM − WASP_SM) × Total AQ = ($7.143 − $6.40) × 1,050 = $0.743 × 1,050 = $780 UNFAVORABLE (used more high-cost Material B than standard)"
+    },
+    {
+      "t": "f",
+      "l": "Yield Variance",
+      "v": "(Total AQ − Total SQ) × WASP_SM = (1,050 − 1,000) × $6.40 = 50 × $6.40 = $320 UNFAVORABLE (used 50 kg more total than standard)"
+    },
+    {
+      "t": "f",
+      "l": "Total Quantity Variance",
+      "v": "Mix $780 U + Yield $320 U = $1,100 Unfavorable — verify: (AP×AQ)−(SP×SQ) method gives same result"
+    },
+    {
+      "t": "h",
+      "v": "Yield Variance"
+    },
+    {
+      "t": "f",
+      "l": "Yield Variance",
+      "v": "Yield Variance = (Total AQ − Total SQ) × WASP_SM | Positive = Unfavorable (used more total inputs) | Negative = Favorable (used fewer total inputs)"
+    },
+    {
+      "t": "h",
+      "v": "Relationship"
+    },
+    {
+      "t": "f",
+      "l": "Relationship",
+      "v": "Total Quantity Variance = Mix Variance + Yield Variance"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Variance",
+        "What It Measures",
+        "Formula"
+      ],
+      "r": [
+        [
+          "Price",
+          "Cost of each input vs standard",
+          "(AP − SP) × AQ"
+        ],
+        [
+          "Mix",
+          "Proportion of inputs used",
+          "(WASP_AM − WASP_SM) × Total AQ"
+        ],
+        [
+          "Yield",
+          "Total quantity efficiency",
+          "(Total AQ − Total SQ) × WASP_SM"
+        ]
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Mix and Yield only calculated when MORE THAN ONE input type is used. WASP_AM = weighted average std price using actual proportions. WASP_SM = weighted average std price using standard proportions. Favorable mix = using more LOW-cost inputs. Favorable yield = using LESS total input than standard."
+    }
+  ],
+  "3-5": [
+    {
+      "t": "h",
+      "v": "Overhead Cost Overview"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Type",
+        "Definition",
+        "Examples"
+      ],
+      "r": [
+        [
+          "Variable OH (VOH)",
+          "Changes with production volume",
+          "Indirect materials, power usage"
+        ],
+        [
+          "Fixed OH (FOH)",
+          "Constant within relevant range",
+          "Rent, salaries, depreciation"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Variable Overhead Variances"
+    },
+    {
+      "t": "f",
+      "l": "Total VOH Variance",
+      "v": "Total VOH Variance = Actual VOH Incurred − Applied VOH | Applied VOH = Standard VOH Rate × Standard Qty of allocation base allowed for actual output"
+    },
+    {
+      "t": "f",
+      "l": "VOH Spending Variance (Price)",
+      "v": "(AP − SP) × AQ | AP = Actual VOH rate, SP = Standard VOH rate, AQ = Actual allocation base used"
+    },
+    {
+      "t": "f",
+      "l": "VOH Efficiency Variance (Quantity)",
+      "v": "(AQ − SQ) × SP | AQ = Actual allocation base used, SQ = Standard base allowed for actual output, SP = Standard VOH rate"
+    },
+    {
+      "t": "p",
+      "v": "VOH Efficiency Variance: measures efficiency in using the ALLOCATION BASE (e.g., DL hours). If labor hours are the base, same causes as DL Efficiency Variance."
+    },
+    {
+      "t": "f",
+      "l": "VOH Relationship",
+      "v": "VOH Spending Variance + VOH Efficiency Variance = Total VOH Variance"
+    },
+    {
+      "t": "h",
+      "v": "Fixed Overhead Variances"
+    },
+    {
+      "t": "f",
+      "l": "Total FOH Variance",
+      "v": "Total FOH Variance = Actual FOH Incurred − Applied FOH | Applied FOH = Standard FOH rate × Standard usage for actual output"
+    },
+    {
+      "t": "f",
+      "l": "FOH Spending Variance",
+      "v": "Actual FOH − Budgeted FOH | Positive = Unfavorable (spent more than budgeted)"
+    },
+    {
+      "t": "f",
+      "l": "FOH Production Volume Variance",
+      "v": "Budgeted FOH − Applied FOH | Positive = Unfavorable (produced less than planned — under-absorbed FOH)"
+    },
+    {
+      "t": "p",
+      "v": "FOH Volume Variance: NO link to actual costs — purely measures CAPACITY UTILIZATION. It shows how well fixed costs are absorbed based on actual vs planned output."
+    },
+    {
+      "t": "f",
+      "l": "FOH Relationship",
+      "v": "FOH Spending Variance + FOH Production Volume Variance = Total FOH Variance"
+    },
+    {
+      "t": "h",
+      "v": "Total Overhead Flexible Budget Variance"
+    },
+    {
+      "t": "f",
+      "l": "Total OH Flexible Budget Variance",
+      "v": "= Actual Total OH − Total Flexible Budget OH for Actual Output | Includes: VOH Spending + VOH Efficiency + FOH Spending | EXCLUDES: FOH Production Volume Variance"
+    },
+    {
+      "t": "h",
+      "v": "2-Variance, 3-Variance, and 4-Variance Methods Compared"
+    },
+    {
+      "t": "p",
+      "v": "The IMA tests all three overhead analysis methods. They differ only in how much detail is reported — all three arrive at the same total overhead variance."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Method",
+        "Variances Reported",
+        "Detail Level"
+      ],
+      "r": [
+        [
+          "2-Variance",
+          "(1) Budget (Controllable) Variance = VOH Spending + VOH Efficiency + FOH Spending  |  (2) Production Volume Variance = FOH Volume",
+          "Least detail — combines all controllable variances into one"
+        ],
+        [
+          "3-Variance",
+          "(1) Spending Variance = VOH Spending + FOH Spending  |  (2) Efficiency Variance = VOH Efficiency  |  (3) Production Volume Variance = FOH Volume",
+          "Mid-level — separates efficiency from spending"
+        ],
+        [
+          "4-Variance",
+          "(1) VOH Spending  (2) VOH Efficiency  (3) FOH Spending  (4) FOH Production Volume",
+          "Most detail — each variance reported separately"
+        ]
+      ]
+    },
+    {
+      "t": "f",
+      "l": "2-Variance: Budget (Controllable) Variance",
+      "v": "Actual Total OH − Flexible Budget OH for Actual Output | = VOH Spending + VOH Efficiency + FOH Spending"
+    },
+    {
+      "t": "f",
+      "l": "2-Variance: Production Volume Variance",
+      "v": "Flexible Budget FOH − Applied FOH | Same as the 4-variance FOH Volume Variance"
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: VOH Spending = actual vs standard RATE per base unit. VOH Efficiency = allocation base efficiency. FOH Spending = actual vs BUDGETED fixed cost. FOH Volume = capacity utilization (no connection to actual spending). FOH Volume Unfavorable = produced LESS than planned. The Flexible Budget OH Variance EXCLUDES FOH Volume Variance. Know all three methods (2-, 3-, 4-variance) — the IMA tests all of them."
+    }
+  ],
+  "3-6": [
+    {
+      "t": "h",
+      "v": "Introduction to Sales Variances"
+    },
+    {
+      "t": "p",
+      "v": "Sales variances measure differences between ACTUAL and BUDGETED results for revenues, variable costs, and contribution margin — based on UNITS SOLD (not produced). Unlike manufacturing variances which are based on production."
+    },
+    {
+      "t": "h",
+      "v": "Types of Sales Variances"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Variance",
+        "Formula",
+        "Measures"
+      ],
+      "r": [
+        [
+          "Static Budget Variance",
+          "Actual − Static Budget",
+          "Total difference (price + volume combined)"
+        ],
+        [
+          "Flexible Budget Variance",
+          "Actual − Flexible Budget",
+          "Price/efficiency difference at actual volume"
+        ],
+        [
+          "Sales Volume Variance",
+          "Flexible Budget − Static Budget",
+          "Impact of selling different units than planned"
+        ],
+        [
+          "Selling Price Variance",
+          "(AP − SP) × AQ",
+          "Effect of charging different price than budget"
+        ]
+      ]
+    },
+    {
+      "t": "f",
+      "l": "Relationship",
+      "v": "Flexible Budget Variance + Sales Volume Variance = Static Budget Variance"
+    },
+    {
+      "t": "h",
+      "v": "Selling Price Variance"
+    },
+    {
+      "t": "f",
+      "l": "Selling Price Variance",
+      "v": "(AP − SP) × AQ | AP = Actual price, SP = Standard/budgeted price, AQ = Actual qty sold | Positive = FAVORABLE (sold at higher price)"
+    },
+    {
+      "t": "h",
+      "v": "Sales Volume Variance — Single Product"
+    },
+    {
+      "t": "f",
+      "l": "Sales Volume Variance",
+      "v": "(AQ − SQ) × SP | AQ = Actual qty sold, SQ = Budgeted qty, SP = Budgeted selling price | Positive = FAVORABLE (sold more units)"
+    },
+    {
+      "t": "h",
+      "v": "Variable Cost and CM Variances"
+    },
+    {
+      "t": "p",
+      "v": "Apply same formulas but SP replaced with budgeted variable cost per unit (for costs) or budgeted CM per unit (for CM). For costs: negative variance = Favorable (lower actual cost)."
+    },
+    {
+      "t": "h",
+      "v": "Multi-Product: Sales Quantity and Mix Variances"
+    },
+    {
+      "t": "f",
+      "l": "Sales Quantity Variance",
+      "v": "(AQ total − SQ total) × WASP_SM | WASP_SM = Weighted Avg Std Price for Standard Mix"
+    },
+    {
+      "t": "f",
+      "l": "Sales Mix Variance",
+      "v": "(WASP_AM − WASP_SM) × AQ total | WASP_AM = Weighted Avg Std Price for Actual Mix"
+    },
+    {
+      "t": "f",
+      "l": "Relationship",
+      "v": "Sales Quantity Variance + Sales Mix Variance = Total Sales Volume Variance"
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Sales variances based on UNITS SOLD (not produced). Selling Price Variance: positive = Favorable (opposite to cost variances). Sales Volume Variance: use BUDGETED CM per unit for contribution margin analysis. Multi-product: Volume splits into Quantity + Mix variances."
+    }
+  ],
+  "3-7": [
+    {
+      "t": "h",
+      "v": "Introduction to Market Variances"
+    },
+    {
+      "t": "p",
+      "v": "Market variances break down the SALES QUANTITY VARIANCE (for multi-product companies) or SALES VOLUME VARIANCE (for single-product companies) into two components based on EXTERNAL market data:"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Market Size Variance (MSV): Change due to OVERALL MARKET DEMAND SIZE",
+        "Market Share Variance (MSHV): Change due to company's PROPORTION of the market"
+      ]
+    },
+    {
+      "t": "f",
+      "l": "Relationship",
+      "v": "Market Size Variance + Market Share Variance = Sales Quantity Variance (multi-product) OR Sales Volume Variance (single product)"
+    },
+    {
+      "t": "h",
+      "v": "Market Size Variance (MSV)"
+    },
+    {
+      "t": "f",
+      "l": "Market Size Variance",
+      "v": "(Actual Market Size − Expected Market Size) × Expected Market Share % × WASCMP_SM | WASCMP_SM = Weighted Avg Standard CM per unit for Standard Mix"
+    },
+    {
+      "t": "p",
+      "v": "Interpretation: Positive (F) = market GREW beyond expectations — more opportunity. Negative (U) = market CONTRACTED."
+    },
+    {
+      "t": "h",
+      "v": "Market Share Variance (MSHV)"
+    },
+    {
+      "t": "f",
+      "l": "Market Share Variance",
+      "v": "(Actual Market Share − Expected Market Share) × Actual Market Size × WASCMP_SM"
+    },
+    {
+      "t": "p",
+      "v": "Interpretation: Positive (F) = gained MORE market share than planned. Negative (U) = LOST market share to competitors."
+    },
+    {
+      "t": "h",
+      "v": "Why Market Variances Matter"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Separate EXTERNAL factors (market size) from INTERNAL factors (market share)",
+        "A company can beat its sales budget only because the market grew (MSV favorable) but lose share (MSHV unfavorable) — this is a warning sign",
+        "Conversely, a company may miss budget because the market shrank, yet gained share — a positive internal performance signal"
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: MSV = external factor (industry demand change). MSHV = internal factor (competitive position). MSV favorable = industry grew. MSHV favorable = company captured more of the market. Together they explain the Sales Quantity Variance. Use CONTRIBUTION MARGIN per unit (not selling price) for multi-product analysis."
+    }
+  ],
+  "3-8": [
+    {
+      "t": "h",
+      "v": "Responsibility Accounting System"
+    },
+    {
+      "t": "p",
+      "v": "A system that measures FINANCIAL RESULTS of each responsibility center separately, allowing combination of all centers' results to evaluate total company performance. Links PLANNING (budgets) with CONTROL (actual vs budget)."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Purpose: Evaluate performance of subunits and managers",
+        "Provides motivation through clear accountability",
+        "Supports strategic decision-making",
+        "Key principle: Evaluate managers ONLY on what they CAN CONTROL"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Types of Responsibility Centers"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Type",
+        "Responsible For",
+        "Performance Measure",
+        "Example"
+      ],
+      "r": [
+        [
+          "Cost Center",
+          "Costs only",
+          "Efficiency (max productivity, min waste)",
+          "Production dept, IT dept"
+        ],
+        [
+          "Revenue Center",
+          "Revenues only",
+          "Effectiveness (generate desired revenue)",
+          "Sales department"
+        ],
+        [
+          "Profit Center",
+          "Both revenues and costs",
+          "Profitability",
+          "Store, product division"
+        ],
+        [
+          "Investment Center",
+          "Profit AND ROI",
+          "ROI, Residual Income",
+          "Regional subsidiary"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Manager vs. Unit Performance"
+    },
+    {
+      "t": "p",
+      "v": "KEY PRINCIPLE: Evaluate managers only on what THEY CAN CONTROL. A unit may underperform due to factors outside the manager's control. Evaluate: (1) Manager on controllable items, (2) Unit on ALL traceable items."
+    },
+    {
+      "t": "h",
+      "v": "Controllable vs. Non-Controllable Costs"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Type",
+        "Definition",
+        "Include in Evaluation?"
+      ],
+      "r": [
+        [
+          "Controllable",
+          "Manager can directly influence during the period",
+          "YES — include in manager's report"
+        ],
+        [
+          "Non-Controllable",
+          "Outside manager's influence (allocated HQ costs)",
+          "NO — exclude from manager's evaluation"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Common Costs vs. Shared Services Costs"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Common Costs: Cannot be traced to a specific department on a cause-effect basis. Remain even if department is eliminated. Example: CEO salary.",
+        "Shared Services: Support functions used by multiple units, allocated based on usage. Example: IT, payroll, maintenance."
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Common Cost Allocation Methods"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Method",
+        "Description",
+        "Notes"
+      ],
+      "r": [
+        [
+          "Stand-Alone",
+          "Each unit treated as independent; allocate based on proportion of usage",
+          "Viewed as 'fair' — proportional"
+        ],
+        [
+          "Incremental",
+          "Rank units by size; primary bears most cost; remainder allocated to others",
+          "Supports smaller/newer units"
+        ]
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: 4 types of responsibility centers: Cost, Revenue, Profit, Investment. Investment center = ROI or RI. Manager evaluation = CONTROLLABLE costs only. Unit evaluation = ALL traceable costs. Common costs remain if unit eliminated. Shared services = allocated by usage. Stand-alone method = proportional allocation."
+    }
+  ],
+  "3-9": [
+    {
+      "t": "h",
+      "v": "Contribution Income Statement (CIS)"
+    },
+    {
+      "t": "p",
+      "v": "Classifies costs by BEHAVIOR (variable vs. fixed) rather than by function. Key difference from traditional (absorption) income statement: separates fixed costs and focuses on CONTRIBUTION MARGIN."
+    },
+    {
+      "t": "h",
+      "v": "Four Levels of the CIS"
+    },
+    {
+      "t": "h",
+      "v": "Level 1 — Manufacturing Contribution Margin (MCM)"
+    },
+    {
+      "t": "f",
+      "l": "MCM",
+      "v": "MCM = Net Revenues − Variable Manufacturing Costs | Variable Mfg Costs = DM + DL + Variable MOH"
+    },
+    {
+      "t": "p",
+      "v": "Shows funds available after covering variable manufacturing costs. Increases in MCM directly improve profit once fixed costs are covered."
+    },
+    {
+      "t": "h",
+      "v": "Level 2 — Contribution Margin (CM)"
+    },
+    {
+      "t": "f",
+      "l": "CM",
+      "v": "CM = MCM − Variable Non-Manufacturing Costs | Variable Non-Mfg = Variable selling, marketing, admin"
+    },
+    {
+      "t": "p",
+      "v": "Core profitability indicator — funds available to cover ALL fixed costs after ALL variable costs."
+    },
+    {
+      "t": "h",
+      "v": "Level 3 — Controllable Margin"
+    },
+    {
+      "t": "f",
+      "l": "Controllable Margin",
+      "v": "Controllable Margin = CM − Controllable Fixed Costs | Controllable Fixed = Costs manager can influence in < 1 year (e.g., supervisors' salaries, segment-specific advertising)"
+    },
+    {
+      "t": "p",
+      "v": "Measures SHORT-TERM manager performance. Excludes costs the manager cannot influence."
+    },
+    {
+      "t": "h",
+      "v": "Level 4 — Segment Margin"
+    },
+    {
+      "t": "f",
+      "l": "Segment Margin",
+      "v": "Segment Margin = Controllable Margin − Non-Controllable Traceable Fixed Costs | Non-Controllable Traceable = Traceable to segment but NOT under manager's short-term control (facility depreciation, property taxes)"
+    },
+    {
+      "t": "p",
+      "v": "Measures LONG-TERM segment performance. Used for decisions about keeping, expanding, or eliminating the segment. NON-CONTROLLABLE TRACEABLE costs WOULD BE ELIMINATED if the segment were closed."
+    },
+    {
+      "t": "h",
+      "v": "Manager vs. Segment Evaluation Summary"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Evaluation",
+        "Costs Included",
+        "Purpose"
+      ],
+      "r": [
+        [
+          "Manager",
+          "Controllable revenues & costs only",
+          "Short-term performance evaluation"
+        ],
+        [
+          "Segment",
+          "ALL traceable fixed costs (incl. non-controllable)",
+          "Long-term keep/expand/close decision"
+        ]
+      ]
+    },
+    {
+      "t": "f",
+      "l": "Profit Margin Ratio",
+      "v": "Profit Margin Ratio = Net Income / Revenue | Improve by: increase sales, reduce costs, or increase sales faster than costs"
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: CIS has 4 levels: MCM → CM → Controllable Margin → Segment Margin. MCM = Revenue − Variable Mfg costs. CM = MCM − Variable Non-Mfg. Controllable = CM − controllable fixed. Segment = Controllable − non-controllable traceable fixed. Non-controllable traceable fixed costs are ELIMINATED if segment is closed."
+    }
+  ],
+  "3-10": [
+    {
+      "t": "h",
+      "v": "What Is Transfer Pricing?"
+    },
+    {
+      "t": "p",
+      "v": "A transfer price is the price charged for goods or services EXCHANGED BETWEEN SUB-UNITS of the same organization. The exchanged item is called an INTERMEDIATE PRODUCT."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Selling division records REVENUE",
+        "Buying division records COST",
+        "At corporate level: internal transaction ELIMINATED — no effect on consolidated net income",
+        "But: affects DIVISIONAL profits → impacts performance evaluation of managers"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Objectives of a Transfer Pricing System"
+    },
+    {
+      "t": "b",
+      "v": [
+        "1. Promote GOAL CONGRUENCE — align divisional and company goals",
+        "2. Allow senior management to EVALUATE PERFORMANCE fairly",
+        "3. PRESERVE AUTONOMY in decentralized organizations",
+        "4. Motivate managers to control costs and use resources efficiently",
+        "5. Meet LEGAL/TAX requirements (arm's-length pricing for international)",
+        "6. Be PRACTICAL and easy to administer"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Transfer Pricing Methods"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Method",
+        "Formula/Basis",
+        "Key Advantage",
+        "Key Disadvantage"
+      ],
+      "r": [
+        [
+          "Market Price",
+          "External market price",
+          "Objective, fair, arm's-length",
+          "Buyer has no cost advantage vs external"
+        ],
+        [
+          "Cost + Opportunity Cost",
+          "Outlay Cost + CM lost from forgone external sales",
+          "Compensates seller fairly",
+          "May not incentivize cost reduction"
+        ],
+        [
+          "Variable Cost",
+          "Variable production cost only",
+          "Encourages internal purchase (excess capacity)",
+          "Hurts seller at full capacity"
+        ],
+        [
+          "Full Cost",
+          "DM + DL + Allocated Fixed OH",
+          "Easy from accounting records",
+          "Fixed costs may mislead decisions"
+        ],
+        [
+          "Cost Plus",
+          "Full or variable cost + markup",
+          "Seller earns profit",
+          "Markup negotiation may be subjective"
+        ],
+        [
+          "Negotiated",
+          "Negotiated between managers",
+          "Flexible",
+          "Reflects negotiating skills, not efficiency"
+        ],
+        [
+          "Arbitrary",
+          "Set by central management",
+          "Retains central control",
+          "Hurts divisional autonomy"
+        ],
+        [
+          "Dual-Rate",
+          "Seller at market; buyer at variable cost",
+          "Both divisions report strong profits",
+          "Divisional profits don't add to corporate total"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "International Transfer Pricing"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Tax authorities require ARM'S-LENGTH pricing (e.g., US IRC §482)",
+        "Companies cannot artificially shift income to low-tax jurisdictions",
+        "Customs: low transfer prices reduce import duties but invite scrutiny"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Guideline for Setting Transfer Prices"
+    },
+    {
+      "t": "f",
+      "l": "General Guideline",
+      "v": "Min Transfer Price = Outlay Cost + Opportunity Cost (CM lost from forgone external sales) | If seller at full capacity: must cover variable cost + lost CM | If seller has excess capacity: price ≥ variable cost"
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: At FULL CAPACITY: min price = variable cost + lost CM from external sale. At EXCESS CAPACITY: min price = variable cost. Market price = most objective. Dual-rate: good for both divisions but divisional profits don't add up. International: arm's-length required. Transfer price affects divisional profits but NOT consolidated company profit."
+    }
+  ],
+  "3-11": [
+    {
+      "t": "h",
+      "v": "Strategic Context"
+    },
+    {
+      "t": "p",
+      "v": "Performance measurement systems must ALIGN manager incentives with organizational objectives (goal congruence). Key issues: measures must link to strategy, balance short vs long-term, and motivate company-wide optimization."
+    },
+    {
+      "t": "b",
+      "v": [
+        "Risk: Cutting R&D boosts short-term profit but harms long-term competitiveness",
+        "Timing: Profit center managers need frequent data; top management needs summaries"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Return on Investment (ROI)"
+    },
+    {
+      "t": "f",
+      "l": "ROI",
+      "v": "ROI = Annual Operating Income / Assets Employed"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Feature",
+        "Details"
+      ],
+      "r": [
+        [
+          "Use",
+          "Compare divisions or projects; assess vs Required Rate of Return (RRR/Hurdle Rate)"
+        ],
+        [
+          "RRR Basis",
+          "Often based on Weighted Average Cost of Capital (WACC)"
+        ],
+        [
+          "Advantage",
+          "Widely understood, allows comparison across units"
+        ],
+        [
+          "Limitation 1",
+          "Managers may REJECT profitable projects if project ROI < current division ROI (even if > RRR)"
+        ],
+        [
+          "Limitation 2",
+          "Encourages short-termism — cut long-term investments to boost short-term ROI"
+        ],
+        [
+          "Limitation 3",
+          "Distorted by accounting policy choices (inventory, depreciation)"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Residual Income (RI)"
+    },
+    {
+      "t": "f",
+      "l": "Residual Income",
+      "v": "RI = Operating Income − (Assets Employed × Required Rate of Return) | RI > 0 → Investment beneficial"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Feature",
+        "Details"
+      ],
+      "r": [
+        [
+          "Advantage 1",
+          "Encourages acceptance of all projects with ROI > RRR (unlike ROI metric)"
+        ],
+        [
+          "Advantage 2",
+          "Different RRRs can be set for different risk levels"
+        ],
+        [
+          "Advantage 3",
+          "Varying investment charges by asset class"
+        ],
+        [
+          "Limitation 1",
+          "Not scale-neutral — larger units may have higher RI due to size alone"
+        ],
+        [
+          "Limitation 2",
+          "Sensitive to RRR changes"
+        ],
+        [
+          "Limitation 3",
+          "Still affected by accounting policy differences"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Accounting Policy Effects on ROI & RI"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Inventory valuation (FIFO vs LIFO) affects income and assets",
+        "Depreciation method affects asset book value and expense",
+        "Asset capitalization thresholds",
+        "Use of full costing vs variable costing",
+        "Disposition of manufacturing variances"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Multinational Evaluation Challenges"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Inflation and recession conditions vary by country",
+        "Currency exchange rates affect reported results",
+        "Tariffs, trade regulations differ",
+        "Solution: Adjust performance metrics for local operating conditions"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Practical Adjustments for Multinational Evaluation"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Challenge",
+        "Practical Adjustment"
+      ],
+      "r": [
+        [
+          "Currency fluctuations distort reported results",
+          "Evaluate using LOCAL CURRENCY results — measure performance in the subsidiary's home currency to eliminate FX noise"
+        ],
+        [
+          "Inflation differs across countries",
+          "Adjust for local inflation rate — compare real (inflation-adjusted) growth, not nominal figures"
+        ],
+        [
+          "Uncontrollable economic conditions",
+          "Separate CONTROLLABLE factors (manager decisions) from NON-CONTROLLABLE factors (macro environment, exchange rate movements)"
+        ],
+        [
+          "Different asset costs across countries",
+          "Use CURRENT REPLACEMENT COST of assets rather than historical cost for comparability"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Economic Value Added (EVA)"
+    },
+    {
+      "t": "p",
+      "v": "EVA is a refinement of Residual Income that uses after-tax figures and market-based values. It measures whether the company creates or destroys value above the true cost of all capital employed."
+    },
+    {
+      "t": "f",
+      "l": "EVA",
+      "v": "EVA = NOPAT − (WACC × Invested Capital) | NOPAT = Net Operating Profit After Tax | Invested Capital = total capital at market (or adjusted book) value"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Feature",
+        "EVA vs RI"
+      ],
+      "r": [
+        [
+          "Profit measure used",
+          "NOPAT (after-tax) — RI typically uses operating income (pre-tax)"
+        ],
+        [
+          "Capital charge rate",
+          "WACC (market-derived) — RI may use a simpler hurdle rate"
+        ],
+        [
+          "Asset base",
+          "Invested capital, often adjusted to market value — RI typically uses book value"
+        ],
+        [
+          "Direction",
+          "EVA > 0 = value created; EVA < 0 = value destroyed — same logic as positive RI"
+        ],
+        [
+          "Best use",
+          "Shareholder value analysis and executive compensation plans"
+        ]
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: ROI = Operating Income / Assets. RI = Operating Income − (Assets × RRR). ROI problem: managers reject good projects if project ROI < current ROI. RI advantage: accept all projects where RI > 0 (project ROI > RRR). Larger divisions naturally have higher RI — not scale-neutral. Both measures affected by accounting policies. EVA = NOPAT − (WACC × Invested Capital) — more rigorous than RI; uses after-tax profit and market-based capital. Multinational: evaluate in LOCAL CURRENCY to remove FX distortion."
+    }
+  ],
+  "3-12": [
+    {
+      "t": "h",
+      "v": "Beyond Financial Measures"
+    },
+    {
+      "t": "p",
+      "v": "Traditional financial performance evaluation (quarterly profits) drives short-term thinking and neglects long-term strategy. The BALANCED SCORECARD (BSC) addresses this by integrating financial AND non-financial measures."
+    },
+    {
+      "t": "h",
+      "v": "The Balanced Scorecard (BSC)"
+    },
+    {
+      "t": "p",
+      "v": "Developed by KAPLAN & NORTON (1992). A performance management framework that translates strategic plans into a set of linked financial and operational objectives, measures, targets, and initiatives."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Perspective",
+        "Goal",
+        "Example Measures"
+      ],
+      "r": [
+        [
+          "Financial",
+          "Track financial success & shareholder value",
+          "Operating income, revenue growth, ROI, RI, gross margin %"
+        ],
+        [
+          "Customer",
+          "Targeted market segments & satisfaction",
+          "Market share %, satisfaction scores, repeat customers %, on-time delivery"
+        ],
+        [
+          "Internal Process",
+          "Improve operations to create customer value",
+          "Cycle time, production cost/unit, new products launched, defect rates"
+        ],
+        [
+          "Learning & Growth",
+          "Build foundation for long-term improvement",
+          "Employee training hours, staff turnover, IT uptime, engagement scores"
+        ]
+      ]
+    },
+    {
+      "t": "p",
+      "v": "The perspectives are HIERARCHICAL — improvements in lower-level perspectives support higher-level objectives. Financial perspective = OUTCOME; others are LEAD INDICATORS (drivers)."
+    },
+    {
+      "t": "h",
+      "v": "Linking Strategy to Measures"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Critical Success Factors (CSFs): Key activities essential to achieving strategic goals — must be limited in number and tied to strategy",
+        "Key Performance Indicators (KPIs): Quantitative measures for CSFs. Example: if 'Customer Service Excellence' is a CSF, KPI could be 'Average call wait time < 30 seconds'",
+        "Strategy Map: Visual cause-and-effect diagram — Learning → Internal Process → Customer → Financial"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "BSC Benefits & Limitations"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Benefits",
+        "Limitations"
+      ],
+      "r": [
+        [
+          "Encourages long-term focus",
+          "Difficult to compare across business units (custom scorecards)"
+        ],
+        [
+          "Aligns actions with strategy",
+          "Requires robust ERP/data systems"
+        ],
+        [
+          "Links non-financial drivers to future financial results",
+          "Non-financial measures may lack reliability"
+        ],
+        [
+          "Balanced — avoids single-metric trap",
+          "If non-financial targets don't lead to financial gains, measures must be re-evaluated"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Customer & Product Profitability Analysis"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Pareto principle: 80% of profits from 20% of customers",
+        "Identify high-value customers for retention and growth",
+        "Use ABC for product-level profitability",
+        "Relevant costs: avoidable = relevant; unavoidable = irrelevant when evaluating dropping a customer/product"
+      ]
+    },
+    {
+      "t": "h",
+      "v": "Tableau de Bord — French Predecessor to the BSC"
+    },
+    {
+      "t": "p",
+      "v": "The Tableau de Bord (French for 'dashboard') was developed in France in the early 20th century — predating the Balanced Scorecard by decades. The IMA tests students' ability to distinguish it from the BSC."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Feature",
+        "Tableau de Bord",
+        "Balanced Scorecard"
+      ],
+      "r": [
+        [
+          "Origin",
+          "France, early 1900s",
+          "Kaplan & Norton, USA, 1992"
+        ],
+        [
+          "Structure",
+          "No fixed framework — management selects any financial and non-financial KPIs relevant to their unit",
+          "Fixed 4-perspective framework: Financial, Customer, Internal Process, Learning & Growth"
+        ],
+        [
+          "Strategic linkage",
+          "Not explicitly linked to a strategy map or cause-and-effect hierarchy",
+          "Explicitly linked — strategy map shows cause-and-effect from L&G to Financial"
+        ],
+        [
+          "Cascading",
+          "Can be cascaded by unit or level",
+          "Designed to cascade from corporate to business unit to individual"
+        ],
+        [
+          "Flexibility",
+          "Highly flexible — each manager designs their own dashboard",
+          "More standardized — perspectives and linkages are defined"
+        ],
+        [
+          "Similarity",
+          "Like the BSC, uses both financial and non-financial measures",
+          "Like TdB, avoids over-reliance on financial-only metrics"
+        ]
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: BSC = 4 perspectives: Financial (outcome), Customer, Internal Process, Learning & Growth (foundation). Financial = lagging indicator. Others = leading indicators. Learning enables Internal Process → enables Customer → drives Financial. CSF = what must go right. KPI = how we measure it. Strategy Map = visual cause-and-effect. Tableau de Bord = French predecessor; flexible, no fixed framework — contrast with BSC's structured 4-perspective approach."
+    }
+  ],
+  "3-13": [
+    {
+      "t": "h",
+      "v": "Why Financial Statement Analysis?"
+    },
+    {
+      "t": "p",
+      "v": "Financial statement analysis evaluates a company's performance, financial health, and value using ratios computed from the financial statements. The CMA exam tests ratio calculation AND interpretation. Ratios must be compared to: prior periods (trends), industry averages, and specific benchmarks."
+    },
+    {
+      "t": "h",
+      "v": "1. Liquidity Ratios — Can the company pay short-term obligations?"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Ratio",
+        "Formula",
+        "Interpretation"
+      ],
+      "r": [
+        [
+          "Current Ratio",
+          "Current Assets / Current Liabilities",
+          "Higher = more liquidity. Below 1.0 = current liabilities exceed current assets — concern"
+        ],
+        [
+          "Quick Ratio (Acid-Test)",
+          "(Cash + ST Investments + AR) / Current Liabilities",
+          "Stricter — excludes inventory. Better for businesses with slow inventory"
+        ],
+        [
+          "Cash Ratio",
+          "(Cash + ST Investments) / Current Liabilities",
+          "Most conservative — only most liquid assets"
+        ],
+        [
+          "Operating Cash Flow Ratio",
+          "CFO / Current Liabilities",
+          "Uses actual cash generated — best liquidity measure"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "2. Activity / Efficiency Ratios — How well are assets being used?"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Ratio",
+        "Formula",
+        "Interpretation"
+      ],
+      "r": [
+        [
+          "Accounts Receivable Turnover",
+          "Net Credit Sales / Average AR",
+          "Higher = faster collection. Low = slow collection or bad debts"
+        ],
+        [
+          "Days Sales Outstanding (DSO)",
+          "365 / AR Turnover",
+          "Average days to collect payment. Lower is better"
+        ],
+        [
+          "Inventory Turnover",
+          "COGS / Average Inventory",
+          "Higher = faster moving inventory. Low = slow-moving or obsolete stock"
+        ],
+        [
+          "Days in Inventory",
+          "365 / Inventory Turnover",
+          "Average days to sell inventory"
+        ],
+        [
+          "Asset Turnover",
+          "Net Sales / Average Total Assets",
+          "Revenue generated per dollar of assets. Higher = more efficient"
+        ],
+        [
+          "Payables Turnover",
+          "COGS (or Purchases) / Average AP",
+          "How quickly the company pays suppliers"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "3. Profitability Ratios — How much profit does the company generate?"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Ratio",
+        "Formula",
+        "Interpretation"
+      ],
+      "r": [
+        [
+          "Gross Profit Margin",
+          "Gross Profit / Net Sales",
+          "% of sales remaining after COGS. Higher = pricing power or cost efficiency"
+        ],
+        [
+          "Operating Profit Margin",
+          "Operating Income / Net Sales",
+          "% remaining after all operating costs"
+        ],
+        [
+          "Net Profit Margin",
+          "Net Income / Net Sales",
+          "Bottom-line profitability per dollar of sales"
+        ],
+        [
+          "Return on Assets (ROA)",
+          "Net Income / Average Total Assets",
+          "Profit generated per dollar of assets"
+        ],
+        [
+          "Return on Equity (ROE)",
+          "Net Income / Average Shareholders' Equity",
+          "Return to common shareholders — key investor metric"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "DuPont Analysis — Decomposing ROE"
+    },
+    {
+      "t": "f",
+      "l": "DuPont Formula",
+      "v": "ROE = Net Profit Margin × Asset Turnover × Equity Multiplier | = (NI/Sales) × (Sales/Assets) × (Assets/Equity)"
+    },
+    {
+      "t": "p",
+      "v": "DuPont shows the THREE DRIVERS of ROE: profitability (margin), efficiency (turnover), and financial leverage (equity multiplier). A company can improve ROE by improving any of the three factors."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Driver",
+        "Ratio",
+        "What It Reflects"
+      ],
+      "r": [
+        [
+          "Profitability",
+          "Net Profit Margin",
+          "Pricing power, cost control"
+        ],
+        [
+          "Efficiency",
+          "Asset Turnover",
+          "How well assets generate sales"
+        ],
+        [
+          "Leverage",
+          "Equity Multiplier (Assets/Equity)",
+          "Financial risk — use of debt"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "4. Leverage / Solvency Ratios — Long-term financial risk"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Ratio",
+        "Formula",
+        "Interpretation"
+      ],
+      "r": [
+        [
+          "Debt-to-Equity (D/E)",
+          "Total Debt / Total Equity",
+          "Higher = more leverage/risk. Creditors prefer lower"
+        ],
+        [
+          "Debt-to-Assets",
+          "Total Debt / Total Assets",
+          "% of assets financed by debt"
+        ],
+        [
+          "Interest Coverage (Times Interest Earned)",
+          "EBIT / Interest Expense",
+          "Higher = more capacity to pay interest. Below 1.5 = concerning"
+        ],
+        [
+          "Debt-to-Capital",
+          "Total Debt / (Total Debt + Total Equity)",
+          "Proportion of financing from debt"
+        ]
+      ]
+    },
+    {
+      "t": "h",
+      "v": "5. Market / Investor Ratios"
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Ratio",
+        "Formula",
+        "Interpretation"
+      ],
+      "r": [
+        [
+          "Price/Earnings (P/E)",
+          "Market Price per Share / EPS",
+          "Growth expectations. Higher P/E = higher growth expected"
+        ],
+        [
+          "Dividend Yield",
+          "Dividends per Share / Market Price",
+          "Income return on investment"
+        ],
+        [
+          "Book Value per Share",
+          "Equity / Shares Outstanding",
+          "Accounting value per share — compare to market price"
+        ]
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Exam Tips: Liquidity — Current, Quick, Cash (progressively stricter). Activity — turnover ratios (higher = better). Convert to days = 365/turnover. Profitability — margins and returns. DuPont = Margin × Turnover × Leverage. Solvency — D/E, interest coverage (higher coverage = safer). Compare ratios to prior periods AND industry averages. Context always matters — a 'good' ratio depends on the industry."
+    }
+  ]
+}
