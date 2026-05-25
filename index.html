@@ -312,6 +312,17 @@ function updateStreak(){
   saveStreak({count:newCount,lastDate:today});
 }
 
+// ── Mock Exam History ────────────────────────────────────────────────────────
+// Keeps last 5 mock exam results so students can track score improvement.
+function loadMockResults(){try{const d=localStorage.getItem('cma-mock-v1');return d?JSON.parse(d):[];}catch{return[];}}
+function saveMockResult(result){
+  try{
+    const history=loadMockResults();
+    history.unshift(result); // newest first
+    localStorage.setItem('cma-mock-v1',JSON.stringify(history.slice(0,5)));
+  }catch{}
+}
+
 // ── Study Time Tracking ──────────────────────────────────────────────────────
 // Records how long students spend reading lessons and taking quizzes.
 // Persists to localStorage. Displayed on the Progress screen.
@@ -2629,7 +2640,8 @@ async function startWrongAnswersRetry(){
       if(sc&&sc.answers){
         sc.answers.forEach((ans,idx)=>{
           const q=l.quizzes[idx];
-          if(q&&ans!==q.a) wrongQs.push({...q,_secId:sec.id,_lessonId:l.id});
+          // Store _ansIdx so we can update the exact record when answered correctly
+          if(q&&ans!==q.a) wrongQs.push({...q,_secId:sec.id,_lessonId:l.id,_ansIdx:idx});
         });
       }
     }
@@ -2719,19 +2731,30 @@ function renderProgress(){
         <div style="font-size:10px;color:#BA7517;margin-top:3px">Streak</div>
       </div>
     </div>`;
-  const cards=S.map((sec,i)=>{const done=sec.lessons.filter(l=>lessonDone(l.id)).length;const lp=Math.round(done/sec.lessons.length*100);
-  return`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:${i<S.length-1?'.5px solid #f0f0eb':'none'}">
-    <div style="width:30px;height:30px;border-radius:8px;background:${sec.bg};display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">${sec.emoji}</div>
-    <div style="flex:1;min-width:0">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-        <span class="ellipsis" style="font-size:12px;font-weight:500;color:#1a1a1a;max-width:200px">${esc(sec.title)}</span>
-        <span style="font-size:11px;font-weight:500;color:${sec.strong};flex-shrink:0;margin-left:8px">${lp}% · ${done}/${sec.lessons.length}</span>
+  // Item 3: Quiz accuracy per section — surfaces weak areas even when lessons are "done"
+  const cards=S.map((sec,i)=>{
+    const done=sec.lessons.filter(l=>lessonDone(l.id)).length;
+    const lp=Math.round(done/sec.lessons.length*100);
+    // Aggregate quiz accuracy across all attempted lessons in this section
+    let qCorrect=0,qTotal=0;
+    sec.lessons.forEach(l=>{const sc=progress.lessonScores?.[l.id];if(sc){qCorrect+=sc.correct;qTotal+=sc.total;}});
+    const qPct=qTotal>0?Math.round(qCorrect/qTotal*100):null;
+    const qCol=qPct===null?'#aaa':qPct>=70?'#639922':qPct>=50?'#EF9F27':'#E24B4A';
+    const qBg=qPct===null?'#f5f5f0':qPct>=70?'#EAF3DE':qPct>=50?'#FAEEDA':'#FCEBEB';
+    const qLabel=qPct===null?'No quizzes yet':`Quiz: ${qPct}% (${qCorrect}/${qTotal})`;
+    return`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:${i<S.length-1?'.5px solid #f0f0eb':'none'}">
+      <div style="width:30px;height:30px;border-radius:8px;background:${sec.bg};display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">${sec.emoji}</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <span class="ellipsis" style="font-size:12px;font-weight:500;color:#1a1a1a;max-width:160px">${esc(sec.title)}</span>
+          <span style="font-size:11px;font-weight:500;color:${sec.strong};flex-shrink:0;margin-left:4px">${lp}% · ${done}/${sec.lessons.length}</span>
+        </div>
+        <div style="height:4px;background:#f0f0eb;border-radius:2px;overflow:hidden;margin-bottom:5px">
+          <div style="height:100%;width:${lp}%;background:${sec.bar};border-radius:2px;transition:width .5s"></div>
+        </div>
+        <span style="font-size:10px;font-weight:500;padding:2px 7px;border-radius:8px;background:${qBg};color:${qCol}">${qLabel}</span>
       </div>
-      <div style="height:4px;background:#f0f0eb;border-radius:2px;overflow:hidden">
-        <div style="height:100%;width:${lp}%;background:${sec.bar};border-radius:2px;transition:width .5s"></div>
-      </div>
-    </div>
-  </div>`;}).join('');
+    </div>`;}).join('');
   const resetHTML=STATE.showReset?`<div style="background:#FCEBEB;border:1px solid #E24B4A;border-radius:10px;padding:14px 16px;margin-top:16px"><div style="font-size:13px;color:#791F1F;margin-bottom:12px;font-weight:500">This will delete all your progress. Are you sure?</div><div style="display:flex;gap:8px"><button class="btn btn-outline" onclick="STATE.showReset=false;render()" style="border-color:#A32D2D;color:#A32D2D">Cancel</button><button class="btn btn-danger" onclick="resetAll()">Yes, Reset</button></div></div>`:`<button class="btn btn-outline" onclick="STATE.showReset=true;render()" style="margin-top:16px;color:#aaa">Reset All Progress</button>`;
   return`${renderSubNav(SUB_PROGRESS,'progress')}<div style="overflow-y:auto;flex:1;padding:0 16px">
     <div style="padding:14px 0 10px">
@@ -2817,8 +2840,25 @@ function nextQuestion(){
     const p=STATE.progress;
     endStudyTimer(); // session ends when quiz completes
     if(qs.isRetry){
-      // Retry mode: only update aggregate stats, never overwrite lessonScores
-      saveProg({...p,mcqTotal:p.mcqTotal+qs.questions.length,mcqRight:p.mcqRight+rightCount});
+      // Retry mode: update aggregate stats AND clear correctly answered questions
+      // from lessonScores so they no longer appear in the wrong answers list.
+      const p=STATE.progress;
+      const ls={...(p.lessonScores||{})};
+      qs.questions.forEach((q,i)=>{
+        if(newAnswers[i]?.correct && q._lessonId!=null && q._ansIdx!=null){
+          const entry=ls[q._lessonId];
+          if(entry&&entry.answers){
+            const updatedAnswers=[...entry.answers];
+            updatedAnswers[q._ansIdx]=q.a; // mark as correct → removed from wrong list
+            const newCorrect=updatedAnswers.filter((a,idx)=>{
+              const qz=S.flatMap(s=>s.lessons).find(l=>l.id===q._lessonId)?.quizzes?.[idx];
+              return qz&&a===qz.a;
+            }).length;
+            ls[q._lessonId]={...entry,answers:updatedAnswers,correct:newCorrect};
+          }
+        }
+      });
+      saveProg({...p,lessonScores:ls,mcqTotal:p.mcqTotal+qs.questions.length,mcqRight:p.mcqRight+rightCount});
     } else {
       const ls=p.lessonScores||{};const ansArr=newAnswers.map(a=>a.selected);
       saveProg({...p,lessonScores:{...ls,[qs.lessonId]:{correct:rightCount,total:qs.questions.length,answers:ansArr}},mcqTotal:p.mcqTotal+qs.questions.length,mcqRight:p.mcqRight+rightCount});
@@ -3878,8 +3918,19 @@ function mockSubmitCBQ(){
   // CBQ score
   let cbqTotal=0,cbqCorrect=0;
   Object.values(STATE.mockExam.cbqScores).forEach(sc=>{cbqTotal+=sc.t;cbqCorrect+=sc.s;});
+  const mcqPct=Math.round(mcqCorrect/100*100);
+  const cbqPct=cbqTotal?Math.round(cbqCorrect/cbqTotal*100):0;
+  const weighted=Math.round(mcqPct*0.75+(cbqTotal?cbqPct:mcqPct)*0.25);
   STATE.mockExam.results={mcqCorrect,mcqTotal:100,secScores,cbqCorrect,cbqTotal};
   STATE.mockExam.status='results';
+  // Item 2: Persist result to localStorage — students can track improvement over time
+  saveMockResult({
+    date:new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}),
+    dateTs:Date.now(),
+    weighted,mcqPct,cbqPct:cbqTotal?cbqPct:null,
+    mcqCorrect,cbqCorrect,cbqTotal,
+    pass:weighted>=70
+  });
   render();
 }
 
@@ -3895,6 +3946,23 @@ function renderMockExamScreen(){
 
 function renderMockIntro(){
   const loading=STATE.mockExam.status==='loading';
+  const history=loadMockResults();
+  const historyHTML=history.length===0?'':`
+    <div style="background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:16px">
+      <div style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:10px">📈 Your Attempt History</div>
+      ${history.map((r,i)=>{
+        const col=r.weighted>=70?'#639922':r.weighted>=60?'#EF9F27':'#E24B4A';
+        const bg=r.weighted>=70?'#EAF3DE':r.weighted>=60?'#FAEEDA':'#FCEBEB';
+        return`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:${i<history.length-1?'.5px solid #f0f0eb':'none'}">
+          <div style="width:46px;height:46px;border-radius:10px;background:${bg};display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;color:${col};flex-shrink:0">${r.weighted}%</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;font-weight:500;color:#1a1a1a">${r.pass?'✅ Pass estimate':'❌ Needs work'}</div>
+            <div style="font-size:11px;color:#888;margin-top:2px">MCQ ${r.mcqPct}%${r.cbqPct!=null?` · CBQ ${r.cbqPct}%`:''} · ${r.date}</div>
+          </div>
+          ${i===0?`<span style="font-size:10px;background:#E6F1FB;color:#0C447C;padding:2px 8px;border-radius:10px;font-weight:500">Latest</span>`:''}
+        </div>`;
+      }).join('')}
+    </div>`;
   return`<div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
   <div style="padding:16px 16px 12px;border-bottom:.5px solid #e0e0d8;flex-shrink:0">
     <div style="font-size:18px;font-weight:600">🏆 Mock Exam</div>
@@ -3926,6 +3994,7 @@ function renderMockIntro(){
         <div style="font-size:13px;font-weight:700;color:${sec.bar}">${sec.weight} Qs</div>
       </div>`).join('')}
     </div>
+    ${historyHTML}
     <div style="background:#FAEEDA;border:.5px solid #EF9F27;border-radius:12px;padding:12px;margin-bottom:16px;font-size:13px;color:#633806;line-height:1.6">
       ⚠️ <strong>Rules:</strong> Once you start, the timer runs. You can flag questions and navigate freely within MCQ. After submitting MCQ, you move to CBQ — you cannot go back.
     </div>
