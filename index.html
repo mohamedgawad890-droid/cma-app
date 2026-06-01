@@ -268,8 +268,31 @@ function saveProg(p){
   STATE.progress=p;
   _invalidateDoneSet();
   try{localStorage.setItem('cma-html-v2',JSON.stringify(p));}catch{}
-  if(STATE.user){db.collection('progress').doc(STATE.user.uid).set(p).catch(()=>{});}
+  if(STATE.user){db.collection('progress').doc(STATE.user.uid).set(p).catch(e=>console.warn('progress sync failed',e));}
   render();
+}
+
+// FIX 4: Non-destructive merge of two progress objects (used at login to converge
+// cloud + local instead of letting either side blindly overwrite the other).
+function mergeProgress(a,b){
+  a=a||{}; b=b||{};
+  const done=Array.from(new Set([...(a.done||[]),...(b.done||[])]));
+  const ls={...(a.lessonScores||{})};
+  const bls=b.lessonScores||{};
+  for(const k in bls){
+    const cur=ls[k], inc=bls[k];
+    if(!cur){ ls[k]=inc; continue; }
+    const accCur=cur.total?cur.correct/cur.total:0;
+    const accInc=inc.total?inc.correct/inc.total:0;
+    // keep the better attempt: higher accuracy, tie-break on more questions answered
+    ls[k]=(accInc>accCur||(accInc===accCur&&(inc.total||0)>(cur.total||0)))?inc:cur;
+  }
+  return {
+    done,
+    lessonScores:ls,
+    mcqTotal:Math.max(a.mcqTotal||0,b.mcqTotal||0),
+    mcqRight:Math.max(a.mcqRight||0,b.mcqRight||0)
+  };
 }
 function loadKey(){return localStorage.getItem('cma-api-key')||'';}
 function saveKey(k){localStorage.setItem('cma-api-key',k);}
@@ -4116,7 +4139,16 @@ auth.onAuthStateChanged(async(user)=>{
         db.collection('students').doc(user.uid).get(),
         db.collection('tracker').doc(user.uid).get()
       ]);
-      if(pd.exists){STATE.progress=pd.data();_invalidateDoneSet();try{localStorage.setItem('cma-html-v2',JSON.stringify(pd.data()));}catch{}}
+      // FIX 4: merge cloud + local instead of cloud blindly overwriting local.
+      // Runs only after a successful cloud read (inside this try), so an offline
+      // login never pushes stale local data over good cloud data.
+      const _localProg=loadProg();
+      const _cloudProg=pd.exists?pd.data():null;
+      const _merged=mergeProgress(_localProg,_cloudProg);
+      STATE.progress=_merged;_invalidateDoneSet();
+      try{localStorage.setItem('cma-html-v2',JSON.stringify(_merged));}catch{}
+      // push the merged superset back so the cloud gains any local-only progress
+      db.collection('progress').doc(user.uid).set(_merged).catch(e=>console.warn('progress merge-write failed',e));
       if(sd.exists){try{localStorage.setItem('cma-student-v1',JSON.stringify(sd.data()));}catch{}}
       if(td.exists){try{localStorage.setItem('cma-tracker-v1',JSON.stringify(td.data()));}catch{}}
     }catch{}
