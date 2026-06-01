@@ -97,7 +97,27 @@ const PHOTO_B64 = './instructor.webp';
 // Find it in Firebase Console → Authentication → Users → copy the User UID column.
 const INSTRUCTOR_UID = 'NI1nS2qCYehDnlwFHA5A01bxV8V2';
 window.onerror=function(msg,src,line,col,err){
-  document.body.innerHTML='<div style="padding:20px;font-family:monospace;color:red"><h2>Error:</h2><p>'+msg+'</p><p>Line: '+line+'</p><p>'+err+'</p></div>';
+  // Full detail goes to the console (and is where remote logging would hook in later).
+  try{ console.error('[App error]', msg, (src||'')+':'+line+':'+col, err); }catch(_){}
+
+  // If the UI is already up, surface a gentle, dismissible notice and KEEP RUNNING —
+  // a single non-fatal error should never blank the whole app.
+  if(typeof showToast==='function'){
+    try{ showToast('Something went wrong, but the app is still running. Reload if anything looks off.','error',6000); }catch(_){}
+    return true;
+  }
+
+  // Error during early boot, before the UI exists: app can't run, so show a friendly
+  // recovery screen with a Reload action — no raw error text reflected into the DOM.
+  try{
+    document.body.innerHTML=
+      '<div style="padding:40px 22px;font-family:system-ui,-apple-system,sans-serif;text-align:center;color:#444">'
+      +'<div style="font-size:42px;margin-bottom:14px">⚠️</div>'
+      +'<div style="font-size:17px;font-weight:600;margin-bottom:6px">Couldn\'t start the app</div>'
+      +'<div style="font-size:14px;color:#888;margin-bottom:20px">Please check your connection and try again.</div>'
+      +'<button onclick="location.reload()" style="padding:11px 24px;border:none;border-radius:10px;background:#0C447C;color:#fff;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit">Reload</button>'
+      +'</div>';
+  }catch(_){}
   return true;
 };
 
@@ -294,8 +314,7 @@ function mergeProgress(a,b){
     mcqRight:Math.max(a.mcqRight||0,b.mcqRight||0)
   };
 }
-function loadKey(){return localStorage.getItem('cma-api-key')||'';}
-function saveKey(k){localStorage.setItem('cma-api-key',k);}
+
 
 function loadLessonNote(lid){try{return localStorage.getItem('cma-note-'+lid)||'';}catch{return '';}}
 let _noteDebounce={};
@@ -570,8 +589,7 @@ function showToast(message, type = 'info', duration = 3600) {
 // scores to silently disappear after login. Also fixes the Firestore write rejection
 // (rules now permit 'lessonScores' — see firestore.rules Fix 3).
 const STATE={tab:'loading',searchQ:'',leaderboardData:[],leaderboardLoaded:false,quizMode:{active:false,sectionId:null,idx:0,questions:[],answers:[],selected:null},user:null,authScreen:'login',authError:'',authLoading:false,communityFilter:'all',questionDetail:null,showAskForm:false,communityQuestions:[],communityLastDoc:null,communityHasMore:false,communityLoading:false,questionReplies:[],draftTitle:'',draftBody:'',draftSection:'General',draftReply:'',trackerOpenSects:[],sectId:null,lessonId:null,quizState:null,showProfileWarning:false,progress:{done:[],lessonScores:{},mcqTotal:0,mcqRight:0},
-  chatMsgs:[{r:'a',t:"Hi! I'm Mohamed Abdelgawad, your CMA Part 1 instructor. I have 20 years of finance experience and I'm here to help you pass the CMA exam. Ask me anything! 🎓"}],
-  chatLoading:false,apiKey:loadKey(),showKeyInput:false,showReset:false,chatDraft:''};
+    showReset:false};
 
 // ─── ARABIC TERM TOOLTIPS ──────────────────────────────────────────────────
 const TERM_DICT={
@@ -1268,6 +1286,10 @@ function openQuestion(q){
   render();
   loadReplies(q.id);
 }
+function openQuestionById(id){
+  const q=STATE.communityQuestions.find(x=>x.id===id);
+  if(q)openQuestion(q);
+}
 
 function renderCommunity(){
   const SECTS=['All','External Financial Reporting','Planning, Budgeting & Forecasting','Performance Management','Cost Management','Internal Controls','Technology & Analytics'];
@@ -1287,7 +1309,7 @@ function renderCommunity(){
     :questions.map(q=>{
       const upvoted=(q.upvotes||[]).includes(STATE.user?.uid);
       const isOwner=STATE.user?.uid===q.authorId;
-      return`<div onclick="openQuestion(${JSON.stringify(q).replace(/"/g,'&quot;')})" class="card" style="cursor:pointer;margin-bottom:10px">
+      return`<div onclick="openQuestionById('${q.id}')" class="card" style="cursor:pointer;margin-bottom:10px">
         <div style="display:flex;align-items:flex-start;gap:10px">
           <div style="width:36px;height:36px;border-radius:50%;overflow:hidden;flex-shrink:0;background:#E6F1FB;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;color:#0C447C">
            ${safePhotoURL(q.authorPhoto)?`<img src="${safePhotoURL(q.authorPhoto)}" style="width:100%;height:100%;object-fit:cover">`:q.authorName?.charAt(0)||'?'}
@@ -2499,7 +2521,7 @@ function renderQuizResults(){
         <button class="btn btn-outline" onclick="STATE.tab='study';STATE.quizState=null;render()">Back to Study</button>
         <button class="btn" onclick="startQuiz('${qs.lessonId}')" style="background:${sec.bar};color:#fff">Retake Quiz</button>
       </div>
-      <button onclick="askAboutResults('${qs.lessonId}',${pctQ})" style="width:100%;padding:12px;border-radius:10px;border:1px solid ${sec.text}50;background:${sec.bg};color:${sec.strong};font-size:13px;cursor:pointer;font-family:inherit;font-weight:500">Ask Mohamed to review weak areas ↗</button>`;
+      `;
   return`<div class="scroll-area" style="padding:30px 16px 20px;text-align:center">
     <div style="font-size:52px">${gradeEmoji}</div>
     <div style="font-size:20px;font-weight:500;margin-top:10px">${gradeLabel}</div>
@@ -2899,8 +2921,7 @@ function nextQuestion(){
   else{const qt=[...(qs.questionTimes||[]),qs.qTimerElapsed||0];STATE.quizState={...qs,idx:qs.idx+1,selected:null,answers:newAnswers,questionTimes:qt,qTimerStart:Date.now(),qTimerElapsed:null};render();}
 }
 function resetAll(){saveProg({done:[],lessonScores:{},mcqTotal:0,mcqRight:0});STATE.showReset=false;render();}
-function askAboutResults(lessonId,pct){const lesson=S.flatMap(s=>s.lessons).find(l=>l.id===lessonId);STATE.chatDraft=`I just scored ${pct}% on the ${lesson?.title||'quiz'}. Can you help me review the weak areas?`;STATE.tab='chat';render();setTimeout(()=>{const el=document.getElementById('chat-input');if(el)el.value=STATE.chatDraft;},50);}
-function saveApiKey(){const k=document.getElementById('api-key-input')?.value?.trim()||'';STATE.apiKey=k;STATE.showKeyInput=false;saveKey(k);render();}
+
 
 
 // ── LAZY LESSON LOADER ───────────────────────────────────────────────────────
@@ -3100,7 +3121,7 @@ function render(){
   if(STATE.tab==='study'&&STATE.lessonId){setTimeout(()=>syncNoteFromCloud(STATE.lessonId),0);}
   if(STATE.tab==='essay-practice'){startStudyTimer('essay-practice');}
   if(STATE.tab==='search'){setTimeout(()=>{const inp=document.getElementById('search-input');if(inp){inp.focus();if(STATE.searchQ)updateSearchResults();}},50);}
-  content.style.display='flex';content.style.flexDirection='column';content.style.overflow=STATE.tab==='chat'||STATE.tab==='cbq'||STATE.tab==='mock-exam'?'hidden':'auto';
+  content.style.display='flex';content.style.flexDirection='column';content.style.overflow=STATE.tab==='cbq'||STATE.tab==='mock-exam'?'hidden':'auto';
   if(STATE.tab==='loading'||STATE.tab==='login'||STATE.tab==='onboarding'){nav.style.display='none';}
   else{nav.style.display='flex';
     const active=activeNavTab();
@@ -3110,7 +3131,6 @@ function render(){
       const brandHeader=`<div class="desktop-brand" style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:13px;font-weight:600;color:#0C447C;letter-spacing:.5px">CMA Part One Prep</div><div style="font-size:10px;color:#888;margin-top:1px">With Gawad</div></div>${!window.matchMedia("(display-mode: standalone)").matches?'<button onclick="installApp()" title="Install App" style="display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:8px;border:1px solid #d0d8e8;background:#E6F1FB;color:#0C447C;cursor:pointer;font-size:12px;font-weight:500;font-family:inherit;flex-shrink:0"><span style="font-size:14px">⬇</span><span>Install App</span></button>':''}></div>`;
       nav.innerHTML=brandHeader+TABS.map(t=>`<button class="nav-btn${t.id===active?' active':''}" onclick="navTo('${t.id}')"><span class="nav-icon">${t.icon}</span><span>${t.label}</span></button>`).join('');
     }}
-  if(STATE.tab==='chat'){setTimeout(()=>{const el=document.getElementById('chat-msgs');if(el)el.scrollTop=el.scrollHeight;},20);}
   // Start live per-question timer when on a quiz screen with unanswered question
   if(STATE.tab==='quiz-session'&&STATE.quizState&&STATE.quizState.selected===null){
     setTimeout(()=>startQTimer(()=>STATE.quizState.qTimerStart),20);
