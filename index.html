@@ -26,7 +26,7 @@ window.addEventListener('beforeinstallprompt', e => {
 <link rel="stylesheet" href="./app.css">
 <!-- Change 1: CSS extracted to app.css — reduces HTML parse cost by ~15KB -->
 <!-- CBQ data file — must load before main script -->
-<script src="./cbq-data.js"></script>
+<script src="./cbq-data.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
