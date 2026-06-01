@@ -4207,5 +4207,41 @@ auth.onAuthStateChanged(async(user)=>{
   render();
 });
 </script>
+<script>
+/* ── Accessibility enhancer (row 11, phase 1) ───────────────────────
+   Makes every click-only element keyboard-operable without rewriting the
+   app's markup: after each screen render it tags clickable elements so they
+   can be reached with Tab and announced by screen readers, and makes
+   Enter / Space activate them. */
+(function(){
+  function enhance(root){
+    if(!root) return;
+    root.querySelectorAll('[onclick]').forEach(function(el){
+      var t = el.tagName;
+      if(t==='BUTTON'||t==='A'||t==='INPUT'||t==='SELECT'||t==='TEXTAREA') return;
+      if(!el.hasAttribute('tabindex')) el.setAttribute('tabindex','0');
+      if(!el.hasAttribute('role')) el.setAttribute('role','button');
+    });
+  }
+  var area = document.getElementById('content-area');
+  if(!area) return;
+  var scheduled = false;
+  function schedule(){
+    if(scheduled) return;
+    scheduled = true;
+    requestAnimationFrame(function(){ scheduled = false; enhance(area); });
+  }
+  new MutationObserver(schedule).observe(area, { childList:true, subtree:true });
+  enhance(area);
+
+  document.addEventListener('keydown', function(e){
+    if(e.key!=='Enter' && e.key!==' ') return;
+    var el = e.target;
+    if(!el || el.getAttribute('role')!=='button' || !el.hasAttribute('onclick')) return;
+    e.preventDefault();   // stop Space from scrolling the page
+    el.click();
+  });
+})();
+</script>	
 </body>
 </html>
