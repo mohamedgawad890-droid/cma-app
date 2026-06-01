@@ -1,14 +1,14 @@
-// CMA Prep — Service Worker v6
+// CMA Prep — Service Worker v7
 // Strategy: Network-first with cache fallback
 
-const CACHE_NAME = 'cma-prep-v6';
+const CACHE_NAME = 'cma-prep-v7';
 const OFFLINE_URLS = [
   './',
   './index.html',
   './cbq.html',
-  // v82: CSS and CBQ data are now separate files — must be cached for offline
   './app.css',
   './cbq-data.js',
+  './instructor.webp',
   // Quiz question files
   './questions/s1.json',
   './questions/s2.json',
