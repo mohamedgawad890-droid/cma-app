@@ -4173,7 +4173,7 @@ auth.onAuthStateChanged(async(user)=>{
       if(td.exists){try{localStorage.setItem('cma-tracker-v1',JSON.stringify(td.data()));}catch{}}
     }catch{}
     const st=loadStudent();
-    STATE.tab=st&&st.name?'study':'study';
+    STATE.tab=st && st.name ? 'study' : 'register';
     STATE.showProfileWarning=false;
   } else {
     STATE.user=null;STATE.tab=localStorage.getItem('cma-visited')?'login':'onboarding';STATE.authLoading=false;
