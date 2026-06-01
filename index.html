@@ -284,13 +284,39 @@ let _doneSet = null;
 function _invalidateDoneSet(){ _doneSet = null; }
 function _getDoneSet(){ if(!_doneSet) _doneSet = new Set(STATE.progress.done); return _doneSet; }
 
+// ── Progress saving: local is instant, cloud is debounced ──────────
+// Local storage is written on every call (free, offline-safe). The cloud
+// write is batched to at most once per window, then forced on app close.
+// Worst case (missed cloud write) is recovered by mergeProgress() at login.
+let _progCloudTimer = null;
+let _progCloudDirty = false;
+
+function _flushProgToCloud(){
+  if(!_progCloudDirty || !STATE.user || !db) return;
+  _progCloudDirty = false;
+  if(_progCloudTimer){ clearTimeout(_progCloudTimer); _progCloudTimer = null; }
+  db.collection('progress').doc(STATE.user.uid).set(STATE.progress)
+    .catch(e=>{ _progCloudDirty = true; console.warn('progress sync failed', e); });
+}
+
+function _scheduleProgCloudSync(){
+  _progCloudDirty = true;
+  if(_progCloudTimer) return;            // a flush is already on its way
+  _progCloudTimer = setTimeout(()=>{ _progCloudTimer = null; _flushProgToCloud(); }, 4000);
+}
+
 function saveProg(p){
-  STATE.progress=p;
+  STATE.progress = p;
   _invalidateDoneSet();
-  try{localStorage.setItem('cma-html-v2',JSON.stringify(p));}catch{}
-  if(STATE.user){db.collection('progress').doc(STATE.user.uid).set(p).catch(e=>console.warn('progress sync failed',e));}
+  try{ localStorage.setItem('cma-html-v2', JSON.stringify(p)); }catch{}
+  if(STATE.user) _scheduleProgCloudSync();
   render();
 }
+
+// Force any pending progress to the cloud the moment the app is closed,
+// backgrounded, or the tab is hidden — so nothing waits in the queue.
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='hidden') _flushProgToCloud(); });
+window.addEventListener('pagehide', _flushProgToCloud);
 
 // FIX 4: Non-destructive merge of two progress objects (used at login to converge
 // cloud + local instead of letting either side blindly overwrite the other).
