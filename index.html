@@ -1086,22 +1086,24 @@ async function loadQuestions(append=false){
   STATE.communityLoading=true;
   if(!append){
     STATE.communityQuestions=[];
+    STATE.communityLastDoc=null;
     STATE.communityHasMore=false;
-    STATE.communityPageSize=COMMUNITY_PAGE;
-  } else {
-    STATE.communityPageSize=(STATE.communityPageSize||COMMUNITY_PAGE)+COMMUNITY_PAGE;
   }
-  // NOTE: No render() here — avoids re-triggering renderCommunity() mid-fetch.
-  // The loading spinner is shown because communityLoading=true is already in STATE.
+  // Cursor-based pagination: order on the server, page with startAfter(lastDoc).
+  // createdAt is an ISO-8601 string, which sorts chronologically under orderBy.
   try{
-    let q=db.collection('questions').limit(STATE.communityPageSize+1);
+    let q=db.collection('questions');
     if(STATE.communityFilter!=='all') q=q.where('section','==',STATE.communityFilter);
+    q=q.orderBy('createdAt','desc');
+    if(append && STATE.communityLastDoc) q=q.startAfter(STATE.communityLastDoc);
+    q=q.limit(COMMUNITY_PAGE+1);
     const snap=await q.get();
-    const allDocs=snap.docs.map(d=>({id:d.id,...d.data()}));
-    STATE.communityHasMore=allDocs.length>STATE.communityPageSize;
-    STATE.communityQuestions=allDocs
-      .slice(0,STATE.communityPageSize)
-      .sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+    const docs=snap.docs;
+    STATE.communityHasMore=docs.length>COMMUNITY_PAGE;
+    const pageDocs=docs.slice(0,COMMUNITY_PAGE);          // drop the +1 lookahead
+    if(pageDocs.length) STATE.communityLastDoc=pageDocs[pageDocs.length-1]; // cursor = real DocumentSnapshot
+    const mapped=pageDocs.map(d=>({id:d.id,...d.data()}));
+    STATE.communityQuestions = append ? STATE.communityQuestions.concat(mapped) : mapped;
   }catch(e){
     console.error('Community load error:',e);
     showToast('Could not load questions. Check your connection.','error');
@@ -1249,7 +1251,7 @@ function renderCommunity(){
   const filterBtns=SECTS.map((s,i)=>{
     const val=i===0?'all':s;
     const active=STATE.communityFilter===val;
-    return`<button onclick="STATE.communityFilter='${val}';STATE.communityPageSize=20;loadQuestions()" style="padding:6px 12px;border-radius:20px;font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap;font-weight:${active?'500':'400'};background:${active?'#0C447C':'#f5f5f0'};color:${active?'#fff':'#555'};border:${active?'1px solid #0C447C':'.5px solid #d0d0d0'}">${i===0?'All':s.split(' ')[0]+'...'}</button>`;
+    return`<button onclick="STATE.communityFilter='${val}';loadQuestions()" style="padding:6px 12px;border-radius:20px;font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap;font-weight:${active?'500':'400'};background:${active?'#0C447C':'#f5f5f0'};color:${active?'#fff':'#555'};border:${active?'1px solid #0C447C':'.5px solid #d0d0d0'}">${i===0?'All':s.split(' ')[0]+'...'}</button>`;
   }).join('');
 
   const questions=STATE.communityQuestions;
