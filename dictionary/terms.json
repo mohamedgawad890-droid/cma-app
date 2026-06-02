@@ -1,0 +1,113 @@
+[
+  {
+    "en": "Absorption Costing",
+    "ar": "التكلفة الاستيعابية",
+    "enDef": "A costing method that assigns all manufacturing costs to the product — direct materials, direct labor, and both variable and fixed overhead. It is the method required for external financial reporting under GAAP.",
+    "arDef": "طريقة لحساب التكلفة تُحمّل المنتج بكل تكاليف التصنيع، المباشرة وغير المباشرة والثابتة والمتغيرة. وهي الطريقة المعتمدة في التقارير المالية الخارجية.",
+    "cat": "Cost Management"
+  },
+  {
+    "en": "Activity-Based Costing",
+    "ar": "التكلفة على أساس الأنشطة",
+    "abbr": "ABC",
+    "enDef": "An approach that assigns overhead to products based on the specific activities that drive those costs, giving a more accurate cost per unit than a single plant-wide rate.",
+    "arDef": "أسلوب يُخصّص التكاليف غير المباشرة للمنتجات بناءً على الأنشطة التي تُسبّب تلك التكاليف، مما يعطي تكلفة أدق للوحدة مقارنةً بمعدل تحميل موحّد.",
+    "cat": "Cost Management"
+  },
+  {
+    "en": "Contribution Margin",
+    "ar": "هامش المساهمة",
+    "enDef": "Sales revenue minus variable costs. It represents the amount available to cover fixed costs and then contribute to profit.",
+    "arDef": "إيراد المبيعات ناقصاً التكاليف المتغيرة. ويمثّل المبلغ المتاح لتغطية التكاليف الثابتة ثم المساهمة في الربح.",
+    "cat": "Cost Management"
+  },
+  {
+    "en": "Net Present Value",
+    "ar": "صافي القيمة الحالية",
+    "abbr": "NPV",
+    "enDef": "The difference between the present value of a project's cash inflows and the present value of its cash outflows, discounted at a required rate. A positive NPV signals the project adds value.",
+    "arDef": "الفرق بين القيمة الحالية للتدفقات النقدية الداخلة والقيمة الحالية للتدفقات الخارجة لمشروعٍ ما، مخصومةً بمعدلٍ مطلوب. القيمة الموجبة تعني أن المشروع يضيف قيمة.",
+    "cat": "Planning, Budgeting & Forecasting"
+  },
+  {
+    "en": "Internal Rate of Return",
+    "ar": "معدل العائد الداخلي",
+    "abbr": "IRR",
+    "enDef": "The discount rate at which a project's net present value equals zero. It is compared against the required rate of return to judge whether an investment is worthwhile.",
+    "arDef": "معدل الخصم الذي يجعل صافي القيمة الحالية للمشروع مساوياً للصفر. ويُقارَن بمعدل العائد المطلوب للحكم على جدوى الاستثمار.",
+    "cat": "Planning, Budgeting & Forecasting"
+  },
+  {
+    "en": "Cost of Goods Sold",
+    "ar": "تكلفة البضاعة المباعة",
+    "abbr": "COGS",
+    "enDef": "The direct cost of producing the goods a company sold during a period — materials, labor, and manufacturing overhead tied to those units.",
+    "arDef": "التكلفة المباشرة لإنتاج البضائع التي باعتها المنشأة خلال فترة، وتشمل المواد والعمالة والتكاليف غير المباشرة المرتبطة بتلك الوحدات.",
+    "cat": "External Financial Reporting"
+  },
+  {
+    "en": "Breakeven Point",
+    "ar": "نقطة التعادل",
+    "enDef": "The level of sales at which total revenue equals total costs, so there is neither profit nor loss.",
+    "arDef": "مستوى المبيعات الذي يتساوى عنده إجمالي الإيرادات مع إجمالي التكاليف، فلا يتحقق ربح ولا خسارة.",
+    "cat": "Cost Management"
+  },
+  {
+    "en": "Margin of Safety",
+    "ar": "هامش الأمان",
+    "enDef": "The amount by which actual or budgeted sales exceed the breakeven level — a buffer before the company starts losing money.",
+    "arDef": "مقدار زيادة المبيعات الفعلية أو المُقدّرة عن مبيعات نقطة التعادل، ويمثّل هامش أمان قبل أن تبدأ المنشأة في تحقيق خسارة.",
+    "cat": "Cost Management"
+  },
+  {
+    "en": "Standard Cost",
+    "ar": "التكلفة المعيارية",
+    "enDef": "A predetermined estimate of what a unit of product should cost, used as a benchmark to measure and control actual performance.",
+    "arDef": "تقدير مُسبق لما ينبغي أن تكون عليه تكلفة وحدة المنتج، ويُستخدم كمعيار لقياس الأداء الفعلي والرقابة عليه.",
+    "cat": "Cost Management"
+  },
+  {
+    "en": "Variance",
+    "ar": "الانحراف",
+    "enDef": "The difference between an actual result and the standard or budgeted figure. Favorable variances help profit; unfavorable variances hurt it.",
+    "arDef": "الفرق بين النتيجة الفعلية والرقم المعياري أو المُدرَج في الموازنة. الانحراف الملائم يدعم الربح، وغير الملائم يضرّ به.",
+    "cat": "Performance Management"
+  },
+  {
+    "en": "Working Capital",
+    "ar": "رأس المال العامل",
+    "enDef": "Current assets minus current liabilities — a measure of the short-term liquidity available to run day-to-day operations.",
+    "arDef": "الأصول المتداولة ناقصاً الخصوم المتداولة، وهو مقياس للسيولة قصيرة الأجل المتاحة لتشغيل العمليات اليومية.",
+    "cat": "Performance Management"
+  },
+  {
+    "en": "Depreciation",
+    "ar": "الإهلاك",
+    "enDef": "The systematic allocation of the cost of a tangible fixed asset over its useful life.",
+    "arDef": "التوزيع المنهجي لتكلفة الأصل الثابت الملموس على مدى عمره الإنتاجي.",
+    "cat": "External Financial Reporting"
+  },
+  {
+    "en": "Balanced Scorecard",
+    "ar": "بطاقة الأداء المتوازن",
+    "enDef": "A performance management tool that tracks an organization across four perspectives — financial, customer, internal process, and learning & growth — rather than financial measures alone.",
+    "arDef": "أداة لإدارة الأداء تقيس المنشأة عبر أربعة محاور: المالي، والعملاء، والعمليات الداخلية، والتعلّم والنمو، بدلاً من الاعتماد على المقاييس المالية وحدها.",
+    "cat": "Performance Management"
+  },
+  {
+    "en": "Return on Investment",
+    "ar": "العائد على الاستثمار",
+    "abbr": "ROI",
+    "enDef": "A ratio that measures the income generated by an investment relative to the amount invested, often used to evaluate investment centers.",
+    "arDef": "نسبة تقيس الدخل الناتج عن استثمار مقارنةً بالمبلغ المستثمر، وتُستخدم غالباً لتقييم مراكز الاستثمار.",
+    "cat": "Performance Management"
+  },
+  {
+    "en": "Just-in-Time",
+    "ar": "الإنتاج في الوقت المحدد",
+    "abbr": "JIT",
+    "enDef": "A production strategy in which materials and goods are produced or purchased only as needed, minimizing inventory and waste.",
+    "arDef": "استراتيجية إنتاج تُنتَج أو تُشترى فيها المواد والبضائع عند الحاجة فقط، بما يقلّل المخزون والهدر.",
+    "cat": "Cost Management"
+  }
+]
