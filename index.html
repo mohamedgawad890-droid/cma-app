@@ -809,6 +809,12 @@ function getPct(){return Math.round(STATE.progress.done.length/TOTAL_LESSONS*100
 function getAcc(){const{mcqTotal,mcqRight}=STATE.progress;return mcqTotal>0?Math.round(mcqRight/mcqTotal*100):0;}
 function lessonDone(lid){ return _getDoneSet().has(lid); }
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+// Enriched quiz support — picks the most specific explanation for the chosen answer.
+// Falls back to q.e for the correct pick or for questions without per-choice notes.
+function expFor(q,chosen){if(chosen!==null&&chosen!==q.a&&q.wrongWhy&&q.wrongWhy[chosen])return q.wrongWhy[chosen];return q.e;}
+// Enriched quiz support — renders a 2-column data table for calculation questions.
+// Returns '' when the question has no .data, so existing questions are unaffected.
+function dataTableHTML(q){if(!q.data||!q.data.length)return'';const rows=q.data.map(r=>`<tr><td style="padding:6px 10px;border-bottom:.5px solid #ececec;color:#333">${esc(r[0])}</td><td style="padding:6px 10px;border-bottom:.5px solid #ececec;text-align:right;font-variant-numeric:tabular-nums;font-weight:500">${esc(r[1])}</td></tr>`).join('');return`<table style="width:100%;border-collapse:collapse;margin:0 0 16px;background:#faf9f5;border:.5px solid #e0e0d8;border-radius:8px;overflow:hidden;font-size:13px">${rows}</table>`;}
 function safePhotoURL(u){
   if(typeof u!=='string') return '';
   return (/^https:\/\/res\.cloudinary\.com\//.test(u) || /^data:image\//.test(u)) ? u : '';
@@ -1622,8 +1628,8 @@ function selectQuizModeAnswer(i){
       else{textC='#888';}
       return`<div class="q-opt" style="background:${bg};border:${border};cursor:default"><div class="q-circle" style="background:${circBg};color:${circC};border:${circBorder}">${circTxt}</div><div class="q-text" style="color:${textC}">${esc(normalizeCase(opt))}</div></div>`;
     }).join('');
-    const exp=`<div style="margin-top:14px;padding:13px 14px;border-radius:10px;background:${sel===q.a?'#EAF3DE':'#FCEBEB'};border:1px solid ${sel===q.a?'#639922':'#E24B4A'}"><div style="font-size:12px;font-weight:500;color:${sel===q.a?'#27500A':'#791F1F'};margin-bottom:5px">${sel===q.a?'Correct! Well done.':'Not quite — here is why:'}</div><div style="font-size:13px;color:${sel===q.a?'#3B6D11':'#A32D2D'};line-height:1.55">${esc(q.e)}</div></div>`;
-    qCard.innerHTML=`<p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${esc(q.q)}</p>${opts}${exp}`;
+    const exp=`<div style="margin-top:14px;padding:13px 14px;border-radius:10px;background:${sel===q.a?'#EAF3DE':'#FCEBEB'};border:1px solid ${sel===q.a?'#639922':'#E24B4A'}"><div style="font-size:12px;font-weight:500;color:${sel===q.a?'#27500A':'#791F1F'};margin-bottom:5px">${sel===q.a?'Correct! Well done.':'Not quite — here is why:'}</div><div style="font-size:13px;color:${sel===q.a?'#3B6D11':'#A32D2D'};line-height:1.55">${esc(expFor(q,sel))}</div></div>`;
+    qCard.innerHTML=`<p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${esc(q.q)}</p>${dataTableHTML(q)}${opts}${exp}`;
     const nextWrap=document.getElementById('qm-next-wrap');
     if(nextWrap)nextWrap.innerHTML=`<button class="btn btn-primary" onclick="nextQuizModeQuestion()" style="background:#0C447C">${STATE.quizMode.idx+1>=STATE.quizMode.questions.length?'See Results ✓':'Next →'}</button>`;
   } else {render();}
@@ -1685,7 +1691,7 @@ function renderQuizMode(){
     else{textC='#888';}}
     return`<div class="q-opt" onclick="selectQuizModeAnswer(${i})" style="background:${bg};border:${border};${sel===null?'cursor:pointer':'cursor:default'}"><div class="q-circle" style="background:${circBg};color:${circC};border:${circBorder}">${circTxt}</div><div class="q-text" style="color:${textC}">${esc(normalizeCase(opt))}</div></div>`;
   }).join('');
-  const explanation=sel!==null?`<div style="margin-top:14px;padding:13px 14px;border-radius:10px;background:${sel===q.a?'#EAF3DE':'#FCEBEB'};border:1px solid ${sel===q.a?'#639922':'#E24B4A'}"><div style="font-size:12px;font-weight:500;color:${sel===q.a?'#27500A':'#791F1F'};margin-bottom:5px">${sel===q.a?'Correct! Well done.':'Not quite — here is why:'}</div><div style="font-size:13px;color:${sel===q.a?'#3B6D11':'#A32D2D'};line-height:1.55">${esc(q.e)}</div></div>`:''  ;
+  const explanation=sel!==null?`<div style="margin-top:14px;padding:13px 14px;border-radius:10px;background:${sel===q.a?'#EAF3DE':'#FCEBEB'};border:1px solid ${sel===q.a?'#639922':'#E24B4A'}"><div style="font-size:12px;font-weight:500;color:${sel===q.a?'#27500A':'#791F1F'};margin-bottom:5px">${sel===q.a?'Correct! Well done.':'Not quite — here is why:'}</div><div style="font-size:13px;color:${sel===q.a?'#3B6D11':'#A32D2D'};line-height:1.55">${esc(expFor(q,sel))}</div></div>`:''  ;
   const nextBtn=sel!==null?`<button class="btn btn-primary" onclick="nextQuizModeQuestion()" style="background:#0C447C">${qm.idx+1>=qm.questions.length?'See Results':'Next →'}</button>`:`<button class="btn" style="background:#f0f0eb;color:#bbb;cursor:not-allowed">Select an answer to continue</button>`;
   const qmTimerBadge=timerBadgeHTML(qm.qTimerElapsed,sel!==null);
   return`<div class="bh"><button class="bh-back" onclick="STATE.tab='quiz-mode-select';render()">‹</button>
@@ -1697,7 +1703,7 @@ function renderQuizMode(){
   </div>
   <div style="height:5px;background:#ebebea;flex-shrink:0"><div style="height:100%;width:${barW}%;background:#0C447C;transition:width .4s;border-radius:0 3px 3px 0"></div></div>
   <div class="scroll-area pad" style="padding-top:16px">
-    <div class="card" id="qm-question-card"><p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${esc(q.q)}</p>${opts}${explanation}</div>
+    <div class="card" id="qm-question-card"><p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${esc(q.q)}</p>${dataTableHTML(q)}${opts}${explanation}</div>
     <div style="margin-top:12px" id="qm-next-wrap">${nextBtn}</div>
     <div style="height:20px"></div>
   </div>`;
@@ -2692,14 +2698,14 @@ function renderQuizSession(){
     const cursor=sel===null?'cursor:pointer':'cursor:default';
     return`<div class="q-opt" onclick="selectAnswer(${i})" style="background:${bg};border:${border};${cursor}"><div class="q-circle" style="background:${circBg};color:${circC};border:${circBorder}">${circTxt}</div><div class="q-text" style="color:${textC}">${esc(normalizeCase(opt))}</div></div>`;
   }).join('');
-  const explanation=sel!==null?`<div style="margin-top:14px;padding:13px 14px;border-radius:10px;background:${sel===q.a?'#EAF3DE':'#FCEBEB'};border:1px solid ${sel===q.a?'#639922':'#E24B4A'}"><div style="font-size:12px;font-weight:500;color:${sel===q.a?'#27500A':'#791F1F'};margin-bottom:5px">${sel===q.a?'Correct! Well done.':'Not quite — here is why:'}</div><div style="font-size:13px;color:${sel===q.a?'#3B6D11':'#A32D2D'};line-height:1.55">${esc(q.e)}</div></div>`:'';
+  const explanation=sel!==null?`<div style="margin-top:14px;padding:13px 14px;border-radius:10px;background:${sel===q.a?'#EAF3DE':'#FCEBEB'};border:1px solid ${sel===q.a?'#639922':'#E24B4A'}"><div style="font-size:12px;font-weight:500;color:${sel===q.a?'#27500A':'#791F1F'};margin-bottom:5px">${sel===q.a?'Correct! Well done.':'Not quite — here is why:'}</div><div style="font-size:13px;color:${sel===q.a?'#3B6D11':'#A32D2D'};line-height:1.55">${esc(expFor(q,sel))}</div></div>`:'';
   const nextBtn=sel!==null?`<button class="btn btn-primary" onclick="nextQuestion()" style="background:${sec.bar}">${qs.idx+1>=qs.questions.length?'See My Results':'Next Question →'}</button>`:`<button class="btn" style="background:#f0f0eb;color:#bbb;cursor:not-allowed">Select an answer to continue</button>`;
   const timerBadge=timerBadgeHTML(qs.qTimerElapsed,sel!==null);
   const headerTitle=qs.isRetry?'Wrong Answer Retry':lessonTitle;
   const headerSub=qs.isRetry?`Question ${qs.idx+1} of ${qs.questions.length} · Mixed sections`:`Question ${qs.idx+1} of ${qs.questions.length}`;
   return`<div class="bh"><button class="bh-back" onclick="STATE.tab=${qs.isRetry?`'wrong-answers'`:`'study'`};STATE.quizState=null;render()">‹</button><div style="flex:1"><div style="font-size:11px;font-weight:500;color:${sec.text}">${esc(headerTitle)}</div><div style="font-size:14px;font-weight:500">${headerSub}</div></div>${timerBadge}</div>
   <div style="height:5px;background:#ebebea;flex-shrink:0"><div style="height:100%;width:${barW}%;background:${qs.isRetry?'#E24B4A':sec.bar};transition:width .4s;border-radius:0 3px 3px 0"></div></div>
-  <div class="scroll-area pad" style="padding-top:16px"><div class="card" id="qs-question-card"><p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${esc(q.q)}</p>${opts}${explanation}</div><div style="margin-top:12px" id="qs-next-wrap">${nextBtn}</div><div style="height:20px"></div></div>`;
+  <div class="scroll-area pad" style="padding-top:16px"><div class="card" id="qs-question-card"><p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${esc(q.q)}</p>${dataTableHTML(q)}${opts}${explanation}</div><div style="margin-top:12px" id="qs-next-wrap">${nextBtn}</div><div style="height:20px"></div></div>`;
 }
 
 // ─── QUIZ RESULTS ─────────────────────────────────────────────────────────────
@@ -3032,8 +3038,8 @@ function selectAnswer(i){
       else{textC='#888';}
       return`<div class="q-opt" style="background:${bg};border:${border};cursor:default"><div class="q-circle" style="background:${circBg};color:${circC};border:${circBorder}">${circTxt}</div><div class="q-text" style="color:${textC}">${esc(normalizeCase(opt))}</div></div>`;
     }).join('');
-    const exp=`<div style="margin-top:14px;padding:13px 14px;border-radius:10px;background:${i===q.a?'#EAF3DE':'#FCEBEB'};border:1px solid ${i===q.a?'#639922':'#E24B4A'}"><div style="font-size:12px;font-weight:500;color:${i===q.a?'#27500A':'#791F1F'};margin-bottom:5px">${i===q.a?'Correct! Well done.':'Not quite — here is why:'}</div><div style="font-size:13px;color:${i===q.a?'#3B6D11':'#A32D2D'};line-height:1.55">${esc(q.e)}</div></div>`;
-    qCard.innerHTML=`<p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${esc(q.q)}</p>${opts}${exp}`;
+    const exp=`<div style="margin-top:14px;padding:13px 14px;border-radius:10px;background:${i===q.a?'#EAF3DE':'#FCEBEB'};border:1px solid ${i===q.a?'#639922':'#E24B4A'}"><div style="font-size:12px;font-weight:500;color:${i===q.a?'#27500A':'#791F1F'};margin-bottom:5px">${i===q.a?'Correct! Well done.':'Not quite — here is why:'}</div><div style="font-size:13px;color:${i===q.a?'#3B6D11':'#A32D2D'};line-height:1.55">${esc(expFor(q,i))}</div></div>`;
+    qCard.innerHTML=`<p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${esc(q.q)}</p>${dataTableHTML(q)}${opts}${exp}`;
     const nextWrap=document.getElementById('qs-next-wrap');
     if(nextWrap)nextWrap.innerHTML=`<button class="btn btn-primary" onclick="nextQuestion()" style="background:${qs.isRetry?'#E24B4A':sec.bar}">${qs.idx+1>=qs.questions.length?'See My Results':'Next Question →'}</button>`;
   } else {render();}
