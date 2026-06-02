@@ -633,7 +633,7 @@ function showToast(message, type = 'info', duration = 3600) {
 // renderWrongAnswers(), and markDone(). The old 'scores' key was never read, causing quiz
 // scores to silently disappear after login. Also fixes the Firestore write rejection
 // (rules now permit 'lessonScores' — see firestore.rules Fix 3).
-const STATE={tab:'loading',searchQ:'',leaderboardData:[],leaderboardLoaded:false,quizMode:{active:false,sectionId:null,idx:0,questions:[],answers:[],selected:null},user:null,authScreen:'login',authError:'',authLoading:false,communityFilter:'all',questionDetail:null,showAskForm:false,communityQuestions:[],communityLastDoc:null,communityHasMore:false,communityLoading:false,communityLoaded:false,questionReplies:[],draftTitle:'',draftBody:'',draftSection:'General',draftReply:'',trackerOpenSects:[],sectId:null,lessonId:null,quizState:null,showProfileWarning:false,progress:{done:[],lessonScores:{},mcqTotal:0,mcqRight:0},
+const STATE={tab:'loading',searchQ:'',dictQ:'',dictData:[],dictLoaded:false,leaderboardData:[],leaderboardLoaded:false,quizMode:{active:false,sectionId:null,idx:0,questions:[],answers:[],selected:null},user:null,authScreen:'login',authError:'',authLoading:false,communityFilter:'all',questionDetail:null,showAskForm:false,communityQuestions:[],communityLastDoc:null,communityHasMore:false,communityLoading:false,communityLoaded:false,questionReplies:[],draftTitle:'',draftBody:'',draftSection:'General',draftReply:'',trackerOpenSects:[],sectId:null,lessonId:null,quizState:null,showProfileWarning:false,progress:{done:[],lessonScores:{},mcqTotal:0,mcqRight:0},
     showReset:false};
 
 // ─── ARABIC TERM TOOLTIPS ──────────────────────────────────────────────────
@@ -1795,6 +1795,94 @@ function renderSearch(){
   </div>`;
 }
 
+/* ── BILINGUAL DICTIONARY FEATURE ─────────────────────────────────── */
+async function ensureDictionary(){
+  if(STATE.dictLoaded) return;
+  try{
+    const res = await fetch('./dictionary/terms.json');
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    STATE.dictData = Array.isArray(data)
+      ? data.slice().sort((a,b)=>String(a.en).localeCompare(String(b.en)))
+      : [];
+  }catch(e){
+    console.error('Failed to load dictionary', e);
+    STATE.dictData = [];
+  }
+  STATE.dictLoaded = true;
+  if(STATE.tab==='dictionary') render();
+}
+function dictNormEn(s){ return String(s||'').toLowerCase().trim(); }
+function dictNormAr(s){
+  return String(s||'')
+    .replace(/[\u064B-\u0652\u0670\u0640]/g,'')
+    .replace(/[\u0622\u0623\u0625]/g,'\u0627')
+    .replace(/\u0649/g,'\u064A')
+    .replace(/\u0629/g,'\u0647')
+    .trim();
+}
+function dictFilter(data, q){
+  q = String(q||'').trim();
+  if(!q) return data;
+  const qEn = dictNormEn(q);
+  const qAr = dictNormAr(q);
+  return data.filter(e=>{
+    const en = [e.en, e.abbr, e.enDef].filter(Boolean).map(dictNormEn).join(' ');
+    const ar = [e.ar, e.arDef].filter(Boolean).map(dictNormAr).join(' ');
+    return (qEn && en.includes(qEn)) || (qAr && ar.includes(qAr));
+  });
+}
+function dictCardHTML(e){
+  return `<div style="background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:13px 14px;margin-bottom:10px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+      <div style="font-size:15px;font-weight:600;color:#0C447C;line-height:1.35">
+        ${esc(e.en)}${e.abbr?` <span style="font-size:10px;font-weight:600;color:#185FA5;background:#E6F1FB;padding:1px 6px;border-radius:6px;vertical-align:middle">${esc(e.abbr)}</span>`:''}
+      </div>
+      <div dir="rtl" style="font-size:15px;font-weight:600;color:#185FA5;text-align:right;line-height:1.5;flex-shrink:0">${esc(e.ar)}</div>
+    </div>
+    ${e.cat?`<div style="font-size:10px;color:#888;margin-top:4px">${esc(e.cat)}</div>`:''}
+    ${e.enDef?`<div style="font-size:13px;color:#444;line-height:1.6;margin-top:8px">${esc(e.enDef)}</div>`:''}
+    ${e.arDef?`<div dir="rtl" style="font-size:13px;color:#444;line-height:1.75;margin-top:6px;text-align:right">${esc(e.arDef)}</div>`:''}
+  </div>`;
+}
+function updateDictResults(){
+  STATE.dictQ = document.getElementById('dict-input')?.value || '';
+  const container = document.getElementById('dict-results');
+  if(!container) return;
+  const all = STATE.dictData || [];
+  const q = STATE.dictQ.trim();
+  const results = dictFilter(all, q);
+  if(!STATE.dictLoaded){
+    container.innerHTML = '<div style="text-align:center;padding:40px 20px;color:#aaa"><div style="font-size:36px;margin-bottom:10px">\u{1F4D6}</div><div style="font-size:14px">Loading dictionary…</div></div>';
+  }else if(results.length===0){
+    container.innerHTML = `<div style="text-align:center;padding:40px 20px;color:#aaa"><div style="font-size:36px;margin-bottom:10px">\u{1F615}</div><div style="font-size:14px">No terms found for "<b>${esc(STATE.dictQ)}</b>"</div><div style="font-size:13px;margin-top:4px" dir="rtl">لا توجد نتائج</div></div>`;
+  }else{
+    const count = q ? `${results.length} term${results.length>1?'s':''} for "<b>${esc(STATE.dictQ)}</b>"` : `${results.length} terms`;
+    container.innerHTML = `<div style="font-size:12px;color:#888;margin-bottom:10px">${count}</div>` + results.map(dictCardHTML).join('');
+  }
+  const clearBtn = document.getElementById('dict-clear');
+  if(clearBtn) clearBtn.style.display = q.length>=1?'block':'none';
+}
+function renderDictionary(){
+  const q = (STATE.dictQ||'').trim();
+  const initial = !STATE.dictLoaded
+    ? '<div style="text-align:center;padding:40px 20px;color:#aaa"><div style="font-size:36px;margin-bottom:10px">\u{1F4D6}</div><div style="font-size:14px">Loading dictionary…</div></div>'
+    : (()=>{ const r=dictFilter(STATE.dictData||[], q); return `<div style="font-size:12px;color:#888;margin-bottom:10px">${r.length} terms</div>`+r.map(dictCardHTML).join(''); })();
+  return `<div class="sh"><h2>Dictionary</h2><p>Accounting &amp; finance terms · English / العربية</p></div>
+  ${renderSubNav(SUB_REFERENCE,'dictionary')}
+  <div class="scroll-area pad" style="padding-top:12px">
+    <div style="position:relative;margin-bottom:14px">
+      <input id="dict-input" type="text" placeholder="Search a term…  ابحث عن مصطلح" value="${esc(STATE.dictQ||'')}"
+        oninput="STATE.dictQ=this.value;updateDictResults()"
+        style="width:100%;padding:12px 14px 12px 40px;border-radius:10px;border:.5px solid #d0d0d0;font-size:14px;font-family:inherit;outline:none;background:#fafaf8;color:#1a1a1a;box-sizing:border-box">
+      <span style="position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none">\u{1F50D}</span>
+      <span id="dict-clear" onclick="document.getElementById('dict-input').value='';STATE.dictQ='';updateDictResults()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:18px;cursor:pointer;color:#aaa;line-height:1;display:${q.length>=1?'block':'none'}">×</span>
+    </div>
+    <div id="dict-results" style="min-height:200px">${initial}</div>
+    <div style="height:20px"></div>
+  </div>`;
+}
+
 function renderTracker(){
   const tracker=loadTracker();
   const allLessons=S.flatMap(s=>s.lessons);
@@ -2740,6 +2828,7 @@ function renderFormulaBank(){
       </div>
     </div>`).join('');
   return`<div class="sh"><h2>📐 Formula Bank</h2><p>Quick reference — all CMA Part 1 sections</p></div>
+  ${renderSubNav(SUB_REFERENCE,'formula-bank')}
   <div class="scroll-area pad" style="padding-top:4px">${items}<div style="height:20px"></div></div>`;
 }
 
@@ -3128,7 +3217,7 @@ function activeNavTab(){
   if(t==='study'||t==='quiz-session'||t==='quiz-results'||t==='lessons'||t==='dashboard')return'study';
   if(t==='quiz-mode-select'||t==='quiz-mode'||t==='cbq'||t==='mock-exam'||t==='wrong-answers')return'quiz-mode-select';
   if(t==='progress'||t==='tracker'||t==='leaderboard')return'progress';
-  if(t==='formula-bank')return'formula-bank';
+  if(t==='formula-bank'||t==='dictionary')return'formula-bank';
   if(t==='search')return'search';
   if(t==='community'||t==='question-detail')return'community';
   if(t==='intro'||t==='register'||t==='feedback')return'intro';
@@ -3155,6 +3244,10 @@ const SUB_PROGRESS=[
   {id:'tracker',       icon:'📌', label:'Tracker'},
   {id:'leaderboard',   icon:'🏅', label:'Top Students'}
 ];
+const SUB_REFERENCE=[
+  {id:'formula-bank', icon:'📐', label:'Formula'},
+  {id:'dictionary',   icon:'📖', label:'Dictionary'}
+];
 const SUB_ME=[
   {id:'intro',     icon:'🏠', label:'Home'},
   {id:'register',  icon:'🎓', label:'Profile'},
@@ -3172,7 +3265,7 @@ function render(){
 
   let html='';
   switch(STATE.tab){
-    case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'wrong-answers':html=renderWrongAnswers();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;case'formula-bank':html=renderFormulaBank();break;case'cbq':html=renderCBQ();break;case'mock-exam':html=renderMockExamScreen();break;default:html=renderIntro();
+    case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'wrong-answers':html=renderWrongAnswers();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;case'formula-bank':html=renderFormulaBank();break;case'dictionary':html=renderDictionary();break;case'cbq':html=renderCBQ();break;case'mock-exam':html=renderMockExamScreen();break;default:html=renderIntro();
   }
   content.innerHTML=html;
 
@@ -3186,6 +3279,7 @@ function render(){
   if(STATE.tab==='mock-exam'){content.style.overflow='hidden';if(STATE.mockExam.status==='mcq')setTimeout(()=>renderMockMCQContent(),0);if(STATE.mockExam.status==='cbq')setTimeout(()=>mockSetupMockDrag(),0);}
   if(STATE.tab==='study'&&STATE.lessonId){setTimeout(()=>syncNoteFromCloud(STATE.lessonId),0);}
   if(STATE.tab==='search'){setTimeout(()=>{const inp=document.getElementById('search-input');if(inp){inp.focus();if(STATE.searchQ)updateSearchResults();}},50);}
+  if(STATE.tab==='dictionary'){if(!STATE.dictLoaded)setTimeout(ensureDictionary,0);setTimeout(()=>{const i=document.getElementById('dict-input');if(i)i.focus();},50);}
   content.style.display='flex';content.style.flexDirection='column';content.style.overflow=STATE.tab==='cbq'||STATE.tab==='mock-exam'?'hidden':'auto';
   const _mb=document.getElementById('mobile-brand');
   if(STATE.tab==='loading'||STATE.tab==='login'||STATE.tab==='onboarding'){nav.style.display='none';if(_mb)_mb.style.display='none';}
