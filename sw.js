@@ -13,10 +13,10 @@
 //
 // ⚠️ When you push NEW questions/lessons or change app.css / cbq-data.js
 //    and want every user to get it on their NEXT visit (not the one after),
-//    bump the version number below: 'cma-prep-v8' → 'cma-prep-v9', etc.
+//    bump the version number below: 'cma-prep-v9' → 'cma-prep-v10', etc.
 // ────────────────────────────────────────────────────────────────
 
-const CACHE_NAME = 'cma-prep-v8';
+const CACHE_NAME = 'cma-prep-v9';
 
 const PRECACHE_URLS = [
   './',
@@ -38,7 +38,9 @@ const PRECACHE_URLS = [
   './lessons/lesson-s3.json',
   './lessons/lesson-s4.json',
   './lessons/lesson-s5.json',
-  './lessons/lesson-s6.json'
+  './lessons/lesson-s6.json',
+  // Dictionary terms
+  './dictionary/terms.json'
 ];
 
 self.addEventListener('install', event => {
