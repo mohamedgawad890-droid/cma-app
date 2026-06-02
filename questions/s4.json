@@ -23,7 +23,7 @@
       "e": "Variable Rate = ($38,000 - $14,000) / (8,000 - 2,000) = $24,000 / 6,000 = $4.00 per unit."
     },
     {
-      "q": "High-Low Method: High point = 8,000 units / $38,000. Low point = 2,000 units / $14,000. Variable rate = $4.00/unit. Fixed Cost =",
+      "q": "Using the data above (variable rate $4.00), Fixed Cost =",
       "o": [
         "$6,000",
         "$8,000",
@@ -31,7 +31,7 @@
         "$14,000"
       ],
       "a": 0,
-      "e": "Fixed Cost = Total Cost at High point − (Variable Rate × High Activity) = $38,000 − ($4 × 8,000) = $38,000 − $32,000 = $6,000. Verify using Low point: $14,000 − ($4 × 2,000) = $6,000. ✓"
+      "e": "Fc = $38,000 - ($4 x 8,000) = $38,000 - $32,000 = $6,000. Verify: $14,000 - ($4 x 2,000) = $6,000."
     },
     {
       "q": "Monthly rent of $10,000 regardless of production level is a:",
@@ -2476,224 +2476,1856 @@
   ],
   "4-12": [
     {
-      "q": "Under absorption costing, fixed manufacturing overhead is treated as a:",
+      "id": "I22 1.52",
+      "source": "I",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "An exercise equipment manufacturer uses the variable costing method and has determined that the total manufacturing cost of its single 30-pound barbell is $27 per unit. The direct material cost per unit is $16. The allocated administration expenses are $6 per unit. The allocated fixed rental costs are $3 per unit. If no other costs are incurred, the direct labor cost per unit is",
       "o": [
-        "Period cost",
-        "Product cost",
-        "Sunk cost",
-        "Opportunity cost"
+        "$5",
+        "$8",
+        "$2",
+        "$11"
+      ],
+      "a": 3,
+      "e": "Under variable costing, only variable costs are allocated to production. Fixed factory overheads are reported as period costs and are expensed in the period in which they are incurred, so the allocated fixed rental costs are not allocated to units produced. Administration expenses are always expensed as incurred regardless of what method of costing is being used. Therefore, the direct labor cost allocated to each unit under variable costing is the difference between the total manufacturing cost of $27 and the direct material cost of $16 allocated per unit, which is $11.",
+      "wrongWhy": [
+        "This cost for direct labor is incorrect. This is the total manufacturing cost of $27 minus the direct material cost of $16 allocated per unit and minus the allocated administration expenses of $6 per unit. Administration expenses are always period costs that are expensed as incurred, so the administration expenses should not be deducted from the total manufacturing cost to calculate direct labor cost. Please see the correct answer explanation for more information.",
+        "This cost for direct labor is incorrect. This is the total manufacturing cost of $27 minus the direct material cost of $16 allocated per unit and minus the allocated fixed rental cost of $3 per unit. Under variable costing, only variable manufacturing costs are allocated to production. Fixed factory overheads are not allocated to units produced under variable costing, so the allocated fixed rental cost should not be deducted from total manufacturing costs to calculate direct labor cost. Please see the correct answer explanation for more information.",
+        "This cost for direct labor is incorrect. This is the total manufacturing cost of $27 minus the direct material cost of $16 allocated per unit and minus the allocated fixed rental cost of $3 per unit and minus the allocated administration expenses of $6 per unit. Under variable costing, only variable manufacturing costs are allocated to production. Fixed factory overheads are not allocated to units produced. Administration expenses are always expensed as incurred regardless of what method of costing is being used. So the allocated fixed rental expense and the allocated administration expenses should not be deducted from the total manufacturing cost to calculate the direct labor cost. Please see the correct answer explanation for more information. 2.",
+        null
+      ]
+    },
+    {
+      "id": "CMA 1286 4.18 H2",
+      "source": "CMA",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "A manufacturer at the end of its fiscal year recorded the data below: If the manufacturer uses variable costing, the inventoriable costs for the fiscal year are:",
+      "o": [
+        "$980,000",
+        "$800,000",
+        "$900,000",
+        "$1,060,000"
+      ],
+      "a": 2,
+      "e": "Under variable costing, the variable costs of production are inventoried while the fixed manufacturing costs are expensed as incurred. The variable costs of production include the prime costs (direct labor and direct materials) and variable manufacturing overhead. In total, this is $900,000.",
+      "wrongWhy": [
+        "This answer includes variable selling and other expenses which are not included in inventoriable costs under the variable method because they are not production costs.",
+        "This answer does not include variable manufacturing overhead, which is inventoried under variable costing.",
+        null,
+        "This answer includes fixed manufacturing overhead, which is not inventoried under variable costing. 3."
+      ],
+      "data": [
+        [
+          "Prime cost",
+          "$800,000"
+        ],
+        [
+          "Variable manufacturing overhead",
+          "$100,000"
+        ],
+        [
+          "Fixed manufacturing overhead",
+          "$160,000"
+        ],
+        [
+          "Variable selling and other expenses",
+          "$80,000"
+        ],
+        [
+          "Fixed selling and other expenses",
+          "$40,000"
+        ]
+      ],
+      "diffPct": 83
+    },
+    {
+      "id": "CMA 1286 4.18 H1",
+      "source": "CMA",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "A manufacturer at the end of its fiscal year recorded the data below: Using absorption (full) costing, inventoriable costs are",
+      "o": [
+        "$800,000",
+        "$900,000",
+        "$1,080,000",
+        "$1,060,000"
+      ],
+      "a": 3,
+      "e": "Under absorption costing, all manufacturing costs are inventoried. This includes the prime costs (which include direct labor and direct materials), variable manufacturing overhead and fixed manufacturing overhead. In total, this is $1,060,000.",
+      "wrongWhy": [
+        "This answer does not include the manufacturing overheads, which are inventoried under absorption costing.",
+        "This answer does not include the fixed manufacturing overhead, which is inventoried under absorption costing.",
+        "This answer includes the variable and fixed selling and other expenses (which should not be included) and does not include variable manufacturing overhead (which should be included). 4.",
+        null
+      ],
+      "data": [
+        [
+          "Prime cost",
+          "$800,000"
+        ],
+        [
+          "Variable manufacturing overhead",
+          "$100,000"
+        ],
+        [
+          "Fixed manufacturing overhead",
+          "$160,000"
+        ],
+        [
+          "Variable selling and other expenses",
+          "$80,000"
+        ],
+        [
+          "Fixed selling and other expenses",
+          "$40,000"
+        ]
+      ],
+      "diffPct": 91
+    },
+    {
+      "id": "CMA 1290 H5",
+      "source": "CMA",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "Valyn Corporation employs an absorption costing system for internal reporting purposes; however, the company is considering using variable costing. Data regarding Valyn's planned and actual operations for the calendar year are presented below. Planned Actual Activity Activity Planned Planned Actual Costs Costs Incurred Per Unit Total Costs The planned per unit cost figures shown in the above schedule were based on Valyn producing and selling 140,000 units. Valyn uses a predetermined manufacturing overhead rate for applying manufacturing overhead to its product; thus, a combined manufacturing overhead rate of $9.00 per unit was employed for absorption costing purposes. Any over- or underapplied manufacturing overhead is closed to the Cost of Goods Sold account at the end of the reporting year. The beginning finished goods inventory for absorption costing purposes was valued at the previous year's planned unit manufacturing cost, which was the same as the current year's planned unit manufacturing cost. There are no work-in-process inventories at either the beginning or the end of the year. The planned and actual unit selling price for the current year was $70.00 per unit. The difference between Valyn Corporation's operating income calculated on the absorption costing basis and calculated on the variable costing basis was",
+      "o": [
+        "$65,000",
+        "$25,000",
+        "$90,000",
+        "$40,000"
       ],
       "a": 1,
-      "e": "Absorption costing treats fixed Moh as a Product cost — it goes into inventory and is only expensed when the product is sold. This is required under GAAP/IFRS for external reporting."
-    },
-    {
-      "q": "Under variable costing, fixed manufacturing overhead is:",
-      "o": [
-        "Added to inventory",
-        "A product cost",
-        "Expensed in the period incurred",
-        "Allocated based on units sold"
+      "e": "This problem does not specify whether Valyn is using a standard cost system (in which standard, or planned, costs are used to account for production) or an actual cost system (in which actual costs are used). However, it does say that Valyn uses a predetermined manufacturing overhead rate for applying manufacturing overhead to its product. And since the actual, incurred per unit costs for direct materials, direct labor and variable manufacturing overhead are exactly the same as the planned per unit costs for those items, we do not need to know whether standard costing or actual costing is being used in order to answer this question. (To verify that the actual variable costs per unit are exactly the same as the planned per unit costs, multiply the planned per unit cost for each of those items by the actual production of 130,000 units. For example, the planned per unit cost for direct materials was $12. Multiplying $12 by the actual activity of 130,000 equals $1,560,000. That $1,560,000 was the flexible budget amount for direct materials, and it is exactly the same as the actual incurred costs.) The difference between absorption costing and variable costing is the treatment of fixed factory overheads. Under the absorption method fixed manufacturing overheads are applied to the units produced at the predetermined rate, whereas under the variable method, they are expensed. The fixed factory overhead cost applied per unit is $5 and we can determine the difference between these two methods by multiplying this $5 per unit difference by the number of units that were added to inventory during the period. Inventory increased by 5,000 units, calculated as follows: Beginning Inventory 35,000 Units + 130,000 Units Produced − 125,000 Units Sold = Ending Inventory 40,000 Units. Thus, the predetermined fixed overhead rate of $5 per unit that was applied to each unit as it was manufactured is attached to the 5,000 units that were added to inventory and was not expensed under absorption costing. 5,000 × $5 gives us a $25,000 difference in income between the two methods. Note that the difference in operating income can be calculated in this way only because 1. The beginning finished goods inventory is valued at the same per unit manufacturing cost as the current year's planned per unit manufacturing cost (which implies that the fixed manufacturing cost in beginning inventory was the same as the current year's predetermined application rate per unit for fixed manufacturing overhead); 2. Over- or under-applied manufacturing overhead is closed to the cost of goods sold account at the end of the period; and 3. There is no beginning work-in-process inventory. If any one of those factors had not been present, we would not have been able to calculate the difference between the two methods in this way.",
+      "wrongWhy": [
+        "This is the amount of underapplied fixed manufacturing overhead. It is not the difference in operating income between the absorption costing and the variable costing methods.",
+        null,
+        "This is (Fixed Manufacturing Cost Per Unit of $5 × Number of units of change in inventory of 5,000) + Underapplied Fixed Manufacturing Overhead of $65,000. The underapplied fixed manufacturing overhead is not relevant to the calculation of the difference in operating income between absorption costing and variable costing, because it is handled the same way under both methods. The $65,000 underapplied fixed manufacturing cost is charged to expense under absorption costing because the problem says that underapplied or overapplied manufacturing overhead is closed out to cost of goods sold. It is also charged to expense under variable costing, because under variable costing, all fixed costs incurred are expensed as period costs as incurred. Since the amount of underapplied fixed manufacturing overhead under absorption costing is handled the same way under both methods, it is not relevant to a calculation of the difference in operating income between them.",
+        "This answer results from including fixed administrative expenses along with fixed manufacturing overhead in calculating the fixed cost that would be included in ending inventory under absorption costing but not included under variable costing. Fixed administrative costs (along with fixed selling costs) are expensed in both methods, so the fixed administrative costs do not contribute to the difference between operating income under absorption costing and under variable costing. 6."
       ],
-      "a": 2,
-      "e": "Variable costing treats fixed Moh as a Period cost — expensed immediately in the period incurred, regardless of how many units were sold."
+      "data": [
+        [
+          "Beginning finished goods inventory                  35,000",
+          "$35,000"
+        ],
+        [
+          "Sales                                             140,000",
+          "$125,000"
+        ],
+        [
+          "Production                                        140,000",
+          "$130,000"
+        ],
+        [
+          "Direct materials                                 $12.00      $1,680,000",
+          "$1,560,000"
+        ],
+        [
+          "Direct labor                                         9.00     1,260,000",
+          "$1,170,000"
+        ],
+        [
+          "Variable manufacturing overhead                      4.00        560,000",
+          "$520,000"
+        ],
+        [
+          "Fixed manufacturing overhead                         5.00        700,000",
+          "$715,000"
+        ],
+        [
+          "Variable selling expenses                            8.00     1,120,000",
+          "$1,000,000"
+        ],
+        [
+          "Fixed selling expenses                               7.00        980,000",
+          "$980,000"
+        ],
+        [
+          "Variable administrative expenses                     2.00        280,000",
+          "$250,000"
+        ],
+        [
+          "Fixed administrative expenses                        3.00        420,000",
+          "$425,000"
+        ],
+        [
+          "Total                                            $50.00      $7,000,000",
+          "$6,620,000"
+        ]
+      ]
     },
     {
-      "q": "Production 12,000 units. Sales 10,000 units. Compared to variable costing, absorption costing net income is:",
+      "id": "CMA 1290 H4",
+      "source": "CMA",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "Valyn Corporation employs an absorption costing system for internal reporting purposes; however, the company is considering using variable costing. Data regarding Valyn's planned and actual operations for the calendar year are presented below. Planned Actual Activity Activity Planned Planned Actual Costs Costs Incurred Per Unit Total Costs The planned per unit cost figures shown in the above schedule were based on Valyn producing and selling 140,000 units. Valyn uses a predetermined manufacturing overhead rate for applying manufacturing overhead to its product; thus, a combined manufacturing overhead rate of $9.00 per unit was employed for absorption costing purposes. Any over- or underapplied manufacturing overhead is closed to the Cost of Goods Sold account at the end of the reporting year. The beginning finished goods inventory for absorption costing purposes was valued at the previous year's planned unit manufacturing cost, which was the same as the current year's planned unit manufacturing cost. There are no work-in-process inventories at either the beginning or the end of the year. The planned and actual unit selling price for the current year was $70.00 per unit. The total variable cost expensed currently by Valyn Corporation on the variable costing basis was",
       "o": [
-        "The same",
-        "Lower",
-        "Higher",
-        "Cannot be determined without more data"
-      ],
-      "a": 2,
-      "e": "Production (12,000) > Sales (10,000) — 2,000 units in ending inventory. Under absorption, some fixed Moh is Deferred in inventory, making absorption NI Higher than variable NI."
-    },
-    {
-      "q": "Fixed Moh $80,000. Produced 8,000 units. Sold 6,000 units. Difference in NI (Absorption vs Variable) =",
-      "o": [
-        "$10,000",
-        "$20,000",
-        "$60,000",
-        "$80,000"
+        "$4,500,000",
+        "$4,375,000",
+        "$4,550,000",
+        "$4,325,000"
       ],
       "a": 1,
-      "e": "Fixed Moh/unit = $80,000/8,000 = $10. Ending inventory = 2,000 units. Difference = 2,000 x $10 = $20,000. Absorption NI is $20,000 higher."
-    },
-    {
-      "q": "When production Equals sales, absorption and variable costing net income are:",
-      "o": [
-        "Absorption higher",
-        "Variable higher",
-        "Equal",
-        "Cannot be determined"
+      "e": "This problem does not specify whether Valyn is using a standard cost system (in which standard, or planned, costs are used to account for production) or an actual cost system (in which actual costs are used). However, it does say that Valyn uses a predetermined manufacturing overhead rate for applying manufacturing overhead to its product. And since the actual, incurred per unit costs for direct materials, direct labor and variable manufacturing overhead are exactly the same as the planned per unit costs for those items, we do not need to know whether standard costing or actual costing is being used in order to answer this question. (To verify that the actual variable costs per unit are exactly the same as the planned per unit costs, multiply the planned per unit cost for each of those items by the actual production of 130,000 units. For example, the planned per unit cost for direct materials was $12. Multiplying $12 by the actual activity of 130,000 equals $1,560,000. That $1,560,000 was the flexible budget amount for direct materials, and it is exactly the same as the actual incurred costs.) Under variable costing, all variable production costs are put into inventory and are expensed only when the unit is sold. The variable production costs per unit that were applied to the units produced were the costs for direct labor, direct materials and variable overhead, a total of $25 per unit. The number of units sold was 125,000, so the total variable production costs expensed were $3,125,000 ($25 × 125,000). Additionally, the variable selling and administrative costs need to be included in the answer, and those are period costs that are expensed as they are incurred. The variable selling costs were $1,000,000. The variable administrative costs were $250,000. Therefore, the total variable costs expensed were the total variable production costs expensed of $3,125,000, the variable selling costs of $1,000,000, and the variable administrative costs of $250,000, for a total of $4,375,000.",
+      "wrongWhy": [
+        "This is the total of the incurred variable costs. However, variable production costs are put into inventory and are expensed only when the unit is sold. The amount of variable production costs expensed is the actual incurred variable cost per unit produced multiplied by the number of units sold.",
+        null,
+        "This answer results from multiplying the total variable costs per unit by the number of units produced. The number of units sold should be used.",
+        "This is not the correct answer. Please see the correct answer for an explanation. We have been unable to determine how to calculate this incorrect answer choice. If you have calculated it, please let us know how you did it so we can create a full explanation of why this answer choice is number and the actual incorrect answer choice -- not its letter, because that can change with every study session created. The Question ID number appears at the top of the question. Thank you in advance for helping us to make your HOCK study materials better. 7."
       ],
-      "a": 2,
-      "e": "When production = sales, there is no change in inventory. All fixed Moh is expensed under both methods in the same period. Therefore NI is Equal."
+      "data": [
+        [
+          "Beginning finished goods inventory             35,000",
+          "$35,000"
+        ],
+        [
+          "Sales                                         140,000",
+          "$125,000"
+        ],
+        [
+          "Production                                    140,000",
+          "$130,000"
+        ],
+        [
+          "Direct materials                             $12.00      $1,680,000",
+          "$1,560,000"
+        ],
+        [
+          "Direct labor                                    9.00        1,260,000",
+          "$1,170,000"
+        ],
+        [
+          "Variable manufacturing overhead                 4.00         560,000",
+          "$520,000"
+        ],
+        [
+          "Fixed manufacturing overhead                    5.00         700,000",
+          "$715,000"
+        ],
+        [
+          "Variable selling expenses                       8.00        1,120,000",
+          "$1,000,000"
+        ],
+        [
+          "Fixed selling expenses                          7.00         980,000",
+          "$980,000"
+        ],
+        [
+          "Variable administrative expenses                2.00         280,000",
+          "$250,000"
+        ],
+        [
+          "Fixed administrative expenses                   3.00         420,000",
+          "$425,000"
+        ],
+        [
+          "Total                                        $50.00      $7,000,000",
+          "$6,620,000"
+        ]
+      ]
     },
     {
-      "q": "Variable costing is primarily used for:",
+      "id": "ICMA 19.P1.063",
+      "source": "ICMA",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "During the first month of its operations, a company manufactured a product with variable production costs of $50 per unit. Fixed manufacturing overhead totaled $1,800,000 and is allocated based upon units produced. During the month, the company completed 15,000 units, sold 12,000 units, and incurred no variances. If the company’s operating income under absorption costing was $400,000, its operating income (loss) under variable costing was",
       "o": [
-        "External financial reporting",
-        "Tax reporting",
-        "Internal management decisions",
-        "GAAP compliance"
-      ],
-      "a": 2,
-      "e": "Variable costing is used for Internal management decisions — CVP analysis, break-even analysis, and short-term pricing decisions. It is Not accepted for external GAAP/IFRS reporting."
-    },
-    {
-      "q": "The contribution margin income statement format is associated with:",
-      "o": [
-        "Absorption costing",
-        "Variable costing",
-        "Job order costing",
-        "Process costing"
-      ],
-      "a": 1,
-      "e": "The Contribution Margin income statement separates variable and fixed costs — this is the variable costing format. Absorption costing uses the traditional Gross Profit format (Sales - COGS = Gross Profit)."
-    },
-    {
-      "q": "Fixed Moh per unit = $5. Beginning inventory 1,000 units. Ending inventory 3,000 units. Absorption NI vs Variable NI:",
-      "o": [
-        "Absorption $10,000 higher",
-        "Absorption $10,000 lower",
-        "Absorption $5,000 higher",
-        "They are equal"
+        "$40,000",
+        "($50,000)",
+        "($110,000)",
+        "$760,000"
       ],
       "a": 0,
-      "e": "Inventory Increased by 2,000 units (3,000 - 1,000). Fixed Moh deferred in ending inventory = 2,000 x $5 = $10,000. Absorption NI is $10,000 Higher."
+      "e": "Under variable costing, the fixed manufacturing costs are fully expensed during the period. Under absorption costing, the fixed manufacturing costs are allocated to the units that are produced. The difference in operating income between the two methods can be calculated by multiplying the amount of fixed overhead per unit by the amount of the change in inventory during the period. During the period, inventory increased. This means that under absorption costing some of the fixed manufacturing costs are included in inventory at the end of the period and have not been expensed. So, we know that because inventory increased during the period the variable method will give a lower operating income. The fixed overhead per unit for the period is $120. This is calculated as the fixed manufacturing amount of $1,800,000 divided by the number of units produced, 15,000. Multiplying the amount of fixed overhead allocated to each unit by the number of units by which inventory increased, we calculate that there is $360,000 of fixed manufacturing costs on the balance sheet under absorption costing. This means that operating income under variable costing would be $360,000 less than the $400,000 operating income under variable costing, or $40,000.",
+      "wrongWhy": [
+        null,
+        "This answer incorrectly allocates the fixed manufacturing costs to the number of units sold instead of the number of units produced. See the correct answer for a full explanation of the calculation of operating income under the variable costing method.",
+        "This answer results from assuming that variable manufacturing costs are treated the same way as fixed manufacturing costs under both variable costing and absorption costing. Since the fixed manufacturing costs for the unsold units would be in ending inventory under absorption costing but expensed under variable costing, this answer assumes the variable manufacturing costs for the unsold units are also in inventory at the end of the period under absorption costing but expensed as incurred under variable costing. However, the variable manufacturing costs for the unsold units are in inventory at the end of the period under both absorption costing and variable costing. Please see the correct answer explanation for more information.",
+        "This answer adds the difference between the two methods instead of subtracting it. See the correct answer for a full explanation of the calculation of operating income under the variable costing method. 8."
+      ],
+      "diffPct": 76
     },
     {
-      "q": "Which costing method results in a lower net income when inventory Decreases?",
+      "id": "CMA 1285 4.14 H1",
+      "source": "CMA",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "Osawa, Inc. planned and actually manufactured 200,000 units of its single product in its first year of operations. Variable manufacturing costs were $30 per unit of product. Planned and actual fixed manufacturing costs were $600,000, and selling and administrative costs totaled $400,000. Osawa sold 120,000 units of product at a selling price of $40 per unit. Osawa's operating income using absorption (full) costing is:",
       "o": [
-        "Variable costing",
-        "Absorption costing",
-        "Both are equal",
-        "Depends on fixed cost level"
+        "$200,000",
+        "$840,000",
+        "$440,000",
+        "$600,000 Study Unit 12: D.3. Variable and Absorption Costing covers the information for this question"
+      ],
+      "a": 2,
+      "e": "Under absorption costing the fixed manufacturing costs are allocated to the products produced. The variable costs of production are $30 per unit and the fixed costs per unit are $3 ($600,000 ÷ 200,000 units produced). In total, the cost per unit is $33. Since the sales price was $40 per unit, this is a gross profit of $7 per unit. With 120,000 units sold, that is $840,000 in total gross profit. Subtracting from this the selling and administration costs of $400,000, we get an operating income of $440,000.",
+      "wrongWhy": [
+        "This is the operating income as calculated under variable costing.",
+        "This answer results from not deducting the selling and administrative costs that are expensed as period costs.",
+        null,
+        "This answer results from expensing all of the fixed manufacturing cost as would be done under variable costing and also not deducting the selling and administrative costs. 9."
+      ],
+      "diffPct": 69
+    },
+    {
+      "id": "CMA 1285 4.14 H2",
+      "source": "CMA",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "Osawa, Inc. planned and actually manufactured 200,000 units of its single product in its first year of operations. Variable manufacturing costs were $30 per unit of product. Planned and actual fixed manufacturing costs were $600,000, and selling and administrative costs totaled $400,000. Osawa sold 120,000 units of product at a selling price of $40 per unit. Osawa's operating income for the year using variable costing is:",
+      "o": [
+        "$200,000",
+        "$800,000",
+        "$600,000",
+        "$440,000 Study Unit 12: D.3. Variable and Absorption Costing covers the information for this question"
+      ],
+      "a": 0,
+      "e": "Under variable costing, the fixed manufacturing costs are expensed. With a selling price of $40 per unit and a variable cost of $30 per unit, the manufacturing contribution margin is $10 per unit. With sales of 120,000 units, this is in total $1,200,000. Subtracting from this the fixed manufacturing costs of $600,000 and the selling and administrative costs of $400,000, we get an operating income of $200,000.",
+      "wrongWhy": [
+        null,
+        "This is the contribution margin minus the selling and administrative costs, but nothing is deducted for fixed manufacturing costs.",
+        "This answer results from not deducting the selling and administrative costs.",
+        "This is the income under the absorption method. 10."
+      ],
+      "diffPct": 84
+    },
+    {
+      "id": "ICMA 10.P1.165",
+      "source": "ICMA",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "Chassen Company, a cracker and cookie manufacturer, has the following unit costs for the month of June. Variable Variable Fixed Fixed manufacturing marketing manufacturing marketing cost cost cost cost $5.00 $3.50 $2.00 $4.00 A total of 100,000 units were manufactured during June of which 10,000 remain in ending inventory. Chassen uses the first-in, first-out (FIFO) inventory method, and the 10,000 units are the only finished goods inventory at month-end. Using the full absorption costing method, Chassen's finished goods inventory value would be",
+      "o": [
+        "$145,000",
+        "$70,000",
+        "$85,000",
+        "$50,000"
       ],
       "a": 1,
-      "e": "When inventory decreases, fixed Moh previously deferred in beginning inventory is now Released and expensed under absorption. This means absorption shows Lower income when inventory decreases."
+      "e": "Under absorption costing, both variable and fixed manufacturing costs are inventoried. The cost per unit of the 10,000 units in inventory is $5 variable manufacturing cost plus $2 fixed manufacturing cost, for a total of $7 per unit. $7 × 10,000 units = $70,000 ending finished goods inventory value.",
+      "wrongWhy": [
+        "This includes the variable marketing cost and the fixed marketing cost in the inventoriable costs. Only product costs are inventoried. Marketing costs are selling costs, and they are period costs.",
+        null,
+        "This includes the variable manufacturing cost and the variable marketing cost in the inventoriable costs. Marketing cost is a selling cost, and it is a period cost, not a product cost. Furthermore, under absorption costing, fixed manufacturing cost is a product cost and is inventoriable.",
+        "This includes only the variable manufacturing costs in the inventoriable costs. Under full absorption costing, fixed manufacturing costs are product costs and are inventoried as well. 11."
+      ]
     },
     {
-      "q": "Under variable costing, which cost is Not included in product cost?",
+      "id": "ICMA 19.P1.050",
+      "source": "ICMA",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "A manufacturing company is contemplating switching from their current costing approach, variable costing, to absorption costing. Relevant data for the company in January 20X2 is as follows. Selling price $30/unit Inventory as of 1/1/X2 None Direct materials $6/unit Direct labor $3/unit Variable manufacturing overhead budgeted and incurred $2/unit Variable selling and administrative expense $1/unit Based on the information above, the company’s operating income using absorption costing is",
       "o": [
-        "Direct Materials",
-        "Direct Labor",
-        "Variable Manufacturing Overhead",
-        "Fixed Manufacturing Overhead"
+        "$305,000",
+        "$345,000",
+        "$335,000",
+        "$415,000"
+      ],
+      "a": 1,
+      "e": "Under absorption costing, the fixed manufacturing overhead is allocated to the units that are produced. In this question, the fixed manufacturing overhead allocation rate per unit is $4: $160,000 ÷ 40,000 units budgeted and applied to the same number of units actually produced. On the income statement, though, only the production costs for the number of units sold are expensed; and that is true for all production costs, including fixed manufacturing costs and all variable manufacturing costs. Operating income is calculated as follows under the absorption method: Revenue ($30 x 30,000) $ 900,000 Direct materials ($6 x 30,000) (180,000) Direct labor ($3 x 30,000) (90,000) Variable OH ($2 x 30,000) (60,000) Fixed OH ($4 x 30,000) (120,000) Gross profit $ 450,000 Variable S & A expenses ($1 x 30,000) $ (30,000) Fixed S & A expenses ( 75,000) Operating income $ 345,000",
+      "wrongWhy": [
+        "This answer expenses all of the fixed manufacturing overhead incurred in this period. Under absorption costing, fixed manufacturing costs are allocated to the units produced, but on the income statement, only the production costs for the number of units sold are expensed; and that is true for all production costs, including fixed manufacturing costs and all variable manufacturing costs. Please see the correct answer explanation for more information.",
+        null,
+        "This answer results from calculating the total variable selling and administrative expense recognized as $1/unit multiplied by the number of units produced. The total variable selling and administrative expense recognized should be $1/unit multiplied by the number of units sold.",
+        "This is not the correct answer. Please see the correct answer for an explanation. We have been unable to determine how to calculate this incorrect answer choice. If you have calculated it, please let us know how you did it so we can create a full explanation of why this the full Question ID number and the actual incorrect answer choice -- not its letter, because that can change with every study session created. The Question ID number appears at the top of the question. Thank you in advance for helping us to make your HOCK study materials better. 12."
+      ],
+      "data": [
+        [
+          "Units budgeted and produced",
+          "$40,000"
+        ],
+        [
+          "Units sold",
+          "$30,000"
+        ],
+        [
+          "Fixed selling and administrative expense",
+          "$75,000"
+        ],
+        [
+          "Fixed manufacturing overhead budgeted and incurred",
+          "$160,000"
+        ]
+      ]
+    },
+    {
+      "id": "ICMA 10.P1.166",
+      "source": "ICMA",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "Consider the following situation for Weisman Corporation for the prior year. The company produced 1,000 units and sold 900 units, both as budgeted. There were no beginning or ending work-in-process inventories and no beginning finished goods inventory. Budgeted and actual fixed costs were equal, all variable manufacturing costs are affected by volume of production only, and all variable selling costs are affected by sales volume only. Budgeted per unit revenues and costs were as follows. Per Unit The operating income for Weisman for the prior year using absorption costing was",
+      "o": [
+        "$14,200",
+        "$13,600",
+        "$15,300",
+        "$15,840 Study Unit 12: D.3. Variable and Absorption Costing covers the information for this question"
+      ],
+      "a": 2,
+      "e": "Under absorption costing, product costs include both fixed and variable manufacturing costs. The problem tells us that budgeted and actual fixed costs were equal, so we have no concerns about under- or over-applied fixed manufacturing cost that would need to be adjusted for. The total product costs per unit are $65 ($30 + $20 + $10 + $5). Assuming all other actual costs were the same as budgeted costs (which the problem does not say), operating income would be: Sales revenue: $100 × 900 units sold $90,000 COGS: $65 × 900 units sold 58,500 Gross profit $31,500 Variable selling: $12 × 900 units sold 10,800 Fixed selling 3,600 Fixed administrative 1,800 Net operating income $15,300",
+      "wrongWhy": [
+        "This answer results from incorrectly multiplying the three fixed costs (fixed manufacturing, fixed selling and fixed administrative) by the 1,000 units produced rather than the 900 units sold. See correct answer for full details.",
+        "This answer results from correctly using the 900 units sold to calculate total revenue, total direct materials, direct labor and variable overhead expense but using the 1,000 units manufactured to calculate total fixed manufacturing cost as well as total variable selling cost. Total fixed manufacturing cost and total variable selling cost should be calculated using the 900 units sold, not the 1,000 units manufactured. The fixed manufacturing cost attached to the 100 units that were not sold remained in inventory.",
+        null,
+        "This answer results from expensing 90% of the fixed selling costs and fixed administrative costs, which are given as $3,600 and $1,800 in total respectively. Selling and administrative costs are period costs and thus are expensed as incurred, and the actual amount incurred is given in the problem. The amount expensed for those costs should not be adjusted because of the fact that 1,000 units were manufactured and only 900 units were sold. 14."
+      ],
+      "data": [
+        [
+          "Sales price",
+          "$100"
+        ],
+        [
+          "Direct materials",
+          "$30"
+        ],
+        [
+          "Direct labor",
+          "$20"
+        ],
+        [
+          "Variable manufacturing costs",
+          "$10"
+        ],
+        [
+          "Fixed manufacturing costs",
+          "$5"
+        ],
+        [
+          "Variable selling costs",
+          "$12"
+        ],
+        [
+          "Fixed selling costs ($3,600 total)",
+          "$4"
+        ],
+        [
+          "Fixed administrative costs ($1,800 total)",
+          "$2"
+        ]
+      ]
+    },
+    {
+      "id": "ICMA 10.P1.173",
+      "source": "ICMA",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "Bethany Company has just completed the first month of producing a new product but has not yet shipped any of this product. The product incurred variable manufacturing costs of $5,000,000, fixed manufacturing costs of $2,000,000, variable marketing costs of $1,000,000, and fixed marketing costs of $3,000,000. If Bethany uses the variable cost method to value inventory, the inventory value of the new product would be",
+      "o": [
+        "$11,000,000",
+        "$5,000,000",
+        "$6,000,000",
+        "$8,000.000"
+      ],
+      "a": 1,
+      "e": "Only variable manufacturing costs are inventoried when variable costing is used, so the inventory value of the new product is equal to the variable manufacturing costs incurred to produce it, which are $5,000,000.",
+      "wrongWhy": [
+        "Only variable manufacturing costs are inventoried when variable costing is used. This answer results from including fixed manufacturing costs of $2,000,000, variable marketing costs of $1,000,000, and fixed marketing costs of $3,000,000 as well. When variable costing is used, fixed manufacturing costs and marketing costs are period costs that are expensed as they are incurred.",
+        null,
+        "Only variable manufacturing costs are inventoried when variable costing is used. This answer results from including variable marketing costs, as well. Marketing costs are always period costs that are expensed as they are incurred, regardless of whether variable costing or absorption costing is being used.",
+        "Only variable manufacturing costs are inventoried when variable costing is used. This answer results from including fixed manufacturing costs of $2,000,000 and variable marketing costs of $1,000,000, as well. When variable costing is used, fixed manufacturing costs and marketing costs are period costs that are expensed as they are incurred. 15."
+      ],
+      "diffPct": 76
+    },
+    {
+      "id": "CIA 585 IV.5",
+      "source": "CIA",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "The Blue Company has failed to reach its planned activity level during its first 2 years of operation. The following table shows the relationship among units produced, sales, and normal activity for these years and the projected relationship for Year 3. All prices and costs have remained the same for the last 2 years and are expected to do so in Year 3. Income has been positive in both Year 1 and Year 2. Units Produced Sales Planned Activity Because Blue Company uses an absorption-costing system, one would predict the gross profit for Year 3 to be:",
+      "o": [
+        "Greater than Year 2",
+        "Greater than Year 1",
+        "Equal to Year 1",
+        "Equal to Year 2. Study Unit 12: D.3. Variable and Absorption Costing covers the information for this question"
+      ],
+      "a": 2,
+      "e": "Gross profit is calculated as net sales revenue minus cost of goods sold. Since all of the costs have remained the same over the period and there has been no change in inventory for any period (since sales have been equal to production each year), the gross profit for Year 3 will be equal to the gross profit from the year in which sales were the same level, and this is Year 1. Because this is a new company and for every year since its beginning, sales have been equal to production, inventory at year end for each year has been zero. Because of this, we do not need to know whether the company closes out under- and over-applied overhead to cost of goods sold only, or whether the company prorates it between cost of goods sold and inventory. Since inventory is zero, all under- or over-applied overhead will have been closed to cost of goods sold only. And for each year since its beginning, the company has had under-applied fixed overhead, because actual production has been lower than planned production. Unless fixed overhead has been very different in Year 3 than it was in Year 1, the gross profit for the two years should be substantially the same.",
+      "wrongWhy": [
+        "Gross profit is calculated as net sales revenue minus cost of goods sold. All prices and costs have remained the same for the last 2 years and are expected to do so in Year 3. Sales in Year 3 are lower than sales in Year 2. Since prices and costs have remained the same and sales have equaled production each year, the gross profit for Year 3, a year in which sales decreased from the previous year, cannot be greater than the gross profit for Year 2.",
+        "Gross profit is calculated as net sales revenue minus cost of goods sold. All prices and costs have remained the same for the last 2 years and are expected to do so in Year 3. Sales in Year 3 are expected to be the same as sales in Year 1. Since prices and costs have remained the same and sales have equaled production each year, gross profit for Year 3 cannot be greater than the gross profit for Year 1.",
+        null,
+        "Gross profit is calculated as net sales revenue minus cost of goods sold. All prices and costs have remained the same for the last 2 years and are expected to do so in Year 3. Sales in Year 3 are lower than in Year 2. Since prices and costs have remained the same and sales have equaled production each year, the gross profit for Year 3, a year in which sales decreased from the previous year, cannot be equal to the gross profit for Year 2. 16."
+      ],
+      "data": [
+        [
+          "Year 1              90,000              90,000",
+          "100,000"
+        ],
+        [
+          "Year 2              95,000              95,000",
+          "100,000"
+        ],
+        [
+          "Year 3              90,000              90,000",
+          "100,000"
+        ]
+      ]
+    },
+    {
+      "id": "ICMA 10Q.2.031",
+      "source": "ICMA",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "Consider the following information for Richardson Company for the prior year. The company produced 1,000 units and sold 900 units, both as budgeted. There were no beginning or ending work-in-process inventories and no beginning finished goods inventory. Budgeted and actual fixed costs were equal, all variable manufacturing costs were affected by production volume only, and all variable selling costs were affected by sales volume only. Budgeted per unit revenues and costs were as follows: Per unit The contribution margin earned by Richardson for the prior year was",
+      "o": [
+        "$25,200",
+        "$28,000",
+        "$35,000",
+        "$31,500 Study Unit 12: D.3. Variable and Absorption Costing covers the information for this question"
+      ],
+      "a": 0,
+      "e": "Contribution margin is calculated as revenues minus variable costs. Unit contribution margin is sales price minus unit variable costs, or $28 per unit ($100 − $30 − $20 − $10 − $12). There were 900 units sold, so the total contribution margin is $25,200 ($28 × 900).",
+      "wrongWhy": [
+        null,
+        "This answer incorrectly uses the number of units produced instead of the number of units sold. See the correct answer for a complete explanation.",
+        "This answer results from three errors: (1) using the number of units produced instead of the number of units sold; (2) subtracting all manufacturing costs, including fixed manufacturing costs, from sales. Fixed manufacturing cost is not subtracted from sales to calculate the contribution margin; and (3) not subtracting variable costs other than variable manufacturing costs from sales to calculate the contribution margin. Variable costs other than variable manufacturing costs are included in the items subtracted from sales to calculate the contribution margin.",
+        "This answer results from two errors: (1) subtracting all manufacturing costs, including fixed manufacturing costs, from sales. Fixed manufacturing cost is not subtracted from sales to calculate the contribution margin; and (2) not subtracting variable costs other than variable manufacturing costs from sales to calculate the contribution margin. Variable costs other than variable manufacturing costs are included in the items subtracted from sales to calculate the contribution margin. 17."
+      ],
+      "data": [
+        [
+          "Sales price",
+          "$100"
+        ],
+        [
+          "Direct materials",
+          "$30"
+        ],
+        [
+          "Direct labor",
+          "$20"
+        ],
+        [
+          "Other variable manufacturing costs",
+          "$10"
+        ],
+        [
+          "Fixed manufacturing costs",
+          "$5"
+        ],
+        [
+          "Variable selling costs",
+          "$12"
+        ],
+        [
+          "Fixed selling costs ($3,600 total)",
+          "$4"
+        ],
+        [
+          "Fixed administrative costs ($1,800 total)",
+          "$2"
+        ]
+      ]
+    },
+    {
+      "id": "HTB 1.2.010",
+      "source": "HTB",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "Nance Corp began operations in January. The company produced 50,000 units and sold 45,000 units in its first year of operations. Costs for the year were as follows: How would the operating income of Nance compare between the variable method and full absorption costing methods?",
+      "o": [
+        "Variable would be $32,500 higher",
+        "Absorption would be $32,500 higher",
+        "Variable would be $25,000 higher",
+        "Absorption would be $25,000 higher"
       ],
       "a": 3,
-      "e": "Fixed Manufacturing Overhead is the Only cost excluded from product cost under variable costing. DM, DL, and Variable Moh are included in both variable and absorption costing product costs."
+      "e": "The difference between the two methods relates only to the fixed manufacturing overhead costs. Because this was the company’s first year of operations and thus beginning inventory was zero, the amount of the difference can be calculated as follows: Fixed manufacturing costs per unit × Change in the level of inventory Fixed manufacturing costs divided by 50,000 units produced equals fixed manufacturing cost per unit of $5. The company produced 50,000 units and sold 45,000 units, so inventory increased by 5,000 units. Thus, the increase of fixed manufacturing costs in inventory was $5 × 5,000 = $25,000. Because this $25,000 is put into inventory under absorption costing but expensed under variable costing, operating income under the absorption method would be $25,000 higher because cost of goods sold would be $25,000 lower than under variable costing.",
+      "wrongWhy": [
+        "This answer incorrectly includes the fixed general and selling costs in what is allocated to the units produced. Additionally, it is absorption costing that would be higher.",
+        "This answer incorrectly includes the fixed general and selling costs in what is allocated to the units produced.",
+        "This is the correct amount of the difference, but it is absorption costing that would be higher. 18.",
+        null
+      ],
+      "data": [
+        [
+          "Fixed Manufacturing Costs",
+          "$250,000"
+        ],
+        [
+          "Variable Manufacturing Costs",
+          "$180,000"
+        ],
+        [
+          "Fixed General and Selling Costs",
+          "$75,000"
+        ],
+        [
+          "Variable General and Selling Costs",
+          "$80,000"
+        ]
+      ],
+      "diffPct": 81
     },
     {
-      "q": "Under throughput (super-variable) costing, which are product costs?",
+      "id": "CMA 1286 H2",
+      "source": "CMA",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "Presented are Valenz Company's records for the current fiscal year ended November 30: If Valenz Company uses variable costing, the inventoriable costs for the fiscal year are",
       "o": [
-        "DM + DL",
-        "DM only",
-        "All manufacturing costs",
-        "Variable manufacturing costs only"
+        "$490,000",
+        "$450,000",
+        "$530,000",
+        "$400,000"
       ],
       "a": 1,
-      "e": "Throughput costing: Only Direct Materials are product costs. DL, variable OH, and fixed OH are All period costs expensed immediately. This gives the Lowest possible inventory value of all three methods."
+      "e": "Under the variable costing method, only the variable costs of production are inventoriable costs. Therefore, the costs that are inventoriable are: direct materials ($300,000), direct labor ($100,000) and variable factory overhead ($50,000). This is a total of $450,000.",
+      "wrongWhy": [
+        "This answer includes the variable selling costs as an inventoried cost. Selling costs, whether variable or fixed, are not inventoried under either variable costing or absorption costing, because they are not production costs.",
+        null,
+        "This answer includes fixed factory overhead. Though it is a production cost, the variable costing method includes only variable costs of production in inventory.",
+        "This answer does not include the variable factory overhead as an inventoriable cost. 19."
+      ],
+      "data": [
+        [
+          "Direct materials used",
+          "$300,000"
+        ],
+        [
+          "Direct labor",
+          "$100,000"
+        ],
+        [
+          "Variable factory overhead",
+          "$50,000"
+        ],
+        [
+          "Fixed factory overhead",
+          "$80,000"
+        ],
+        [
+          "Selling and admin. costs-variable",
+          "$40,000"
+        ],
+        [
+          "Selling and admin. costs-fixed",
+          "$20,000"
+        ]
+      ],
+      "diffPct": 85
     },
     {
-      "q": "Ranked Highest to Lowest inventory value:",
+      "id": "CIA 591 IV.14",
+      "source": "CIA",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "Product sales: 1,000 units at $10 each Variable manufacturing costs: $5.50 per unit Variable selling and administrative costs: $0.50 per unit sold No beginning inventory Assuming operating income under variable costing is $1,800, operating income under absorption costing is",
       "o": [
-        "Variable > Absorption > Throughput",
-        "Throughput > Variable > Absorption",
-        "Absorption > Variable > Throughput",
-        "All three are equal"
+        "$1,800",
+        "$2,000",
+        "$2,167",
+        "$1,967"
+      ],
+      "a": 1,
+      "e": "There are two ways that we can solve this problem. The first is to calculate a full absorption costing income statement, as follows: Per Unit × Units Sold Total Sales revenue $10.00 1,000 $10,000 Cost of goods sold: Variable COGS 5.50 1,000 5,500 Fixed COGS 1.001 1,000 1,000 Gross profit $3.50 1,000 $3,500 Variable S & A expense .50 1,000 500 Fixed S & A expense 1,000 Net operating income $2,000 1$1,200 fixed cost ÷ 1,200 units produced. The second way is to use the differences between variable and absorption costing to calculate the difference between the two methods. Since we are given the variable costing income, we can then back into the absorption costing income. The difference between variable and absorption costing is the treatment of fixed manufacturing overhead. Under variable costing it is expensed, but under absorption costing it is treated as a product cost. Since the fixed factory overheads were $1,200 and they produced 1,200 units, the fixed factory overhead per unit was $1. Since production was 1,200 units and sales were only 1,000 units, inventory increased by 200 units. This means that the fixed factory overhead related to those 200 units is not on the income statement, but on the balance sheet. Since beginning inventory was zero, we know that operating income under the absorption costing method will be $200 higher than the variable method income, or $2,000. (Note: this was possible because beginning inventory was zero. If beginning inventory were not zero, we might not be able to find the answer this way.)",
+      "wrongWhy": [
+        "This is the operating income under variable costing.",
+        null,
+        "This answer results from treating the fixed selling and administrative costs as product costs. Fixed selling and administrative costs are period costs and are expensed as incurred.",
+        "This answer results from two errors: (1) Treating the fixed selling and administrative costs as product costs. Fixed selling and administrative costs are period costs and are expensed as incurred. And (2) treating the fixed manufacturing cost as a period cost. Under absorption costing, fixed manufacturing overhead is applied to units of production, and the cost for unsold units remains in inventory and is not expensed. 20."
+      ],
+      "data": [
+        [
+          "Fixed manufacturing overhead (planned and actual):",
+          "$1,200"
+        ],
+        [
+          "Fixed selling and administrative costs:",
+          "$1,000"
+        ],
+        [
+          "Units produced (planned and actual):",
+          "$1,200"
+        ]
+      ]
+    },
+    {
+      "id": "CIA 591 IV.13",
+      "source": "CIA",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "Product sales: 1,000 units at $10 each Variable manufacturing costs: $5.50 per unit Variable selling and administrative costs: $0.50 per unit sold No beginning inventory Operating income under variable (direct) costing is",
+      "o": [
+        "$1,800",
+        "$600",
+        "$700",
+        "$2,300"
+      ],
+      "a": 0,
+      "e": "Under variable costing, all of the fixed factory overheads will be expensed during the period. The manufacturing contribution per unit is calculated as the sales price ($10) minus the variable costs of production ($5.50) and is $4.50. Since they sold 1,000 units, this gave them $4,500 of manufacturing contribution margin. Variable selling and administrative costs are $0.50 per unit sold. Therefore, the contribution margin (sales revenue minus all variable costs, including both manufacturing and non-manufacturing) is thus $4.50 per unit minus $0.50 per unit, or $4.00 per unit, which equals $4,000 in total. Fixed manufacturing ($1,200) and fixed selling ($1,000) costs are subtracted from the contribution margin, giving us a net operating income of $1,800 ($4,000 − $1,200 − $1,000).",
+      "wrongWhy": [
+        null,
+        "This answer results from multiplying the variable manufacturing cost per unit and the variable selling and administrative cost per unit by the number of units produced instead of by the number of units sold.",
+        "This answer results from multiplying the variable manufacturing cost per unit by the number of units produced instead of by the number of units sold.",
+        "This answer results from not deducting the variable selling and administrative costs. 21."
+      ],
+      "data": [
+        [
+          "Fixed manufacturing overhead (planned and actual):",
+          "$1,200"
+        ],
+        [
+          "Fixed selling and administrative costs:",
+          "$1,000"
+        ],
+        [
+          "Units produced (planned and actual):",
+          "$1,200"
+        ]
+      ],
+      "diffPct": 89
+    },
+    {
+      "id": "ICMA 10.P1.168",
+      "source": "ICMA",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "Mill Corporation had the following unit costs for the recently concluded calendar year, which are the same as its unit costs for the year previous to the recently concluded year. Variable Fixed Inventory for Mill's sole product totaled 6,000 units on January 1 and 5,200 units on December 31. Mill Corporation uses the first in-first out cost flow assumption. When compared to variable costing income, Mill's absorption costing income is",
+      "o": [
+        "$2,400 lower",
+        "$6,800 higher",
+        "$2,400 higher",
+        "$6,800 lower"
+      ],
+      "a": 0,
+      "e": "Mill’s inventory decreased during the year from 6,000 units on Jan. 1 to 5,200 units on December 31. Therefore, we know that Mill sold 800 more units than it manufactured during the recently concluded calendar year. Total fixed manufacturing cost in inventory on Jan. 1 was 6,000 × $3 = $18,000. Total fixed manufacturing cost in inventory on Dec. 31 was 5,200 × $3, or $15,600. The difference between $18,000 and $15,600, which is $2,400, was transferred to cost of goods sold as an expense under absorption costing. Under variable costing, though, that $2,400 would have been expensed during the previous year as fixed costs for that year, and thus it would not have been on the recently concluded year’s income statement, so net income under variable costing would have been $2,400 higher than under absorption costing. Therefore, net income under absorption costing would be $2,400 lower than it would be under variable costing.",
+      "wrongWhy": [
+        null,
+        "This is the total fixed costs, both manufacturing and nonmanufacturing, multiplied by the amount of decrease in inventory. Nonmanufacturing fixed costs are expensed as they are incurred under both variable and absorption costing, so they could not have accounted for any part of the difference in net income.",
+        "This is the fixed manufacturing cost per unit multiplied by the number of units by which inventory decreased during the year. However, the effect of the inventory decrease on net income under absorption costing is to decrease net income, not increase it, as compared with variable costing. See the correct answer for a full explanation.",
+        "This is the total fixed costs, both manufacturing and nonmanufacturing, multiplied by the amount of decrease in inventory. Nonmanufacturing fixed costs are expensed as they are incurred under both variable and absorption costing, so they could not have accounted for any part of the difference in net income. 22."
+      ],
+      "data": [
+        [
+          "Manufacturing             $8.00",
+          "$3.00"
+        ],
+        [
+          "Nonmanufacturing          $2.00",
+          "$5.50"
+        ]
+      ],
+      "diffPct": 41
+    },
+    {
+      "id": "ICMA 10.P1.174",
+      "source": "ICMA",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "Consider the following situation for Donaldson Company for the prior year. The company produced 1,000 units and sold 900 units, both as budgeted. There were no beginning or ending work-in-process inventories and no beginning finished goods inventory. Budgeted and actual fixed costs were equal, all variable manufacturing costs are affected by volume of production only, and all variable selling costs are affected by sales volume only. Budgeted per unit revenues and costs were as follows. Per Unit Assuming that Donaldson uses variable costing, the operating income for the prior year was",
+      "o": [
+        "$14,800",
+        "$13,600",
+        "$15,300",
+        "$14,200"
+      ],
+      "a": 0,
+      "e": "Donaldson's operating income for the prior year using variable costing was Sales revenue ($100 × 900) $90,000 Variable cost ($30 + $20 + $10 + $12) × 900 64,800 Contribution margin $25,200 Fixed manufacturing costs ($5 × 1,000) 5,000 Fixed selling costs 3,600 Fixed administrative costs 1,800 Operating income $14,800",
+      "wrongWhy": [
+        null,
+        "This answer results from multiplying the variable selling cost per unit of $12 by the number of units produced, instead of by the number of units sold.",
+        "This answer results from multiplying the fixed manufacturing cost of $5 per unit by the number of units sold instead of by the number of units produced.",
+        "This answer results from multiplying the per unit fixed selling and fixed administrative costs by the number of units produced to calculate the total costs. The total fixed selling and administrative costs are given in the problem, and the totals should be used as given. 23."
+      ],
+      "data": [
+        [
+          "Sales price",
+          "$100"
+        ],
+        [
+          "Direct materials",
+          "$30"
+        ],
+        [
+          "Direct labor",
+          "$20"
+        ],
+        [
+          "Variable manufacturing costs",
+          "$10"
+        ],
+        [
+          "Fixed manufacturing costs",
+          "$5"
+        ],
+        [
+          "Variable selling costs",
+          "$12"
+        ],
+        [
+          "Fixed selling costs ($3,600 total)",
+          "$4"
+        ],
+        [
+          "Fixed administrative costs ($1,800 total)",
+          "$2"
+        ]
+      ]
+    },
+    {
+      "id": "CMA 1290 H2",
+      "source": "CMA",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "Valyn Corporation employs an absorption costing system for internal reporting purposes; however, the company is considering using variable costing. Data regarding Valyn's planned and actual operations for the calendar year are presented below. Planned Actual Activity Activity Planned Planned Actual Costs Costs Incurred Per Unit Total Costs The planned per unit cost figures shown in the above schedule were based on Valyn producing and selling 140,000 units. Valyn uses a predetermined manufacturing overhead rate for applying manufacturing overhead to its product; thus, a combined manufacturing overhead rate of $9.00 per unit was employed for absorption costing purposes. Any over- or underapplied manufacturing overhead is closed to the Cost of Goods Sold account at the end of the reporting year. The beginning finished goods inventory for absorption costing purposes was valued at the previous year's planned unit manufacturing cost, which was the same as the current year's planned unit manufacturing cost. There are no work-in-process inventories at either the beginning or the end of the year. The planned and actual unit selling price for the current year was $70.00 per unit. The value of Valyn Corporation's actual ending finished goods inventory on the variable costing basis was",
+      "o": [
+        "$750,000",
+        "$1,000,000",
+        "$1,125,000"
+      ],
+      "a": 1,
+      "e": "This problem does not specify whether Valyn is using a standard cost system (in which standard, or planned, costs are used to account for production) or an actual cost system (in which actual costs are used). However, it does say that Valyn uses a predetermined manufacturing overhead rate for applying manufacturing overhead to its product. And since the actual, incurred per unit costs for direct materials, direct labor and variable manufacturing overhead are exactly the same as the planned per unit costs for those items, we do not need to know whether standard costing or actual costing is being used in order to answer this question. (To verify that the actual variable costs per unit are exactly the same as the planned per unit costs, multiply the planned per unit cost for each of those items by the actual production of 130,000 units. For example, the planned per unit cost for direct materials was $12. Multiplying $12 by the actual activity of 130,000 equals $1,560,000. That $1,560,000 was the flexible budget amount for direct materials, and it is exactly the same as the actual incurred costs.) Under variable costing, the cost per unit in ending inventory was $25 ($12 direct materials per unit + $9 direct labor per unit + $4 variable manufacturing overhead per unit). Fixed manufacturing cost per unit is not included, since under variable costing, fixed manufacturing cost is expensed as incurred. Given an ending inventory of 40,000 units, the value of ending inventory was $1,000,000 (40,000 units × $25 per unit).",
+      "wrongWhy": [
+        "This answer results from incorrectly calculating ending inventory as 30,000 units. Ending inventory is beginning inventory plus production minus sold units, which is 40,000 units.",
+        null,
+        "This answer results from using 45,000 units as the ending inventory instead of the correct number of 40,000 units. 35,000 units in beginning inventory plus production of 130,000 units minus sales of 125,000 units equals ending inventory of 40,000 units. 24."
+      ],
+      "data": [
+        [
+          "Beginning finished goods inventory                35,000",
+          "$35,000"
+        ],
+        [
+          "Sales                                            140,000",
+          "$125,000"
+        ],
+        [
+          "Production                                       140,000",
+          "$130,000"
+        ],
+        [
+          "Direct materials                                $12.00      $1,680,000",
+          "$1,560,000"
+        ],
+        [
+          "Direct labor                                       9.00      1,260,000",
+          "$1,170,000"
+        ],
+        [
+          "Variable manufacturing overhead                    4.00       560,000",
+          "$520,000"
+        ],
+        [
+          "Fixed manufacturing overhead                       5.00       700,000",
+          "$715,000"
+        ],
+        [
+          "Variable selling expenses                          8.00      1,120,000",
+          "$1,000,000"
+        ],
+        [
+          "Fixed selling expenses                             7.00       980,000",
+          "$980,000"
+        ],
+        [
+          "Variable administrative expenses                   2.00       280,000",
+          "$250,000"
+        ],
+        [
+          "Fixed administrative expenses                      3.00       420,000",
+          "$425,000"
+        ],
+        [
+          "Total                                           $50.00      $7,000,000",
+          "$6,620,000"
+        ]
+      ]
+    },
+    {
+      "id": "CMA 1286 H1",
+      "source": "CMA",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "Presented are Valenz Company's records for the current fiscal year ended November 30: Using absorption (full) costing, inventoriable costs are",
+      "o": [
+        "$450,000",
+        "$530,000",
+        "$590,000",
+        "$400,000"
+      ],
+      "a": 1,
+      "e": "Under the absorption costing method, all costs of production — variable and fixed — are included in inventory. Therefore, the inventoriable costs are: direct materials ($300,000), direct labor ($100,000), variable factory overhead ($50,000) and fixed factory overhead ($80,000). This is a total of $530,000.",
+      "wrongWhy": [
+        "This answer does not include the fixed factory overhead. Under absorption costing, all factory overheads are allocated to the units and inventoried.",
+        null,
+        "This answer includes all of the selling and administrative costs. Selling and administrative costs are not inventoried under either absorption costing or variable costing.",
+        "This answer does not include any of the factory overhead. Under absorption costing all factory overheads are allocated to the units and inventoried. 25."
+      ],
+      "data": [
+        [
+          "Direct materials used",
+          "$300,000"
+        ],
+        [
+          "Direct labor",
+          "$100,000"
+        ],
+        [
+          "Variable factory overhead",
+          "$50,000"
+        ],
+        [
+          "Fixed factory overhead",
+          "$80,000"
+        ],
+        [
+          "Selling and admin. costs-variable",
+          "$40,000"
+        ],
+        [
+          "Selling and admin. costs-fixed",
+          "$20,000"
+        ]
+      ],
+      "diffPct": 91
+    },
+    {
+      "id": "CMA 1290 H7",
+      "source": "CMA",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "Valyn Corporation employs an absorption costing system for internal reporting purposes; however, the company is considering using variable costing. Data regarding Valyn's planned and actual operations for the calendar year are presented below. Planned Actual Activity Activity Planned Planned Actual Costs Costs Incurred Per Unit Total Costs The planned per unit cost figures shown in the above schedule were based on Valyn producing and selling 140,000 units. Valyn uses a predetermined manufacturing overhead rate for applying manufacturing overhead to its product; thus, a combined manufacturing overhead rate of $9.00 per unit was employed for absorption costing purposes. Any over- or underapplied manufacturing overhead is closed to the Cost of Goods Sold account at the end of the reporting year. The beginning finished goods inventory for absorption costing purposes was valued at the previous year's planned unit manufacturing cost, which was the same as the current year's planned unit manufacturing cost. There are no work-in-process inventories at either the beginning or the end of the year. The planned and actual unit selling price for the current year was $70.00 per unit. Valyn Corporation's actual manufacturing contribution margin calculated on the variable costing basis was",
+      "o": [
+        "$4,935,000",
+        "$4,910,000",
+        "$5,625,000"
       ],
       "a": 2,
-      "e": "Absorption (DM+DL+Variable Moh+Fixed Moh) > Variable (DM+DL+Variable Moh) > Throughput (DM only). More costs in inventory = higher inventory value."
-    },
-    {
-      "q": "Absorption costing income can be manipulated by:",
-      "o": [
-        "Reducing selling prices",
-        "Producing more units than are sold",
-        "Using FIFO inventory method",
-        "Increasing direct labor efficiency"
+      "e": "This problem does not specify whether Valyn is using a standard cost system (in which standard, or planned, costs are used to account for production) or an actual cost system (in which actual costs are used). However, it does say that Valyn uses a predetermined manufacturing overhead rate for applying manufacturing overhead to its product. And since the actual, incurred per unit costs for direct materials, direct labor and variable manufacturing overhead are exactly the same as the planned per unit costs for those items, we do not need to know whether standard costing or actual costing is being used in order to answer this question. (To verify that the actual variable costs per unit are exactly the same as the planned per unit costs, multiply the planned per unit cost for each of those items by the actual production of 130,000 units. For example, the planned per unit cost for direct materials was $12. Multiplying $12 by the actual activity of 130,000 equals $1,560,000. That $1,560,000 was the flexible budget amount for direct materials, and it is exactly the same as the actual incurred costs.) The per unit sales price was $70 and the per unit variable production costs were $25 (direct materials $12, direct labor $9 and variable manufacturing overhead $4). The contribution margin per unit was therefore $70 − $25, or $45; and with 125,000 units sold, this gives a total manufacturing contribution margin under the variable costing basis of $5,625,000.",
+      "wrongWhy": [
+        "This is incorrect for two reasons: (1) It is calculated using a manufacturing contribution margin per unit of $40, which includes a deduction for $5 of fixed manufacturing overhead per unit. Fixed manufacturing overhead is not a deduction made in calculating the contribution margin. Only variable manufacturing costs for the units sold are deducted. Furthermore, when variable costing is used, all fixed costs, including manufacturing costs, are expensed as they are incurred. (2) It also includes a deduction for $65,000 in under-applied fixed manufacturing overhead. Since under variable costing, all fixed costs, including manufacturing costs, are expensed as they are incurred, there can be no under- applied fixed manufacturing overhead.",
+        "This is total revenue minus total variable manufacturing costs and total fixed manufacturing overhead. The manufacturing contribution margin is decreased by variable manufacturing costs only, not by fixed manufacturing overhead.",
+        null
       ],
-      "a": 1,
-      "e": "Produce More than you sell → fixed Moh per unit decreases → more fixed costs deferred in ending inventory → COGS is lower → income is Higher. Variable costing prevents this because All fixed OH is expensed immediately regardless of production volume."
+      "data": [
+        [
+          "Beginning finished goods inventory               35,000",
+          "$35,000"
+        ],
+        [
+          "Sales                                          140,000",
+          "$125,000"
+        ],
+        [
+          "Production                                     140,000",
+          "$130,000"
+        ],
+        [
+          "Direct materials                              $12.00        $1,680,000",
+          "$1,560,000"
+        ],
+        [
+          "Direct labor                                     9.00        1,260,000",
+          "$1,170,000"
+        ],
+        [
+          "Variable manufacturing overhead                  4.00         560,000",
+          "$520,000"
+        ],
+        [
+          "Fixed manufacturing overhead                     5.00         700,000",
+          "$715,000"
+        ],
+        [
+          "Variable selling expenses                        8.00        1,120,000",
+          "$1,000,000"
+        ],
+        [
+          "Fixed selling expenses                           7.00         980,000",
+          "$980,000"
+        ],
+        [
+          "Variable administrative expenses                 2.00         280,000",
+          "$250,000"
+        ],
+        [
+          "Fixed administrative expenses                    3.00         420,000",
+          "$425,000"
+        ],
+        [
+          "Total                                         $50.00        $7,000,000",
+          "$6,620,000"
+        ]
+      ]
     },
     {
-      "q": "Variable costing is used Primarily for:",
+      "id": "CIA 1190 IV.12",
+      "source": "CIA",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "During its first year of operations, a company produced 275,000 units and sold 250,000 units. The following costs were incurred during the year: Variable costs per unit Total fixed costs What is the difference between operating income calculated on the absorption costing basis and on the variable costing basis?",
       "o": [
-        "External GAAP reporting",
-        "Tax reporting",
-        "Internal management decisions and CVP analysis",
-        "Standard cost variance reporting"
+        "Absorption costing operating income is greater than variable costing operating income by $325,000",
+        "Variable costing operating income is greater than absorption costing operating income by $62,500",
+        "Absorption costing operating income is greater than variable costing operating income by $200,000",
+        "Absorption costing operating income is greater than variable costing operating income by $220,000"
       ],
       "a": 2,
-      "e": "Variable costing is used for Internal management purposes — especially CVP analysis, break-even calculations, and contribution margin reporting. It is Not accepted for external GAAP/IFRS reporting."
-    },
-    {
-      "q": "The contribution margin income statement format is associated with:",
-      "o": [
-        "Absorption costing",
-        "Variable costing",
-        "Job order costing",
-        "Standard costing"
+      "e": "We know that the number of units in inventory increased during the period, so we know that absorption costing income will be greater than variable costing income. The question we have left is by how much. The only difference between the two methods is in the treatment of fixed factory overheads. Under absorption costing the fixed factory overheads are allocated to the units produced and under variable costing they are expensed. Because this is the first year of operations we can simply multiply the fixed factory overhead per unit by the increase in inventory to determine the difference between the two methods. There was $2,200,000 of fixed factory overhead that was applied to the 275,000 units produced. This is $8 per unit. Inventory increased by 25,000 units, so the difference between the two methods would be $200,000 (25,000 units × $8 per unit). Because these $200,000 in fixed costs are on the balance sheet under absorption costing but expensed under variable costing, operating income will be higher under absorption costing.",
+      "wrongWhy": [
+        "Though the absorption costing income will be higher, it is not higher by this amount. This answer includes the fixed selling and administrative costs as a product cost.",
+        "Absorption costing will give a higher income and the difference will be a different amount from this answer.",
+        null,
+        "Though the absorption costing income will be higher, it is not higher by this amount. This answer allocates the fixed costs based on the number of units sold. 27."
       ],
-      "a": 1,
-      "e": "The Contribution Margin income statement (Sales - Variable Costs = Cm - Fixed Costs = NI) is the Variable Costing format. Absorption costing uses the traditional Gross Profit format (Sales - COGS = Gross Profit)."
+      "data": [
+        [
+          "Direct materials",
+          "$15.00"
+        ],
+        [
+          "Direct labor",
+          "$10.00"
+        ],
+        [
+          "Manufacturing overhead",
+          "$12.50"
+        ],
+        [
+          "Selling and administrative",
+          "$2.50"
+        ],
+        [
+          "Manufacturing overhead",
+          "$2,200,000"
+        ],
+        [
+          "Selling and administrative",
+          "$1,375,000"
+        ]
+      ]
     },
     {
-      "q": "When production Exceeds sales, absorption NI compared to variable NI is:",
+      "id": "ICMA 10.P1.175",
+      "source": "ICMA",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "During the month of May, Robinson Corporation sold 1,000 units. The cost per unit for May was as follows. Cost Per Unit Variable administrative costs .50 May's income using absorption costing was $9,500. The income for May if variable costing had been used would have been $9,125. The number of units Robinson produced during May was",
       "o": [
-        "Lower",
-        "Higher",
-        "Equal",
-        "Cannot determine"
+        "750 units",
+        "1,075 units",
+        "1,250 units",
+        "925 units"
       ],
-      "a": 1,
-      "e": "Production > Sales → inventory Increases. Under absorption, some Fixed Moh is Deferred in ending inventory. This makes absorption NI Higher than variable NI when inventory builds up."
+      "a": 2,
+      "e": "The difference between net income under absorption costing and net income under variable costing is fixed manufacturing overhead. Under variable costing, all of the fixed manufacturing overhead will be expensed. Under absorption costing, fixed manufacturing overhead for the units that were sold will be expensed, but fixed manufacturing overhead for units manufactured but not sold will be in inventory. According to the information given in the problem, the difference between Robinson's net income under absorption costing and its net income under variable costing is $9,500 − $9,125, which is $375. Fixed manufacturing overhead cost was $1.50 per unit. Dividing $375 by $1.50 per unit gives us the number of units that were not expensed under absorption costing, which is 250. The fixed manufacturing cost for those 250 units ($375) remained in inventory because those 250 units were not sold. The company sold 1,000 units. If 1,000 units were sold and 250 units were not sold but remained in inventory, the total produced was 1,000 + 250, or 1,250.",
+      "wrongWhy": [
+        "This answer results from subtracting the number of unsold units from the sold units (1,000 − 250 = 750) instead of adding the unsold units to the sold units to calculate the number of units produced.",
+        "This answer results from dividing the difference between net income using absorption costing and net income using variable costing ($375) by total fixed costs of $5.00 per unit to calculate the number of units that were unsold. The result, 75 units, was then added to the 1,000 units that were sold to calculate the number of units produced. The process was correct, but only fixed manufacturing overhead of $1.50 per unit should have been used to calculate the number of unsold units. Fixed administrative costs are period costs and are expensed as incurred.",
+        null,
+        "This answer results from dividing the difference between net income using absorption costing and net income using variable costing ($375) by total fixed costs of $5.00 per unit to calculate the number of units that were unsold. The result, 75 units, was then subtracted from the 1,000 units that were sold to calculate the number of units produced. This is incorrect for two reasons: (1) Only fixed manufacturing overhead of $1.50 per unit should have been used to calculate the number of unsold units. Fixed administrative costs are period costs and are expensed as incurred. And (2) the number of unsold units should be added to, not subtracted from, the number of units sold to calculate the number of units produced. 28."
+      ],
+      "data": [
+        [
+          "Direct materials",
+          "$5.50"
+        ],
+        [
+          "Direct labor",
+          "$3.00"
+        ],
+        [
+          "Variable manufacturing overhead",
+          "$1.00"
+        ],
+        [
+          "Fixed manufacturing overhead",
+          "$1.50"
+        ],
+        [
+          "Fixed administrative costs",
+          "$3.50"
+        ],
+        [
+          "Total",
+          "$15.00"
+        ]
+      ]
     },
     {
-      "q": "The Only cost treated differently under absorption vs variable costing is:",
+      "id": "CMA 1290 H3",
+      "source": "CMA",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "Valyn Corporation employs an absorption costing system for internal reporting purposes; however, the company is considering using variable costing. Data regarding Valyn's planned and actual operations for the calendar year are presented below. Planned Actual Activity Activity Planned Planned Actual Costs Costs Incurred Per Unit Total Costs The planned per unit cost figures shown in the above schedule were based on Valyn producing and selling 140,000 units. Valyn uses a predetermined manufacturing overhead rate for applying manufacturing overhead to its product; thus, a combined manufacturing overhead rate of $9.00 per unit was employed for absorption costing purposes. Any over- or underapplied manufacturing overhead is closed to the Cost of Goods Sold account at the end of the reporting year. The beginning finished goods inventory for absorption costing purposes was valued at the previous year's planned unit manufacturing cost, which was the same as the current year's planned unit manufacturing cost. There are no work-in-process inventories at either the beginning or the end of the year. The planned and actual unit selling price for the current year Valyn Corporation's absorption costing operating income was",
       "o": [
-        "Direct materials",
-        "Direct labor",
-        "Variable manufacturing overhead",
-        "Fixed manufacturing overhead"
+        "Higher than variable costing operating income because actual production exceeded actual sales",
+        "Lower than variable costing operating income because actual sales were less than planned sales",
+        "Lower than variable costing operating income because actual production exceeded actual sales",
+        "Lower than variable costing operating income because actual production was less than planned production"
+      ],
+      "a": 0,
+      "e": "When the level of inventory increases during the period, the income of the company will be higher under absorption costing than under variable costing. This is because under absorption costing some of that period's fixed overheads are included on the balance sheet in ending inventory rather than on the income statement.",
+      "wrongWhy": [
+        null,
+        "Whether or not sales were higher or lower than planned does not impact the comparison of income between the two methods.",
+        "When the level of inventory increases during the period, the absorption method gives a higher income than the variable method.",
+        "Whether or not production is more or less than planned does not impact the comparison of income between the two methods. 29."
+      ],
+      "data": [
+        [
+          "Beginning finished goods inventory                   35,000",
+          "$35,000"
+        ],
+        [
+          "Sales                                              140,000",
+          "$125,000"
+        ],
+        [
+          "Production                                         140,000",
+          "$130,000"
+        ],
+        [
+          "Direct materials                                  $12.00      $1,680,000",
+          "$1,560,000"
+        ],
+        [
+          "Direct labor                                          9.00     1,260,000",
+          "$1,170,000"
+        ],
+        [
+          "Variable manufacturing overhead                       4.00        560,000",
+          "$520,000"
+        ],
+        [
+          "Fixed manufacturing overhead                          5.00        700,000",
+          "$715,000"
+        ],
+        [
+          "Variable selling expenses                             8.00     1,120,000",
+          "$1,000,000"
+        ],
+        [
+          "Fixed selling expenses                                7.00        980,000",
+          "$980,000"
+        ],
+        [
+          "Variable administrative expenses                      2.00        280,000",
+          "$250,000"
+        ],
+        [
+          "Fixed administrative expenses                         3.00        420,000",
+          "$425,000"
+        ],
+        [
+          "Total                                             $50.00      $7,000,000",
+          "$6,620,000"
+        ]
+      ]
+    },
+    {
+      "id": "ICMA 1603.P1.013",
+      "source": "ICMA",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "A company is setting up a new division to sell its products in Africa. An accountant has determined that the new African division will have to sell 250,000 units in order to cover the division’s fixed costs of $365,000. The company is estimating total sales of $475,000 for the new African division. What is the contribution margin per unit for the new African division?",
+      "o": [
+        "$1.90",
+        "$0.68",
+        "$0.44",
+        "$1.46"
       ],
       "a": 3,
-      "e": "Fixed Manufacturing Overhead is the Only difference. Variable costing expenses all fixed Moh immediately (period cost). Absorption costing includes fixed Moh in product costs (inventory). All other costs are treated identically."
-    },
-    {
-      "q": "When production Equals sales, absorption NI vs variable NI:",
-      "o": [
-        "Absorption higher",
-        "Absorption lower",
-        "Equal",
-        "Always different"
+      "e": "In a variable income statement, the contribution margin is revenue minus variable costs. Contribution margin minus fixed costs equals operating income. To cover its fixed costs, the African division's contribution margin must be equal to its fixed costs, which are planned at $365,000. Since the new African division will need to sell 250,000 units in order to cover the division’s fixed costs, the contribution margin per unit sold must be $365,000 ÷ 250,000, or $1.46.",
+      "wrongWhy": [
+        "This is total sales of $475,000 divided by the 250,000 sales required to cover the division's fixed costs. This is the sales revenue per unit, or the sales price per unit that will need to be charged. Contribution margin per unit is the sales revenue per unit minus the variable costs per unit.",
+        "This is the 250,000 units sold divided by $365,000, the African division's contribution margin required to cover its fixed costs of $365,000. The contribution margin per unit sold is the contribution margin divided by the number of units sold, not the reverse.",
+        "This is the variable cost per unit. It is calculated as the total revenue of $475,000 minus the contribution margin required to cover the fixed costs of $365,000, the difference of $110,000 divided by the 250,000 units that will need to be sold to cover the fixed cost. Contribution margin per unit is the sales revenue per unit minus the variable costs per unit. 31.",
+        null
       ],
-      "a": 2,
-      "e": "When production = sales, inventory does Not change. All fixed Moh is expensed in the same period under Both methods. Therefore NI is Equal under variable and absorption costing."
+      "diffPct": 49
     },
     {
-      "q": "Throughput costing is associated with which management philosophy?",
+      "id": "CMA 1290 H6",
+      "source": "CMA",
+      "topic": "Variable and Absorption Costing – Calculation Questions",
+      "q": "Valyn Corporation employs an absorption costing system for internal reporting purposes; however, the company is considering using variable costing. Data regarding Valyn's planned and actual operations for the calendar year are presented below. Planned Actual Activity Activity Planned Planned Actual Costs Costs Incurred Per Unit Total Costs The planned per unit cost figures shown in the above schedule were based on Valyn producing and selling 140,000 units. Valyn uses a predetermined manufacturing overhead rate for applying manufacturing overhead to its product; thus, a combined manufacturing overhead rate of $9.00 per unit was employed for absorption costing purposes. Any over- or underapplied manufacturing overhead is closed to the Cost of Goods Sold account at the end of the reporting year. The beginning finished goods inventory for absorption costing purposes was valued at the previous year's planned unit manufacturing cost, which was the same as the current year's planned unit manufacturing cost. There are no work-in-process inventories at either the beginning or the end of the year. The planned and actual unit selling price for the current year Valyn Corporation's total fixed costs expensed this year on the absorption costing basis were",
       "o": [
-        "Activity-Based Costing",
-        "Theory of Constraints",
-        "Kaizen Costing",
-        "Target Costing"
+        "$2,120,000",
+        "$2,055,000",
+        "$2,030,000",
+        "$2,095,000"
+      ],
+      "a": 3,
+      "e": "This problem does not specify whether Valyn is using a standard cost system (in which standard, or planned, costs are used to account for production) or an actual cost system (in which actual costs are used). However, it does say that Valyn uses a predetermined manufacturing overhead rate for applying manufacturing overhead to its product. And since the actual, incurred per unit costs for direct materials, direct labor and variable manufacturing overhead are exactly the same as the planned per unit costs for those items, we do not need to know whether standard costing or actual costing is being used in order to answer this question. (To verify that the actual variable costs per unit are exactly the same as the planned per unit costs, multiply the planned per unit cost for each of those items by the actual production of 130,000 units. For example, the planned per unit cost for direct materials was $12. Multiplying $12 by the actual activity of 130,000 equals $1,560,000. That $1,560,000 was the flexible budget amount for direct materials, and it is exactly the same as the actual incurred costs.) Under absorption costing, the per unit cost of inventory includes all production costs, both fixed and variable. These costs are applied to each unit as it is produced, and the costs go into inventory until the units the costs are attached to are sold. When the units are sold, the costs attached to each sold unit are expensed. The difference between the actual incurred costs and the applied costs for fixed manufacturing overhead is a variance, also called under-applied or over-applied costs. The problem says that this variance is closed out at the end of the period by debiting or crediting the whole amount to cost of goods sold. Thus, for each unit that is sold, $5 of fixed manufacturing overhead is expensed as cost of goods sold. 125,000 units were sold, so this is $625,000 fixed manufacturing costs in cost of goods sold related to the units sold. Since under- or over-applied overhead is allocated to cost of goods sold, we need to calculate the amount of the under- or over-applied overhead. A total of $650,000 of fixed overhead was applied during the period (130,000 units produced at $5 fixed manufacturing cost applied per unit). The actual fixed overhead was $715,000, so fixed overhead was under-applied by $65,000. This $65,000 of under-applied overhead will be added to cost of goods sold expense. Also, all of the fixed selling and fixed administrative costs were expensed during the period because these are period costs. These costs total $1,405,000. Under absorption costing, the total fixed costs expensed therefore equals $625,000 + $65,000 + $1,405,000, or $2,095,000.",
+      "wrongWhy": [
+        "This answer assumes that the fixed overhead applied was applied only to the units that were sold, and not to the number of units that were produced.",
+        "This answer results from multiplying $5 fixed manufacturing overhead by 130,000 units produced and adding the product to actual fixed selling and fixed administrative expenses. This is incorrect for two reasons: (1) The problem says that any over- or under-applied manufacturing overhead is closed to the Cost of Goods Sold account at the end of the reporting year. This answer omits that adjustment. (2) The fixed manufacturing cost expensed should be the $5 per unit fixed manufacturing cost multiplied by the number of units sold, not the number of units produced.",
+        "The problem says that any over- or under-applied manufacturing overhead is closed to the Cost of Goods Sold account at the end of the reporting year. This answer omits that adjustment. 1.",
+        null
+      ],
+      "data": [
+        [
+          "Beginning finished goods inventory                   35,000",
+          "$35,000"
+        ],
+        [
+          "Sales                                              140,000",
+          "$125,000"
+        ],
+        [
+          "Production                                         140,000",
+          "$130,000"
+        ],
+        [
+          "Direct materials                                  $12.00      $1,680,000",
+          "$1,560,000"
+        ],
+        [
+          "Direct labor                                          9.00     1,260,000",
+          "$1,170,000"
+        ],
+        [
+          "Variable manufacturing overhead                       4.00        560,000",
+          "$520,000"
+        ],
+        [
+          "Fixed manufacturing overhead                          5.00        700,000",
+          "$715,000"
+        ],
+        [
+          "Variable selling expenses                             8.00     1,120,000",
+          "$1,000,000"
+        ],
+        [
+          "Fixed selling expenses                                7.00        980,000",
+          "$980,000"
+        ],
+        [
+          "Variable administrative expenses                      2.00        280,000",
+          "$250,000"
+        ],
+        [
+          "Fixed administrative expenses                         3.00        420,000",
+          "$425,000"
+        ],
+        [
+          "Total                                             $50.00      $7,000,000",
+          "$6,620,000"
+        ]
+      ]
+    },
+    {
+      "id": "I22 1.51",
+      "source": "I",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "The CEO of an auto manufacturing company would like to have an impartial performance evaluation system so that managers can be fairly rewarded. Under the current costing system, managers may inflate short-run operating income by manipulating inventory levels. To meet the CEO’s expectation, the company should switch from the current",
+      "o": [
+        "absorption costing approach to the normal costing approach",
+        "absorption costing approach to the variable costing approach",
+        "variable costing approach to the absorption costing approach",
+        "variable costing approach to the normal costing approach"
       ],
       "a": 1,
-      "e": "Throughput costing is the costing approach used in Theory Of Constraints (Toc). It treats only direct materials as product costs and all other costs (DL, OH) as period costs — reflecting Toc's view that only DM truly varies with production volume."
+      "e": "The company is currently using an absorption costing system for manager performance evaluation because managers are able inflate short-run operating income by manipulating inventory levels. Whenever production is greater than sales, a manufacturer's operating income calculated under absorption costing will be greater than operating income under variable costing because some of the fixed factory overheads incurred will have been capitalized in inventory under absorption costing and expensed under variable costing. Because of the way that fixed costs are allocated to units produced under absorption costing, managers can increase reported operating income by overproducing in order to keep some of the fixed costs on the balance sheet in inventory. The effect of this manipulation is to move operating income from a future period to the current period. It also creates a buildup of inventories that is not consistent with a profitable operation. Under variable costing, however, all the fixed factory overheads incurred are expensed on the income statement in the period incurred. Operating income varies directly with sales volume and is not affected by changes in inventory levels. Therefore, using variable costing for manager performance evaluation would be more impartial.",
+      "wrongWhy": [
+        "The company is currently using an absorption costing system for manager performance evaluation because managers are able inflate short-run operating income by manipulating inventory levels, so that is correct. However, the normal costing approach would not be an improvement for performance evaluation. Please see the correct answer explanation for more information.",
+        null,
+        "The company is not currently using a variable costing approach for manager performance evaluation. The company is using an absorption costing system because managers are able inflate short-run operating income by manipulating inventory levels. Please see the correct answer explanation for more information.",
+        "The company is not currently using a variable costing approach for manager performance evaluation. The company is using an absorption costing system because managers are able inflate short-run operating income by manipulating inventory levels. And the normal costing approach would not be an improvement for performance evaluation. Please see the correct answer explanation for more information. 2."
+      ]
     },
     {
-      "q": "Under variable costing, fixed manufacturing overhead is:",
+      "id": "ICMA 10Q.1.032",
+      "source": "ICMA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "Which one of the following is an advantage of using variable costing?",
       "o": [
-        "Included in inventory",
-        "Varies with production volume",
-        "Expensed immediately as a period cost",
-        "Allocated using Pohr"
+        "Variable costing complies with the U.S. Internal Revenue Code",
+        "Variable costing complies with generally accepted accounting principles",
+        "Variable costing makes cost-volume relationships more easily apparent",
+        "Variable costing is most relevant to long-run pricing strategies. Study Unit 12: D.3. Variable and Absorption Costing covers the information for this question"
       ],
       "a": 2,
-      "e": "Variable costing: All fixed manufacturing overhead is expensed Immediately in the period incurred — it is a Period Cost. It does Not go into inventory. This prevents income manipulation through overproduction."
+      "e": "Variable costing is a method of inventory costing in which all variable manufacturing costs are included as inventoriable costs. Fixed manufacturing costs are considered period expenses; consequently, fixed costs are not allocated to the units of production in a cost-volume analysis. Thus, with variable costing the analysis is more apparent; the per-unit cost stays constant as the volume of production changes.",
+      "wrongWhy": [
+        "Variable costing does not comply with the U.S. Internal Revenue Code.",
+        "Variable costing does not comply with GAAP.",
+        null,
+        "Variable costing is not most relevant to long-run pricing strategies because in the long- run the company also needs to cover its fixed costs. 3."
+      ],
+      "diffPct": 58
+    },
+    {
+      "id": "CIA 1186 IV.8",
+      "source": "CIA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "Under variable (direct) costing, fixed manufacturing overhead costs are classified as",
+      "o": [
+        "Administrative costs",
+        "Period costs",
+        "Inventoriable costs",
+        "Selling costs. Study Unit 12: D.3. Variable and Absorption Costing covers the information for this question"
+      ],
+      "a": 1,
+      "e": "Fixed manufacturing overhead is treated as a period cost under variable (or direct) costing. This means that the costs are expensed when incurred.",
+      "wrongWhy": [
+        "Fixed manufacturing overhead is not classified as an administrative cost under variable (or direct) costing.",
+        null,
+        "Under variable (or direct) costing, fixed manufacturing overhead is not treated as an inventoriable cost.",
+        "Fixed manufacturing overhead is not classified as a selling cost under variable (or direct) costing. 4."
+      ],
+      "diffPct": 94
+    },
+    {
+      "id": "ICMA 10.P1.167",
+      "source": "ICMA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "When comparing absorption costing with variable costing, the difference in operating income can be explained by the difference between the",
+      "o": [
+        "units sold and the units produced, multiplied by the budgeted variable manufacturing cost per unit",
+        "ending inventory in units and the beginning inventory in units, multiplied by the unit sales price",
+        "units sold and the units produced, multiplied by the unit sales price",
+        "ending inventory in units and the beginning inventory in units, multiplied by the budgeted fixed manufacturing cost per unit"
+      ],
+      "a": 3,
+      "e": "This is an example of a question where the answer that would be exactly correct is not given. However, the best answer from among the answer choices given is \"ending inventory in units and the beginning inventory in units, multiplied by the budgeted fixed manufacturing cost per unit.\" That is the best answer because it is the only answer choice that references fixed manufacturing cost. The difference between absorption costing and variable costing is in the treatment of fixed manufacturing costs. This answer is not exactly correct because it does not take into consideration the accounting treatment of the variances between the actual fixed overhead cost and the budgeted fixed overhead cost in absorption costing. Nor does it take into consideration the fact that the company might be using the FIFO inventory cost flow assumption. If it is using FIFO, the fixed cost in the beginning inventory that is sold first is the cost of the previous year when the beginning inventory was manufactured, which is probably a different cost from the current year’s cost.",
+      "wrongWhy": [
+        "The difference in operating income between variable costing and absorption costing is in the treatment of fixed manufacturing costs.",
+        "The difference in operating income between variable costing and absorption costing is in the treatment of fixed manufacturing costs.",
+        "The difference in operating income between variable costing and absorption costing is in the treatment of fixed manufacturing costs. 5.",
+        null
+      ],
+      "diffPct": 71
+    },
+    {
+      "id": "ICMA 10.P1.177",
+      "source": "ICMA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "Dawn Company has significant fixed overhead costs in the manufacturing of its sole product, auto mufflers. For internal reporting purposes, in which one of the following situations would ending finished goods inventory be higher under direct (variable) costing rather than under absorption costing?",
+      "o": [
+        "If more units were produced than were sold during a given year",
+        "If more units were sold than were produced during a given year",
+        "In all cases when ending finished goods inventory exists",
+        "None of these situations"
+      ],
+      "a": 3,
+      "e": "In all cases, ending finished goods inventory will be higher under absorption costing, not variable costing. An allocation of fixed manufacturing cost is included in inventoried goods under absorption costing whereas under variable costing it is not because the fixed manufacturing cost is expensed as incurred under variable costing. Therefore, there is no situation in which ending finished goods inventory would be higher under variable costing than under absorption costing.",
+      "wrongWhy": [
+        "This would not cause ending finished goods inventory to be higher under direct (variable) costing than under absorption costing. If more units were produced than were sold during a given year, that would cause operating income to be higher under absorption costing, but it would not cause ending finished goods inventory to be higher under variable costing.",
+        "This would not cause ending finished goods inventory to be higher under direct (variable) costing than under absorption costing. If more units were sold than were produced during a given year, that would cause operating income to be higher under variable costing, but it would not cause ending finished goods inventory to be higher under variable costing.",
+        "In all cases when ending finished goods inventory exists, ending finished goods inventory will be higher under absorption costing, not variable costing. 6.",
+        null
+      ],
+      "diffPct": 26
+    },
+    {
+      "id": "CIA 1187 IV.9",
+      "source": "CIA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "Which of the following is an argument against the use of direct (variable) costing?",
+      "o": [
+        "Fixed factory overhead is necessary for the production of a product",
+        "Fixed factory overhead is difficult to allocate properly",
+        "Variable factory overhead is a period cost",
+        "Absorption costing overstates the balance sheet value of inventories. Study Unit 12: D.3. Variable and Absorption Costing covers the information for this question"
+      ],
+      "a": 0,
+      "e": "Because fixed manufacturing costs are a necessary part of production, one can argue that they should be included in the cost of a unit produced.",
+      "wrongWhy": [
+        null,
+        "Fixed factory overhead is expensed under direct (or variable) costing and is not allocated.",
+        "Variable factory overhead is a product cost, not a period cost, under direct (or variable) costing.",
+        "The fact that absorption costing overstates inventory is an argument in favor of direct (or variable) costing. 7."
+      ],
+      "diffPct": 48
+    },
+    {
+      "id": "ICMA 10.P1.176",
+      "source": "ICMA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "Which one of the following is the best reason for using variable costing?",
+      "o": [
+        "Fixed factory overhead is more closely related to the capacity to produce than to the production of specific units",
+        "All costs are variable in the long term",
+        "Variable costing is acceptable for income tax reporting purposes",
+        "Variable costing usually results in higher operating income than if a company uses absorption costing"
+      ],
+      "a": 0,
+      "e": "The difference between net income under absorption costing and net income under variable costing is fixed manufacturing overhead. Under variable costing, all of the fixed manufacturing overhead is expensed as it is incurred. Under absorption costing, an allocated amount of fixed manufacturing overhead for the units that were sold is expensed, but an allocated amount of fixed manufacturing overhead for units manufactured but not sold remains in inventory. Variable costing separates fixed manufacturing cost from variable manufacturing cost by not including fixed manufacturing cost in the calculation of the cost to produce. The fixed manufacturing cost is expensed as the cost of maintaining the capacity to produce. As a result, management is better able to make short-term decisions relating to profitability and the product mix.",
+      "wrongWhy": [
+        null,
+        "It is true that all costs are variable in the long term. However, this has nothing to do with a reason for using variable costing.",
+        "Variable costing is not acceptable for income tax reporting purposes. Absorption costing is required on the company's income tax return.",
+        "Which results in higher operating income during a given period depends on whether production exceeds sales or sales exceeds production during that period. When production is greater than sales, operating income under absorption costing will be higher than operating income under variable costing. When production is less than sales, operating income under variable costing will be higher than operating income under absorption costing. Nevertheless, no accounting decision should be made to achieve a specific reporting objective such as higher operating income. The only justifiable reason for any accounting decision such as use of variable costing for internal financial reporting should be for the purpose of improving the financial reporting and making it more useful. 8."
+      ],
+      "diffPct": 59
+    },
+    {
+      "id": "HTB 1.2.008",
+      "source": "HTB",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "When a firm prepares financial reports using absorption costing:",
+      "o": [
+        "Profits may decrease with increased sales even if there is no change in selling prices and costs",
+        "Profits will always decrease with decreases in sales",
+        "Profits will always increase with increases in sales",
+        "Decreased output and constant sales result in increased profits. Study Unit 12: D.3. Variable and Absorption Costing covers the information for this question"
+      ],
+      "a": 0,
+      "e": "When absorption costing is being used and sales are greater than production, operating income will be lower than it would be under variable costing, because some of the fixed costs incurred in a previous period and capitalized in inventory at that time will be expensed in cost of goods sold along with the current period’s fixed costs. Under variable costing, only the current period’s fixed costs would have been expensed.",
+      "wrongWhy": [
+        null,
+        "This will not always be the case when using absorption costing.",
+        "This will not always be the case when using absorption costing.",
+        "This will not always be the case when using absorption costing. 9."
+      ],
+      "diffPct": 63
+    },
+    {
+      "id": "ICMA 10.P1.171",
+      "source": "ICMA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "If a manufacturing company uses variable costing to cost inventories, which of the following costs are considered inventoriable costs?",
+      "o": [
+        "Only raw material, direct labor, and variable manufacturing overhead costs",
+        "Only raw material, direct labor, variable manufacturing overhead and variable selling and administrative costs",
+        "Only raw material, direct labor, variable and fixed manufacturing overhead costs",
+        "Only raw material and direct labor costs. Study Unit 12: D.3. Variable and Absorption Costing covers the information for this question"
+      ],
+      "a": 0,
+      "e": "Under variable costing, all variable manufacturing costs are product costs and are inventoriable, and fixed manufacturing costs are classified as period costs.",
+      "wrongWhy": [
+        null,
+        "Variable selling and administrative costs are not product costs and therefore are not inventoriable. This is true not only for variable costing but for absorption costing as well.",
+        "Fixed manufacturing costs are not inventoriable as product costs under variable costing; all variable manufacturing costs are inventoriable, and that includes more than just raw material and direct labor costs.",
+        "All variable manufacturing costs are product costs that are inventoriable under variable costing, and that includes more than just raw material and direct labor costs. 10."
+      ],
+      "diffPct": 72
+    },
+    {
+      "id": "XET 20.094A",
+      "source": "XET",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "Which of the following statements are true concerning the differences between variable and absorption costing? I. Under variable costing, all fixed costs are considered period costs. Under absorption costing, only non-manufacturing fixed costs are considered period costs. II. Under absorption costing, the income statement must be in accordance with generally accepted accounting principles such as U.S. GAAP. Variable costing is used for internal reporting purposes and is not in accordance with GAAP. III. Under variable costing, if production is greater than sales, operating profit will be higher than it would be under absorption costing. IV. Under absorption costing, if production is less than sales, operating profit will be higher than it would be under variable costing.",
+      "o": [
+        "I and II only",
+        "II and III only",
+        "II and IV only",
+        "I and III only"
+      ],
+      "a": 0,
+      "e": "Item I is true. Under variable costing, even manufacturing fixed costs are treated as period costs. Item II is true. GAAP requires the absorption costing method. Item III is not true. If production is greater than sales, operating profit will be higher under absorption costing, not variable costing. Item IV is not true. If production is less than sales, operating profit under variable costing will be higher than it will be under absorption costing.",
+      "wrongWhy": [
+        null,
+        "Item III is not true. If production is greater than sales, operating profit will be higher under absorption costing, not variable costing.",
+        "Item IV is not true. If production is less than sales, operating profit under variable costing will be higher than it will be under absorption costing.",
+        "Item III is not true. If production is greater than sales, operating profit will be higher under absorption costing, not variable costing. 11."
+      ]
+    },
+    {
+      "id": "CMA 697 3.3",
+      "source": "CMA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "Which method of inventory costing treats direct manufacturing costs and manufacturing overhead costs, both variable and fixed, as inventoriable costs?",
+      "o": [
+        "Conversion costing",
+        "Variable costing",
+        "Direct costing",
+        "Absorption costing. Study Unit 12: D.3. Variable and Absorption Costing covers the information for this question"
+      ],
+      "a": 3,
+      "e": "Under absorption costing, all manufacturing costs are treated as inventoriable, or product, costs.",
+      "wrongWhy": [
+        "Under conversion costing, direct materials are not inventoried because they are not a conversion cost.",
+        "Fixed factory overhead is not inventoried under variable costing, which is the same method as direct costing.",
+        "Fixed factory overhead is not inventoried under direct costing, which is the same method as variable costing. 12.",
+        null
+      ],
+      "diffPct": 90
+    },
+    {
+      "id": "CIA 594 III.46",
+      "source": "CIA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "When comparing absorption costing with variable costing, which of the following statements is not true?",
+      "o": [
+        "Under absorption costing, operating profit is a function of both sales volume and production volume",
+        "When sales volume is more than production volume, variable costing will result in higher operating profit",
+        "Absorption costing enables managers to increase operating profits in the short run by increasing inventories",
+        "A manager who is evaluated based on variable costing operating profit would be tempted to increase production at the end of a period in order to get a more favorable review"
+      ],
+      "a": 3,
+      "e": "Under variable costing, the fixed factory overheads are expensed in the period incurred, so an increase in production would not impact the income from the period, nor the manager's review.",
+      "wrongWhy": [
+        "This is a true statement. Under absorption costing, an increase in inventory will keep more of the fixed factory overhead on the balance sheet and off the income statement resulting in decreased expenses and higher operating profit. A decrease in inventory will cause some of the fixed factory overhead that is on the balance sheet to be expensed, resulting in an increase in expenses and lower operating profit.",
+        "This is a true statement. When sales volume is greater than production volume, units are sold from inventory which causes the fixed cost attached to those units to reach the income statement as cost of sales under absorption costing. As a result, total fixed cost expensed would consist of all of the current year's fixed cost plus a portion of previous years' fixed costs. Under variable costing, all fixed costs would be expensed in the year incurred, so the fixed cost expensed for the current year would be only the current year's fixed cost.",
+        "This is a true statement because an increase in inventory will keep more of the fixed factory overhead on the balance sheet and off the income statement. 13.",
+        null
+      ],
+      "diffPct": 64
+    },
+    {
+      "id": "CIA 1187 IV.51",
+      "source": "CIA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "Assuming absorption costing, which of the following columns includes only product costs? I. II. III. IV. Direct labor X X X Direct materials X X X Sales materials X Advertising costs X Indirect factory materials X X X Indirect labor X X X Sales commissions X Factory utilities X X X Administrative supplies expense X Administrative labor X Depreciation on administration building X Cost of research on customer demographics X",
+      "o": [
+        "I",
+        "III",
+        "II",
+        "IV"
+      ],
+      "a": 3,
+      "e": "Under absorption costing, direct labor, direct materials and factory overheads (both fixed and variable) are treated as product costs.",
+      "wrongWhy": [
+        "Indirect labor is a product cost and sales commissions and depreciation on the administrative building are not.",
+        "Direct materials and indirect factory materials are product costs, but advertising, administration and demographic research are not.",
+        "Direct labor and factory utilities are product costs, but sales and administrative supplies are not. 14.",
+        null
+      ]
+    },
+    {
+      "id": "ICMA 1603.P1.048",
+      "source": "ICMA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "In which one of the following situations will ending inventory on the balance sheet computed under absorption costing be exactly equal to ending inventory computed under variable costing?",
+      "o": [
+        "When the number of units produced equals the number of units sold",
+        "When the denominator variance is zero",
+        "When there is no variable overhead cost",
+        "When there is no fixed factory overhead cost"
+      ],
+      "a": 3,
+      "e": "The differences between variable costing and absorption costing are (1) their treatment of fixed factory overhead costs, and (2) the income statement presentation of the different costs. In absorption costing, fixed factory overhead costs are inventoried as part of the product cost, whereas in variable costing, fixed factory overhead costs are expensed as incurred. If there is no fixed factory overhead cost, no fixed factory overhead cost can be inventoried under absorption costing. Therefore, ending inventory on the balance sheet computed under absorption costing be exactly equal to ending inventory computed under variable costing.",
+      "wrongWhy": [
+        "The differences between variable costing and absorption costing are (1) their treatment of fixed factory overhead costs, and (2) the income statement presentation of the different costs. In absorption costing, fixed factory overhead costs are inventoried as part of the product cost, whereas in variable costing, fixed factory overhead costs are expensed as incurred. Whenever there are fixed factory overhead costs, ending inventory under absorption costing will always be higher than ending inventory under variable costing, because there are more costs in each unit under absorption costing, and the number of units in ending inventory are the same under both methods. There will always be some fixed costs in ending inventory under absorption costing that will not be in ending inventory under variable costing. That will be true whether the number of units produced equals the number of units sold, or whether the number of units produced is not equal to the number of units sold.",
+        "The differences between variable costing and absorption costing are (1) their treatment of fixed factory overhead costs, and (2) the income statement presentation of the different costs. In absorption costing, fixed factory overhead costs are inventoried as part of the product cost, whereas in variable costing, fixed factory overhead costs are expensed as incurred. \"Denominator variance\" is sometimes used as another term for the fixed overhead production-volume variance. The fixed overhead production-volume variance is Budgeted Fixed Overheads minus Standard Fixed Overhead Applied. A fixed overhead production- volume variance of zero means that actual production was exactly equal to budgeted production. Even if the production-volume variance is zero, under absorption costing fixed factory overhead would still be applied to the units produced and would be included in inventory, whereas under variable costing it would be expensed. Therefore, the ending inventory on the balance sheet computed under absorption costing would not be exactly equal to ending inventory computed under variable costing when the denominator variance (fixed overhead production-volume variance) is zero.",
+        "The differences between variable costing and absorption costing are (1) their treatment of fixed factory overhead costs, and (2) the income statement presentation of the different costs. In absorption costing, fixed factory overhead costs are inventoried as part of the product cost, whereas in variable costing, fixed factory overhead costs are expensed as incurred. Variable overhead costs are treated the same way under variable costing and absorption costing: they are applied to the units produced and are inventoried. Thus having no variable overhead cost would not, by itself, cause the ending inventory on the balance sheet computed under absorption costing to be exactly equal to ending inventory computed under variable costing. 15.",
+        null
+      ],
+      "diffPct": 34
+    },
+    {
+      "id": "CIA 577 IV.18",
+      "source": "CIA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "In the application of direct (variable) costing as a cost-allocation process in manufacturing,",
+      "o": [
+        "Nonvariable direct costs are treated as product costs",
+        "Variable indirect costs are treated as product costs",
+        "Nonvariable indirect costs are treated as product costs",
+        "Variable direct costs are treated as period costs"
+      ],
+      "a": 1,
+      "e": "Under direct (or variable) costing all variable production costs (direct or indirect) are treated as product costs.",
+      "wrongWhy": [
+        "Fixed direct costs are not treated as product costs under direct (or variable) costing.",
+        null,
+        "Fixed indirect costs are not treated as product costs under direct (or variable) costing.",
+        "Variable direct costs are not treated as period costs under direct (or variable) costing. 16."
+      ],
+      "diffPct": 70
+    },
+    {
+      "id": "ICMA 18.P1.033",
+      "source": "ICMA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "Which one of the following is true with respect to variable and absorption costing systems?",
+      "o": [
+        "Variable costing systems include fixed manufacturing overhead as period costs",
+        "Absorption costing systems include variable manufacturing overhead as period costs",
+        "Absorption costing systems include fixed manufacturing overhead as period costs",
+        "Variable costing systems include variable manufacturing overhead as period costs"
+      ],
+      "a": 0,
+      "e": "This is true. Under variable costing, fixed manufacturing overhead is accounted for as a period cost and is expensed as it is incurred.",
+      "wrongWhy": [
+        null,
+        "This is not true. Under absorption costing, variable manufacturing overhead is accounted for as a product cost and is applied to production using a predetermined overhead application rate.",
+        "This is not true. Under absorption costing, fixed manufacturing overhead is a accounted for as a product cost and is applied to production using a predetermined overhead application rate.",
+        "This is not true. Under variable costing, variable manufacturing overhead is accounted for as a product cost and is applied to production using a predetermined overhead application rate. 17."
+      ],
+      "diffPct": 88
+    },
+    {
+      "id": "CMA 694 3.6",
+      "source": "CMA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "The term \"gross margin\" for a manufacturing firm refers to excess of sales over",
+      "o": [
+        "Cost of goods sold, including fixed indirect manufacturing costs",
+        "Cost of goods sold, excluding fixed indirect manufacturing costs",
+        "Manufacturing costs, excluding fixed manufacturing costs",
+        "All variable costs, including variable selling and administrative expenses"
+      ],
+      "a": 0,
+      "e": "By definition, gross margin is sales price minus cost of goods sold.",
+      "wrongWhy": [
+        null,
+        "This answer is incorrect because fixed indirect manufacturing costs are included in the gross margin calculation.",
+        "This answer is incorrect because fixed manufacturing costs are included in the gross margin calculation.",
+        "This answer is incorrect because fixed costs are included in gross margin, and selling and administrative costs are not. 18."
+      ],
+      "diffPct": 58
+    },
+    {
+      "id": "CIA 1194 III.42",
+      "source": "CIA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "Using absorption costing, fixed manufacturing overhead costs are best described as",
+      "o": [
+        "Indirect period costs",
+        "Indirect product costs",
+        "Direct product costs",
+        "Direct period costs"
+      ],
+      "a": 1,
+      "e": "Under absorption costing fixed manufacturing overhead is allocated to the units produced and it is best classified as an indirect product cost. It is indirect because it is not directly traceable to a specific unit and a product cost because it allocated to the product.",
+      "wrongWhy": [
+        "Fixed manufacturing overhead is not a period cost under absorption costing because it is allocated to the units produced and not expensed.",
+        null,
+        "Fixed manufacturing overhead is not a direct cost because it cannot be traced to a specific unit.",
+        "Fixed manufacturing overhead is not a direct cost because it cannot be traced to a specific unit. It is also not a period cost under absorption costing because it is allocated to the units produced and not expensed. 19."
+      ],
+      "diffPct": 53
+    },
+    {
+      "id": "CMA 1292 3.1",
+      "source": "CMA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "Costs are allocated to cost objects in many ways and for many reasons. Which one of the following is a purpose of cost allocation?",
+      "o": [
+        "Evaluating revenue center performance",
+        "Budgeting cash and controlling expenditures",
+        "Aiding in variable costing for internal reporting",
+        "Measuring income and assets for external reporting"
+      ],
+      "a": 3,
+      "e": "The external reporting of income requires the allocation of all costs (absorption costing) to the units that were produced. Therefore, of the choices given, this is the best reason for the allocation of costs.",
+      "wrongWhy": [
+        "In order to evaluate a revenue center, the revenues of the center would be required, not the costs. Therefore, allocation of costs is not done to evaluate a revenue center.",
+        "The allocation of costs is not part of the cash budgeting and expenditure control activities.",
+        "Variable costing does not include allocation of fixed factory overhead costs to production at all. Therefore, this is not the best answer from among the answer choices given. 20.",
+        null
+      ]
+    },
+    {
+      "id": "ICMA 10.P1.172",
+      "source": "ICMA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "Xylon Company uses direct (variable) costing for internal reporting and absorption costing for the external financial statements. A review of the firm’s internal and external disclosures will likely find",
+      "o": [
+        "a difference in the treatment of fixed selling and administrative costs",
+        "internal income figures that vary closely with sales and external income figures that are influenced by both units sold and productive output",
+        "a contribution margin rather than gross margin in the reports released to shareholders",
+        "a higher inventoriable unit cost reported to management than to the shareholders"
+      ],
+      "a": 1,
+      "e": "Internal income statements using variable costing -- at least the contribution margin -- would vary closely with sales, because only variable costs are considered product costs when variable costing is used. Fixed factory overhead is expensed as it is incurred. External income figures using absorption costing would vary with the relationship between units produced and units sold. When production is greater than sales, net income under absorption costing is higher than it is under variable costing because the fixed factory overheads are inventoried under this method. Fixed factory overhead attached to units produced but not sold remains in inventory and thus the fixed costs attached to those units is not expensed until the units are sold. When sales are greater than production, net income under variable costing is higher than it is under absorption costing. Under absorption costing, the fixed factory overhead attached to the units sold is expensed (along with other product costs) as cost of goods sold. Because beginning inventory is sold when sales are greater than production, fixed factory overhead costs from the previous year are expensed in the current year under absorption costing whereas under variable costing, they would have been expensed during the previous year when they were incurred. As a result, net income will be higher under variable costing.",
+      "wrongWhy": [
+        "Fixed selling and administrative costs are treated the same way under variable and absorption costing: as period costs.",
+        null,
+        "The contribution margin would be in the reports released to management. The reports released to shareholders would show a gross profit margin instead of a contribution margin.",
+        "A higher inventoriable unit cost would be reported to shareholders than to management, because fixed manufacturing costs are inventoriable costs under absorption costing but are period costs under variable costing. 21."
+      ],
+      "diffPct": 61
+    },
+    {
+      "id": "CMA 697 3.10",
+      "source": "CMA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "Which one of the following statements is correct regarding absorption costing and variable costing?",
+      "o": [
+        "If finished goods inventory increases, absorption costing results in higher income",
+        "Variable manufacturing costs are lower under variable costing",
+        "Overhead costs are treated in the same manner under both costing methods",
+        "Gross margins are the same under both costing methods. Study Unit 12: D.3. Variable and Absorption Costing covers the information for this question"
+      ],
+      "a": 0,
+      "e": "When inventory levels increase, absorption costing will give a higher net income because some of the fixed factory overheads are in inventory on the balance sheet and were not expensed this period on the income statement.",
+      "wrongWhy": [
+        null,
+        "Variable costs are the same under both methods.",
+        "Fixed factory overhead costs are not treated the same way under both methods.",
+        "Because of the different treatment of fixed factory overheads, the sales minus the product cost results in the gross margin for absorption costing and sales minus product costs (variable manufacturing costs) results in manufacturing contribution margin under variable costing. These two results will be different under these two methods. 22."
+      ],
+      "diffPct": 86
+    },
+    {
+      "id": "CIA 1193 IV.10",
+      "source": "CIA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "The management of a company computes net income using both the absorption and variable costing approaches to product costing. This year, the net income under the variable costing approach was greater than the net income under the absorption costing approach. This difference is most likely the result of",
+      "o": [
+        "Inflationary effects on overhead costs",
+        "An increase in the finished goods inventory",
+        "A decrease in the variable marketing expenses",
+        "Sales volume exceeding production volume. Study Unit 12: D.3. Variable and Absorption Costing covers the information for this question"
+      ],
+      "a": 3,
+      "e": "When sales exceed production, this means that inventory decreased. When inventory decreases the income under the variable method is greater than under the absorption method. This is because under the absorption method, some of the prior period's fixed costs are being expensed as part of cost of goods sold this period.",
+      "wrongWhy": [
+        "Inflation will affect both variable and absorption costing in the same manner.",
+        "An increase in ending inventory would have the opposite effect on income.",
+        "The treatment of variable marketing expenses is the same under both the variable and absorption methods. 23.",
+        null
+      ],
+      "diffPct": 84
+    },
+    {
+      "id": "ICMA 18.P1.064",
+      "source": "ICMA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "Operating income under variable costing is contribution margin minus",
+      "o": [
+        "fixed manufacturing overhead and variable manufacturing overhead",
+        "fixed manufacturing overhead and fixed selling and administrative expenses",
+        "cost of goods sold and administrative expenses",
+        "variable selling and administrative expenses and fixed selling and administrative expenses. Study Unit 12: D.3. Variable and Absorption Costing covers the information for this question"
+      ],
+      "a": 1,
+      "e": "Under variable costing (also called direct costing), fixed factory overheads are reported as period costs and are expensed in the period in which they are incurred. Fixed selling and administrative expenses are expensed as incurred under both variable costing and absorption costing. Therefore, operating income under variable costing is the contribution margin minus all fixed expenses, including fixed factory overhead expense and fixed selling and administrative expenses. The contribution margin is revenue minus all variable expenses, including variable cost of sales (factory direct input costs and overhead costs for sold units) and variable selling and administrative costs expensed as incurred.",
+      "wrongWhy": [
+        "This is not the way operating income is calculated under variable costing. Please see the correct answer explanation for information.",
+        null,
+        "This is not the way operating income is calculated under variable costing. Please see the correct answer explanation for information.",
+        "This is not the way operating income is calculated under variable costing. Please see the correct answer explanation for information. 24."
+      ],
+      "diffPct": 79
+    },
+    {
+      "id": "CMA 1290 3.12",
+      "source": "CMA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "Which one of the following considers the impact of fixed overhead costs in the calculation of the per unit cost?",
+      "o": [
+        "Full absorption costing",
+        "Marginal costing",
+        "Variable costing",
+        "Direct costing. Study Unit 12: D.3. Variable and Absorption Costing covers the information for this question"
+      ],
+      "a": 0,
+      "e": "Full absorption costing includes the fixed manufacturing overheads in the calculation of the per unit cost.",
+      "wrongWhy": [
+        null,
+        "Marginal costing considers only the cost of producing one more unit. Since fixed costs are fixed, they are not considered in marginal costing.",
+        "Variable (direct) costing treats only variable costs as product costs. Fixed overhead costs are expensed.",
+        "Direct (variable) costing treats only variable costs as product costs. Fixed overhead costs are expensed. 25."
+      ],
+      "diffPct": 85
+    },
+    {
+      "id": "CMA 1292 3.26",
+      "source": "CMA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "Jansen, Inc. pays bonuses to its managers based on operating income. The company uses absorption costing, and overhead is applied on the basis of direct labor hours. To increase bonuses, Jansen's managers may do all of the following except",
+      "o": [
+        "Increase production schedules independent of customer demands",
+        "Produce those products requiring the most direct labor",
+        "Defer expenses such as maintenance to a future period",
+        "Decrease production of those items requiring the most direct labor. Study Unit 12: D.3. Variable and Absorption Costing covers the information for this question"
+      ],
+      "a": 3,
+      "e": "By producing fewer units that require a lot of direct labor, less of the overhead will be allocated to units that are in inventory at the end of the period because there will be fewer units in inventory. This will mean that less of the overhead is on the balance sheet and more is on the income statement, reducing net income.",
+      "wrongWhy": [
+        "By increasing production schedules independent of customer demand, more units will be in inventory at the end of the year, meaning that more fixed costs will be on the balance sheet and not on the income statement. This will increase income.",
+        "By producing more products that use a lot of direct labor, there will be more overhead included in inventory at the end of the year, since overhead is applied on the basis of direct labor hours. Since these costs are on the balance sheet instead of the income statement, income will be higher as a result of doing this.",
+        "By deferring expenses, the income in the current period will be higher, giving a bigger bonus. 26.",
+        null
+      ],
+      "diffPct": 47
+    },
+    {
+      "id": "ICMA 1603.P1.052",
+      "source": "ICMA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "Which of the following costs are generally included in a calculation of operating income when using absorption costing? I. Fixed direct manufacturing costs II. Variable direct manufacturing costs III. Variable manufacturing overhead costs IV. Fixed manufacturing overhead costs",
+      "o": [
+        "I and IV, only",
+        "I, II and III, only",
+        "II and III, only",
+        "I, II, III, and IV. Study Unit 12: D.3. Variable and Absorption Costing covers the information for this question"
+      ],
+      "a": 3,
+      "e": "All costs ultimately are included in a calculation of operating income whether variable costing or absorption costing is being used. The only difference between variable costing and absorption costing is the timing of the recognition of fixed manufacturing overheads as expenses. Under variable costing, fixed manufacturing overhead is expensed as it is incurred. Under absorption costing, fixed manufacturing overhead is applied to the units of production and is inventoried. It becomes a component of cost of goods sold (an expense) as the units to which it was applied are sold.",
+      "wrongWhy": [
+        "All costs ultimately are included in a calculation of operating income whether variable costing or absorption costing is being used. The only difference between variable costing and absorption costing is the timing of the recognition of fixed manufacturing overheads as expenses. Under variable costing, fixed manufacturing overhead is expensed as it is incurred. Under absorption costing, fixed manufacturing overhead is applied to the units of production and is inventoried. It becomes a component of cost of goods sold (an expense) as the units to which it was applied are sold.",
+        "All costs ultimately are included in a calculation of operating income whether variable costing or absorption costing is being used. The only difference between variable costing and absorption costing is the timing of the recognition of fixed manufacturing overheads as expenses. Under variable costing, fixed manufacturing overhead is expensed as it is incurred. Under absorption costing, fixed manufacturing overhead is applied to the units of production and is inventoried. It becomes a component of cost of goods sold (an expense) as the units to which it was applied are sold.",
+        "All costs ultimately are included in a calculation of operating income whether variable costing or absorption costing is being used. The only difference between variable costing and absorption costing is the timing of the recognition of fixed manufacturing overheads as expenses. Under variable costing, fixed manufacturing overhead is expensed as it is incurred. Under absorption costing, fixed manufacturing overhead is applied to the units of production and is inventoried. It becomes a component of cost of goods sold (an expense) as the units to which it was applied are sold. 27.",
+        null
+      ],
+      "diffPct": 91
+    },
+    {
+      "id": "ICMA 10Q.1.027",
+      "source": "ICMA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "Assuming that there is a constant contribution margin per unit, the change in period-to- period operating income when using variable costing can be explained by the change in the",
+      "o": [
+        "unit sales level multiplied by the unit contribution margin",
+        "unit sales level multiplied by the unit sales price",
+        "finished goods inventory level multiplied by the unit contribution margin",
+        "finished goods inventory level multiplied by the unit sales price. Study Unit 12: D.3. Variable and Absorption Costing covers the information for this question"
+      ],
+      "a": 0,
+      "e": "If there is a constant contribution margin per unit, the change in operating income from year to year will equal to the change in the unit sales from period to period multiplied by the contribution margin per unit.",
+      "wrongWhy": [
+        null,
+        "The change in the unit sales level multiplied by the unit sales price will not explain the change in operating income from year to year. Please see the correct answer explanation for more information.",
+        "The change in the finished goods inventory level multiplied by the unit contribution margin will not explain the change in operating income from year to year. Please see the correct answer explanation for more information.",
+        "The change in the finished goods inventory level multiplied by the unit sales price will not explain the change in operating income from year to year. Please see the correct answer explanation for more information. 28."
+      ],
+      "diffPct": 60
+    },
+    {
+      "id": "CMA Sample Q3.3",
+      "source": "CMA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "The change in period-to-period operating income when using variable costing can be explained by the change in the",
+      "o": [
+        "Unit sales level multiplied by a constant unit contribution margin",
+        "Finished goods inventory level multiplied by the unit sales price",
+        "Unit sales level multiplied by the unit sales price",
+        "Finished goods inventory level multiplied by a constant unit contribution margin. Study Unit 12: D.3. Variable and Absorption Costing covers the information for this question"
+      ],
+      "a": 0,
+      "e": "Under variable costing all fixed costs are expensed in the period in which they are incurred. Therefore, if the unit contribution margin is stable and the fixed costs are stable, the difference in income between two periods can be explained by change in the level of sales multiplied by the contribution margin per unit.",
+      "wrongWhy": [
+        null,
+        "A change in the level of inventory will not explain or measure the change in profit.",
+        "This simply calculates the level of revenue, which does not necessarily equal the change in income from one period to the next.",
+        "A change in the level of inventory will not explain or measure the change in profit. 29."
+      ],
+      "diffPct": 58
+    },
+    {
+      "id": "ICMA 10Q.1.033",
+      "source": "ICMA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "Huntington Corporation pays bonuses to its managers based on operating income, as calculated under variable costing. It is now two months before year-end, and earnings have been depressed for some time. Which one of the following actions should Wanda Richards, production manager, implement if she desires to maximize her bonus for this year?",
+      "o": [
+        "Step up production so that more manufacturing costs are deferred into inventory",
+        "Eliminate $2.3 million of advertising and marketing costs",
+        "Postpone $1.8 million of discretionary equipment maintenance until next year",
+        "Implement, with the aid of the controller, an activity-based costing system. Study Unit 12: D.3. Variable and Absorption Costing covers the information for this question"
+      ],
+      "a": 2,
+      "e": "All of the listed actions are targeted to increase operating income; however, cutting $2.3 million of advertising and marketing costs is beyond the control of the production manager. In addition, stepping up production to defer manufacturing costs into inventory would work only under absorption costing. Finally, ABC and ABM systems implementation is beneficial in the long-run, but would have little effect in the current short-term period. Thus, postponing equipment maintenance until the next reporting period is the only action that would affect operating income and the production managers’ year-end bonus.",
+      "wrongWhy": [
+        "Stepping up production to defer manufacturing costs into inventory would work only under absorption costing.",
+        "Cutting $2.3 million of advertising and marketing costs is beyond the control of the production manager.",
+        null,
+        "ABC systems implementation is beneficial in the long-run, but would have little effect in the current short-term period. 30."
+      ],
+      "diffPct": 39
+    },
+    {
+      "id": "ICMA 10.P1.169",
+      "source": "ICMA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "Which of the following correctly shows the treatment of factory insurance, direct labor and finished goods shipping costs under absorption costing and variable costing?",
+      "o": [
+        "Absorption costing: factory insurance and direct labor are product costs; finished goods shipping is a period cost. Variable costing: direct labor is a product cost; factory insurance and finished goods shipping are period costs",
+        "Absorption costing: factory insurance and direct labor are product costs; finished goods shipping is a period cost. Variable costing: factory insurance is a product cost; direct labor and finished goods shipping are period costs",
+        "Absorption costing: Direct labor is a product cost; factory insurance and finished goods shipping are period costs. Variable costing: factory insurance and direct labor are product costs; finished goods shipping is a period cost",
+        "Absorption costing: factory insurance is a product cost; direct labor and finished goods shipping are period costs. Variable costing: direct labor and finished goods shipping are product costs; factory insurance is a period cost"
+      ],
+      "a": 0,
+      "e": "Factory insurance is a fixed manufacturing cost. Therefore, it is a product cost under absorption costing but a period cost under variable costing. Direct labor is a product cost under both types of costing, and finished goods shipping is a period cost under both types of costing.",
+      "wrongWhy": [
+        null,
+        "Factory insurance is a fixed manufacturing cost, and it is a period cost under variable costing, not a product cost. Direct labor is a product cost under variable costing, not a period cost.",
+        "Factory insurance is a fixed manufacturing cost. It is a product cost under absorption costing, not a period cost; and it is a period cost under variable costing, not a product cost.",
+        "Direct labor is a product cost under both absorption costing and variable costing. Finished goods shipping is a period cost under both absorption costing and variable costing. 31."
+      ]
+    },
+    {
+      "id": "CMA 1273 4.1",
+      "source": "CMA",
+      "topic": "Variable and Absorption Costing - Theory Questions",
+      "q": "Which of the following statements is true for a firm that uses variable costing?",
+      "o": [
+        "Product costs include variable administrative costs",
+        "Profits fluctuate with sales",
+        "An idle facility variation is calculated",
+        "The cost of a unit of product changes because of changes in number of units manufactured. Study Unit 12: D.3. Variable and Absorption Costing covers the information for this question"
+      ],
+      "a": 1,
+      "e": "Under variable costing, the profits that the company reports will fluctuate with the level of sales. When sales increase, reported profits will increase. When sales decrease, reported profits will decrease. With variable costing, manufacturing fixed costs are treated as period costs and are expensed as incurred instead of being capitalized in inventory. So cost of goods sold consists of variable costs only. Therefore, profits will increase by the amount of the unit contribution margin multiplied by any increase in units sold, and they will decrease by the amount of the unit contribution margin multiplied by any decrease in units sold.",
+      "wrongWhy": [
+        "Variable administrative costs are not included as a product cost under either the variable or absorption methods.",
+        null,
+        "This is not done under variable costing.",
+        "Because only variable costs are included in the cost of the product under variable costing, the cost of a unit will not change as production levels change. ESSAYS SECTION D PART 1 1 You have completed Section D - Essay Questions. You can self-grade your answers against the suggested solutions. 1."
+      ],
+      "diffPct": 58
     }
   ],
   "4-13": [
@@ -3219,7 +4851,7 @@
       "e": "Variable Rate = (High Cost - Low Cost) / (High Activity - Low Activity) = ($50,000 - $26,000) / (10,000 - 4,000) = $24,000 / 6,000 = $4.00 per unit."
     },
     {
-      "q": "High-Low Method: High point = 10,000 units / $50,000. Low point = 4,000 units / $26,000. Variable rate = $4.00/unit. Fixed Cost =",
+      "q": "Using the above data (variable rate $4/unit), Fixed Cost =",
       "o": [
         "$6,000",
         "$10,000",
@@ -3227,7 +4859,7 @@
         "$26,000"
       ],
       "a": 1,
-      "e": "Fixed Cost = Total Cost at High point − (Variable Rate × High Activity) = $50,000 − ($4 × 10,000) = $50,000 − $40,000 = $10,000. Verify using Low point: $26,000 − ($4 × 4,000) = $10,000. ✓"
+      "e": "Fixed Cost = Total Cost at High point - (Variable Rate x High Activity) = $50,000 - ($4 x 10,000) = $50,000 - $40,000 = $10,000. Verify: $26,000 - ($4 x 4,000) = $10,000. Ok"
     },
     {
       "q": "Multiple regression is preferred over simple regression when:",
