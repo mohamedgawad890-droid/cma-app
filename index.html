@@ -25,6 +25,21 @@ window.addEventListener('beforeinstallprompt', e => {
 <meta name="msapplication-TileImage" content="./icon-192.png">
 <link rel="stylesheet" href="./app.css">
 <!-- Change 1: CSS extracted to app.css — reduces HTML parse cost by ~15KB -->
+<style id="batch-overrides">
+/* Desktop: use more of the screen width + enlarge content uniformly (desktop only) */
+@media(min-width:900px){
+  #app{max-width:1700px}
+  .content{zoom:1.12}
+}
+@media(min-width:1200px){
+  #app{max-width:1700px}
+}
+/* Mobile brand strip (avatar + title). Desktop already shows brand in the sidebar. */
+.mobile-brand{display:flex;align-items:center;gap:10px;padding:8px 14px;background:#fff;border-bottom:.5px solid #e0e0d8;flex-shrink:0}
+.mobile-brand-img{width:30px;height:30px;border-radius:50%;object-fit:cover;border:2px solid #E6F1FB;flex-shrink:0}
+.mobile-brand-title{font-size:14px;font-weight:600;color:#0C447C;letter-spacing:.3px}
+@media(min-width:900px){.mobile-brand{display:none!important}}
+</style>
 <!-- CBQ data file — must load before main script -->
 <script src="./cbq-data.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -33,6 +48,10 @@ window.addEventListener('beforeinstallprompt', e => {
 </head>
 <body>
 <div id="app">
+  <div class="mobile-brand" id="mobile-brand">
+    <img src="./gawad-avatar.webp" alt="Mohamed Abdelgawad" class="mobile-brand-img">
+    <div class="mobile-brand-title">CMA Part One Prep</div>
+  </div>
   <nav class="bottom-nav" id="bottom-nav"></nav>
   <div class="install-banner" id="install-banner">
     <div class="install-banner-icon">📲</div>
@@ -1386,7 +1405,7 @@ function renderCommunity(){
     setTimeout(()=>loadQuestions(),0);
   }
 
-  return`${renderSubNav(SUB_ME,'community')}<div class="sh" style="padding-bottom:10px">
+  return`<div class="sh" style="padding-bottom:10px">
     <div style="display:flex;align-items:center;justify-content:space-between">
       <div><h2 style="font-size:18px;font-weight:500">Community Q&A</h2>
       <p style="font-size:12px;color:#888;margin-top:2px">Ask questions · Help each other · Learn together</p></div>
@@ -2561,51 +2580,6 @@ function renderQuizResults(){
   </div>`;
 }
 
-// ─── PROGRESS ─────────────────────────────────────────────────────────────────
-function renderEssayPractice(){
-  const essays=[
-    {sec:'Performance Management',q:'Discuss how Residual Income (RI) overcomes the limitations of Return on Investment (ROI) as a performance measure for investment center managers. Include a numerical example.',hint:'Cover: ROI dysfunction (rejecting profitable projects), RI formula, goal congruence, scale limitation of RI, numerical illustration.'},
-    {sec:'Performance Management',q:'A company uses a Balanced Scorecard. Explain the four perspectives, the cause-and-effect relationship between them, and why financial measures alone are insufficient for strategic management.',hint:'Cover: Financial (outcome/lag), Customer, Internal Process, Learning & Growth (foundation/lead), strategy map logic.'},
-    {sec:'Performance Management',q:'Explain the concept of transfer pricing in a decentralized company. Discuss the general guideline for setting a minimum transfer price when the selling division operates at full capacity versus excess capacity.',hint:'Cover: Purpose of TP, divisional vs consolidated impact, general guideline = outlay + opportunity cost, full capacity vs excess capacity scenarios.'},
-    {sec:'Cost Management',q:'Explain the difference between variable costing and absorption costing. Under what circumstances will each method report a higher net income? Show with a brief numerical example.',hint:'Cover: Fixed OH treatment, income difference = Fixed OH in/out of inventory, production > sales → absorption higher, production < sales → variable higher.'},
-    {sec:'Cost Management',q:'Describe Activity-Based Costing (ABC) and explain how it improves the accuracy of product cost information compared to traditional overhead allocation. Discuss the limitations of ABC.',hint:'Cover: Traditional single rate distortion, ABC identifies activities and cost drivers, product-level accuracy, limitations: cost/complexity, arbitrary allocation still exists.'},
-    {sec:'Planning & Budgeting',q:'Explain the budgeting process and the role of the master budget. Distinguish between a static budget and a flexible budget, and explain why flexible budgets provide better performance evaluation.',hint:'Cover: Budget cycle, master budget components, static = one volume, flexible = adjusts to actual volume, removes volume effect from performance evaluation.'},
-    {sec:'Financial Reporting',q:'Describe the five-step revenue recognition model under ASC 606. Apply the model to a software company that sells a license and one year of technical support for a bundled price of $120,000.',hint:'Cover: 5 steps, identify performance obligations (license + support = 2), allocate transaction price using relative SSP, recognize each when/as satisfied.'},
-    {sec:'Financial Reporting',q:'Compare and contrast IFRS and US GAAP in terms of their conceptual frameworks, the treatment of inventory write-downs, and the approach to development costs.',hint:'Cover: Rules vs principles-based, LIFO prohibition under IFRS, IFRS allows reversal of write-downs, R&D: GAAP expensed; IFRS capitalizes development if criteria met.'},
-    {sec:'Internal Controls',q:'Describe the COSO Internal Control Framework. Explain the five components and discuss how management override of controls represents a significant limitation.',hint:'Cover: 5 components + 17 principles, control environment as foundation, management override: bypasses controls they designed, why it is primary mechanism for financial fraud.'},
-    {sec:'Internal Controls',q:'Explain the Fraud Triangle. For each element, describe specific organizational controls or practices that management can implement to reduce the risk of employee fraud.',hint:'Cover: Pressure (compensation, EAP), Opportunity (SOD, physical controls, reconciliations), Rationalization (ethics culture, fair treatment, zero-tolerance policy).'},
-  ];
-  const STATE_KEY='essay-open-idx';
-  const openIdx=window._essayOpenIdx==null?null:window._essayOpenIdx;
-  const items=essays.map((e,i)=>{
-    const isOpen=openIdx===i;
-    const noteKey='essay-note-'+i;
-    const saved=localStorage.getItem(noteKey)||'';
-    return`<div class="card" style="margin-bottom:10px">
-      <div onclick="window._essayOpenIdx=${isOpen?'null':i};render()" style="cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
-        <div style="flex:1">
-          <div style="font-size:10px;font-weight:500;color:#185FA5;margin-bottom:5px">${esc(e.sec)}</div>
-          <div style="font-size:13px;font-weight:500;color:#1a1a1a;line-height:1.5">${esc(e.q)}</div>
-        </div>
-        <span style="color:#bbb;font-size:16px;flex-shrink:0;margin-top:2px">${isOpen?'▾':'›'}</span>
-      </div>
-      ${isOpen?`<div style="margin-top:12px;border-top:.5px solid #e0e0d8;padding-top:12px">
-        <div style="background:#FAEEDA;border-left:3px solid #EF9F27;border-radius:0 8px 8px 0;padding:10px 12px;margin-bottom:10px">
-          <div style="font-size:10px;font-weight:500;color:#854F0B;letter-spacing:.8px;margin-bottom:4px">KEY POINTS TO COVER</div>
-          <div style="font-size:12px;color:#633806;line-height:1.55">${esc(e.hint)}</div>
-        </div>
-        <div style="font-size:12px;font-weight:500;color:#888;margin-bottom:6px">✍️ Your Answer (practice under timed conditions — aim for 15-20 minutes)</div>
-        <textarea placeholder="Write your essay answer here..." onchange="localStorage.setItem('essay-note-${i}',this.value)" style="width:100%;padding:10px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:13px;font-family:inherit;outline:none;background:#fafaf8;color:#1a1a1a;resize:vertical;line-height:1.5;box-sizing:border-box;min-height:160px" rows="8">${esc(saved)}</textarea>
-      </div>`:''}
-    </div>`;
-  }).join('');
-  return`<div class="bh"><button class="bh-back" onclick="window._essayOpenIdx=null;endStudyTimer();STATE.tab='quiz-mode-select';render()">‹</button>
-    <div style="min-width:0"><div style="font-size:15px;font-weight:500">Essay Practice</div>
-    <div style="font-size:11px;color:#888">10 exam-style essay questions · 25% of CMA score</div></div></div>
-  <div class="scroll-area pad" style="padding-top:14px">
-    <div class="tip" style="margin-bottom:14px"><div class="tip-lbl">HOW TO USE</div><div class="tip-txt">Tap a question to expand it. Read the key points, then write your full answer in the text box without looking at notes — aim for 15–20 minutes per question, just like the real exam. Your answers are saved automatically.</div></div>
-    ${items}<div style="height:20px"></div></div>`;
-}
 
 function renderFormulaBank(){
   const cats=[
@@ -2700,7 +2674,7 @@ function renderFormulaBank(){
         </div>`).join('')}
       </div>
     </div>`).join('');
-  return`${renderSubNav(SUB_PRACTICE,'formula-bank')}<div class="sh"><h2>📐 Formula Bank</h2><p>Quick reference — all CMA Part 1 sections</p></div>
+  return`<div class="sh"><h2>📐 Formula Bank</h2><p>Quick reference — all CMA Part 1 sections</p></div>
   <div class="scroll-area pad" style="padding-top:4px">${items}<div style="height:20px"></div></div>`;
 }
 
@@ -2758,7 +2732,7 @@ function renderWrongAnswers(){
   }
   const total=wrongItems.length;
   if(total===0){
-    return`${renderSubNav(SUB_PROGRESS,'wrong-answers')}<div class="bh"><button class="bh-back" onclick="STATE.tab='progress';render()">‹</button><div style="font-size:15px;font-weight:500">Wrong Answers</div></div>
+    return`${renderSubNav(SUB_PRACTICE,'wrong-answers')}<div class="bh"><button class="bh-back" onclick="STATE.tab='quiz-mode-select';render()">‹</button><div style="font-size:15px;font-weight:500">Wrong Answers</div></div>
     <div class="scroll-area pad" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:60px;text-align:center">
       <div style="font-size:48px;margin-bottom:16px">🎉</div>
       <div style="font-size:17px;font-weight:500;color:#1a1a1a;margin-bottom:8px">No wrong answers yet!</div>
@@ -2780,7 +2754,7 @@ function renderWrongAnswers(){
       </div>
     </div>`;
   }).join('');
-  return`${renderSubNav(SUB_PROGRESS,'wrong-answers')}<div class="bh"><button class="bh-back" onclick="STATE.tab='progress';render()">‹</button>
+  return`${renderSubNav(SUB_PRACTICE,'wrong-answers')}<div class="bh"><button class="bh-back" onclick="STATE.tab='quiz-mode-select';render()">‹</button>
     <div style="min-width:0"><div style="font-size:15px;font-weight:500">Wrong Answers</div>
     <div style="font-size:11px;color:#888">${total} question${total===1?'':'s'} to review</div></div>
     <button onclick="startWrongAnswersRetry()" style="padding:8px 14px;border-radius:8px;border:none;background:#E24B4A;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;flex-shrink:0">↺ Retry All</button></div>
@@ -3074,21 +3048,25 @@ setTimeout(runValidatorAfterLoad,4000);
 // ─── RENDER ───────────────────────────────────────────────────────────────────
 // ── Primary Navigation (5 tabs) ──────────────────────────────────────────────
 const TABS=[
-  {id:'study',          label:'Study',    icon:'📚'},
-  {id:'quiz-mode-select',label:'Practice',icon:'🎯'},
-  {id:'progress',       label:'Progress', icon:'📊'},
-  {id:'search',         label:'Search',   icon:'🔍'},
-  {id:'intro',          label:'About',    icon:'👤'}
+  {id:'intro',           label:'About',    icon:'👤'},
+  {id:'study',           label:'Study',    icon:'📚'},
+  {id:'quiz-mode-select',label:'Practice', icon:'🎯'},
+  {id:'progress',        label:'Progress', icon:'📊'},
+  {id:'formula-bank',    label:'Formula',  icon:'📐'},
+  {id:'search',          label:'Search',   icon:'🔍'},
+  {id:'community',       label:'Community',icon:'🌐'}
 ];
 
 // Maps every screen → its primary nav tab
 function activeNavTab(){
   const t=STATE.tab;
   if(t==='study'||t==='quiz-session'||t==='quiz-results'||t==='lessons'||t==='dashboard')return'study';
-  if(t==='quiz-mode-select'||t==='quiz-mode'||t==='cbq'||t==='mock-exam'||t==='formula-bank'||t==='essay-practice')return'quiz-mode-select';
-  if(t==='progress'||t==='tracker'||t==='wrong-answers'||t==='leaderboard')return'progress';
+  if(t==='quiz-mode-select'||t==='quiz-mode'||t==='cbq'||t==='mock-exam'||t==='wrong-answers')return'quiz-mode-select';
+  if(t==='progress'||t==='tracker'||t==='leaderboard')return'progress';
+  if(t==='formula-bank')return'formula-bank';
   if(t==='search')return'search';
-  if(t==='intro'||t==='register'||t==='community'||t==='question-detail'||t==='feedback')return'intro';
+  if(t==='community'||t==='question-detail')return'community';
+  if(t==='intro'||t==='register'||t==='feedback')return'intro';
   return t;
 }
 
@@ -3105,19 +3083,16 @@ const SUB_PRACTICE=[
   {id:'quiz-mode-select', icon:'🎯', label:'MCQ Quiz'},
   {id:'cbq',              icon:'📝', label:'CBQ'},
   {id:'mock-exam',        icon:'🏆', label:'Mock Exam'},
-  {id:'formula-bank',     icon:'📐', label:'Formulas'},
-  {id:'essay-practice',   icon:'✍️', label:'Essay'}
+  {id:'wrong-answers',    icon:'❌', label:'Wrong Answers'}
 ];
 const SUB_PROGRESS=[
   {id:'progress',      icon:'📊', label:'Overview'},
   {id:'tracker',       icon:'📌', label:'Tracker'},
-  {id:'wrong-answers', icon:'❌', label:'Wrong Answers'},
   {id:'leaderboard',   icon:'🏅', label:'Top Students'}
 ];
 const SUB_ME=[
   {id:'intro',     icon:'🏠', label:'Home'},
   {id:'register',  icon:'🎓', label:'Profile'},
-  {id:'community', icon:'🌐', label:'Community'},
   {id:'feedback',  icon:'⭐', label:'Feedback'}
 ];
 function render(){
@@ -3132,7 +3107,7 @@ function render(){
 
   let html='';
   switch(STATE.tab){
-    case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'wrong-answers':html=renderWrongAnswers();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;case'formula-bank':html=renderFormulaBank();break;case'cbq':html=renderCBQ();break;case'mock-exam':html=renderMockExamScreen();break;case'essay-practice':html=renderEssayPractice();break;default:html=renderIntro();
+    case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'wrong-answers':html=renderWrongAnswers();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;case'formula-bank':html=renderFormulaBank();break;case'cbq':html=renderCBQ();break;case'mock-exam':html=renderMockExamScreen();break;default:html=renderIntro();
   }
   content.innerHTML=html;
 
@@ -3145,16 +3120,16 @@ function render(){
   if(STATE.tab==='cbq'){content.style.overflow='hidden';setTimeout(()=>cbqInit(),0);}
   if(STATE.tab==='mock-exam'){content.style.overflow='hidden';if(STATE.mockExam.status==='mcq')setTimeout(()=>renderMockMCQContent(),0);if(STATE.mockExam.status==='cbq')setTimeout(()=>mockSetupMockDrag(),0);}
   if(STATE.tab==='study'&&STATE.lessonId){setTimeout(()=>syncNoteFromCloud(STATE.lessonId),0);}
-  if(STATE.tab==='essay-practice'){startStudyTimer('essay-practice');}
   if(STATE.tab==='search'){setTimeout(()=>{const inp=document.getElementById('search-input');if(inp){inp.focus();if(STATE.searchQ)updateSearchResults();}},50);}
   content.style.display='flex';content.style.flexDirection='column';content.style.overflow=STATE.tab==='cbq'||STATE.tab==='mock-exam'?'hidden':'auto';
-  if(STATE.tab==='loading'||STATE.tab==='login'||STATE.tab==='onboarding'){nav.style.display='none';}
-  else{nav.style.display='flex';
+  const _mb=document.getElementById('mobile-brand');
+  if(STATE.tab==='loading'||STATE.tab==='login'||STATE.tab==='onboarding'){nav.style.display='none';if(_mb)_mb.style.display='none';}
+  else{nav.style.display='flex';if(_mb)_mb.style.display='';
     const active=activeNavTab();
     // #7: Only rebuild nav DOM when active group changes — avoids layout thrash
     if(active!==render._lastNavActive){
       render._lastNavActive=active;
-      const brandHeader=`<div class="desktop-brand" style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:13px;font-weight:600;color:#0C447C;letter-spacing:.5px">CMA Part One Prep</div><div style="font-size:10px;color:#888;margin-top:1px">With Gawad</div></div>${!window.matchMedia("(display-mode: standalone)").matches?'<button onclick="installApp()" title="Install App" style="display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:8px;border:1px solid #d0d8e8;background:#E6F1FB;color:#0C447C;cursor:pointer;font-size:12px;font-weight:500;font-family:inherit;flex-shrink:0"><span style="font-size:14px">⬇</span><span>Install App</span></button>':''}></div>`;
+      const brandHeader=`<div class="desktop-brand" style="display:flex;align-items:center;justify-content:space-between;gap:10px"><div style="display:flex;align-items:center;gap:10px;min-width:0"><img src="./gawad-avatar.webp" alt="Mohamed Abdelgawad" style="width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid #E6F1FB"><div style="min-width:0"><div style="font-size:13px;font-weight:600;color:#0C447C;letter-spacing:.5px">CMA Part One Prep</div><div style="font-size:10px;color:#888;margin-top:1px">With Gawad</div></div></div>${!window.matchMedia("(display-mode: standalone)").matches?'<button onclick="installApp()" title="Install App" style="display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:8px;border:1px solid #d0d8e8;background:#E6F1FB;color:#0C447C;cursor:pointer;font-size:12px;font-weight:500;font-family:inherit;flex-shrink:0"><span style="font-size:14px">⬇</span><span>Install App</span></button>':''}</div>`;
       nav.innerHTML=brandHeader+TABS.map(t=>`<button class="nav-btn${t.id===active?' active':''}" onclick="navTo('${t.id}')"><span class="nav-icon">${t.icon}</span><span>${t.label}</span></button>`).join('');
     }}
   // Start live per-question timer when on a quiz screen with unanswered question
