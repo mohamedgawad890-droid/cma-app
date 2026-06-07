@@ -58,25 +58,6 @@
       "diffPct": 39
     },
     {
-      "q": "Components) Preventive controls are an integral part of virtually all accounting information systems. All of the following are essential elements of a preventive control system except",
-      "o": [
-        "separation of responsibilities.",
-        "implementation of state-of-the-art systems.",
-        "sound personnel practices.",
-        "documentation of policies and procedures."
-      ],
-      "a": 1,
-      "e": "Preventive controls prevent errors and fraud before they occur. Examples of preventive controls are segregation of duties, job rotation, training and competence of personnel, documentation of policies and procedures, dual access controls, authorization, approval, endorsement and cancellation, and preformatted input. A preventive control system does not need to have state-of-the-art systems.",
-      "wrongWhy": [
-        "The separation of responsibilities is part of a preventive control system. Please see the correct answer explanation for more information.",
-        null,
-        "Sound personnel practices are part of a preventive control system. Please see the correct answer explanation for more information.",
-        "The documentation of policies and procedures is part of a preventive control system. Please see the correct answer explanation for more information."
-      ],
-      "source": "ICMA 19.P1.073",
-      "diffPct": 66
-    },
-    {
       "q": "To minimize the risk that agents in the purchasing department will use their positions for personal gain, the organization should",
       "o": [
         "Direct the purchasing department to maintain records on purchase prices paid, with review of such being required each 6 months.",
@@ -351,7 +332,7 @@
         "Is unaffected by changing circumstances and conditions encountered by the organization."
       ],
       "a": 2,
-      "e": "An effective internal control structure should prevent exceptions as well as detect exceptions after the fact. Thus, with an effective internal control structure, management's need to review exception reports daily should be reduced.",
+      "e": "An effective internal control structure should prevent exceptions as well as detect exceptions after the fact. Thus, with an effective internal control structure, management's need to review exception reports daily should be reduced — not because monitoring becomes unnecessary, but because strong preventive controls mean fewer exceptions appear in those reports. Note: the COSO Monitoring component still requires periodic exception report review as a key detective control. The other options are incorrect: management can override controls (option A); internal control provides reasonable assurance, not elimination of risk (option B); and effective controls must adapt to changing circumstances (option D).",
       "wrongWhy": [
         "Internal controls can be overridden by managers.",
         "No internal control structure, no matter how effective, can guarantee the complete elimination of risk and potential loss to the organization.",
@@ -2952,7 +2933,7 @@
         "the company could restore its IT function if the data center is destroyed."
       ],
       "a": 1,
-      "e": "Busness continuity planning involves defining the risks facing a company in the event of a disaster, assessing those risks, creating procedures to mitigate those risks, regularly testing those procedures to ensure that they work as expected, and periodically reviewing the procedures to make sure that they are up to date. Business continuity plans should be tested periodically to ensure that they continue to work as expected. To reveal any weaknesses in the plan, the testing should simulate a disaster, and the time to recovery should be recorded. Such testing can give a company confidence that business operations should be able to be resumed quickly in the event of a disaster.",
+      "e": "Business continuity planning involves defining the risks facing a company in the event of a disaster, assessing those risks, creating procedures to mitigate those risks, regularly testing those procedures to ensure that they work as expected, and periodically reviewing the procedures to make sure that they are up to date. Business continuity plans should be tested periodically to ensure that they continue to work as expected. To reveal any weaknesses in the plan, the testing should simulate a disaster, and the time to recovery should be recorded. Such testing can give a company confidence that business operations should be able to be resumed quickly in the event of a disaster.",
       "wrongWhy": [
         "Business continuity planning is not concerned with coping with an economic downturn. Busness continuity planning involves defining the risks facing a company in the event of a disaster, assessing those risks, creating procedures to mitigate those risks, regularly testing those procedures to ensure that they work as expected, and periodically reviewing the procedures to make sure that they are up to date. Please see the correct answer explanation for more information.",
         null,
