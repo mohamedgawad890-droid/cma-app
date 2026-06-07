@@ -3560,16 +3560,51 @@ async function navTo(tab){
   STATE.tab=tab;render();
 }
 // ─── AUTH STATE LISTENER ──────────────────────────────────────────────────────
-// ── PWA: Register Service Worker ──────────────────────────────────────────────
+// ── PWA: Register Service Worker + Auto-Update ────────────────────────────────
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
+
     navigator.serviceWorker.register('./sw.js',{scope:'./'})
       .then(reg=>{
-        console.log('SW registered, scope:',reg.scope);
-        // Check for updates on every page load
+        console.log('[SW] Registered, scope:', reg.scope);
+
+        // ── Helper: tell the waiting SW to take over, then reload ──────────
+        function activateWaitingAndReload(worker){
+          worker.postMessage({type:'SKIP_WAITING'});
+        }
+
+        // ── When controller changes (new SW activated) → reload the page ───
+        let reloading = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if(reloading) return;
+          reloading = true;
+          console.log('[SW] New version activated — reloading…');
+          window.location.reload();
+        });
+
+        // ── If a new SW is already waiting right now (e.g. revisit) ────────
+        if(reg.waiting){
+          activateWaitingAndReload(reg.waiting);
+          return;
+        }
+
+        // ── Watch for a new SW that installs while the page is open ────────
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing;
+          if(!newWorker) return;
+          newWorker.addEventListener('statechange', () => {
+            if(newWorker.state === 'installed' && navigator.serviceWorker.controller){
+              console.log('[SW] Update ready — activating…');
+              activateWaitingAndReload(newWorker);
+            }
+          });
+        });
+
+        // ── Poll for updates on every page load ────────────────────────────
         reg.update();
       })
-      .catch(err=>console.log('SW registration failed:',err));
+      .catch(err => console.warn('[SW] Registration failed:', err));
+
     // Show install banner on mobile if not already installed/dismissed
     updateInstallBanner();
   });
