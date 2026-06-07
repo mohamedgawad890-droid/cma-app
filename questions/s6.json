@@ -1,6 +1,158 @@
 {
   "6-0": [
     {
+      "q": "An internal auditor found that employee time cards in one department are not properly approved by the supervisor. Which of the following could result?",
+      "o": [
+        "Duplicate paychecks might be issued.",
+        "The wrong hourly rate could be used to calculate gross pay.",
+        "Employees might be paid for hours they did not work.",
+        "Payroll checks might not be distributed to the appropriate payees."
+      ],
+      "a": 2,
+      "e": "The approval of the supervisor on time cards of employees supervised should prevent employees being paid for hours they did not work.",
+      "wrongWhy": [
+        "Duplicate paychecks would not be issued as a result of the supervisor failing to approve employee time cards.",
+        "The wrong hourly rate would not be used to calculate gross pay as a result of the supervisor failing to approve employee time cards.",
+        null,
+        "Payroll checks would not be distributed to the wrong employees as a result of the supervisor failing to approve employee time cards."
+      ],
+      "source": "CIA 1190 II.8",
+      "diffPct": 63
+    },
+    {
+      "q": "By segregating the accounting responsibility for authorizing and recording transactions related to an asset, a company is enhancing the security of its accounting information system because",
+      "o": [
+        "access to system records is improved to limit the risk of unauthorized transactions.",
+        "collusion by employees to override system controls is prevented.",
+        "the likelihood of falsifying system records to conceal unauthorized transactions is reduced.",
+        "the system will now provide an accurate depiction of the physical assets."
+      ],
+      "a": 2,
+      "e": "Duties need to be divided among various employees to reduce the risk of errors or inappropriate activities. Separating functions ensures that no single individual is given too much responsibility so that no employee is in a position to both perpetrate and conceal irregularities. Different people should always perform the functions of (1) authorizing a transaction, (2) recording the transaction, (3) keeping physical custody of the related asset, and (4) periodic reconciliation of the physical assets to the recorded amounts for those assets.",
+      "wrongWhy": [
+        "Segregating the accounting responsibility for authorizing and recording transactions related to an asset does not improve access to system records. Please see the correct answer explanation for more information.",
+        "Although designing and implementing segregation of duties controls makes it difficult for one employee to commit fraud, segregation of duties cannot guarantee that fraud will not occur because two employees could collude to override the controls. An internal control system cannot prevent collusion by employees to ovrride system controls. Please see the correct answer explanation for more information.",
+        null,
+        "Internal controls such as segregation of duties cannot provide a guarantee that the system will provide an accurate depiction of physical assets. Internal controls can provide only reasonable assurance that the company’s objectives will be achieved in the areas of effectiveness and efficiency of operations, reliability of financial reporting, and compliance with applicable laws and regulations. Please see the correct answer explanation for more information."
+      ],
+      "source": "I22 1.65",
+      "diffPct": 44
+    },
+    {
+      "q": "Your objective is to determine that nonrecurring purchases, initiated by various user organizations, have been properly authorized. If all purchases are made through the purchasing department, to which of the following documents would you vouch purchases?",
+      "o": [
+        "Receiving reports.",
+        "Invoices.",
+        "Purchase requisitions.",
+        "Purchase orders."
+      ],
+      "a": 2,
+      "e": "\"Vouching\" is taking a sample of recorded transactions and tracing them back to the original source document. The purchase requisition, properly approved, contains the user department's authorization for a purchase and thus serves as the original source document to determine whether purchases have been properly approved.",
+      "wrongWhy": [
+        "A receiving report would not contain the user department's authorization for a purchase.",
+        "An invoice would not contain the user department's authorization for a purchase.",
+        null,
+        "A purchase order would not contain the user department's authorization for a purchase."
+      ],
+      "source": "CIA 1185 II.20",
+      "diffPct": 40
+    },
+    {
+      "q": "Control self-assessment is a process that involves employees in assessing the adequacy of controls and identifying opportunities for improvement within an organization. Which of the following are reasons to involve employees in this process? I. Employees become more motivated to do their jobs right. II. Employees are objective about their jobs. III. Employees can provide an independent assessment of internal controls. IV. Managers want feedback from their employees.",
+      "o": [
+        "II and IV.",
+        "III and IV.",
+        "I and IV.",
+        "I and II."
+      ],
+      "a": 2,
+      "e": "Involving employees in assessing internal controls can serve as a motivator to them to seek continuous improvement in their jobs. Furthermore, since employees are often closer to the actual work being done than managers, their feedback can provide management with insights into control weaknesses.",
+      "wrongWhy": [
+        "Employees are not generally objective about their jobs.",
+        "While it is true that managers want feedback from their employees, it is not true that employees can provide an independent assessment of internal controls. The fact that they are employees makes them not independent.",
+        null,
+        "Employees are not generally objective about their jobs."
+      ],
+      "source": "CIA 597 III.35",
+      "diffPct": 45
+    },
+    {
+      "q": "In order to control purchasing and accounts payable, an information system must include certain source documents. For a manufacturing organization, these documents should include",
+      "o": [
+        "Receiving reports and vendor invoices.",
+        "Purchase requisitions, purchase orders, inventory reports of goods needed, and vendor invoices.",
+        "Purchase requisitions, purchase orders, receiving reports, and vendor invoices.",
+        "Purchase orders, receiving reports, and vendor invoices."
+      ],
+      "a": 2,
+      "e": "A purchase requisition, authorized by the user department, gives purchasing personnel authority to place an order. The purchase order, along with the purchase requisition and the receiving report, should be checked before the vendor's invoice is paid. The purchase order is necessary so that the accounts payable department can see that the items were ordered; and the receiving report is needed so they can be sure the items were received before they are paid for.",
+      "wrongWhy": [
+        "In addition, a purchase requisition and a purchase order are needed.",
+        "A receiving report is also required, in order to be certain that the items ordered were received; and an inventory report of goods needed is not a required document to control purchasing and accounts payable, although it may be useful as backup to a purchase requisition.",
+        null,
+        "In addition, a purchase requisition is needed."
+      ],
+      "source": "CMA 1289 5.1",
+      "diffPct": 63
+    },
+    {
+      "q": "Which one of the following would be considered an accounting control rather than an administrative control?",
+      "o": [
+        "Maintenance of control over unused checks.",
+        "Maintenance of statistical production analyses.",
+        "Timely reporting and review of quality control results.",
+        "Marketing analysis of sales generated by advertising projects."
+      ],
+      "a": 0,
+      "e": "Policies and procedures for maintenance of control over unused checks are accounting controls because they relate to the control objective of safeguarding cash.",
+      "wrongWhy": [
+        null,
+        "Although maintenance of statistical production analyses is a control objective, it is not an accounting control.",
+        "Although quality control results and their timely reporting and review are a control objective, they are not accounting control.",
+        "Although the marketing analysis of sales generated by advertising projects is a control objective, it is not an accounting control."
+      ],
+      "source": "CMA 1288 3.21",
+      "diffPct": 60
+    },
+    {
+      "q": "Which one of the following methods for the distribution of employees' paychecks would provide the best internal control for the organization?",
+      "o": [
+        "Distribution of paychecks directly to each employee by the payroll manager.",
+        "Direct deposit in each employee's personal bank account.",
+        "Delivery of the paychecks to each department supervisor, who in turn would distribute paychecks directly to the employees in his/her department.",
+        "Distribution of paychecks directly to each employee by a representative of the Human Resource department."
+      ],
+      "a": 1,
+      "e": "Direct deposit to each employee's personal bank account provides the best internal control over distribution of paychecks. It lessens the risk of damaged, lost or stolen payroll checks because no checks are distributed. The only thing distributed is a statement of earnings. If earnings are deposited electronically into employees' accounts, it is important that deposit records be reconciled to a list of active employees at every pay date so that persons whose employment has been terminated do not continue receiving payroll deposits. Cancellation of direct deposit processing should be part of employment termination procedures, and a terminated employee should receive his or her final paycheck in the form of a physical check instead of a direct deposit, as evidence of the direct deposit cancellation.",
+      "wrongWhy": [
+        "The payroll manager has oversight over the processing and production of the payroll. The function of payroll processing must be segregated from the function of paycheck distribution. Therefore, having the payroll manager distribute paychecks would be a violation of the principle of segregation of duties.",
+        null,
+        "This would be an acceptable method of distributing paychecks, as long as controls are in place to minimize the potential for theft or fraudulent distribution of paychecks, such as payments made to fictitious or terminated employees. The person who distributes the checks should not also have authority to authorize payroll checks. However, this is not the method from among those given that provides for the best internal control for the organization.",
+        "Representatives of the Human Resources department authorize transactions that add employees to the payroll, change pay and effect other key transactions. Therefore, human resource employees must not have access to paycheck distribution, nor to timekeeping or payroll functions. The Human Resource department must be organizationally separate from the payroll office and payroll functions. So having a representative of Human Resources distribute paychecks would be a violation of the principle of segregation of duties."
+      ],
+      "source": "ICMA 10.P1.246",
+      "diffPct": 57
+    },
+    {
+      "q": "Which one of the following situations represents a strength of internal control for purchasing and accounts payable?",
+      "o": [
+        "Invoices are approved for payment by the purchasing department.",
+        "Prenumbered receiving reports are issued randomly.",
+        "Vendors' invoices are matched against purchase orders and receiving reports before a liability is recorded.",
+        "Unmatched receiving reports are reviewed on an annual basis."
+      ],
+      "a": 2,
+      "e": "Vendor's invoices should be matched against purchase requisitions, purchase orders, and receiving reports before any liability is recorded. When the payment has been approved, the accounts payable department should prepare a voucher, which is an internal document that is the authorization for payment.",
+      "wrongWhy": [
+        "The purchasing department should not approve invoices for payment. The accounts payable department should approve invoices for payment, based on a review of all the supporting documentation which includes the purchase requisition, the purchase order, and the receiving report/packing slip.",
+        "Receiving reports should be prenumbered and should be issued sequentially, not randomly, so that a missing report or a report out of sequence can be investigated.",
+        null,
+        "Unmatched receiving reports should be reviewed more frequently than annually."
+      ],
+      "source": "CMA 689 3.17",
+      "diffPct": 79
+    },
+    {
       "q": "The 3-way match in the Expenditure Cycle requires agreement between:",
       "o": [
         "Invoice, cheque, and bank statement",
@@ -131,94 +283,6 @@
       ],
       "a": 2,
       "e": "The Financing Cycle manages the organization's capital structure: (1) issuing bonds/notes payable and making repayments; (2) issuing equity (stock) and paying dividends; (3) managing treasury stock; (4) recording interest expense. Key controls: board authorization for significant financing transactions, segregation of cash custody from recording."
-    },
-    {
-      "q": "A Sub-Ledger in an Ais serves what purpose?",
-      "o": [
-        "It replaces the general ledger for all transactions",
-        "It contains Detailed Records supporting a general ledger control account — the sub-ledger total must always equal the Gl control account balance",
-        "It is used only for inventory transactions",
-        "It records only non-cash transactions"
-      ],
-      "a": 1,
-      "e": "Sub-Ledgers: detailed transaction records that support a Control Account in the general ledger. Examples: Accounts Receivable sub-ledger (individual customer balances) → Ar control account in Gl; AP sub-ledger (individual vendor balances) → AP control account in Gl; inventory sub-ledger → inventory Gl account. The sum of all sub-ledger balances Must equal the Gl control account — a key reconciliation control."
-    },
-    {
-      "q": "In the Revenue-to-Cash cycle, Remittance Advice is:",
-      "o": [
-        "The document authorizing shipment of goods",
-        "The vendor's invoice sent to the customer",
-        "Information Accompanying A Customer Payment specifying which invoices are being paid — enables proper application of cash to the correct Ar balance",
-        "The bill of lading signed by the carrier"
-      ],
-      "a": 2,
-      "e": "Remittance Advice accompanies a customer's payment and specifies: which invoices are being paid, the amounts, and any deductions (discounts, returns). Without remittance advice, cash application clerks may incorrectly apply payments. Controls: person receiving cash should send remittance advice to Ar department independently, while cash goes directly to treasury — implementing Sod."
-    },
-    {
-      "q": "The General Ledger & Reporting System acts as the integration point in an Ais because it:",
-      "o": [
-        "Only records non-cash transactions",
-        "Processes all customer orders",
-        "Consolidates Journal Entries from All transaction cycles into a single trial balance for financial statement preparation",
-        "Manages only payroll transactions"
-      ],
-      "a": 2,
-      "e": "The Gl & Reporting System is the hub of the Ais: it receives journal entries from All five transaction cycles (Revenue, Expenditure, Production, HR/Payroll, Financing) and consolidates them into the trial balance. From the trial balance, financial statements are prepared. Key controls: access restrictions to journal entry function, review of all journal entries, reconciliation of sub-ledgers to control accounts."
-    },
-    {
-      "q": "Which control Best prevents duplicate vendor payments in the Expenditure Cycle?",
-      "o": [
-        "Requiring purchase orders for all purchases",
-        "Having the receiving department count goods",
-        "A System Check that identifies matching vendor number, invoice number, and amount before payment is approved",
-        "Reconciling the general ledger monthly"
-      ],
-      "a": 2,
-      "e": "Duplicate payment prevention: the most effective control is a System-Based Duplicate Invoice Detection check that compares each new invoice to all previously paid invoices for the same vendor number, invoice number, and/or amount. This Prevents the duplicate payment Before it occurs. Monthly Gl reconciliation would only detect it afterward."
-    },
-    {
-      "q": "In an Ais, which document provides evidence that a customer Received the goods ordered?",
-      "o": [
-        "Sales order",
-        "Customer purchase order",
-        "Signed Delivery Receipt or Proof Of Delivery — evidence the customer received the goods",
-        "Vendor invoice"
-      ],
-      "a": 2,
-      "e": "Proof Of Delivery (signed delivery receipt or e-signature): evidence that the customer received the goods. This is critical for revenue recognition (performance obligation met), resolving customer claims ('I never received this'), and Ar collections. In many systems, electronic delivery confirmation (e.g., FedEx signature) is captured and attached to the sales transaction."
-    },
-    {
-      "q": "Turnaround Documents in an Ais are:",
-      "o": [
-        "Documents destroyed after processing",
-        "Financial statements prepared at year-end",
-        "Machine-Readable Output sent to customers/suppliers that they return to trigger a transaction — combining output and input functions",
-        "Backup copies of accounting records"
-      ],
-      "a": 2,
-      "e": "Turnaround Documents are output documents designed to be returned as input. Example: a utility bill with a tear-off payment stub containing a barcode — the customer returns the stub with payment. The barcode encodes account number and amount due, enabling automatic cash application when scanned. Reduces manual data entry and errors."
-    },
-    {
-      "q": "The Production Cycle links to the Expenditure Cycle primarily through:",
-      "o": [
-        "Customer invoicing",
-        "Payroll processing",
-        "Purchases Of Raw Materials — production requirements drive material purchase orders to vendors",
-        "Dividend payments"
-      ],
-      "a": 2,
-      "e": "The Production Cycle creates Material Requirements (from BOMs and production schedules) that drive purchase orders for raw materials in the Expenditure Cycle. Integration: Production plan → MRP calculates materials needed → Purchase requisitions sent to Purchasing → Purchase orders issued to vendors (Expenditure Cycle). This inter-cycle linkage is why integrated ERP systems are so valuable."
-    },
-    {
-      "q": "Which transaction cycle directly generates Wages Payable and Payroll Tax Liabilities on the balance sheet?",
-      "o": [
-        "Revenue-to-Cash Cycle",
-        "Expenditure Cycle",
-        "Financing Cycle",
-        "HR & Payroll Cycle — accrued wages and employer payroll taxes flow to the balance sheet as current liabilities"
-      ],
-      "a": 3,
-      "e": "The HR/Payroll Cycle generates: (1) Wages Payable — earned but unpaid wages (current liability); (2) Payroll Tax Liabilities — FICA, Futa, Suta withheld from employees or owed by employer; (3) Benefits Payable — health insurance, retirement contributions. These liabilities appear on the balance sheet until payment is made through the cash disbursement function."
     }
   ],
   "6-1": [
@@ -1333,224 +1397,403 @@
   ],
   "6-6": [
     {
-      "q": "A Phishing attack primarily works by:",
+      "q": "A firm uses a centralized computer system that allows its traveling sales personnel to directly enter new orders and to query the database on old orders. To maintain data integrity in this application, it would be important to have:",
       "o": [
-        "Overloading a server with excessive traffic",
-        "Intercepting network communications",
-        "Deceiving users through fake emails to steal credentials or trigger malicious actions",
-        "Injecting malicious code into databases"
+        "backup.",
+        "password protection.",
+        "encryption.",
+        "uninterruptible power supplies."
       ],
       "a": 2,
-      "e": "Phishing: deceptive Emails or websites that appear legitimate trick users into clicking malicious links, entering credentials on fake login pages, or authorizing fraudulent wire transfers. It is the #1 entry point for cyberattacks."
+      "e": "Encryption should be used to make sure that data is not changed in transit over a network or the Internet.",
+      "wrongWhy": [
+        "A backup system is important, but it does not maintain data integrity. Please see the correct answer explanation for more information.",
+        "Password protection is important, but it does not maintain data integrity. Please see the correct answer explanation for more information.",
+        null,
+        "An uninterruptible power supply is important, but it does not maintain data integrity. Please see the correct answer explanation for more information."
+      ],
+      "source": "CMA1 M1 Q92",
+      "diffPct": 33
     },
     {
-      "q": "Multi-Factor Authentication (Mfa) requires:",
+      "q": "A company’s management is concerned about computer data eavesdropping and wants to maintain the confidentiality of its information as it is transmitted. The company should utilize",
       "o": [
-        "A very long password",
-        "Two Or More verification factors: something you know, something you have, something you are",
-        "Changing your password every 30 days",
-        "Using different passwords for each system"
+        "data encryption.",
+        "password codes.",
+        "dial back systems.",
+        "message acknowledgment procedures."
+      ],
+      "a": 0,
+      "e": "Data encryption, which uses secret codes, ensures that data transmissions are protected from unauthorized tampering or electronic eavesdropping.",
+      "wrongWhy": [
+        null,
+        "Password codes will not protect the company from electronic eavesdropping and maintain the confidentiality of its information as it is transmitted.",
+        "Dial back systems will not protect the company from electronic eavesdropping and maintain the confidentiality of its information as it is transmitted.",
+        "Message acknowledgment procedures will not protect the company from electronic eavesdropping and maintain the confidentiality of its information as it is transmitted."
+      ],
+      "source": "ICMA 10Q.1.050",
+      "diffPct": 90
+    },
+    {
+      "q": "Encoding electronic data through the use of an algorithm to make information unreadable to unauthorized individuals is identified as",
+      "o": [
+        "a virus.",
+        "a worm.",
+        "a firewall.",
+        "encryption."
+      ],
+      "a": 3,
+      "e": "Encryption is the process of converting data into a code using an algorithm, and then a key is required to convert the code back to data. Unauthorized people can receive the coded information, but without the proper key they cannot read it.",
+      "wrongWhy": [
+        "This is not the definition of a virus. A computer virus is a program that alters the way another computer operates. Viruses can damage programs, delete files or reformat the hard disk. Other viruses may not do damage but they replicate themselves and present text, video, and audio messages. Although these other viruses may not cause damage directly, they create problems by taking up computer memory and causing erratic behavior or system crashes that can lead to data loss. A virus can be received from a downloaded file or an email attachment, among other places.",
+        "This is not the definition of a worm. A worm is a program that replicates itself from system to system without the use of any host file. Unlike a virus, a worm does not require the use of an infected host file. Worms generally exist inside of other files, often Word or Excel documents. However, worms use the host file differently from viruses. Usually the worm releases a document that has the “worm” macro inside the document. The entire document spreads from computer to computer, so the entire document is, in essence, the worm.",
+        "This is not the definition of a firewall. A firewall serves as a barrier between the internal and the external networks and prevents unauthorized access to the internal network. If it is properly configured, a firewall makes a computer’s ports invisible to port scans. In addition to protecting a computer from incoming probes, a firewall can also prevent backdoor applications, Trojan horses, and other unwanted applications from sending data from the computer. A firewall can be in the form of software directly installed on a computer, or it can be a piece of hardware installed between the computer and its connection to the Internet.",
+        null
+      ],
+      "source": "ICMA 18.P1.036",
+      "diffPct": 94
+    },
+    {
+      "q": "Which one of the following is not an example of data encryption?",
+      "o": [
+        "Masking input characters in the password fields automatically.",
+        "Asking for a digital signature when signing contracts over the Internet.",
+        "Using a password to protect documents before sending out.",
+        "A web browser enabling secure certificates when communicating with websites."
+      ],
+      "a": 0,
+      "e": "While masking characters in a password field hides the characters entered from being seen on the screen by a casual observer, there is no encyrption taking place. The characters typed into a password field are still unecrypted in the computer's memory.",
+      "wrongWhy": [
+        null,
+        "Digital signatures use encryption to verify the source of a document or data.",
+        "Adding a password to a document inherently also encrypts the document, otherwise adding a password would be useless.",
+        "Web browsers and web servers use public-private key encryption to secure data sent over the Internet."
+      ],
+      "source": "I22 1.71",
+      "diffPct": 26
+    },
+    {
+      "q": "Confidential data can be securely transmitted over the Internet by using",
+      "o": [
+        "single-use passwords.",
+        "encryption.",
+        "digital signatures.",
+        "firewalls."
       ],
       "a": 1,
-      "e": "Mfa requires Two Or More independent factors from different categories. Combining factors means a stolen password alone cannot grant access. Mfa is one of the most effective cybersecurity controls."
-    },
-    {
-      "q": "In asymmetric encryption, data encrypted with the recipient's Public Key can only be decrypted with their:",
-      "o": [
-        "Same public key",
-        "A master key held by IT",
-        "Private Key — only the recipient possesses it",
-        "The sender's private key"
+      "e": "Encryption is the best protection against internet traffic being intercepted, resulting in data leaks. Encryption converts data into a code, and then a key is required to convert the code back to data. Unauthorized people can receive the coded information, but without the proper key, they cannot read it. Thus, an attacker may be able to see where the traffic came from and where it went but not the content.",
+      "wrongWhy": [
+        "A single-use password is a password that is valid for only one login session or transaction. If an intruder manages to intercept a single-use password that has already been used to log into a service or to conduct a transaction, he or she will not be able to use it again, because it will no longer be usable. Single-use passwords do not enable confidential data to be securely transmitted over the internet, however, because they do not prevent the data from being intercepted while being transmitted.",
+        null,
+        "A digital signature is an electronic signature that can be used to authenticate the identity of the sender of a message or the signer of a document. It can also be used to ensure that the original content of the message or document that was sent has not been changed. The ability to ensure that the original signed message arrived means that the sender cannot easily say later that he never sent it or that he sent something different. A digital signature can be used with any kind of message, whether it is encrypted or not, so that the receiver can be sure of the sender's identity and that the message arrived without being changed. However, a digital signature does not provide security for confidential data that is being sent over the internet, because it does not prevent the data from being intercepted while being transmitted.",
+        "A firewall serves as a barrier between the internal and the external networks and prevents unauthorized access to the internal network. It does not enable confidential data to be securely transmitted over the internet, because it does not prevent the data from being intercepted while being transmitted."
       ],
-      "a": 2,
-      "e": "Asymmetric Encryption: Sender uses recipient's Public Key to encrypt → only the recipient's Private Key can decrypt. The private key never leaves the recipient. Used in Https (Tls) and digital signatures."
+      "source": "ICMA 10.P1.261",
+      "diffPct": 91
     },
     {
-      "q": "Ransomware attacks work by:",
+      "q": "A controller became aware that a competitor appeared to have access to the company's pricing information. An investigation determined that the \"leak of information\" was occurring during the electronic transmission of data from branch offices to the head office. Which of the following controls would be most effective in preventing the leak of information?",
       "o": [
-        "Stealing data silently",
-        "Encrypting the victim's files and demanding payment for the decryption key",
-        "Sending spam emails to customers",
-        "Intercepting financial transactions in transit"
+        "Asynchronous transmission.",
+        "Encryption.",
+        "Use of passwords.",
+        "Use of fiber optic transmission lines."
       ],
       "a": 1,
-      "e": "Ransomware: malware that Encrypts files and systems, demanding ransom for the decryption key. Defense: regular backups (offline/immutable), endpoint protection, patching, Mfa, network segmentation."
+      "e": "Encryption is the conversion of data into a code. An intruder may be able be able to access the data by \"tapping into\" the transmission line. However, the intruder would need an encryption \"key\" in order to understand the data being sent. Encryption is a logical security control within the broader classification of general controls.",
+      "wrongWhy": [
+        "Asynchronous transmission does not prevent theft of data, it speeds up the transmission process.",
+        null,
+        "Use of passwords will control access at the sending location, and will limit access to the head office computer. Passwords, however, will not prevent someone from \"tapping into\" the transmission line.",
+        "Fiber optic transmission lines will improve the quality of the transmission, but will not prevent theft of data."
+      ],
+      "source": "CIA 1194 1.63",
+      "diffPct": 90
     },
     {
-      "q": "The Nist Cybersecurity Framework five functions in order are:",
+      "q": "Utility programs can be used to read files that contain all authorized access user codes for a server. A control to prevent this is:",
       "o": [
-        "Prevent, Detect, Analyze, Report, Recover",
-        "Assess, Plan, Implement, Monitor, Audit",
-        "Identify, Protect, Detect, Respond, Recover",
-        "Classify, Encrypt, Monitor, Alert, Restore"
+        "Logon passwords.",
+        "A password hierarchy.",
+        "Internally encrypted passwords.",
+        "A peer-to-peer network."
       ],
       "a": 2,
-      "e": "Nist Csf: (1) Identify — assets and risks; (2) Protect — implement safeguards; (3) Detect — identify cybersecurity events; (4) Respond — contain and mitigate; (5) Recover — restore capabilities. Widely adopted by US organizations."
-    },
-    {
-      "q": "Phishing attacks target victims by:",
-      "o": [
-        "Exploiting unpatched software vulnerabilities",
-        "Physically stealing hardware from the office",
-        "Sending Fraudulent Emails Or Messages that impersonate trusted entities to trick recipients into revealing credentials, clicking malicious links, or transferring funds",
-        "Intercepting network communications in transit"
+      "e": "Internally encrypted passwords are controls designed to preclude users browsing the password file with a utility software application.",
+      "wrongWhy": [
+        "Logon passwords represent the initial user authorization access codes to the typical system.",
+        "A password hierarchy represents a set of interrelated authorization codes to distinguish between action privileges such as reading, adding, or deleting records.",
+        null,
+        "A peer-to-peer network is a system that relies on a series of equal microcomputers for processing."
       ],
-      "a": 2,
-      "e": "Phishing: social engineering via email (or Sms = smishing, voice = vishing) that impersonates a trusted source (bank, IT helpdesk, CEO). Goal: steal credentials, install malware, or trigger fraudulent wire transfers (Bec — Business Email Compromise). Finance is a primary target for CEO fraud/Bec: fake CFO email to wire $500K. Controls: Mfa (stolen credentials useless without the second factor), email filtering, user training."
+      "source": "CIA 0815 III.064",
+      "diffPct": 68
     },
     {
-      "q": "Ransomware attacks are Most effectively Mitigated by:",
+      "q": "In an attempt to remain competitive and be more responsive to customers, a company has connected its internal computer networks to outside networks via a host computer. One significant risk of this practice is that",
       "o": [
-        "Installing antivirus software only",
-        "Paying the ransom immediately to minimize damage",
-        "Isolated, Offline, Tested Backups that can restore systems without paying the ransom, combined with endpoint protection and user training",
-        "Encrypting all company data as a preventive measure"
-      ],
-      "a": 2,
-      "e": "Ransomware: malware that encrypts the victim's files and demands payment for the decryption key. Best mitigation: Air-Gapped (isolated) Backups — backups not connected to the main network that ransomware cannot reach to encrypt. Regular, Tested restoration capability means the organization can recover without paying. Other controls: endpoint detection, email filtering (ransomware arrives via phishing), network segmentation (limits spread)."
-    },
-    {
-      "q": "Multi-Factor Authentication (Mfa) is the Most effective preventive control against password compromise because:",
-      "o": [
-        "It requires a very complex password",
-        "It encrypts all network traffic",
-        "Even If The Password IS Stolen, the attacker Cannot Access The Account without the second factor (phone, token, biometric) that only the legitimate user possesses",
-        "It detects when a password has been compromised"
-      ],
-      "a": 2,
-      "e": "Mfa's power: a stolen password alone is Insufficient for access. The attacker also needs the user's phone (for Sms/authenticator app) or hardware token. This defeats: phishing (steals password, not phone), credential stuffing (reused passwords), and brute force attacks. Modern Mfa using authenticator apps (not Sms) is resistant to Sim-swapping attacks as well."
-    },
-    {
-      "q": "Asymmetric (Public-Key) Encryption uses two mathematically related keys. Which statement is Correct?",
-      "o": [
-        "Both keys can encrypt and decrypt with equal effectiveness",
-        "The same key is used to both encrypt and decrypt",
-        "The Public Key encrypts data (anyone can encrypt a message To you) and the Private Key decrypts it (only you can read it)",
-        "The private key encrypts and the public key decrypts (for all uses)"
-      ],
-      "a": 2,
-      "e": "Asymmetric Encryption: Public Key = freely shared — anyone can encrypt a message To you. Private Key = secret — only you can decrypt messages encrypted with your public key. Also used for Digital Signatures: you sign with your Private key, others verify with your Public key (proves authenticity). Slower than symmetric encryption but solves the key distribution problem. Rsa, Ecc are common asymmetric algorithms."
-    },
-    {
-      "q": "Symmetric Encryption uses:",
-      "o": [
-        "Two different keys — one public, one private",
-        "A different key for encryption and decryption",
-        "The Same Secret Key for both encryption and decryption — fast but requires secure key sharing between parties",
-        "No encryption key at all"
-      ],
-      "a": 2,
-      "e": "Symmetric Encryption: One Key encrypts And decrypts. Examples: Aes (Advanced Encryption Standard) — the gold standard for symmetric encryption. Fast and efficient for encrypting large amounts of data. Problem: key distribution — how do you securely share the secret key with the other party? Solved in practice by using asymmetric encryption to securely exchange the symmetric key, then symmetric for the actual data."
-    },
-    {
-      "q": "A Hash Function in cybersecurity generates a Fixed-Length 'fingerprint' of data. It is used primarily to verify:",
-      "o": [
-        "Who has access to the data",
-        "That the data is encrypted",
-        "Data Integrity — that data has Not been tampered with since the hash was computed",
-        "User authentication credentials"
-      ],
-      "a": 2,
-      "e": "Hash Function: takes any input and produces a fixed-length output (hash/digest). Properties: (1) One-Way — cannot reverse the hash to get the original data; (2) Deterministic — same input always produces same output; (3) Avalanche Effect — tiny change in input creates completely different hash. Used for: file integrity verification (hash before/after = same = not tampered), password storage (store hash not plaintext), digital signatures."
-    },
-    {
-      "q": "Social Engineering attacks exploit which vulnerability?",
-      "o": [
-        "Unpatched software",
-        "Weak network perimeter",
-        "Human Psychology — manipulating people into taking unsafe actions or divulging sensitive information through deception, pretexting, or authority impersonation",
-        "Physical security gaps in server rooms"
-      ],
-      "a": 2,
-      "e": "Social Engineering: exploits Human Trust rather than technical vulnerabilities. Techniques: Pretexting (fabricating a scenario — 'I'm the IT team, I need your password for maintenance'), Authority (impersonating CEO/auditor), Urgency ('Wire $500K Now before the deal closes'), Reciprocity (do a small favor, then ask for something bigger). Technical controls are bypassed when humans are manipulated. Training is the primary control."
-    },
-    {
-      "q": "The Nist Cybersecurity Framework organizes security activities around five core functions. In the correct order, they are:",
-      "o": [
-        "Protect, Detect, Identify, Respond, Recover",
-        "Identify, Protect, Detect, Respond, Recover — a logical security lifecycle",
-        "Respond, Recover, Identify, Protect, Detect",
-        "Detect, Identify, Protect, Respond, Recover"
+        "uploaded files may not be properly edited.",
+        "viruses may gain entry to one or more of the company’s systems.",
+        "data downloaded to the personal computers may not be sufficiently timely.",
+        "software maintenance on the personal computers may become more costly."
       ],
       "a": 1,
-      "e": "Nist Csf 5 Functions: (1) Identify — understand assets, risks, and vulnerabilities; (2) Protect — implement safeguards (access controls, training, encryption); (3) Detect — continuously monitor for incidents; (4) Respond — contain and manage incidents when detected; (5) Recover — restore capabilities after an incident. This lifecycle framework helps organizations prioritize cybersecurity activities based on risk."
+      "e": "When a company is connected to an outside network (usually the Internet), it has a risk that viruses may gain entry to one or more of the company's systems.",
+      "wrongWhy": [
+        "This is not a risk that is specifically caused by being connected to an outside network. Please see the correct answer explanation for more information.",
+        null,
+        "This is not a risk that is specifically caused by being connected to an outside network. Please see the correct answer explanation for more information.",
+        "This is not a risk that is specifically caused by being connected to an outside network. Please see the correct answer explanation for more information."
+      ],
+      "source": "ICMA 18.P1.052",
+      "diffPct": 90
     },
     {
-      "q": "A Zero-Day Vulnerability is dangerous because:",
+      "q": "The chief information technology officer introduced a technology to prevent unauthorized external access to its client’s network. The technology described by the chief information officer is most likely",
       "o": [
-        "It only affects systems that are more than zero years old",
-        "It is easy to detect with standard antivirus",
-        "IT IS Unknown To The Vendor — no patch exists yet, leaving All systems using the affected software exposed until a fix is released",
-        "It only affects internet-facing systems"
+        "public-key.",
+        "private-key.",
+        "data encryption.",
+        "firewall."
+      ],
+      "a": 3,
+      "e": "A firewall is a technology that prevents unauthorized external access to its client’s network. A firewall serves as a barrier between the internal and the external networks and prevents unauthorized access to the internal network. A properly configured firewall makes a computer’s ports invisible to hackers. In addition to protecting a computer from incoming probes, a firewall can also prevent backdoor applications, Trojan horses, and other unwanted applications from sending data from the computer.",
+      "wrongWhy": [
+        "Public-key is not a technology to prevent unauthorized external access to its client’s network. A public key is used in a public-key/private-key encryption system. In a public-key/private-key encryption system, each entity that needs to receive encrypted data publishes a public key for encrypting data while keeping a private key to itself as the only means for decrypting that data. Anyone can encrypt and send data to the company using its published public key, but only the company’s private key can be used to decrypt the data, and only the company that published the public key has the private key.",
+        "Private-key is not a technology to prevent unauthorized external access to its client’s network. A private key is used in a public-key/private-key encryption system. In a public-key/private-key encryption system, each entity that needs to receive encrypted data publishes a public key for encrypting data while keeping a private key to itself as the only means for decrypting that data. Anyone can encrypt and send data to the company using its published public key, but only the company’s private key can be used to decrypt the data, and only the company that published the public key has the private key.",
+        "Data encryption is not a technology to prevent unauthorized external access to its client’s network. Data encryption converts data into a code and then a key is required to convert the code back to data. Unauthorized people can receive the coded information, but without the proper key, they cannot read it. An attacker may be able to see where the traffic came from and where it went but not the content.",
+        null
+      ],
+      "source": "ICMA 19.P1.075",
+      "diffPct": 70
+    },
+    {
+      "q": "Which of the following statements regarding encryption is true?",
+      "o": [
+        "It is impossible to intercept encrypted data sent over the Internet.",
+        "Encryption is a 100% guarantee that data being transmitted cannot be read by an unintended third party.",
+        "Secret key systems use two different keys, one for encryption and one for decryption.",
+        "A message encrypted with Company Q's public key can only be decrypted with Company Q's private key."
+      ],
+      "a": 3,
+      "e": "This is a true statement. Only the matching private key can decrypt a message encrypted with the public key. This is an essential part of the SSL system used on the Internet for secure web sites.",
+      "wrongWhy": [
+        "Quite to the contrary, it is very easy to intercept encrypted data. Encryption makes it difficult for transmitted data to be read, but it does nothing to prevent interception. There is a better answer among the choices here.",
+        "There are two problems with this answer. First and foremost, encryption is only as good as the secrecy of the encryption keys used in the encryption. If the encryption keys are lost, stolen or otherwise revealed to third parties, those third parties will be able to read the encrypted messages. Secondly, while encryption is mathematically very difficult to break, it is not impossible given enough time, skill and determination.",
+        "A secret key system uses the same key for encryption and decryption. A public/private key system uses two different keys.",
+        null
+      ],
+      "source": "HOCK CMA P1D3 02",
+      "diffPct": 57
+    },
+    {
+      "q": "All of the following are examples of potential Internet security risks except",
+      "o": [
+        "A backdoor.",
+        "Electronic eavesdropping.",
+        "a swiffer.",
+        "A port scanner."
       ],
       "a": 2,
-      "e": "Zero-Day: a software vulnerability that is Unknown to the vendor — 'day zero' before a patch exists. Attackers who discover (or buy on dark web) zero-days can exploit All unpatched instances of the software, with No available defensive fix except for behavioral detection. Organizations can only mitigate via: defense in depth, behavioral monitoring, network segmentation, and emergency patching when the vendor releases a fix."
+      "e": "A swiffer is not an example of a potential Internet security risk. (A sniffer is a piece of software that grabs all of the traffic flowing into and out of a computer attached to a network, and it can be used to gather information illegally, which is a potential security risk. But a swiffer is not a potential Internet security risk.)",
+      "wrongWhy": [
+        "A “backdoor” is an undocumented means to gain access to a program, online service or an entire computer system by bypassing the normal authentication process. A backdoor is a potential security risk.",
+        "Electronic eavesdropping occurs if computer users are able to observe transmissions intended for someone else. Electronic eavesdropping is a potential security risk.",
+        null,
+        "A port scanner is software that can probe a server or a computer for ports that are open. Although port scanners have legitimate uses, they are also used by hackers to locate and exploit vulnerabilities. Using port scans, hackers can look for a particular make of computer or a particular software program, because they know of weaknesses in those computers or programs that they can exploit. Once a hacker has identified a vulnerable computer or software application, the hacker can leave a backdoor open in the computer in order to reenter it at any time. If the original entry point is detected and closed, the backdoor functions as a hidden, undetected way back in. A port scanner is a potential security risk."
+      ],
+      "source": "HINT21 CMA 1.E.078",
+      "diffPct": 46
     },
     {
-      "q": "Network Segmentation as a cybersecurity control limits which type of risk?",
+      "q": "Which of the following is a technical computer crime that requires sophisticated knowledge of computers and/or networks?",
       "o": [
-        "Risk of phishing attacks reaching employees",
-        "Risk of physical theft of devices",
-        "Lateral Movement — if one network segment is compromised, attackers Cannot Freely Move to other segments, limiting the blast radius of a breach",
-        "Risk of weak passwords"
+        "Denial of service.",
+        "Phishing.",
+        "Dumpster diving.",
+        "Social engineering."
+      ],
+      "a": 0,
+      "e": "A denial of service (DOS) attack involves overwhelming a server or cluster of servers to the point that they are unable to respond to legitimate requests, thereby making them unavailable for normal usage. A DOS attack certainly requires a reasonable amount of technical and network skills to successfully execute.",
+      "wrongWhy": [
+        null,
+        "Phishing refers to deceiving others into revealing personal and/or sensitive information such as credit card numbers, social security numbers, passwords, etc., usually through an email message. This requires no sophisticated technical knowledge beyond being able to send an email.",
+        "Dumpster diving requires no computer knowledge whatsoever, only the willingness to get a little bit dirty.",
+        "Social engineering refers to using social tactics to gain information. For example, an employee from one company may call a competitor and pretend to be a coworker who forgot how to access certain files, hoping that the person who they are talking to will reveal that information. No technical skills are required; in fact, social skills would be the most essential when attempting to gain information through social engineering."
+      ],
+      "source": "HOCK CMA P1D3 04",
+      "diffPct": 53
+    },
+    {
+      "q": "Six months after a disgruntled systems programmer was fired and passwords disabled, the company's mainframe was brought to a halt when it suddenly erased all of its own files and software. The most likely way the programmer accomplished this was by",
+      "o": [
+        "Returning to the computer center after 6 months.",
+        "Planting a computer virus through the use of telephone access.",
+        "Having an accomplice in the computer center.",
+        "Implanting a virus in the operating system and executing it via a backdoor."
+      ],
+      "a": 3,
+      "e": "This is probably the best explanation of how the files and software were suddenly erased. A virus is a program that alters the way another computer operates. Viruses can damage programs, delete files or reformat the hard disk. A backdoor in a computer system is a method of bypassing normal authentication or securing remote access to a computer, while attempting to remain hidden from casual inspection.",
+      "wrongWhy": [
+        "The programmer was more than likely denied access to the computer center.",
+        "The passwords were disabled, so the programmer would not know the new passwords.",
+        "In these circumstances, it is not likely that there was collusion.",
+        null
+      ],
+      "source": "CIA 1190 III.19",
+      "diffPct": 84
+    },
+    {
+      "q": "A department purchased one copy of a word processing software program for internal use. The manager of the department installed the program on the manager’s office computer and then made two complete copies of the original diskettes. Copy number 1 was solely for backup purposes. Copy number 2 was for use by another member of the department. In terms of software licenses and copyright law, which of the following is correct?",
+      "o": [
+        "Only copy number 1 is legal.",
+        "Both copies are legal.",
+        "Neither copy is legal.",
+        "Only copy number 2 is legal."
+      ],
+      "a": 0,
+      "e": "A backup copy is legal under the copyright law. However, any copy other than a backup copy is illegal and is a license violation.",
+      "wrongWhy": [
+        null,
+        "Only copy number 1 is legal.",
+        "One of the copies is indeed legal.",
+        "Any copy other than a backup copy is illegal and is a license violation."
+      ],
+      "source": "CIA 597 3.40",
+      "diffPct": 49
+    },
+    {
+      "q": "A computer virus is different from a \"Trojan Horse\" because the virus can",
+      "o": [
+        "corrupt data.",
+        "erase executable files.",
+        "alter programming instructions.",
+        "replicate itself."
+      ],
+      "a": 3,
+      "e": "To be considered a virus, a virus must meet two criteria: 1) It must execute itself. A virus often places its own code in the path of the execution of another program. And 2) it must replicate itself. A virus can replace other executable files with a copy of the virus-infected file. A Trojan Horse does not replicate itself.",
+      "wrongWhy": [
+        "Both viruses and Trojan horses can corrupt data. A virus is a program that alters the way another computer operates. Viruses can damage programs, delete files or reformat the hard disk. A Trojan horse is any program that does something besides what a person believes it will do. A Trojan horse can appear to be something desirable, but in fact it contains malicious code that, when triggered, will cause loss or even theft of data.",
+        "Both viruses and Trojan horses can erase executable files. A virus is a program that alters the way another computer operates. Viruses can damage programs, delete files or reformat the hard disk. A Trojan horse is any program that does something besides what a person believes it will do. A Trojan horse can appear to be something desirable, but in fact it contains malicious code that, when triggered, will cause loss or even theft of data.",
+        "Both viruses and Trojan horses can alter programming instructions. A virus is a program that alters the way another computer operates. Viruses can damage programs, delete files or reformat the hard disk. A Trojan horse is any program that does something besides what a person believes it will do. A Trojan horse can appear to be something desirable, but in fact it contains malicious code that, when triggered, will cause loss or even theft of data.",
+        null
+      ],
+      "source": "ICMA 10.P1.255",
+      "diffPct": 81
+    },
+    {
+      "q": "To address concerns about the privacy of its data being transmitted over the internet, a company may implement data encryption because",
+      "o": [
+        "unauthorized parties cannot read data when the Internet converts it to ciphertext.",
+        "plaintext files are not readable without the corresponding encryption key.",
+        "transforming plain text into ciphertext makes data unreadable to unauthorized users.",
+        "the resulting hash totals ensure the privacy of the encrypted confidential information."
       ],
       "a": 2,
-      "e": "Network Segmentation: divides the network into Isolated Zones (segments) with access controls between them. If ransomware infects one segment, it Cannot automatically spread to other segments (financial systems, HR, manufacturing). Finance systems should be in a Highly Secured Segment. Dmz (demilitarized zone) separates internet-facing systems from internal systems. Limits the 'blast radius' of any single breach."
+      "e": "A plaintext file is the unencrypted form of an encrypted message. Ciphertext is text in encrypted form. Data encryption is the best protection against traffic interception resulting in data leaks. Encryption converts data into a code and then a key is required to convert the code back to data. Unauthorized people can receive the coded information, but without the proper key they cannot read it. Thus, an attacker may be able to see where the traffic came from and where it went, but not the content.",
+      "wrongWhy": [
+        "Ciphertext is text in encrypted form, and it is true that unauthorized parties cannot read encrypted data. However, the Internet itself does not convert data to ciphertext; encryption is performed by the data sender's system. Please see the correct answer explanation for more information.",
+        "A plaintext file is the unencrypted form of an encrypted message. Because plaintext files are not encrypted, they are readable without any encryption key, and they do not address concerns about the privacy of data being transmitted over the Internet. Please see the correct answer explanation for more information.",
+        null,
+        "The use of hash totals for data being transmitted over the Internet does not address concerns about the privacy of the data being transmitted. Hash totals are totals of nonmonetary information in a batch that is being processed or transmitted. For example, if a batch contains data on receipts from accounts receivable customers, the sum of all the customers’ account numbers might be computed to create a hash total. The sum is, of course, useful only for control purposes. A hash total can be run on a group of records before processing or transmission and again after processing or transmission. If the hash total changes during processing or transmission, it indicates something has changed or some transactions may be lost; but it does not ensure the privacy of encrypted confidential information. Please see the correct answer explanation for more information."
+      ],
+      "source": "I22 1.70",
+      "diffPct": 35
     },
     {
-      "q": "Iso/Iec 27001 is an international standard for:",
+      "q": "If Sarah Corp. wants to send an order over the Internet to Lee Inc. for raw materials, which of the following would be the correct methodology for encrypting the order so that only Lee Inc. will be able to decrypt and read the contents of the order?",
       "o": [
-        "Financial reporting and audit standards",
-        "ERP system implementation",
-        "An Information Security Management System (Isms) — providing a framework for establishing, implementing, maintaining, and continuously improving information security",
-        "Cloud service provider certification"
+        "Sarah Corp. would encrypt the message using Sarah Corp's private key, and Lee Inc. would decrypt the message using Sarah Corp's public key.",
+        "Sarah Corp. would request that Lee Inc. email their secret key so that Sarah Corp. could use it to encrypt the order for transmission.",
+        "Sarah Corp. would encrypt the message using Lee Inc's public key, and Lee Inc. would decrypt the message using their own private key.",
+        "Sarah Corp. would encrypt the message using Lee Inc's private key, and Lee Inc. would decrypt the message using their own public key."
       ],
       "a": 2,
-      "e": "Iso 27001: the international standard for Information Security Management Systems. Provides a systematic approach: risk assessment, security controls, continuous improvement. Organizations can be Certified against Iso 27001 — demonstrating to customers, regulators, and partners that they have a rigorous, audited information security program. Covers all security domains: access control, cryptography, physical security, HR security, incident management."
+      "e": "This is correct. Lee Inc's public key would be publicly available, and only Lee Inc., using their private key, would be able to decrypt any message encrypted with their public key.",
+      "wrongWhy": [
+        "Because Sarah Corp's public key is available publicly, any message encrypted with Sarah Corp's private key could be decrypted by anyone. Sarah Corp. may as well send the order without encryption.",
+        "Email cannot be trusted to be secure when sending via the Internet, and therefore the secret key could be intercepted and used by a third party to decrypt Sarah Corp's order details.",
+        null,
+        "No one but Lee Inc. should have possession of their private key, so neither Sarah Corp. nor any other company would ever use Lee Inc's. private key."
+      ],
+      "source": "HOCK CMA P1D3 03",
+      "diffPct": 67
     },
     {
-      "q": "A Denial Of Service (DoS) attack targets which element of the CIA Triad?",
+      "q": "Encryption",
       "o": [
-        "Confidentiality — stealing sensitive data",
-        "Integrity — corrupting data",
-        "Availability — overwhelming systems with traffic to make them inaccessible to legitimate users",
-        "Authentication — stealing user credentials"
+        "serves as a barrier between the internal and external networks and prevents unauthorized access to the internal network.",
+        "allows for the quick retrieval of data.",
+        "converts data into code and then a key is required to convert the code back to data.",
+        "records every keystroke and then sends this information back to the computer operator."
       ],
       "a": 2,
-      "e": "Denial Of Service (DoS) / Distributed DoS (DDoS): floods a target system with massive traffic volumes, overwhelming its capacity and making it Unavailable to legitimate users. Attacks Availability. Finance impact: payment systems offline, customer-facing banking unavailable, trading platforms inaccessible. Controls: DDoS mitigation services (Cloudflare, Akamai), rate limiting, traffic scrubbing, redundant infrastructure."
-    },
-    {
-      "q": "Penetration Testing in cybersecurity involves:",
-      "o": [
-        "Testing whether backup systems can restore data",
-        "Simulating Real Attacks by authorized ethical hackers to find vulnerabilities Before malicious actors do",
-        "Scanning systems for known vulnerabilities passively",
-        "Reviewing security policies for completeness"
+      "e": "Encryption converts data into a code and then a key is required to convert the code back to data. Unauthorized people may be able to intercept the coded information, but without the proper key they cannot read it. Encryption is the best protection against traffic interception resulting in data leaks.",
+      "wrongWhy": [
+        "This is the description of a firewall. A properly configured firewall makes a computer’s ports invisible to port scans. In addition to protecting a computer from incoming probes, a firewall can also prevent backdoor applications, Trojan horses, and other unwanted applications from sending data from the computer.",
+        "This is not a description of encryption. A database management system allows for the retrieval of data.",
+        null,
+        "This is a description of a keylogger, which is a type of malware that records every keystroke and sends it back to the hacker who installed the keylogger on the user's computer without the user's knowledge. Keylogging software can be used by hackers to gather bank information, credit card information, and passwords."
       ],
-      "a": 1,
-      "e": "Penetration Testing (pen testing): Authorized ethical hackers Actively Attempt To Breach systems using the same techniques as real attackers — but with permission and a defined scope. Goal: find vulnerabilities before attackers do. Types: Black Box (no prior knowledge), White Box (full information), Grey Box. More invasive than vulnerability scanning (which only identifies, not exploits). Required by Pci Dss, recommended by SOX for IT controls."
+      "source": "XET 20.080",
+      "diffPct": 91
     },
     {
-      "q": "Endpoint Detection And Response (Edr) tools are cybersecurity controls that:",
+      "q": "Which of the following would not be a cybercrime?",
       "o": [
-        "Manage user access permissions to applications",
-        "Encrypt data at rest on servers",
-        "Monitor Endpoint Devices (laptops, workstations) for suspicious behavior and automatically Respond to threats — isolating infected devices, killing malicious processes",
-        "Filter network traffic entering the organization"
+        "Use of a network to obtain information illegally.",
+        "Unauthorized copying of software.",
+        "Dismantling of a proxy server.",
+        "Theft of emails."
       ],
       "a": 2,
-      "e": "Edr: next-generation endpoint security that Monitors behavior on endpoint devices (not just scans for known malware signatures). Detects: unusual process execution, lateral movement, file encryption attempts (ransomware early warning), credential harvesting. Can automatically Respond: isolate the endpoint from the network, kill malicious processes, collect forensic data. Critical for detecting sophisticated attacks that bypass traditional antivirus."
+      "e": "A proxy server is a computer and software that creates a gateway to and from the Internet. The proxy server contains an access control list of approved web sites and handles all web access requests, limiting access to only those sites contained in the access control list, so it can enable an employer to deny its employees access to sites that are unlikely to have any productive benefits. The proxy server can limit the information stored on it to information the company can afford to lose, and if the proxy server is broken into, the organization’s main servers remain functional. The proxy server also examines all incoming requests for information and tests them for authenticity, so it can function as a firewall. Dismantling a proxy server would make the computer system more vulnerable, but it is not a cybercrime.",
+      "wrongWhy": [
+        "The use of a network to obtain information illegally is a cybercrime.",
+        "Unauthorized copying of software is copyright infringement and is a cybercrime.",
+        null,
+        "Theft of emails is a cybercrime."
+      ],
+      "source": "XET 20.085A",
+      "diffPct": 69
     },
     {
-      "q": "Data Encryption At Rest protects data when:",
+      "q": "Which of the following is an indication that a computer virus is present?",
       "o": [
-        "Data is transmitted across a network",
-        "A user logs in to an application",
-        "Data IS Stored on a disk, database, or backup — preventing unauthorized access if the physical media is stolen or the storage system is accessed without authorization",
-        "Data is processed in memory during transactions"
+        "Inadequate backup, recovery, and contingency plans.",
+        "Frequent power surges that harm computer equipment.",
+        "Numerous copyright violations due to unauthorized use of purchased software.",
+        "Unexplainable losses of or changes to data."
       ],
-      "a": 2,
-      "e": "Encryption At Rest: data encrypted while Stored (on disk, in database, on backup tape). If an attacker steals a laptop or a hard drive, they get encrypted, unreadable data without the decryption key. Complements Encryption In Transit (data encrypted while moving across networks — Tls/Ssl). Both are needed: in-transit protection doesn't help if the attacker has direct physical or database access to stored data."
+      "a": 3,
+      "e": "Unexplainable losses of, or changes to data are an indication of computer viruses.",
+      "wrongWhy": [
+        "Inadequate backup, recovery, and contingency plans are weaknesses of operational planning.",
+        "Power surges are primarily caused by power supply problems.",
+        "Numerous copyright violations are compliance problems.",
+        null
+      ],
+      "source": "CIA 1196 III.40",
+      "diffPct": 74
+    },
+    {
+      "q": "Which of the following is a malicious program, the purpose of which is to reproduce itself throughout the network, and can possibly produce a denial of service attack by excessively utilizing system resources?",
+      "o": [
+        "Worm.",
+        "Trojan horse.",
+        "Virus.",
+        "Logic bomb."
+      ],
+      "a": 0,
+      "e": "A worm is an independent program that replicates itself from system to system without the use of any host file. The difference between a worm and a virus is that the worm does not require the use of an infected host file, while the virus does require the spreading of an infected host file. Worms generally exist inside of other files, often Word or Excel documents. However, worms use the host file differently from viruses. Usually the worm releases a document that has the \"worm\" macro inside the document. The entire document spreads from computer to computer, so the entire document is, in essence, the worm.",
+      "wrongWhy": [
+        null,
+        "A Trojan horse is an independent program that is disguised as legitimate software. They may look useful or interesting to an unsuspecting user, but are actually harmful when executed.",
+        "A virus is a program that alters the way another computer operates, but it is not an independent program that can reproduce itself throughout the network. A virus spreads by inserting copies of itself into the executable code or documents.",
+        "A logic bomb is a malicious program that is activated when some particular condition occurs (e.g., could be a date, or system operation)."
+      ],
+      "source": "IIA, adapted CIA H30",
+      "diffPct": 39
     }
   ],
   "6-7": [
@@ -2687,235 +2930,384 @@
   ],
   "6-12": [
     {
-      "q": "User Acceptance Testing (Uat) verifies that:",
+      "q": "A company with several hundred stores has a network for the stores to transmit sales data to headquarters. The network is also used for: vendors to submit reorders stores to transmit special orders to headquarters regional distribution centers to communicate delivery and out-of-stock information to the stores the national office to distribute training materials store, regional, and national personnel to share any information they think helpful. In order to accommodate the large volume of transmissions, large stores have their own satellite receiving/transmitting stations. Small stores use leased lines. The information systems and audit directors also agreed that maintaining the integrity of the system that kept inventory data was crucial for distributing correct product quantities to stores. The best way to ensure the integrity of this application software is through:",
       "o": [
-        "The code is free of programming errors",
-        "The database design is normalized",
-        "The System Meets Business Requirements — end users confirm it works as expected",
-        "Security controls are properly configured"
+        "Audit trails for items sold and received.",
+        "Access controls for terminals in the receiving department.",
+        "Change controls for inventory software.",
+        "Monitoring software for the network."
       ],
       "a": 2,
-      "e": "Uat: conducted by Business Users to verify the system meets their Requirements as defined in the Analysis phase. Successful Uat sign-off is the final gate before deployment to production."
+      "e": "Change controls are the set of procedures that ensure that only authorized, tested programs are run in production. If change controls are being followed, an unauthorized person would not be able to make a change in a program that would alter the way it performed its processing.",
+      "wrongWhy": [
+        "Audit trails permit audits of transaction updates to data files, not programs.",
+        "Access control ensures that only authorized persons have access to specific or categories of information resources, but is not enough by itself to ensure integrity of application software.",
+        null,
+        "Monitoring software is designed to monitor performance (human or machine) for specified functions such as number of tasks performed or capacity utilized."
+      ],
+      "source": "CIA 596 3.49",
+      "diffPct": 19
     },
     {
-      "q": "A key internal control in change management requires that programmers:",
+      "q": "Which one of the following represents a lack of internal control in a computer-based system?",
       "o": [
-        "Have full access to production to fix bugs quickly",
-        "Test all code changes in production",
-        "Not Have Access To The Production Environment — segregation between development and production",
-        "Approve all their own change requests"
+        "Provisions exist to protect data files from unauthorized access, modification, or destruction.",
+        "Provisions exist to ensure the accuracy and integrity of computer processing of all files and reports.",
+        "Programmers have access to change programs and data files when an error is detected.",
+        "Any and all changes in applications programs have the authorization and approval of management."
       ],
       "a": 2,
-      "e": "Segregation: Programmers write code in the development environment; a Separate deployment team promotes changes to production. This prevents unauthorized production modifications and is a fundamental IT control."
-    },
-    {
-      "q": "Agile development differs from Waterfall because Agile:",
-      "o": [
-        "Completes all phases sequentially",
-        "Documents all requirements fully before development",
-        "Delivers Working Software In Short Iterative Sprints — adapts to changing requirements",
-        "Prohibits any changes once development begins"
+      "e": "Programmers having access to change programs and data files when an error is detected is a control weakness. Programmers are the individuals who write, test, and document the systems. However, once a program has been written, tested, and documented, the programmer should have no further access to the program or to the data files. If any change is necessary, management should authorize and approve the change. Segregation of duties is a systems general control.",
+      "wrongWhy": [
+        "The existence of provisions to protect data files from unauthorized access, modification, or destruction such as passwords and restricted rights represents good internal control, not a lack of internal control.",
+        "The existence of provisions to ensure the accuracy and integrity of computer processing of all files and reports represents good internal control, not a lack of internal control.",
+        null,
+        "Any and all changes in applications programs having the authorization and approval of management represents good internal control, not a lack of internal control."
       ],
-      "a": 2,
-      "e": "Agile: short Sprints (1-4 weeks) deliver working features. Requirements evolve based on user feedback. Waterfall: all requirements defined upfront → complete each phase before proceeding. Agile is better for evolving requirements; Waterfall for stable, well-defined ones."
+      "source": "CMA 1290 4.21",
+      "diffPct": 72
     },
     {
-      "q": "Security controls should be built into a system during which Sdlc phase?",
+      "q": "Which one of the following represents a weakness in the internal control system of an electronic data processing system?",
       "o": [
-        "Implementation — just before go-live",
-        "Testing — when vulnerabilities are found",
-        "Maintenance — after deployment",
-        "Design — security architecture must be planned before development begins"
+        "The data control group reviews and tests procedures and handles the reprocessing of errors detected by the computer.",
+        "The systems analyst designs new systems and supervises testing of the system.",
+        "The accounts receivable clerk prepares and enters data into the computer system and reviews the output for errors.",
+        "The computer operator executes programs according to operating instructions and maintains custody of programs and data files."
       ],
       "a": 3,
-      "e": "Security By Design: security must be addressed in the Design phase — before a single line of code is written. Retrofitting security into a finished system is extremely expensive and often incomplete."
-    },
-    {
-      "q": "Emergency production changes:",
-      "o": [
-        "Are exempt from all controls due to urgency",
-        "Should never be made — wait for the next change window",
-        "May follow a fast-track process but Must Still Be Authorized, Documented, and reviewed post-implementation",
-        "Require the full normal testing cycle"
+      "e": "A person who has unlimited access to a computer, its programs, and its data could execute a fraud and at the same time conceal it. The computer operator should not have custody of programs and data files. The computer operator should perform the actual operation of the computers for processing the data only. The librarian should maintain the documentation, programs and data files.",
+      "wrongWhy": [
+        "This is not a weakness in the internal control system of an electronic data processing system. The data control group is responsible for detecting and correcting errors. Reviewing and testing procedures is a part of detecting errors, and reprocessing of errors is part of correcting errors.",
+        "Systems analysts are responsible for reviewing the current system to make sure that it is meeting the needs of the organization, and when it is not, they will provide the design specifications to the programmers of the new system. Programmers write, test and document the systems. As long as the systems analyst is not actual doing the testing of the system but only supervising it, this is not an internal control weakness.",
+        "This is not a weakness in the internal control system of an electronic data processing system. The accounts receivable clerk is recording transactions. Checking one's work is part of doing a job, and the accounts receivable clerk is responsible for entering data correctly. So reviewing the output for errors is an appropriate part of entering data into the computer system. As long as the accounts receivable clerk is not also authorizing the transactions, receiving payments on accounts in the mail, or doing reconciliations, i.e., reconciling the individual account balances to the accounts receivable general ledger account, there is no conflict.",
+        null
       ],
-      "a": 2,
-      "e": "Emergency Changes: a fast-track process is acceptable for critical security patches or production outages — but controls cannot be skipped. Minimum: emergency authorization, immediate documentation, and Post-Implementation Review. 'Emergency' cannot become a loophole."
+      "source": "ICMA 10.P1.260",
+      "diffPct": 54
     },
     {
-      "q": "In the Sdlc, security controls should First be incorporated during which phase?",
+      "q": "Online access controls are critical for the successful operation of today's computer systems. To assist in maintaining control over such access, many systems use tests that are maintained through an internal access control matrix consisting of",
       "o": [
-        "Testing phase — security testing before go-live",
-        "Implementation phase — when code is written",
-        "Design Phase — building security requirements into the architecture before coding begins ('security by design' is far less expensive than retrofitting security after implementation)",
-        "Maintenance phase — after users identify security gaps"
-      ],
-      "a": 2,
-      "e": "Security By Design: incorporating security in the Design Phase is exponentially cheaper than retrofitting it later. Ibm research: fixing a bug in Design costs $1; in coding = $6; in testing = $15; in production = $150. Security architecture decisions (access control design, encryption strategy, audit logging) made during design cannot be easily changed during coding or testing. Owasp recommends security requirements defined before any code is written."
-    },
-    {
-      "q": "User Acceptance Testing (Uat) in the Sdlc verifies that:",
-      "o": [
-        "The system meets technical performance benchmarks",
-        "Individual program modules work correctly in isolation",
-        "The System Meets Business Requirements as validated by actual end users in a test environment — before the system is deployed to production",
-        "The code has no syntax errors"
-      ],
-      "a": 2,
-      "e": "Uat: performed by Actual Business Users (not developers or testers) to confirm the system does what the business Requires. If the system technically works but doesn't meet the user's actual needs, Uat catches this before go-live. Key: test with Realistic Business Scenarios, not just technical test cases. Failed Uat = go back to development. In finance: accountants must test that the system produces correct journal entries, reconciliations, and reports."
-    },
-    {
-      "q": "Programmers must Not have access to Production systems because:",
-      "o": [
-        "Programmers are too expensive to use for operational tasks",
-        "Production access slows down programming work",
-        "If Programmers Can Deploy Their Own Code To Production, they can introduce unauthorized changes — fraud, backdoors, or errors — without independent review or testing",
-        "Programming and production access are identical in terms of risk"
-      ],
-      "a": 2,
-      "e": "Programmer Segregation: critical IT Sod control. Programmers with Production Access can: (1) write fraudulent code; (2) test it in production; (3) execute transactions; (4) delete audit logs. This enables systematic undetectable fraud. Required separation: Programmer develops and tests in non-production → Change Manager reviews → Operations deploys to production. No programmer should deploy their own code to production. SOX Itgc requirement."
-    },
-    {
-      "q": "The Waterfall Sdlc methodology is Best suited for projects where:",
-      "o": [
-        "Requirements are unclear and expected to change significantly",
-        "Rapid deployment of working software is the priority",
-        "Requirements Are Well-Defined, Stable, And Unlikely To Change — sequential phases work well when the full scope is understood upfront",
-        "The team is small and highly collaborative"
-      ],
-      "a": 2,
-      "e": "Waterfall: sequential phases (Requirements → Design → Development → Testing → Deployment → Maintenance) with each phase fully completed before the next begins. Best For: well-defined requirements, stable scope, regulatory compliance projects (clear documentation trail), large contract-based projects with fixed deliverables. Poor For: innovative projects where requirements evolve, projects needing rapid user feedback, complex business domain uncertainty."
-    },
-    {
-      "q": "Agile development methodology differs from Waterfall primarily in that Agile:",
-      "o": [
-        "Requires no documentation or testing",
-        "Delivers the Entire System only at the very end of the project",
-        "Delivers Working Software In Short Iterations (sprints) — enabling frequent feedback, rapid adaptation to changing requirements, and continuous delivery of business value",
-        "Requires more upfront planning than Waterfall"
-      ],
-      "a": 2,
-      "e": "Agile: iterative development in Short Sprints (1-4 weeks), each delivering potentially deployable working software. Business stakeholders review after each sprint and provide feedback — requirements evolve. Benefits: (1) Early Value delivery; (2) Reduced Risk — problems discovered early in small increments; (3) Adaptability — requirements can change. Challenges for audit: less documentation, controls may be harder to enforce in fast-moving sprints. Finance IT implementations increasingly use Agile."
-    },
-    {
-      "q": "Change Control in Sdlc requires that all changes to production systems be:",
-      "o": [
-        "Made immediately when a bug is found to minimize downtime",
-        "Made by the programmer who coded the change",
-        "Reviewed, Approved, Tested, And Documented before promotion to production — with a back-out plan in case the change causes problems",
-        "Made only during business hours"
-      ],
-      "a": 2,
-      "e": "Change Control: (1) Submit change request with business justification; (2) Review by change advisory board (Cab); (3) Approve; (4) Test in non-production environment; (5) Schedule during maintenance window; (6) Implement with back-out plan; (7) Document and monitor. This controls: (a) only authorized changes reach production; (b) changes are tested; (c) audit trail of all production changes exists. Emergency changes have expedited process but same documentation requirements after the fact."
-    },
-    {
-      "q": "Regression Testing in software development is performed to:",
-      "o": [
-        "Test the system for the first time before deployment",
-        "Test only new features added in the latest release",
-        "Verify That New Code Changes Have Not Broken Existing Functionality — ensuring that fixing one bug hasn't introduced new bugs elsewhere in the system",
-        "Test system performance under heavy load"
-      ],
-      "a": 2,
-      "e": "Regression Testing: after Any change to software, re-test existing functionality to confirm nothing broke. Example: a programmer fixes a tax calculation bug — regression testing reruns All existing test cases for the affected module to ensure the fix didn't break invoice totaling, payment processing, or Gl posting. Critical for: ERP upgrades (ensuring existing customizations still work), regulatory patches (ensuring base functionality is intact)."
-    },
-    {
-      "q": "A System Development Life Cycle (Sdlc) Control Framework ensures that:",
-      "o": [
-        "Systems are developed as quickly as possible regardless of quality",
-        "Only IT staff are involved in system development",
-        "Systems Are Developed With Appropriate Quality, Security, Authorization, and Documentation — including controls at each phase to prevent security flaws, unauthorized changes, and budget overruns",
-        "No business users are involved until after deployment"
-      ],
-      "a": 2,
-      "e": "Sdlc Controls per phase: (1) Planning — business case approval, project charter; (2) Requirements — signed-off requirements, user involvement; (3) Design — security review, architecture review; (4) Development — code reviews, developer access controls; (5) Testing — independent testing, Uat; (6) Deployment — change control, back-out plan; (7) Maintenance — patch management, change control. Weak Sdlc controls = systems deployed with security flaws, unauthorized functionality, or inadequate audit trails."
-    },
-    {
-      "q": "Technical Debt in software development refers to:",
-      "o": [
-        "Money owed to software vendors",
-        "The cost of hardware for new systems",
-        "The Cumulative Cost of taking Shortcuts in development — quick fixes, poor code quality, missing documentation — that create future maintenance burdens and security risks",
-        "Development costs that are deferred to a future period"
-      ],
-      "a": 2,
-      "e": "Technical Debt: shortcuts taken during development (e.g., copying code instead of creating reusable functions, skipping documentation, not writing tests) create a 'debt' of future rework. Like financial debt: accrues interest over time — a small shortcut now becomes a major refactoring effort later. Finance implication: systems with high technical debt are harder to audit, more prone to errors, costly to maintain, and create security vulnerabilities."
-    },
-    {
-      "q": "In a DevOps environment, Continuous Integration/Continuous Deployment (Ci/Cd) is an Sdlc practice that:",
-      "o": [
-        "Requires manual approval for every code change",
-        "Slows development by adding more testing steps",
-        "Automates The Testing And Deployment Pipeline — code changes are automatically tested and deployed when tests pass, enabling rapid, frequent releases with consistent quality",
-        "Eliminates the need for user acceptance testing"
-      ],
-      "a": 2,
-      "e": "Ci/Cd: (1) Continuous Integration — every code commit triggers automated build and unit tests; (2) Continuous Delivery — automated testing pipeline, ready to deploy to production with minimal manual steps; (3) Continuous Deployment — automatic deployment to production when all tests pass. Benefits: faster delivery, consistent quality, rapid detection of integration issues. Audit challenge: very frequent releases require automated compliance controls rather than manual review."
-    },
-    {
-      "q": "The Requirements Phase of the Sdlc is critical because:",
-      "o": [
-        "This is when all code is written",
-        "This is when the system is tested by users",
-        "Poorly Defined Requirements are the most common cause of system failure — if the system is built to meet the Wrong requirements, it will not meet business needs even if technically perfect",
-        "This is when security patches are applied"
-      ],
-      "a": 2,
-      "e": "Requirements Failure: 'Building the wrong thing perfectly' is a common Sdlc failure. Requirements phase must: (1) Involve business stakeholders (not just IT); (2) Document requirements clearly and measurably; (3) Get Sign-Off from business owners; (4) Include functional And non-functional requirements (performance, security, compliance). Poor requirements lead to: scope creep, rework, cost overruns, dissatisfied users, and systems that don't support business processes."
-    },
-    {
-      "q": "Version Control systems (like Git) in software development serve which Internal Control purpose?",
-      "o": [
-        "Speed up the software development process",
-        "Maintain A Complete History of all code changes — who made each change, when, and what was changed — enabling audit, rollback, and accountability",
-        "Automatically test code for bugs",
-        "Manage user access to applications"
+        "A list of controls in the online system and a list of those individuals authorized to change and adjust these controls along with a complete list of files in the system.",
+        "Authorized user IDs, passwords, lists of all files and programs, and a record of the type of access each user is entitled to have to each file and program.",
+        "Authorized user IDs and passwords.",
+        "A completeness test, closed loop verification, and a compatibility test."
       ],
       "a": 1,
-      "e": "Version Control is an IT audit control: (1) Audit Trail — who changed what code, when; (2) Accountability — every change attributed to a specific developer; (3) Rollback — revert to previous version if a change causes problems; (4) Branch Management — code changes reviewed before merging to main branch. SOX Itgc: change management requires evidence that code changes were authorized and reviewed — version control provides this evidence."
-    },
-    {
-      "q": "Load Testing during the Sdlc Testing phase determines:",
-      "o": [
-        "Whether the code is logically correct",
-        "Whether users find the interface intuitive",
-        "Whether The System Performs Acceptably Under Expected Peak Transaction Volumes — identifying performance bottlenecks before go-live",
-        "Whether the system meets security requirements"
+      "e": "Authorized user IDs, passwords, lists of all files and programs, and a record of the type of access each user is entitled to have to each file and program are all access controls. Access controls are systems general controls.",
+      "wrongWhy": [
+        "A list of individuals authorized to change and adjust the controls is not an access control.",
+        null,
+        "Although these two items are access controls, this is not the most complete list of items that are access controls.",
+        "Completeness tests and closed loop verification are not access controls. A completeness test will not let processing proceed if a data item is not complete. Closed loop verification is an online data entry check that utilizes display and checking of data entry items."
       ],
-      "a": 2,
-      "e": "Load Testing: simulates expected user loads (e.g., 500 concurrent users at month-end close) to verify: (1) response times remain acceptable under load; (2) no data corruption under concurrent access; (3) system identifies bottlenecks (database queries, network bandwidth); (4) system gracefully handles peak loads. For finance: month-end close is highest load period — a system that works for 10 users may crash with 200 users all running reports simultaneously."
+      "source": "CMA 693 4.10",
+      "diffPct": 65
     },
     {
-      "q": "Penetration Testing as part of the Sdlc should be performed:",
+      "q": "Which of the following security controls would best prevent unauthorized access to sensitive data through an unattended data terminal directly connected to a mainframe?",
       "o": [
-        "Only after the system has been in production for one year",
-        "Before Go-Live and periodically after — simulating real attacks on the new system to identify vulnerabilities while they can still be cost-effectively fixed",
-        "Only by the development team",
-        "Only for systems classified as low-risk"
+        "Use of workstation scripts.",
+        "Use of a screensaver with a password.",
+        "Encryption of data files.",
+        "Automatic logoff of inactive users."
+      ],
+      "a": 3,
+      "e": "Automatic logoff of inactive users may prevent the viewing of sensitive data on an unattended data terminal.",
+      "wrongWhy": [
+        "Scripting is the use of a program to automate a process such as startup.",
+        "Data terminals do not normally use screensaver protection.",
+        "Encryption of data files will not prevent the viewing of data on an unattended data terminal.",
+        null
+      ],
+      "source": "CIA 0815 III.056",
+      "diffPct": 35
+    },
+    {
+      "q": "The automated system contains a table of pay rates which is matched to the employee job classifications. The best control to ensure that the table is updated correctly for only valid pay changes would be to:",
+      "o": [
+        "Limit access to the data table to management and line supervisors who have the authority to determine pay rates.",
+        "Require a supervisor in the department, who does not have the ability to change the table, to compare the changes to a signed management authorization.",
+        "Ensure that adequate edit and reasonableness checks are built into the automated system.",
+        "Require that all pay changes be signed by the employee to verify that the change goes to a bona fide employee."
       ],
       "a": 1,
-      "e": "Sdlc Penetration Testing: (1) Pre-Production testing (best time) — vulnerabilities found before go-live are cheapest to fix; (2) Periodic Testing post-go-live — systems evolve, new vulnerabilities emerge; (3) After significant changes. Finance systems handling payment data (Pci Dss requirement) or publicly traded company financial data (SOX) must include pen testing in their security program. Earlier in Sdlc = less expensive to fix."
+      "e": "This would be the most appropriate control because it (a) requires supervisory signed approval, (b) limits access to the tables to selected personnel within the payroll department, and (c) provides independent reconciliation of all changes.",
+      "wrongWhy": [
+        "Access to the database (tables) of employee rates should be severely restricted to authorized personnel within the human resources department or payroll personnel. Proper supervisor personnel should approve the rates but should not have access to the tables.",
+        null,
+        "Edit checks will not detect invalid changes.",
+        "The concern is not with bona fide employees. The concern is to gain assurance that all changes to the table are properly authorized and input into the system. Further, one pay rate will apply to more than one employee."
+      ],
+      "source": "CIA 1196 1.36",
+      "diffPct": 43
     },
     {
-      "q": "The Maintenance Phase of the Sdlc is ongoing and includes:",
+      "q": "Minimizing the likelihood of unauthorized editing of production programs, job control language, and operating system software can best be accomplished by",
       "o": [
-        "Initial requirements gathering and feasibility studies",
-        "Emergency Patches for critical vulnerabilities, Enhancements for new business requirements, Performance Tuning, and Routine Maintenance — managing the system throughout its operational life",
-        "Only the initial user training after go-live",
-        "Creating the original system design documents"
+        "Good change-control procedures.",
+        "Database access reviews.",
+        "Compliance reviews.",
+        "Effective network security software."
+      ],
+      "a": 0,
+      "e": "Change control is the process of strictly controlling changes to a system or program. All changes should require authorization by the appropriate personnel, and when a system or program is changed, the changes should not be made directly to the program that is being used, but rather first to a copy of it so they can be tested before being put into production. And any changes must also be properly reflected in all of the related documentation to ensure that changes have a minimal impact on processing and results in minimal risk to the system. Program change control comprises: (1) maintaining records of change authorizations, code changes, and test results; (2) adhering to a systems development methodology (including documentation); (3) authorizing changeovers of subsidiary and headquarters' interfaces; and (4) restricting access to authorized source and executable codes. Program change controls are general controls.",
+      "wrongWhy": [
+        null,
+        "Frequently, the purpose of database reviews is to determine if: (1) users have gained access to database areas for which they have no authorization, and (2) authorized users can access the database using programs that provide them with unauthorized privileges to view and/or change information.",
+        "The purpose of compliance reviews is to determine whether an organization has complied with applicable internal and external procedures and regulations.",
+        "The purpose of network security software is to provide logical controls over the network."
+      ],
+      "source": "CIA 598 3.49",
+      "diffPct": 35
+    },
+    {
+      "q": "A company with several hundred stores has a network for the stores to transmit sales data to headquarters. The network is also used for: vendors to submit reorders, stores to transmit special orders to headquarters, regional distribution centers to communicate delivery and out-of-stock information to the stores, the national office to distribute training materials, store, regional, and national personnel to share any information they think helpful. In order to accommodate the large volume of transmissions, large stores have their own satellite receiving/transmitting stations. Small stores use leased lines. The information systems director is concerned that someone might be able to enter fictitious orders from store terminals. Of the following, the best control for minimizing the likelihood of such an occurrence is to:",
+      "o": [
+        "Require change control procedures for programs.",
+        "Enforce password control procedures for users.",
+        "Encourage employees to report suspicious activity.",
+        "Encrypt outward bound transmissions from the stores."
       ],
       "a": 1,
-      "e": "Maintenance Phase encompasses: (1) Corrective maintenance — fixing bugs discovered in production; (2) Adaptive maintenance — updating for environment changes (new Os, new regulations); (3) Perfective maintenance — enhancements, performance improvements; (4) Preventive maintenance — proactive improvements before problems occur. Finance: tax law changes require adaptive maintenance; new reporting requirements require perfective maintenance. Typically consumes 60-80% of total system lifetime costs."
+      "e": "Enforcing password control procedures would make it more difficult for an unauthorized person, such as a competitor intending to disrupt the distribution patterns, to gain prolonged entry.",
+      "wrongWhy": [
+        "Requiring change control for programs ensures that program changes are authorized, tested, and documented but would not deter someone from entering fictitious transactions.",
+        null,
+        "Encouraging store employees to report suspicious activity is a good practice, but it is not the best control for minimizing the likelihood of someone entering fictitious orders from store terminals.",
+        "Encrypting transmissions from the stores would increase the difficulty of eavesdropping on the transmissions but would not deter someone from entering fictitious transactions."
+      ],
+      "source": "CIA 596 3.48",
+      "diffPct": 53
     },
     {
-      "q": "DevSecOps is Best described as:",
+      "q": "Which of the following is not a common cause of accidental damage to a computer-based information system or the data it holds?",
       "o": [
-        "A waterfall development methodology with added security reviews",
-        "A separate security team that reviews code after development is complete",
-        "The Integration Of Automated Security Testing Into The Ci/Cd Pipeline — so every code commit is automatically scanned for vulnerabilities before deployment, making security continuous rather than a gate at the end",
-        "A cybersecurity framework for production systems only"
+        "Inaccurate data entry.",
+        "Failure to comply with procedures for the use of organizational information systems.",
+        "Interruptions to the power supply.",
+        "Attempts to carry out tasks beyond the ability of the employee."
       ],
       "a": 2,
-      "e": "DevSecOps: 'Development + Security + Operations' — embeds security into Every Stage of the Ci/Cd pipeline. Key tools: Sast (static code analysis at commit), dependency scanning (third-party library vulnerabilities at build), Dast (dynamic testing in test environment), IaC scanning (cloud misconfigurations before deploy). 'Shift left' principle: security defects caught at the Commit stage cost a fraction of those caught in production. Finance systems: automated security gates provide SOX-auditable evidence that every code change was security-tested before reaching production."
+      "e": "While interruptions to the power supply can cause data corruption, they are not a common cause of it. Data can be protected from corruption due to loss of power with an Uninterruptible Power Supply or even a standby generator. The other three things — inaccurate data entry, attempts to carry out tasks that are beyond the ability of the employee, and failure to comply with procedures for use of the organizational information system — are common causes of data corruption.",
+      "wrongWhy": [
+        "Inaccurate data entry commonly occurs, and it is a cause of accidental damage to the data in a computer-based information system. Please see the correct answer explanation for more information.",
+        "Failure to comply with procedures for the use of organizational information systems is a common cause of accidental damage to a computer-based information system or the data it holds. Please see the correct answer explanation for more information.",
+        null,
+        "Attempts to carry out tasks beyond the ability of the employee are a common cause of accidental damage to a computer-based information system or the data it holds. Please see the correct answer explanation for more information."
+      ],
+      "source": "CMA1 M1 Q96",
+      "diffPct": 20
+    },
+    {
+      "q": "Managers at a consumer products company purchased personal computer software from only recognized vendors and prohibited employees from installing nonauthorized software on their personal computers. To minimize the likelihood of computer viruses infecting any of its systems, the company should also",
+      "o": [
+        "Institute program change control procedures.",
+        "Recompile infected programs from source code backups.",
+        "Restore infected systems with authorized versions.",
+        "Test all new software on a stand-alone personal computer."
+      ],
+      "a": 3,
+      "e": "This would be the best method to minimize the likelihood of computer viruses infecting any of its systems. The program should be quarantined since it's possible that even the vendor's software can be infected.",
+      "wrongWhy": [
+        "Instituting program change control procedures is a good control practice, but it does not minimize the likelihood of computer viruses infecting the system.",
+        "The procedure of recompiling infected programs from source code backups does not minimize the likelihood of computer viruses infecting the system.",
+        "Restoring infected systems with authorized versions will be done when the system is already infected. Thus, it does not minimize the likelihood of computer viruses infecting the system.",
+        null
+      ],
+      "source": "CIA 595 III.67",
+      "diffPct": 58
+    },
+    {
+      "q": "Which of the following procedures would enhance the control structure of a computer operations department? I. Periodic rotation of operators II. Mandatory vacations III. Controlled access to the facility IV. Segregation of personnel responsible for controlling input and output",
+      "o": [
+        "I, II, III.",
+        "III, IV.",
+        "I, II.",
+        "All of these choices would enhance the control structure."
+      ],
+      "a": 3,
+      "e": "All of the practices given are effective general control measures. Periodic rotation and mandatory vacations provide other personnel with the ability to detect operator problems. Controlled access and segregation of duties allow for the separation of incompatible functions.",
+      "wrongWhy": [
+        "Periodic rotation of operators, mandatory vacations and controlled access to the facility would enhance the control structure of a computer operations department. However, these are not the only procedures listed that would do so.",
+        "Controlled access to the facility and segregation of personnel who are responsible for controlling input and output would enhance the control structure of a computer operations department. However, these are not the only procedures listed that would do so.",
+        "Periodic rotation of operators and mandatory vacations would enhance the control structure of a computer operations department. However, these are not the only procedures listed that would do so.",
+        null
+      ],
+      "source": "CIA 594 3.12",
+      "diffPct": 77
+    },
+    {
+      "q": "A systems development control ensures that",
+      "o": [
+        "unauthorized employees do not have access to the servers.",
+        "closed-loop verifications are performed while the system is under development.",
+        "system record counts are calculated before the system goes live.",
+        "requests for program changes are approved by appropriate levels of management."
+      ],
+      "a": 3,
+      "e": "One of the reasons for instituting systems development controls is to ensure that all changes to programs are properly authorized and are not made by individuals who lack sufficient understanding of control procedures, proper approvals, and the need for adequate testing.",
+      "wrongWhy": [
+        "A systems development control does not ensure that unauthorized employees do not have access to the servers. Systems development controls are instituted to ensure that all changes to programs are properly authorized and are not made by individuals who lack sufficient understanding of control procedures, proper approvals, and the need for adequate testing.",
+        "A systems development control does not ensure that closed-loop verifications are performed while the system is under development. Systems development controls are instituted to ensure that all changes to programs are properly authorized and are not made by individuals who lack sufficient understanding of control procedures, proper approvals, and the need for adequate testing.",
+        "A systems development control does not ensure that system record counts are calculated before the system goes live. Systems development controls are instituted to ensure that all changes to programs are properly authorized and are not made by individuals who lack sufficient understanding of control procedures, proper approvals, and the need for adequate testing.",
+        null
+      ],
+      "source": "I22 1.67",
+      "diffPct": 38
+    },
+    {
+      "q": "What technology is needed to convert a paper document into a computer file?",
+      "o": [
+        "Bar-code scanning.",
+        "Optical character recognition.",
+        "Electronic data interchange.",
+        "Joining and merging."
+      ],
+      "a": 1,
+      "e": "Optical character recognition (OCR) software converts images of paper documents, as read by a scanning device, into text document computer files.",
+      "wrongWhy": [
+        "See the correct answer for an explanation.",
+        null,
+        "See the correct answer for an explanation.",
+        "See the correct answer for an explanation."
+      ],
+      "source": "CIA 0815 III.060",
+      "diffPct": 45
+    },
+    {
+      "q": "All administrative and professional staff in a corporate legal department prepare documents on terminals connected to a file server on the LAN. The best control over unauthorized access to sensitive documents in the system is",
+      "o": [
+        "Physical security for all disks containing document files.",
+        "Required entry of passwords for access to individual documents.",
+        "Periodic server backup and storage in a secure area.",
+        "Required entry of passwords for access to the system."
+      ],
+      "a": 1,
+      "e": "The best control over unauthorized access to sensitive documents is to require entry of passwords for access to individual documents. Access controls are systems general controls.",
+      "wrongWhy": [
+        "The information is contained in the hard drive, not on disks.",
+        null,
+        "Periodic server backup and storage in a secure area would not prevent unauthorized access to sensitive documents in the system.",
+        "Requiring passwords for access to the system permits all departmental personnel to have access to all documents in the system."
+      ],
+      "source": "CIA 1190 I.34",
+      "diffPct": 61
+    },
+    {
+      "q": "What technique could be used to prevent the input of alphabetic characters into an allnumeric identification number?",
+      "o": [
+        "An existence check.",
+        "A format check.",
+        "A dependency check.",
+        "A check digit."
+      ],
+      "a": 1,
+      "e": "With a format check, the computer checks the characteristics of the character content, length, or sign of the individual data fields.",
+      "wrongWhy": [
+        "See the correct answer for an explanation.",
+        null,
+        "See the correct answer for an explanation.",
+        "See the correct answer for an explanation."
+      ],
+      "source": "CIA 0815 III.072",
+      "diffPct": 57
+    },
+    {
+      "q": "Which of the following represents an internal control weakness in a computer-based system?",
+      "o": [
+        "Computer operators have access to operator instructions and the authority to change programs.",
+        "The computer librarian maintains custody and record keeping for computer application programs.",
+        "Computer programmers write and revise programs designed by analysts.",
+        "The data control group is solely responsible for distributing reports and other output."
+      ],
+      "a": 0,
+      "e": "Computer operators should have access to operator instructions, but they cannot have the authority to change programs. Changing programs is the function for the computer programmer.",
+      "wrongWhy": [
+        null,
+        "Maintaining custody and record keeping is an appropriate function for the computer librarian, so this is not a control weakness.",
+        "Programmers' responsibility is to write, test and document the systems as designed by analysts, so this is not a control weakness.",
+        "Distributing computer reports is an appropriate function of the control group, so this is not a control weakness."
+      ],
+      "source": "CIA 588 II.31",
+      "diffPct": 67
+    },
+    {
+      "q": "In assessing controls over network access, the best source of evidence to determine that terminated employees do not continue to have access to the company’s network is to",
+      "o": [
+        "reconcile current payroll lists with database access lists.",
+        "discuss password removal procedures with the database administrator.",
+        "review computer logs for access attempts.",
+        "review access control software to determine whether the most current version is implemented."
+      ],
+      "a": 0,
+      "e": "Reconciling current payroll lists with database access lists would provide the best source of evidence to determine that terminated employees do not continue to have access to the company’s network. If a database were accessed by someone who was not on the current payroll list, it should be investigated because that person may be a terminated employee whose access had not been properly terminated.",
+      "wrongWhy": [
+        null,
+        "Discussing password removal procedures with the database administrator would not provide any evidence at all that terminated employees do not continue to have access to the company's network.",
+        "Reviewing computer logs for access attempts would not provide any evidence at all that terminated employees do not continue to have access to the company's network.",
+        "Reviewing access control software to determine whether the most current version is implemented would not provide any evidence at all that terminated employees do not continue to have access to the company's network."
+      ],
+      "source": "ICMA 1603.P1.076",
+      "diffPct": 43
+    },
+    {
+      "q": "Which one of the following is the best reason for developing a computer security plan?",
+      "o": [
+        "Recovery from the damage associated with any identified threats can be assured.",
+        "A company can select the set of control policies and procedures that optimize computer security relative to cost.",
+        "The user departments can be assured that control policies are in place and their data files are secure.",
+        "All possible threats associated with the data processing equipment are identified."
+      ],
+      "a": 1,
+      "e": "Developing a computer security plan gives management the opportunity to select the set of control policies and procedures that will safeguard physical facilities and provide for the safety, privacy, and integrity of the data while balancing the costs against the benefits.",
+      "wrongWhy": [
+        "It is not possible to have complete assurance of recovery from damage associated with any identified threats.",
+        null,
+        "Just because a computer security plan has been developed, that does not mean it has been implemented or that user departments can be assured of anything.",
+        "It is not possible to identify all possible threats associated with data processing equipment."
+      ],
+      "source": "CMA 685 5.25",
+      "diffPct": 36
+    },
+    {
+      "q": "Which of the following statements is true regarding source code and object code?",
+      "o": [
+        "Programs are written in object code, which is the language that a programmer uses for coding the program.",
+        "A compiler converts object code into source code.",
+        "While source code and object code should correspond, the computer does not require them to correspond.",
+        "Source code is the machine language that a computer understands."
+      ],
+      "a": 2,
+      "e": "This is a true statement. It is possible for a knowledgeable person to make a copy of the source code, rewrite some of the instructions, compile the modified source code into object code, replace the object code on the computer, and then destroy the modified source code. This results in a program running on the computer that does not correspond to the authorized source code. This weakness can be used to commit computer fraud if the controls over compiling and cataloging are not adequate.",
+      "wrongWhy": [
+        "Programs are written in source code.",
+        "A compiler converts the source code that a programmer writes into object code that the computer can understand.",
+        null,
+        "Object code is the language that the computer can understand."
+      ],
+      "source": "HOCK CMA P1D3 11",
+      "diffPct": 35
+    },
+    {
+      "q": "The process of learning how the current system functions, determining the needs of users and developing the logical requirements of a proposed system is referred to as:",
+      "o": [
+        "Systems analysis.",
+        "Systems feasibility study.",
+        "Systems implementation.",
+        "Systems maintenance."
+      ],
+      "a": 0,
+      "e": "Systems analysis consists of organizational analysis to learn about the current system’s strengths and weaknesses; identification of users’ requirements for the new system; identifying the system requirements to fulfill the information needs of the users; evaluating alternative designs using cost-benefit analysis; and preparing a systems analysis report documenting the design of the proposed system and its specifications.",
+      "wrongWhy": [
+        null,
+        "This is not what the process of learning how the current system functions, determining the needs of users and developing the logical requirements of a proposed system is referred to as.",
+        "This is not what the process of learning how the current system functions, determining the needs of users and developing the logical requirements of a proposed system is referred to as.",
+        "This is not what the process of learning how the current system functions, determining the needs of users and developing the logical requirements of a proposed system is referred to as."
+      ],
+      "source": "HTB 1.2.056",
+      "diffPct": 70
     }
   ],
   "6-13": [
