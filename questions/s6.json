@@ -1347,7 +1347,7 @@
         "Invoices Starting With '9' Appear Far More Frequently than Benford's Law predicts — suggesting amounts just below a $10,000 approval threshold",
         "Invoice amounts are mostly below $1,000"
       ],
-      "a": 1,
+      "a": 2,
       "e": "Benford's Law: digit '1' = ~30%, '2' = ~18%, '9' = ~5% as first digit in natural data. Fraudsters creating fictitious invoices below an approval threshold (e.g., $9,500, $9,800, $9,950) produce abnormally high frequency of '9' as first digit. This pattern is detectable with Benford analysis and should trigger investigation. Normal business data approximates Benford's distribution."
     },
     {
@@ -3717,7 +3717,7 @@
         "Blocking all external internet access",
         "Only using on-premises systems, never cloud"
       ],
-      "a": 2,
+      "a": 1,
       "e": "Zero Trust: abandons the concept of a trusted internal network. Every user, device, and application must be Continuously Verified — even inside the corporate network. Principles: (1) Verify Explicitly — always authenticate using all available data; (2) Least Privilege Access — minimal access rights; (3) Assume Breach — design as if attackers are already inside. Zero Trust is increasingly required by regulators and is the modern architecture for finance systems accessed by remote/hybrid workers."
     },
     {
@@ -3969,7 +3969,7 @@
       "o": [
         "7 days",
         "30 days (extendable to 3 months for complex requests)",
-        "One Month of receiving the request — extendable by a further two months for complex or numerous requests",
+        "14 days from receiving the request — no extensions permitted under any circumstances",
         "6 months"
       ],
       "a": 1,
