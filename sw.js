@@ -1,24 +1,33 @@
-// CMA Prep — Service Worker v3
+// CMA Prep — Service Worker v8
 // Strategy: Network-first with cache fallback
+// Auto-update: listens for SKIP_WAITING from the page → triggers instant reload
 
-const CACHE_NAME = 'cma-prep-v7';
+const CACHE_NAME = 'cma-prep-v8';
 const OFFLINE_URLS = [
   './',
   './index.html',
   './cbq.html',
-  './questions/s1.json',
-  './questions/s2.json',
-  './questions/s3.json',
-  './questions/s4.json',
-  './questions/s5.json',
-  './questions/s6.json'
+  './s1.json',
+  './s2.json',
+  './s3.json',
+  './s4.json',
+  './s5.json',
+  './s6.json'
 ];
+
+// ── Page sends SKIP_WAITING after detecting a new SW is waiting ───────────────
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
 
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
       return cache.addAll(OFFLINE_URLS);
-    }).then(() => self.skipWaiting())
+    })
+    // No skipWaiting() here — the page controls timing so reload is clean
   );
 });
 
