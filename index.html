@@ -3606,6 +3606,9 @@ if('serviceWorker' in navigator){
 
         // ── Poll for updates on every page load ────────────────────────────
         reg.update();
+
+        // ── Poll every 5 minutes so long sessions auto-update ──────────────
+        setInterval(()=>{ reg.update(); }, 5 * 60 * 1000);
       })
       .catch(err => console.warn('[SW] Registration failed:', err));
 
