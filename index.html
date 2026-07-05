@@ -683,7 +683,9 @@ const STATE={tab:'loading',searchQ:'',dictQ:'',dictData:[],dictLoaded:false,lead
     dashTeachingLog:[],dashTeachingLogLoaded:false,
     dashTeachingDraft:{groupCode:'',lectureNumber:'',date:'',unitIds:[],notes:''},
     dashLoaded:false,dashLoading:false,dashError:false,
-    dashLectures:[],dashLive:{},dashLectureDraft:{title:'',groupCode:'',date:''},dashAttendance:[]};
+    dashLectures:[],dashLive:{},dashLectureDraft:{title:'',groupCode:'',date:''},dashAttendance:[],
+    dashExams:[],dashExamsLoaded:false,
+    dashExamDraft:{title:'',groupCode:'',sectionId:'',count:20,durationMinutes:30,opensAt:'',closesAt:''}};
 
 // ─── ARABIC TERM TOOLTIPS ──────────────────────────────────────────────────
 const TERM_DICT={
@@ -3248,6 +3250,111 @@ function openAttendanceList(lectureId){
 }
 
 
+// ═════════════════════════════════════════════════════════════════════
+// PHASE 3a-i — GROUP EXAMS (instructor authoring surface)
+// Data model:
+//   exams/{id} : { title, groupCode, questionSource:'auto', sectionId,
+//                  count, durationMinutes, opensAt, closesAt,
+//                  status:'scheduled'|'closed', createdAt, createdBy }
+// Ownership : instructor writes; any signed-in student reads (rules already live).
+// Question set is NOT stored on the exam doc — Phase 3a-ii will deterministically
+//   draw `count` questions from s{sectionId}.json seeded on (examId + student.uid)
+//   so refresh-cheat is impossible while sets vary across students.
+// ═════════════════════════════════════════════════════════════════════
+
+// Effective status derived from timestamps + stored status.
+function examWindowStatus(x){
+  if(x.status==='closed')return 'closed';
+  const now=Date.now();
+  const opens=x.opensAt?Date.parse(x.opensAt):0;
+  const closes=x.closesAt?Date.parse(x.closesAt):0;
+  if(closes&&now>closes)return 'closed';
+  if(opens&&now<opens)return 'scheduled';
+  return 'active';
+}
+
+async function loadDashExams(){
+  if(!db)return;
+  try{
+    const snap=await db.collection('exams').get();
+    STATE.dashExams=snap.docs.map(d=>({id:d.id,...d.data()}))
+      .sort((a,b)=>(b.opensAt||'')>(a.opensAt||'')?1:-1);
+    STATE.dashExamsLoaded=true;
+    if(STATE.tab==='dashboard')render();
+  }catch(e){
+    console.warn('[Exams] load failed:',e);
+    STATE.dashExams=STATE.dashExams||[];
+    STATE.dashExamsLoaded=true;
+  }
+}
+
+async function saveExam(){
+  const d=STATE.dashExamDraft;
+  if(!d.title||!d.title.trim()){showToast('Enter an exam title.','warning');return;}
+  if(!d.groupCode){showToast('Choose a group.','warning');return;}
+  if(!d.sectionId){showToast('Choose a section.','warning');return;}
+  const count=parseInt(d.count);
+  if(!count||count<3||count>50){showToast('Question count must be 3–50.','warning');return;}
+  const dur=parseInt(d.durationMinutes);
+  if(!dur||dur<3||dur>240){showToast('Duration must be 3–240 minutes.','warning');return;}
+  if(!d.opensAt||!d.closesAt){showToast('Set both opens and closes times.','warning');return;}
+  const opensISO=new Date(d.opensAt).toISOString();
+  const closesISO=new Date(d.closesAt).toISOString();
+  if(new Date(closesISO)<=new Date(opensISO)){showToast('Closes must be after opens.','warning');return;}
+  if(new Date(closesISO)<=new Date()){showToast('Closes time is in the past.','warning');return;}
+  try{
+    await db.collection('exams').add({
+      title:d.title.trim(),
+      groupCode:d.groupCode.toUpperCase(),
+      questionSource:'auto',
+      sectionId:parseInt(d.sectionId),
+      count,durationMinutes:dur,
+      opensAt:opensISO,closesAt:closesISO,
+      status:'scheduled',
+      createdAt:new Date().toISOString(),
+      createdBy:STATE.user.uid
+    });
+    showToast('Exam created ✅','success');
+    STATE.dashExamDraft={title:'',groupCode:'',sectionId:'',count:20,durationMinutes:30,opensAt:'',closesAt:''};
+    STATE.dashExamsLoaded=false;
+    await loadDashExams();
+  }catch(e){
+    showToast('Error: '+e.message,'error');
+  }
+}
+
+async function closeExamNow(id){
+  const ok=await showModal({
+    icon:'\u{1F6D1}',title:'Close Exam Now?',
+    body:'Students will no longer be able to start this exam. Any in-progress attempts can still submit.',
+    type:'danger',confirmText:'Close',cancelText:'Cancel'
+  });
+  if(!ok)return;
+  try{
+    await db.collection('exams').doc(id).update({
+      status:'closed',
+      closedAt:new Date().toISOString()
+    });
+    STATE.dashExamsLoaded=false;
+    await loadDashExams();
+  }catch(e){showToast('Error closing exam.','error');}
+}
+
+async function deleteExam(id){
+  const ok=await showModal({
+    icon:'\u{1F5D1}\uFE0F',title:'Delete Exam?',
+    body:'This removes the exam. Any student results already submitted are preserved.',
+    type:'danger',confirmText:'Delete',cancelText:'Cancel'
+  });
+  if(!ok)return;
+  try{
+    await db.collection('exams').doc(id).delete();
+    STATE.dashExamsLoaded=false;
+    await loadDashExams();
+  }catch(e){showToast('Error deleting exam.','error');}
+}
+
+
 // ==== PHASE 1 DASHBOARD HANDLERS (ported from FMAA, remapped) ====
 async function loadTeachingLog(){if(!db)return;try{const snap=await db.collection('teaching-log').get();STATE.dashTeachingLog=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.date||'')>(a.date||'')?1:-1);STATE.dashTeachingLogLoaded=true;if(STATE.tab==='dashboard')render();}catch(e){console.warn('Teaching log load failed:',e);STATE.dashTeachingLog=STATE.dashTeachingLog||[];STATE.dashTeachingLogLoaded=true;}}
 function toggleTeachingUnit(uid){const u=STATE.dashTeachingDraft.unitIds;const i=u.indexOf(uid);if(i>=0)u.splice(i,1);else u.push(uid);render();}
@@ -3319,13 +3426,14 @@ async function loadDashboardP1(){
   if(STATE.dashLoaded||STATE.dashLoading)return;
   STATE.dashLoading=true;STATE.dashError=false;
   try{
-    const [gsnap,tsnap,ssnap,lsnap,livesnap,attsnap]=await Promise.all([
+    const [gsnap,tsnap,ssnap,lsnap,livesnap,attsnap,exsnap]=await Promise.all([
       db.collection('groups').get(),
       db.collection('teaching-log').get(),
       db.collection('students').get(),
       db.collection('lectures').get(),
       db.collection('live').get(),
-      db.collection('attendance').get()
+      db.collection('attendance').get(),
+      db.collection('exams').get()
     ]);
     STATE.dashGroups=gsnap.docs.map(d=>({id:d.id,...d.data()}));
     STATE.dashTeachingLog=tsnap.docs.map(d=>({id:d.id,...d.data()}))
@@ -3335,7 +3443,9 @@ async function loadDashboardP1(){
       .sort((a,b)=>(b.date||'')>(a.date||'')?1:(b.createdAt||'')>(a.createdAt||'')?1:-1);
     STATE.dashLive={};livesnap.docs.forEach(d=>{STATE.dashLive[d.id]=d.data();});
     STATE.dashAttendance=attsnap.docs.map(d=>({id:d.id,...d.data()}));
-    STATE.dashGroupsLoaded=true;STATE.dashTeachingLogLoaded=true;STATE.dashLoaded=true;
+    STATE.dashExams=exsnap.docs.map(d=>({id:d.id,...d.data()}))
+      .sort((a,b)=>(b.opensAt||'')>(a.opensAt||'')?1:-1);
+    STATE.dashGroupsLoaded=true;STATE.dashTeachingLogLoaded=true;STATE.dashExamsLoaded=true;STATE.dashLoaded=true;
   }catch(e){console.warn('[Dashboard] load failed:',e);STATE.dashError=true;}
   STATE.dashLoading=false;render();
 }
@@ -3491,15 +3601,153 @@ function renderDashLectures(){
     ${rows}</div>`;
 }
 
+// ─── RENDER DASHBOARD: EXAMS ─────────────────────────────────────────
+function renderDashExams(){
+  const d=STATE.dashExamDraft;
+  const groups=(STATE.dashGroups||[]).map(g=>g.code);
+  const exams=STATE.dashExams||[];
+
+  const groupOpts=groups.map(g=>
+    `<option value="${esc(g)}" ${d.groupCode===g?'selected':''}>${esc(g)}</option>`
+  ).join('');
+
+  const sectionOpts=S.map(s=>
+    `<option value="${s.id}" ${String(d.sectionId)===String(s.id)?'selected':''}>Sec ${s.id} — ${esc(s.title)}</option>`
+  ).join('');
+
+  const noGroups=groups.length===0
+    ? `<div style="font-size:13px;color:#A32D2D;background:#FCEBEB;border:.5px solid #E24B4A40;border-radius:8px;padding:10px 12px;margin-bottom:12px">Create a group first (Groups tab) before adding an exam.</div>`
+    : '';
+
+  const createCard=`
+    <div style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:10px">➕ Create an Exam</div>
+    <div style="background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:16px">
+      ${noGroups}
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Title *</label>
+        <input id="ex-title" type="text" value="${esc(d.title||'')}"
+               oninput="STATE.dashExamDraft.title=this.value"
+               placeholder="e.g. Section 1 Mid-Term Practice"
+               style="width:100%;padding:9px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:14px;font-family:inherit;outline:none;color:#1a1a1a;background:#fafaf8;box-sizing:border-box">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div>
+          <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Group *</label>
+          <select onchange="STATE.dashExamDraft.groupCode=this.value"
+                  style="width:100%;padding:9px;border-radius:8px;border:.5px solid #d0d0d0;font-size:13px;font-family:inherit;background:#fff;color:#1a1a1a;box-sizing:border-box">
+            <option value="">Select...</option>${groupOpts}
+          </select>
+        </div>
+        <div>
+          <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Section *</label>
+          <select onchange="STATE.dashExamDraft.sectionId=this.value"
+                  style="width:100%;padding:9px;border-radius:8px;border:.5px solid #d0d0d0;font-size:13px;font-family:inherit;background:#fff;color:#1a1a1a;box-sizing:border-box">
+            <option value="">Select...</option>${sectionOpts}
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div>
+          <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Questions (3–50) *</label>
+          <input type="number" min="3" max="50" value="${esc(String(d.count||20))}"
+                 oninput="STATE.dashExamDraft.count=this.value"
+                 style="width:100%;padding:9px;border-radius:8px;border:.5px solid #d0d0d0;font-size:13px;font-family:inherit;outline:none;background:#fff;color:#1a1a1a;box-sizing:border-box">
+        </div>
+        <div>
+          <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Duration (min) *</label>
+          <input type="number" min="3" max="240" value="${esc(String(d.durationMinutes||30))}"
+                 oninput="STATE.dashExamDraft.durationMinutes=this.value"
+                 style="width:100%;padding:9px;border-radius:8px;border:.5px solid #d0d0d0;font-size:13px;font-family:inherit;outline:none;background:#fff;color:#1a1a1a;box-sizing:border-box">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+        <div>
+          <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Opens at *</label>
+          <input type="datetime-local" value="${esc(d.opensAt||'')}"
+                 oninput="STATE.dashExamDraft.opensAt=this.value"
+                 style="width:100%;padding:9px;border-radius:8px;border:.5px solid #d0d0d0;font-size:13px;font-family:inherit;outline:none;background:#fff;color:#1a1a1a;box-sizing:border-box">
+        </div>
+        <div>
+          <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Closes at *</label>
+          <input type="datetime-local" value="${esc(d.closesAt||'')}"
+                 oninput="STATE.dashExamDraft.closesAt=this.value"
+                 style="width:100%;padding:9px;border-radius:8px;border:.5px solid #d0d0d0;font-size:13px;font-family:inherit;outline:none;background:#fff;color:#1a1a1a;box-sizing:border-box">
+        </div>
+      </div>
+      <button onclick="saveExam()"
+              style="width:100%;padding:11px;border-radius:10px;border:none;background:#0C447C;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">
+        💾 Create Exam
+      </button>
+    </div>`;
+
+  const buckets={active:[],scheduled:[],closed:[]};
+  exams.forEach(x=>{buckets[examWindowStatus(x)].push(x);});
+
+  const fmtDT=(iso)=>{
+    if(!iso)return '—';
+    try{
+      return new Date(iso).toLocaleString('en-GB',
+        {day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+    }catch{return iso;}
+  };
+
+  const badgeStyle={
+    active:   'background:#D5F5E3;color:#186A3B',
+    scheduled:'background:#FEF9E7;color:#9A7D0A',
+    closed:   'background:#EAECEE;color:#566573'
+  };
+  const badgeLabel={active:'🟢 ACTIVE',scheduled:'⏳ SCHEDULED',closed:'⚫ CLOSED'};
+
+  const examCard=(x)=>{
+    const status=examWindowStatus(x);
+    const sec=sect(x.sectionId);
+    const canClose=status!=='closed';
+    return `<div style="background:#fff;border:.5px solid ${status==='active'?'#1E844940':'#e0e0d8'};border-radius:12px;padding:13px 14px;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+        <span style="font-size:10px;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:.4px;${badgeStyle[status]}">${badgeLabel[status]}</span>
+        <span style="font-size:10px;font-weight:600;padding:2px 9px;border-radius:10px;background:#F4ECF7;color:#6C3483;font-family:'Courier New',monospace">${esc(x.groupCode)}</span>
+      </div>
+      <div style="font-size:14px;font-weight:600;color:#1a1a1a;line-height:1.35;margin-bottom:6px">${esc(x.title)}</div>
+      <div style="font-size:11px;color:#666;line-height:1.7;margin-bottom:10px">
+        Section ${x.sectionId}${sec?' — '+esc(sec.title):''}<br>
+        <b>${x.count}</b> questions · <b>${x.durationMinutes}</b> min<br>
+        Opens <b>${fmtDT(x.opensAt)}</b> · Closes <b>${fmtDT(x.closesAt)}</b>
+      </div>
+      <div style="display:flex;gap:8px">
+        ${canClose?`<button onclick="closeExamNow('${x.id}')" style="flex:1;padding:7px 12px;border-radius:8px;border:.5px solid #D2691E40;background:#FEF5E7;color:#7D6608;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">🛑 Close Now</button>`:''}
+        <button onclick="deleteExam('${x.id}')" style="${canClose?'':'flex:1;'}padding:7px 12px;border-radius:8px;border:.5px solid #E24B4A40;background:#FCEBEB;color:#A32D2D;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">🗑️ Delete</button>
+      </div>
+    </div>`;
+  };
+
+  const bucketHTML=(label,arr)=>arr.length
+    ? `<div style="font-size:12px;font-weight:500;color:#888;letter-spacing:.5px;margin:14px 0 8px">${label} (${arr.length})</div>${arr.map(examCard).join('')}`
+    : '';
+
+  const emptyState=exams.length===0
+    ? `<div style="text-align:center;padding:30px 14px;color:#aaa;font-size:13px">No exams yet. Create your first one above.</div>`
+    : '';
+
+  return `<div style="padding:14px">
+    ${createCard}
+    ${emptyState}
+    ${bucketHTML('🟢 ACTIVE',buckets.active)}
+    ${bucketHTML('⏳ SCHEDULED',buckets.scheduled)}
+    ${bucketHTML('⚫ CLOSED',buckets.closed)}
+    <div style="height:40px"></div>
+  </div>`;
+}
+
 function renderDashboard(){
   if(!isInstructor())return renderIntro();
   if(!STATE.dashLoaded&&!STATE.dashLoading)loadDashboardP1();
   const SUB_DASH=[
     {id:'groups',      icon:'\u{1F465}', label:'Groups'},
     {id:'lectures',    icon:'\u{1F3AC}', label:'Lectures'},
+    {id:'exams',       icon:'\u{1F4DD}', label:'Exams'},
     {id:'teaching-log',icon:'\u{1F4D3}', label:'Actual Teaching'}
   ];
-  const tab=['teaching-log','lectures','groups'].includes(STATE.dashTab)?STATE.dashTab:'groups';
+  const tab=['teaching-log','lectures','groups','exams'].includes(STATE.dashTab)?STATE.dashTab:'groups';
   const subnav=`<div class="sub-nav">${SUB_DASH.map(it=>
     `<button class="sub-nav-btn${tab===it.id?' active':''}" onclick="STATE.dashTab='${it.id}';render()">${it.icon} ${it.label}</button>`
   ).join('')}</div>`;
@@ -3512,10 +3760,12 @@ function renderDashboard(){
     body=renderDashActualTeaching();
   }else if(tab==='lectures'){
     body=renderDashLectures();
+  }else if(tab==='exams'){
+    body=renderDashExams();
   }else{
     body=renderDashGroups();
   }
-  return `${subnav}<div class="sh"><h2>Instructor Dashboard</h2><p>Groups · lectures · teaching log</p></div><div class="scroll-area">${body}</div>`;
+  return `${subnav}<div class="sh"><h2>Instructor Dashboard</h2><p>Groups · lectures · exams · teaching log</p></div><div class="scroll-area">${body}</div>`;
 }
 
 // Instructor-only Dashboard tab appended to the student nav.
