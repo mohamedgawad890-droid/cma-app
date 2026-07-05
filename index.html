@@ -81,6 +81,11 @@ window.addEventListener('beforeinstallprompt', e => {
 .lesson-nav-footer{display:flex;gap:8px;margin-top:20px;padding-top:16px;border-top:.5px solid #e0e0d8}
 .lesson-nav-btn{flex:1;padding:11px 8px;border-radius:10px;border:.5px solid #d0d0d0;background:#f5f5f0;color:#555;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;gap:2px;text-align:left}
 </style>
+<style id="dashboard-p1">
+.teach-entry{background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:10px}
+.teach-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.teach-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
+</style>
 </head>
 <body>
 <div id="app">
@@ -673,7 +678,11 @@ const STATE={tab:'loading',searchQ:'',dictQ:'',dictData:[],dictLoaded:false,lead
     showReset:false,
     flashcards:[],flashcardsIdx:0,flashcardsFlipped:false,flashcardsFilter:'all',flashcardsMode:'study',
     qotdState:{dateKey:'',question:null,selected:null,answered:false,taughtUnitCount:0},
-    dailyGoalMinutes:30,fontSize:'md'};
+    dailyGoalMinutes:30,fontSize:'md',
+    dashTab:'groups',dashGroups:[],dashGroupsLoaded:false,dashStudents:[],
+    dashTeachingLog:[],dashTeachingLogLoaded:false,
+    dashTeachingDraft:{groupCode:'',lectureNumber:'',date:'',unitIds:[],notes:''},
+    dashLoaded:false,dashLoading:false,dashError:false};
 
 // ─── ARABIC TERM TOOLTIPS ──────────────────────────────────────────────────
 const TERM_DICT={
@@ -3130,6 +3139,121 @@ function nextQuestion(){
 }
 function resetAll(){saveProg({done:[],lessonScores:{},mcqTotal:0,mcqRight:0});STATE.showReset=false;render();}
 
+// ==== PHASE 1 DASHBOARD HANDLERS (ported from FMAA, remapped) ====
+async function loadTeachingLog(){if(!db)return;try{const snap=await db.collection('teaching-log').get();STATE.dashTeachingLog=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.date||'')>(a.date||'')?1:-1);STATE.dashTeachingLogLoaded=true;if(STATE.tab==='dashboard')render();}catch(e){console.warn('Teaching log load failed:',e);STATE.dashTeachingLog=STATE.dashTeachingLog||[];STATE.dashTeachingLogLoaded=true;}}
+function toggleTeachingUnit(uid){const u=STATE.dashTeachingDraft.unitIds;const i=u.indexOf(uid);if(i>=0)u.splice(i,1);else u.push(uid);render();}
+async function saveTeachingEntry(){const d=STATE.dashTeachingDraft;if(!d.groupCode||!d.lectureNumber||!d.date||!d.unitIds.length){showToast('Fill group, lecture #, date, and select at least one unit.','warning');return;}try{await db.collection('teaching-log').add({groupCode:d.groupCode.trim().toUpperCase(),lectureNumber:Number(d.lectureNumber),date:d.date,unitIds:d.unitIds.slice(),notes:d.notes.trim(),createdAt:new Date().toISOString(),createdBy:STATE.user.uid});showToast('Teaching entry saved ✅','success');STATE.dashTeachingDraft={groupCode:'',lectureNumber:'',date:'',unitIds:[],notes:''};STATE.dashTeachingLogLoaded=false;await loadTeachingLog();}catch(e){showToast('Error: '+e.message,'error');}}
+async function deleteTeachingEntry(id){const ok=await showModal({icon:'🗑️',title:'Delete Entry?',body:'This removes the teaching record. Questions of the Day may change for that group.',type:'danger',confirmText:'Delete',cancelText:'Cancel'});if(!ok)return;try{await db.collection('teaching-log').doc(id).delete();STATE.dashTeachingLogLoaded=false;await loadTeachingLog();}catch(e){showToast('Error deleting.','error');}}
+async function saveGroup(){
+  const inp=document.getElementById('new-group-input');
+  if(!inp)return;
+  const code=inp.value.toUpperCase().replace(/[^A-Z0-9\x2D]/g,'').trim();
+  if(!code){showToast('Enter a group code.','warning');return;}
+  if(STATE.dashGroups.some(g=>g.code===code)){showToast('Group already exists.','warning');return;}
+  try{
+    const ref=await db.collection('groups').add({code,createdAt:new Date().toISOString()});
+    STATE.dashGroups.push({id:ref.id,code,createdAt:new Date().toISOString()});
+    inp.value='';
+    render();
+    showToast('Group '+code+' added.','success');
+  }catch(e){
+    showToast('Error saving group.','error');
+  }
+}
+async function deleteGroup(id,code){
+  const ok=await showModal({icon:'\u{1F5D1}\uFE0F',title:'Delete Group?',body:'Remove group '+code+'? Students already assigned to this group will keep their code but it will no longer be accepted for new registrations.',type:'danger',confirmText:'Delete',cancelText:'Cancel'});
+  if(!ok)return;
+  try{
+    await db.collection('groups').doc(id).delete();
+    STATE.dashGroups=STATE.dashGroups.filter(g=>g.id!==id);
+    render();
+    showToast('Group '+code+' deleted.','success');
+  }catch(e){
+    showToast('Error deleting group.','error');
+  }
+}
+function renderDashGroups(){
+  const groups=STATE.dashGroups||[];
+  const students=STATE.dashStudents||[];
+  const rows=groups.map(g=>{
+    const count=students.filter(s=>s.groupCode===g.code).length;
+    const created=g.createdAt?new Date(g.createdAt).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
+    return `<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 14px;border-bottom:.5px solid #f0f0eb">`+
+      `<div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0">`+
+      `<span style="font-size:14px;font-weight:600;color:#0C447C;font-family:'Courier New',monospace;letter-spacing:.5px">${esc(g.code)}</span>`+
+      `<span style="font-size:11px;background:#EBF5FB;color:#0C447C;padding:2px 8px;border-radius:10px">${count} student${count!==1?'s':''}</span>`+
+      `${created?`<span style="font-size:11px;color:#aaa">${created}</span>`:''}`+
+      `</div>`+
+      `<button onclick="deleteGroup('${g.id}','${esc(g.code)}')" style="padding:5px 10px;border-radius:6px;border:.5px solid #E24B4A40;background:#FCEBEB;color:#A32D2D;font-size:11px;cursor:pointer;font-family:inherit;flex-shrink:0">\u{1F5D1}\uFE0F</button>`+
+      `</div>`;
+  }).join('');
+  return `<div style="padding:14px">`+
+    `<div style="font-size:13px;color:#555;line-height:1.6;margin-bottom:14px">Only codes listed here will be accepted when students enter a group code on their profile.</div>`+
+    `<div style="background:#fff;border:.5px solid #e0e0d8;border-radius:12px;margin-bottom:16px;overflow:hidden">`+
+    `<div style="padding:10px 14px;background:#F4F6F7;border-bottom:.5px solid #e0e0d8;font-size:11px;font-weight:600;color:#555;letter-spacing:.5px">ACTIVE GROUPS (${groups.length})</div>`+
+    (groups.length?rows:`<div style="padding:20px;text-align:center;font-size:13px;color:#aaa">No groups yet — add one below.</div>`)+
+    `</div>`+
+    `<div style="background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px">`+
+    `<div style="font-size:12px;font-weight:600;color:#555;letter-spacing:.5px;margin-bottom:10px">ADD NEW GROUP</div>`+
+    `<div style="display:flex;gap:8px;align-items:center">`+
+    `<input id="new-group-input" type="text" placeholder="e.g. FC-JUN26" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9\x2D]/g,'')" maxlength="20" style="flex:1;padding:10px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:14px;font-family:'Courier New',monospace;outline:none;color:#1a1a1a;background:#fafaf8;text-transform:uppercase" onkeydown="if(event.key==='Enter')saveGroup()">`+
+    `<button onclick="saveGroup()" style="padding:10px 18px;border-radius:8px;border:none;background:#0C447C;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;flex-shrink:0">+ Add</button>`+
+    `</div>`+
+    `<div style="font-size:11px;color:#888;margin-top:6px">Letters, numbers and hyphens only. Max 20 characters.</div>`+
+    `</div></div>`;
+}
+
+// ==== INSTRUCTOR DASHBOARD — PHASE 1 (Groups + Teaching Log) ====
+// Loads only the three collections Phase 1 needs (all rule-covered & tested):
+// groups (instructor-write), teaching-log (instructor-write), students (instructor-read, for counts).
+async function loadDashboardP1(){
+  if(STATE.dashLoaded||STATE.dashLoading)return;
+  STATE.dashLoading=true;STATE.dashError=false;
+  try{
+    const [gsnap,tsnap,ssnap]=await Promise.all([
+      db.collection('groups').get(),
+      db.collection('teaching-log').get(),
+      db.collection('students').get()
+    ]);
+    STATE.dashGroups=gsnap.docs.map(d=>({id:d.id,...d.data()}));
+    STATE.dashTeachingLog=tsnap.docs.map(d=>({id:d.id,...d.data()}))
+      .sort((a,b)=>(b.date||'')>(a.date||'')?1:-1);
+    STATE.dashStudents=ssnap.docs.map(d=>{const x=d.data();return {uid:d.id,groupCode:x.groupCode||'',name:x.name||'',...x};});
+    STATE.dashGroupsLoaded=true;STATE.dashTeachingLogLoaded=true;STATE.dashLoaded=true;
+  }catch(e){console.warn('[Dashboard] load failed:',e);STATE.dashError=true;}
+  STATE.dashLoading=false;render();
+}
+
+function renderDashboard(){
+  if(!isInstructor())return renderIntro();
+  if(!STATE.dashLoaded&&!STATE.dashLoading)loadDashboardP1();
+  const SUB_DASH=[
+    {id:'groups',      icon:'\u{1F465}', label:'Groups'},
+    {id:'teaching-log',icon:'\u{1F4D3}', label:'Actual Teaching'}
+  ];
+  const tab=(STATE.dashTab==='teaching-log')?'teaching-log':'groups';
+  const subnav=`<div class="sub-nav">${SUB_DASH.map(it=>
+    `<button class="sub-nav-btn${tab===it.id?' active':''}" onclick="STATE.dashTab='${it.id}';render()">${it.icon} ${it.label}</button>`
+  ).join('')}</div>`;
+  let body;
+  if(STATE.dashError){
+    body=`<div style="text-align:center;padding:50px 20px"><div style="font-size:34px;margin-bottom:10px">\u26A0\uFE0F</div><div style="font-size:14px;color:#555;margin-bottom:14px">Couldn't load dashboard data.</div><button onclick="STATE.dashLoaded=false;STATE.dashError=false;loadDashboardP1()" style="padding:9px 18px;border-radius:8px;border:.5px solid #d0d0d0;background:#fff;font-size:13px;cursor:pointer;font-family:inherit">Retry</button></div>`;
+  }else if(!STATE.dashLoaded&&STATE.dashLoading){
+    body=`<div style="text-align:center;padding:60px 20px;color:#aaa"><div style="font-size:30px;margin-bottom:10px">\u23F3</div><div style="font-size:14px">Loading dashboard\u2026</div></div>`;
+  }else if(tab==='teaching-log'){
+    body=renderDashActualTeaching();
+  }else{
+    body=renderDashGroups();
+  }
+  return `${subnav}<div class="sh"><h2>Instructor Dashboard</h2><p>Groups &amp; teaching log</p></div><div class="scroll-area">${body}</div>`;
+}
+
+// Instructor-only Dashboard tab appended to the student nav.
+function getNavTabs(){
+  return isInstructor() ? [...TABS,{id:'dashboard',label:'Dashboard',icon:'\u{1F6E1}\uFE0F'}] : TABS;
+}
+
+
 // ==== PORTED STUDENT-LAYER FEATURES (from FMAA) ====
 
 // --- fontsize+dailygoal ---
@@ -3422,6 +3546,7 @@ function activeNavTab(){
   if(t==='formula-bank'||t==='dictionary'||t==='flashcards'||t==='my-notes')return'formula-bank';
   if(t==='search')return'search';
   if(t==='community'||t==='question-detail')return'community';
+  if(t==='dashboard')return'dashboard';
   if(t==='intro'||t==='register'||t==='feedback')return'intro';
   return t;
 }
@@ -3469,7 +3594,7 @@ function render(){
 
   let html='';
   switch(STATE.tab){
-    case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'wrong-answers':html=renderWrongAnswers();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;case'formula-bank':html=renderFormulaBank();break;case'dictionary':html=renderDictionary();break;case'flashcards':html=renderFlashcards();break;case'my-notes':html=renderNotes();break;case'cbq':html=renderCBQ();break;case'mock-exam':html=renderMockExamScreen();break;default:html=renderIntro();
+    case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'wrong-answers':html=renderWrongAnswers();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;case'formula-bank':html=renderFormulaBank();break;case'dictionary':html=renderDictionary();break;case'flashcards':html=renderFlashcards();break;case'my-notes':html=renderNotes();break;case'dashboard':html=renderDashboard();break;case'cbq':html=renderCBQ();break;case'mock-exam':html=renderMockExamScreen();break;default:html=renderIntro();
   }
   content.innerHTML=html;
 
@@ -3496,7 +3621,7 @@ function render(){
     if(active!==render._lastNavActive){
       render._lastNavActive=active;
       const brandHeader=`<div class="desktop-brand" style="display:flex;align-items:center;justify-content:space-between;gap:10px"><div style="display:flex;align-items:center;gap:10px;min-width:0"><img src="./gawad-avatar.webp" alt="Mohamed Abdelgawad" style="width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid #E6F1FB"><div style="min-width:0"><div style="font-size:13px;font-weight:600;color:#0C447C;letter-spacing:.5px">CMA Part One Prep</div><div style="font-size:10px;color:#888;margin-top:1px">With Gawad</div></div></div>${!window.matchMedia("(display-mode: standalone)").matches?'<button onclick="installApp()" title="Install App" style="display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:8px;border:1px solid #d0d8e8;background:#E6F1FB;color:#0C447C;cursor:pointer;font-size:12px;font-weight:500;font-family:inherit;flex-shrink:0"><span style="font-size:14px">⬇</span><span>Install App</span></button>':''}</div>`;
-      nav.innerHTML=brandHeader+TABS.map(t=>`<button class="nav-btn${t.id===active?' active':''}" onclick="navTo('${t.id}')"><span class="nav-icon">${t.icon}</span><span>${t.label}</span></button>`).join('');
+      nav.innerHTML=brandHeader+getNavTabs().map(t=>`<button class="nav-btn${t.id===active?' active':''}" onclick="navTo('${t.id}')"><span class="nav-icon">${t.icon}</span><span>${t.label}</span></button>`).join('');
     }}
   // Start live per-question timer when on a quiz screen with unanswered question
   if(STATE.tab==='quiz-session'&&STATE.quizState&&STATE.quizState.selected===null){
@@ -3625,7 +3750,7 @@ function renderRegister(){
       </div>
     </div>
 
-    <div class="info-title" style="font-size:14px;margin-bottom:10px">📊 CMA Study Profile <span style="font-size:11px;color:#aaa;font-weight:400">· optional</span></div>
+    <div class="info-title" style="font-size:14px;margin-bottom:10px">👥 Group Code <span style="font-size:11px;color:#aaa;font-weight:400">· if you're in a class</span></div><div class="card" style="margin-bottom:14px"><label style="font-size:12px;color:#888;display:block;margin-bottom:5px">Your instructor's group code</label><input id="f-groupcode" type="text" value="${fval('groupCode')}" placeholder="e.g. CMA-JUN26" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9\x2D]/g,'')" maxlength="20" style="width:100%;padding:10px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:14px;font-family:'Courier New',monospace;letter-spacing:.5px;outline:none;color:#1a1a1a;background:#fafaf8;text-transform:uppercase"><div style="font-size:11px;color:#888;margin-top:6px;line-height:1.5">Enter the code your instructor gave you to unlock your group's <b>Question of the Day</b>. Leave blank if you're studying on your own.</div></div><div class="info-title" style="font-size:14px;margin-bottom:10px">📊 CMA Study Profile <span style="font-size:11px;color:#aaa;font-weight:400">· optional</span></div>
     <div class="card" style="margin-bottom:14px">
       <div style="margin-bottom:12px">
         <label style="font-size:12px;color:#888;display:block;margin-bottom:5px">Your current accounting/finance level</label>
@@ -3707,6 +3832,7 @@ async function submitProfile(){
   const university=get('f-university'),faculty=get('f-faculty'),gradyear=get('f-gradyear');
   const title=get('f-title'),company=get('f-company'),experience=get('f-experience');
   const level=get('f-level'),goal=get('f-goal'),examdate=get('f-examdate');
+  const groupCode=(get('f-groupcode')||'').toUpperCase();
   const missing=[];
   if(!name)missing.push('Full Name');if(!mobile)missing.push('Mobile (WhatsApp)');
   const existingPhoto=loadStudent()?.photo||'';
@@ -3724,8 +3850,9 @@ async function submitProfile(){
     }catch(err){photoUrl=pendingB64;}
     window._pendingPhoto=null;
   }
-  saveStudent({name,mobile,email,country,university,faculty,gradyear,title,company,experience,level,goal,examdate,photo:photoUrl,registeredAt:loadStudent()?.registeredAt||new Date().toISOString()});
+  saveStudent({name,mobile,email,country,university,faculty,gradyear,title,company,experience,level,goal,examdate,groupCode,photo:photoUrl,registeredAt:loadStudent()?.registeredAt||new Date().toISOString()});
   STATE.showProfileWarning=false;
+  try{STATE.qotdState={dateKey:'',question:null,selected:null,answered:false,taughtUnitCount:0};ensureQotd();}catch(e){}
 
   // Send to Google Sheets
   const fb2=loadFeedback();
