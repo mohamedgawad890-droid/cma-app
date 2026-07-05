@@ -1,12 +1,13 @@
-// CMA Prep — Service Worker v8
+// CMA Prep — Service Worker v9
 // Strategy: Network-first with cache fallback
 // Auto-update: listens for SKIP_WAITING from the page → triggers instant reload
 
-const CACHE_NAME = 'cma-prep-v8';
+const CACHE_NAME = 'cma-prep-v9';
 const OFFLINE_URLS = [
   './',
   './index.html',
-  './cbq.html',
+  './app.css',
+  './cbq-data.js',
   './s1.json',
   './s2.json',
   './s3.json',
@@ -25,7 +26,12 @@ self.addEventListener('message', event => {
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(OFFLINE_URLS);
+      // Cache files individually so one missing file can't fail the whole install
+      return Promise.all(
+        OFFLINE_URLS.map(url =>
+          cache.add(url).catch(err => console.warn('[SW] skip cache:', url, err))
+        )
+      );
     })
     // No skipWaiting() here — the page controls timing so reload is clean
   );
