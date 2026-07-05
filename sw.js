@@ -1,8 +1,11 @@
-// CMA Prep — Service Worker v12
+// CMA Prep — Service Worker v13
 // Strategy: Network-first with cache fallback
 // Auto-update: listens for SKIP_WAITING from the page → triggers instant reload
+//
+// v13 (Phase 3a-i): version bump only — forces browsers to drop the v12 cache
+// so students pick up the new index.html with the Exams dashboard tab.
 
-const CACHE_NAME = 'cma-prep-v12';
+const CACHE_NAME = 'cma-prep-v13';
 const OFFLINE_URLS = [
   './',
   './index.html',
