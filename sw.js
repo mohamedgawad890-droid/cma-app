@@ -1,8 +1,8 @@
-// CMA Prep — Service Worker v11
+// CMA Prep — Service Worker v12
 // Strategy: Network-first with cache fallback
 // Auto-update: listens for SKIP_WAITING from the page → triggers instant reload
 
-const CACHE_NAME = 'cma-prep-v11';
+const CACHE_NAME = 'cma-prep-v12';
 const OFFLINE_URLS = [
   './',
   './index.html',
