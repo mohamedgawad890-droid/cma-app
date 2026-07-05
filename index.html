@@ -685,7 +685,8 @@ const STATE={tab:'loading',searchQ:'',dictQ:'',dictData:[],dictLoaded:false,lead
     dashLoaded:false,dashLoading:false,dashError:false,
     dashLectures:[],dashLive:{},dashLectureDraft:{title:'',groupCode:'',date:''},dashAttendance:[],
     dashExams:[],dashExamsLoaded:false,
-    dashExamDraft:{title:'',groupCode:'',sectionId:'',count:20,durationMinutes:30,opensAt:'',closesAt:''}};
+    dashExamDraft:{title:'',groupCode:'',sectionId:'',count:20,durationMinutes:30,opensAt:'',closesAt:''},
+    studentExams:[],studentExamsLoaded:false,studentExamResults:{},examSession:null};
 
 // ─── ARABIC TERM TOOLTIPS ──────────────────────────────────────────────────
 const TERM_DICT={
@@ -2286,6 +2287,8 @@ function renderIntro(){
 
     <div class="pad" style="padding-top:16px">
 
+      ${renderExamsStrip()}
+
       <!-- WELCOME -->
       <div class="info-section">
         <div class="welcome-box">
@@ -3819,6 +3822,458 @@ function qotdAnswer(i){const st=loadStudent();if(!st||!st.groupCode)return;const
 function getPrevLesson(secId,lessonId){const si=S.findIndex(s=>s.id===secId);if(si<0)return null;const sec=S[si];const li=sec.lessons.findIndex(l=>l.id===lessonId);if(li>0)return{sec,lesson:sec.lessons[li-1]};if(si>0){const prev=S[si-1];return{sec:prev,lesson:prev.lessons[prev.lessons.length-1]};}return null;}
 
 // --- shuffle ---
+// ═════════════════════════════════════════════════════════════════════
+// PHASE 3a-ii — GROUP EXAMS (student taking surface)
+//
+// State machine:
+//   Home strip (renderExamsStrip) → student clicks Start → startExam()
+//   creates exam-results/{examId_uid} doc with submitted:false, seeds
+//   the deterministic question set, saves the session locally, opens the
+//   full-screen runner. Runner persists to localStorage on every answer
+//   so a refresh survives. Timer computes remaining from stored
+//   deadlineAt. Submit grades locally, writes final result, clears local.
+//
+// Determinism: seededShuffle(pool, examId+uid) picks questions; a second
+//   stream from the same seed reshuffles each question's options. Same
+//   student always gets the same exam; refresh cannot change it.
+//
+// One-shot: Firestore doc id {examId}_{uid} + submitted-flag guard.
+// Deadline: min(startedAt + durationMinutes, exam.closesAt) — hard stop.
+// ═════════════════════════════════════════════════════════════════════
+
+// ── Deterministic PRNG (mulberry32) + seeded shuffle utilities ───────
+function _hashStr(s){
+  let h=0x811c9dc5;
+  for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,0x01000193);}
+  return h>>>0;
+}
+function _mulberry32(seed){
+  let a=seed>>>0;
+  return function(){
+    a=(a+0x6D2B79F5)>>>0;
+    let t=a;
+    t=Math.imul(t^t>>>15,t|1);
+    t^=t+Math.imul(t^t>>>7,t|61);
+    return ((t^t>>>14)>>>0)/4294967296;
+  };
+}
+function seededShuffle(arr,seedStr){
+  const rand=_mulberry32(_hashStr(seedStr));
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(rand()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+function seededShuffleOptions(q,rand){
+  const idx=q.o.map((_,i)=>i);
+  for(let i=idx.length-1;i>0;i--){
+    const j=Math.floor(rand()*(i+1));
+    [idx[i],idx[j]]=[idx[j],idx[i]];
+  }
+  const newOpts=idx.map(i=>q.o[i]);
+  const newA=idx.indexOf(q.a);
+  const newWW={};
+  if(q.wrongWhy){for(const[k,v]of Object.entries(q.wrongWhy)){const nk=idx.indexOf(Number(k));if(nk>=0)newWW[nk]=v;}}
+  return{...q,o:newOpts,a:newA,wrongWhy:Object.keys(newWW).length?newWW:q.wrongWhy};
+}
+
+// ── Local session persistence (survives refresh) ─────────────────────
+function _examLocalKey(examId){return 'cma-exam-session-v1:'+examId;}
+function _examSaveLocal(sess){
+  if(!sess||!sess.examId)return;
+  try{
+    localStorage.setItem(_examLocalKey(sess.examId),JSON.stringify({
+      examId:sess.examId,answers:sess.answers,currentIdx:sess.currentIdx,
+      startedAt:sess.startedAt,deadlineAt:sess.deadlineAt,submitted:sess.submitted
+    }));
+  }catch{}
+}
+function _examLoadLocal(examId){
+  try{const d=localStorage.getItem(_examLocalKey(examId));return d?JSON.parse(d):null;}catch{return null;}
+}
+function _examClearLocal(examId){try{localStorage.removeItem(_examLocalKey(examId));}catch{}}
+
+// ── Load student's group exams (lazy, cached in STATE) ────────────────
+async function loadStudentExams(){
+  if(STATE.studentExamsLoaded)return;
+  const st=loadStudent();
+  if(!st||!st.groupCode){STATE.studentExamsLoaded=true;STATE.studentExams=[];return;}
+  try{
+    const g=st.groupCode.toUpperCase();
+    const snap=await db.collection('exams').where('groupCode','==',g).get();
+    STATE.studentExams=snap.docs.map(d=>({id:d.id,...d.data()}))
+      .sort((a,b)=>(a.opensAt||'')>(b.opensAt||'')?1:-1);
+    STATE.studentExamsLoaded=true;
+    if(STATE.studentExams.length&&STATE.user){
+      const results={};
+      await Promise.all(STATE.studentExams.map(async ex=>{
+        try{
+          const rid=ex.id+'_'+STATE.user.uid;
+          const doc=await db.collection('exam-results').doc(rid).get();
+          if(doc.exists)results[ex.id]=doc.data();
+        }catch{}
+      }));
+      STATE.studentExamResults=results;
+    }
+    if(STATE.tab==='intro')render();
+  }catch(e){
+    console.warn('[Student Exams] load failed:',e);
+    STATE.studentExamsLoaded=true;STATE.studentExams=[];
+  }
+}
+
+// ── Build the deterministic question set for this student ──────────────
+async function buildExamQuestions(exam,uid){
+  await ensureQuizzes(exam.sectionId);
+  const sec=S.find(s=>s.id===exam.sectionId);
+  if(!sec)return[];
+  const pool=[];
+  sec.lessons.forEach(l=>{
+    if(l.quizzes&&l.quizzes.length)l.quizzes.forEach(q=>pool.push({...q,_lid:l.id,_ltitle:l.title}));
+  });
+  if(!pool.length)return[];
+  const seed=exam.id+':'+uid;
+  const rand=_mulberry32(_hashStr(seed));
+  const shuffled=pool.slice();
+  for(let i=shuffled.length-1;i>0;i--){
+    const j=Math.floor(rand()*(i+1));
+    [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];
+  }
+  const picked=shuffled.slice(0,Math.min(exam.count,shuffled.length));
+  return picked.map(q=>seededShuffleOptions(q,rand));
+}
+
+// ── Start / Resume / Answer / Submit ───────────────────────────────────
+async function startExam(examId){
+  const exam=STATE.studentExams.find(e=>e.id===examId);
+  if(!exam)return;
+  const status=examWindowStatus(exam);
+  if(status!=='active'){showToast('This exam is not currently open.','warning');return;}
+  const existing=(STATE.studentExamResults||{})[examId];
+  if(existing&&existing.submitted){showToast('You have already submitted this exam.','warning');return;}
+
+  const resumeMode=existing&&!existing.submitted&&existing.startedAt;
+  const modalTitle=resumeMode?'Resume '+exam.title+'?':'Start '+exam.title+'?';
+  const modalBody=resumeMode
+    ?'⏱️ Time remaining is calculated from when you first started. Any answers you saved earlier are restored.'
+    :'⏱️ Duration: <b>'+exam.durationMinutes+' minutes</b><br>📊 Questions: <b>'+exam.count+'</b><br>⚠️ Timer starts immediately. The exam auto-submits at the deadline.';
+  const ok=await showModal({
+    icon:'\u{1F4DD}',title:modalTitle,body:modalBody,
+    type:'primary',confirmText:resumeMode?'Resume':'Start Now',cancelText:'Not Yet'
+  });
+  if(!ok)return;
+
+  let startedAt,deadlineAt,answers,currentIdx;
+  if(resumeMode){
+    startedAt=existing.startedAt;
+    deadlineAt=existing.deadlineAt;
+    const local=_examLoadLocal(examId);
+    answers=(local&&local.answers)||{};
+    currentIdx=(local&&local.currentIdx)||0;
+  }else{
+    startedAt=new Date().toISOString();
+    const byDur=Date.now()+exam.durationMinutes*60000;
+    const byClose=exam.closesAt?Date.parse(exam.closesAt):byDur;
+    deadlineAt=new Date(Math.min(byDur,byClose)).toISOString();
+    answers={};currentIdx=0;
+    try{
+      await db.collection('exam-results').doc(examId+'_'+STATE.user.uid).set({
+        examId,userId:STATE.user.uid,groupCode:exam.groupCode,sectionId:exam.sectionId,
+        startedAt,deadlineAt,answers:{},submitted:false
+      });
+    }catch(e){showToast('Could not start exam: '+e.message,'error');return;}
+  }
+
+  const questions=await buildExamQuestions(exam,STATE.user.uid);
+  if(!questions.length){showToast('No questions available for this section yet.','error');return;}
+
+  STATE.examSession={
+    examId,exam,questions,answers,currentIdx,
+    startedAt,deadlineAt,submitting:false,submitted:false,results:null,navOpen:false
+  };
+  _examSaveLocal(STATE.examSession);
+  STATE.tab='exam';render();
+  _examStartTimer();
+}
+
+let _examTimerInterval=null;
+function _examStartTimer(){
+  _examStopTimer();
+  _examTimerInterval=setInterval(()=>{
+    if(STATE.tab!=='exam'||!STATE.examSession||STATE.examSession.submitted){_examStopTimer();return;}
+    const remaining=Date.parse(STATE.examSession.deadlineAt)-Date.now();
+    const el=document.getElementById('exam-timer');
+    if(el){
+      const s=Math.max(0,Math.floor(remaining/1000));
+      const mm=String(Math.floor(s/60)).padStart(2,'0');
+      const ss=String(s%60).padStart(2,'0');
+      el.textContent=mm+':'+ss;
+      el.style.color=remaining<60000?'#E24B4A':remaining<300000?'#D2691E':'#1a1a1a';
+    }
+    if(remaining<=0){_examStopTimer();submitExam(true);}
+  },1000);
+}
+function _examStopTimer(){if(_examTimerInterval){clearInterval(_examTimerInterval);_examTimerInterval=null;}}
+
+function examAnswer(qIdx,optIdx){
+  if(!STATE.examSession||STATE.examSession.submitted)return;
+  STATE.examSession.answers[qIdx]=optIdx;
+  _examSaveLocal(STATE.examSession);
+  _examRenderRunner();
+}
+function examGoTo(idx){
+  if(!STATE.examSession||STATE.examSession.submitted)return;
+  const max=STATE.examSession.questions.length-1;
+  STATE.examSession.currentIdx=Math.max(0,Math.min(max,idx));
+  STATE.examSession.navOpen=false;
+  _examSaveLocal(STATE.examSession);
+  _examRenderRunner();
+}
+function examNavToggle(){
+  if(!STATE.examSession)return;
+  STATE.examSession.navOpen=!STATE.examSession.navOpen;
+  _examRenderRunner();
+}
+
+async function submitExam(auto){
+  const sess=STATE.examSession;
+  if(!sess||sess.submitted||sess.submitting)return;
+  if(!auto){
+    const answered=Object.keys(sess.answers).length;
+    const total=sess.questions.length;
+    const ok=await showModal({
+      icon:answered<total?'\u26A0\uFE0F':'\u2705',
+      title:'Submit Exam?',
+      body:answered<total
+        ?'You have answered <b>'+answered+' of '+total+'</b> questions. Unanswered questions will be marked wrong. This action cannot be undone.'
+        :'You have answered all '+total+' questions. Submit for grading?',
+      type:answered<total?'danger':'primary',
+      confirmText:'Submit',cancelText:'Keep Going'
+    });
+    if(!ok)return;
+  }
+  sess.submitting=true;_examStopTimer();
+  let score=0;
+  const answersOut=[];
+  sess.questions.forEach((q,i)=>{
+    const picked=sess.answers[i];
+    const correct=picked===q.a;
+    if(correct)score++;
+    answersOut.push({picked:picked==null?null:picked,correct});
+  });
+  const total=sess.questions.length;
+  const percentage=total?Math.round(score/total*100):0;
+  const submittedAt=new Date().toISOString();
+  try{
+    await db.collection('exam-results').doc(sess.examId+'_'+STATE.user.uid).set({
+      examId:sess.examId,userId:STATE.user.uid,groupCode:sess.exam.groupCode,sectionId:sess.exam.sectionId,
+      startedAt:sess.startedAt,deadlineAt:sess.deadlineAt,
+      answers:answersOut,score,total,percentage,
+      submitted:true,submittedAt,autoSubmitted:!!auto
+    },{merge:true});
+    sess.submitted=true;
+    sess.results={score,total,percentage,autoSubmitted:!!auto,submittedAt};
+    sess.submitting=false;
+    _examClearLocal(sess.examId);
+    STATE.studentExamResults=STATE.studentExamResults||{};
+    STATE.studentExamResults[sess.examId]={submitted:true,score,total,percentage};
+    render();
+    if(auto)showToast('\u23F0 Time up — exam auto-submitted.','warning',4000);
+    else showToast('\u2705 Exam submitted.','success');
+  }catch(e){
+    sess.submitting=false;
+    showToast('Submission failed. Your answers are saved — please try again.','error',4000);
+    _examStartTimer();
+  }
+}
+
+function exitExam(){
+  if(STATE.examSession&&!STATE.examSession.submitted){
+    showToast('Submit the exam first.','warning');return;
+  }
+  _examStopTimer();
+  STATE.examSession=null;
+  STATE.studentExamsLoaded=false;
+  STATE.tab='intro';
+  loadStudentExams();
+  render();
+}
+
+// ═════ RENDERERS ══════════════════════════════════════════════════════
+
+// Home strip — shown atop renderIntro when the student's group has exams.
+function renderExamsStrip(){
+  const st=loadStudent();
+  if(!STATE.user||isInstructor()||!st||!st.groupCode)return '';
+  if(!STATE.studentExamsLoaded){loadStudentExams();return '';}
+  const exams=STATE.studentExams||[];
+  if(!exams.length)return '';
+  const results=STATE.studentExamResults||{};
+
+  const fmtDT=(iso)=>{if(!iso)return '';try{return new Date(iso).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});}catch{return iso;}};
+  const fmtCountdown=(iso)=>{
+    if(!iso)return '';
+    const ms=Date.parse(iso)-Date.now();
+    if(ms<=0)return 'now';
+    const mins=Math.floor(ms/60000);
+    if(mins<60)return 'in '+mins+' min';
+    const hrs=Math.floor(mins/60);
+    if(hrs<24)return 'in '+hrs+'h '+(mins%60)+'m';
+    const days=Math.floor(hrs/24);
+    return 'in '+days+' day'+(days===1?'':'s');
+  };
+
+  const active=exams.filter(e=>examWindowStatus(e)==='active'&&!(results[e.id]&&results[e.id].submitted));
+  const scheduled=exams.filter(e=>examWindowStatus(e)==='scheduled');
+  const completed=exams.filter(e=>results[e.id]&&results[e.id].submitted).slice(0,2);
+  const cards=[...active,...scheduled,...completed].slice(0,3);
+  if(!cards.length)return '';
+
+  const cardHTML=(ex)=>{
+    const st=examWindowStatus(ex);
+    const res=results[ex.id];
+    const submitted=res&&res.submitted;
+    let banner,body,btn;
+    if(submitted){
+      banner={bg:'linear-gradient(135deg,#3B6D11,#639922)',label:'\u2705 COMPLETED'};
+      body='Score: <b>'+res.score+'/'+res.total+'</b> \u00B7 '+res.percentage+'%';
+      btn='<span style="font-size:11px;color:rgba(255,255,255,.85)">Submitted</span>';
+    }else if(st==='active'){
+      const inProgress=_examLoadLocal(ex.id);
+      banner={bg:'linear-gradient(135deg,#0C447C,#185FA5)',label:inProgress?'\u25B6\uFE0F RESUME':'\u{1F7E2} ACTIVE'};
+      body='<b>'+ex.count+'</b> Qs \u00B7 <b>'+ex.durationMinutes+'</b> min \u00B7 closes '+fmtCountdown(ex.closesAt);
+      btn='<button onclick="startExam(\''+ex.id+'\')" style="background:#fff;color:#0C447C;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">'+(inProgress?'Resume \u2192':'Start Exam \u2192')+'</button>';
+    }else if(st==='scheduled'){
+      banner={bg:'linear-gradient(135deg,#7A5A00,#B57E00)',label:'\u23F3 SCHEDULED'};
+      body='Opens '+fmtCountdown(ex.opensAt)+' \u00B7 '+fmtDT(ex.opensAt);
+      btn='<span style="font-size:11px;color:rgba(255,255,255,.75)">'+ex.count+' Qs \u00B7 '+ex.durationMinutes+' min</span>';
+    }else{
+      return '';
+    }
+    return '<div style="background:'+banner.bg+';border-radius:12px;padding:14px 16px;color:#fff;margin-bottom:10px;box-shadow:0 2px 6px rgba(0,0,0,.08)">'
+      +'<div style="font-size:10px;font-weight:700;letter-spacing:.6px;opacity:.9;margin-bottom:4px">'+banner.label+'</div>'
+      +'<div style="font-size:15px;font-weight:600;line-height:1.3;margin-bottom:4px">'+esc(ex.title)+'</div>'
+      +'<div style="font-size:12px;opacity:.9;margin-bottom:10px">'+body+'</div>'
+      +'<div>'+btn+'</div>'
+      +'</div>';
+  };
+  const inner=cards.map(cardHTML).filter(Boolean).join('');
+  if(!inner)return '';
+  return '<div style="margin-bottom:14px">'+inner+'</div>';
+}
+
+// Full-screen runner + result. Dispatcher case: 'exam'
+function renderExam(){
+  if(!STATE.examSession)return renderIntro();
+  if(STATE.examSession.submitted)return renderExamResult();
+  return renderExamRunner();
+}
+
+function renderExamRunner(){
+  const sess=STATE.examSession;
+  const q=sess.questions[sess.currentIdx];
+  if(!q)return '<div style="padding:30px;text-align:center;color:#888">No question.</div>';
+  const total=sess.questions.length;
+  const picked=sess.answers[sess.currentIdx];
+  const answeredCount=Object.keys(sess.answers).length;
+  const remaining=Math.max(0,Date.parse(sess.deadlineAt)-Date.now());
+  const s=Math.floor(remaining/1000);
+  const timerText=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+  const timerColor=remaining<60000?'#E24B4A':remaining<300000?'#D2691E':'#1a1a1a';
+
+  const opts=q.o.map((opt,i)=>{
+    const selected=picked===i;
+    const bg=selected?'#EAF3DE':'#f5f5f0';
+    const border=selected?'1px solid #639922':'.5px solid #e0e0d8';
+    const circBg=selected?'#c0dd97':'#e5e5e0';
+    const circC=selected?'#27500A':'#666';
+    return '<div class="q-opt" onclick="examAnswer('+sess.currentIdx+','+i+')" style="background:'+bg+';border:'+border+';cursor:pointer">'
+      +'<div class="q-circle" style="background:'+circBg+';color:'+circC+';border:.5px solid #bbb">'+String.fromCharCode(65+i)+'</div>'
+      +'<div class="q-text" style="color:#1a1a1a">'+esc(normalizeCase(opt))+'</div>'
+      +'</div>';
+  }).join('');
+
+  const navGrid=sess.navOpen
+    ?'<div style="position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200" onclick="examNavToggle()">'
+     +'<div onclick="event.stopPropagation()" style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:16px 16px 0 0;padding:16px;max-height:75vh;overflow-y:auto">'
+     +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'
+     +'<div style="font-size:14px;font-weight:600">Questions ('+answeredCount+'/'+total+')</div>'
+     +'<button onclick="examNavToggle()" style="background:none;border:none;font-size:22px;cursor:pointer;color:#888">\u00D7</button>'
+     +'</div>'
+     +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:8px">'
+     +sess.questions.map((_,i)=>{
+        const ans=sess.answers[i]!==undefined;
+        const cur=i===sess.currentIdx;
+        return '<button onclick="examGoTo('+i+')" style="padding:9px 0;border-radius:8px;border:'+(cur?'2px solid #0C447C':'.5px solid #d0d0d0')+';background:'+(ans?'#EAF3DE':'#fff')+';color:'+(ans?'#27500A':'#666')+';font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">'+(i+1)+'</button>';
+      }).join('')
+     +'</div>'
+     +'<button onclick="examNavToggle();submitExam(false)" style="margin-top:14px;width:100%;padding:12px;border-radius:10px;border:none;background:#0C447C;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Submit Exam</button>'
+     +'</div></div>'
+    :'';
+
+  const prevBtn=sess.currentIdx>0
+    ?'<button onclick="examGoTo('+(sess.currentIdx-1)+')" style="flex:0 0 auto;padding:11px 16px;border-radius:10px;border:.5px solid #d0d0d0;background:#fff;color:#333;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit">\u2039 Prev</button>'
+    :'<div style="flex:0 0 auto;width:1px"></div>';
+  const isLast=sess.currentIdx>=total-1;
+  const nextBtn=isLast
+    ?'<button onclick="submitExam(false)" style="flex:1;padding:11px;border-radius:10px;border:none;background:#3B6D11;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Submit Exam \u2B07</button>'
+    :'<button onclick="examGoTo('+(sess.currentIdx+1)+')" style="flex:1;padding:11px;border-radius:10px;border:none;background:#0C447C;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Next \u203A</button>';
+  const barW=Math.round((sess.currentIdx+1)/total*100);
+
+  return '<div id="exam-runner" style="display:flex;flex-direction:column;height:100%">'
+    +'<div style="background:#fff;border-bottom:.5px solid #e0e0d8;padding:10px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0">'
+    +'<div style="flex:1;min-width:0">'
+    +'<div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.4px">'+esc(sess.exam.title)+'</div>'
+    +'<div style="font-size:13px;font-weight:600;color:#1a1a1a">Question '+(sess.currentIdx+1)+' of '+total+' \u00B7 <span style="color:#3B6D11">'+answeredCount+' answered</span></div>'
+    +'</div>'
+    +'<button onclick="examNavToggle()" style="padding:6px 10px;border-radius:8px;border:.5px solid #d0d0d0;background:#fafaf8;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u2630 Nav</button>'
+    +'<div style="background:#fafaf8;border:.5px solid #d0d0d0;border-radius:8px;padding:6px 10px;font-family:\'Courier New\',monospace;font-size:14px;font-weight:700;color:'+timerColor+'" id="exam-timer">'+timerText+'</div>'
+    +'</div>'
+    +'<div style="height:4px;background:#ebebea;flex-shrink:0"><div style="height:100%;width:'+barW+'%;background:#0C447C;transition:width .3s"></div></div>'
+    +'<div class="scroll-area pad" style="padding-top:16px">'
+    +'<div class="card" style="margin-bottom:12px">'
+    +'<p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">'+esc(q.q)+'</p>'
+    +dataTableHTML(q)
+    +opts
+    +'</div>'
+    +'<div style="display:flex;gap:8px;margin-bottom:14px">'+prevBtn+nextBtn+'</div>'
+    +'<div style="height:20px"></div>'
+    +'</div>'
+    +navGrid
+    +'</div>';
+}
+
+function renderExamResult(){
+  const sess=STATE.examSession;
+  const r=sess.results;
+  if(!r)return '';
+  const emoji=r.percentage>=80?'\u{1F3C6}':r.percentage>=60?'\u{1F44D}':'\u{1F4DA}';
+  const label=r.percentage>=80?'Excellent!':r.percentage>=60?'Good work!':'Keep studying!';
+  return '<div class="scroll-area" style="padding:36px 16px 20px;text-align:center">'
+    +'<div style="font-size:56px">'+emoji+'</div>'
+    +'<div style="font-size:20px;font-weight:500;margin-top:8px">'+label+'</div>'
+    +'<div style="font-size:12px;color:#aaa;margin:4px 0 14px">'+esc(sess.exam.title)+(r.autoSubmitted?' \u00B7 auto-submitted at deadline':'')+'</div>'
+    +'<div style="font-size:52px;font-weight:500;color:'+(r.percentage>=60?'#3B6D11':'#E24B4A')+';margin-bottom:2px">'+r.percentage+'%</div>'
+    +'<div style="font-size:15px;color:#666;margin-bottom:20px">'+r.score+' out of '+r.total+' correct</div>'
+    +'<div class="card" style="text-align:left;margin-bottom:14px">'
+    +'<div style="font-size:13px;font-weight:600;color:#333;margin-bottom:6px">Result recorded \u2705</div>'
+    +'<div style="font-size:12px;color:#666;line-height:1.6">Your instructor can now see this result on their dashboard. A per-question review is coming in the next release.</div>'
+    +'</div>'
+    +'<button class="btn" onclick="exitExam()" style="background:#0C447C;color:#fff">Back to Home</button>'
+    +'<div style="height:20px"></div>'
+    +'</div>';
+}
+
+function _examRenderRunner(){
+  if(STATE.tab!=='exam'||!STATE.examSession||STATE.examSession.submitted){render();return;}
+  const area=document.getElementById('content-area');
+  if(!area){render();return;}
+  area.innerHTML=renderExamRunner();
+}
+
+// ═════════════════════════════════════════════════════════════════════
 function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function shuffleQuestionOptions(q){
   // Create index array [0,1,2,3], shuffle it, remap options and correct answer
@@ -4114,7 +4569,7 @@ function render(){
 
   let html='';
   switch(STATE.tab){
-    case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'wrong-answers':html=renderWrongAnswers();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;case'formula-bank':html=renderFormulaBank();break;case'dictionary':html=renderDictionary();break;case'flashcards':html=renderFlashcards();break;case'my-notes':html=renderNotes();break;case'dashboard':html=renderDashboard();break;case'cbq':html=renderCBQ();break;case'mock-exam':html=renderMockExamScreen();break;default:html=renderIntro();
+    case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'wrong-answers':html=renderWrongAnswers();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;case'formula-bank':html=renderFormulaBank();break;case'dictionary':html=renderDictionary();break;case'flashcards':html=renderFlashcards();break;case'my-notes':html=renderNotes();break;case'dashboard':html=renderDashboard();break;case'cbq':html=renderCBQ();break;case'mock-exam':html=renderMockExamScreen();break;case'exam':html=renderExam();break;default:html=renderIntro();
   }
   content.innerHTML=html;
 
