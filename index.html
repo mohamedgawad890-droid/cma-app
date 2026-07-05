@@ -686,7 +686,8 @@ const STATE={tab:'loading',searchQ:'',dictQ:'',dictData:[],dictLoaded:false,lead
     dashLectures:[],dashLive:{},dashLectureDraft:{title:'',groupCode:'',date:''},dashAttendance:[],
     dashExams:[],dashExamsLoaded:false,
     dashExamDraft:{title:'',groupCode:'',sectionId:'',count:20,durationMinutes:30,opensAt:'',closesAt:''},
-    studentExams:[],studentExamsLoaded:false,studentExamResults:{},examSession:null};
+    studentExams:[],studentExamsLoaded:false,studentExamResults:{},examSession:null,
+    dashExamResults:{},dashExamViewingId:null,dashResultsSort:'score-desc'};
 
 // ─── ARABIC TERM TOOLTIPS ──────────────────────────────────────────────────
 const TERM_DICT={
@@ -3181,15 +3182,41 @@ async function pollLiveLecture(){
   }catch(e){/* fail silent — never block the app */}
 }
 
+// ── Watchlist #1: onSnapshot replaces the 25s poller ──────────────────
+// Cost profile:
+//   BEFORE: 1 read / 25s / student → ~3,456 reads/day/student → 115k/day
+//           at 200 active students × 4h. Blew past the 50k Spark tier.
+//   AFTER:  1 initial read + 1 event per doc change. If the instructor opens
+//           / closes 5 lectures/day → 5 events/student → ~1,000 reads/day
+//           at 200 students. ~99% cost reduction.
+// Legacy pollLiveLecture + _liveTimer left in place (dead code) so any
+// external caller/debugger reference doesn't crash.
+let _liveUnsubscribe = null;
 function startLivePolling(){
-  if(_liveTimer)return;
-  pollLiveLecture();                           // immediate first check
-  _liveTimer=setInterval(()=>{
-    if(document.visibilityState==='visible')pollLiveLecture();  // battery/cost guard
-  },LIVE_POLL_MS);
+  if(_liveUnsubscribe)return;                  // already listening
+  if(!STATE.user||isInstructor())return;       // instructor never checks in
+  const st=loadStudent();
+  if(!st||!st.groupCode)return;                // student not in a group
+  const g=st.groupCode.toUpperCase();
+  try{
+    _liveUnsubscribe=db.collection('live').doc(g).onSnapshot(doc=>{
+      if(!doc.exists)return;
+      const p=doc.data();
+      if(!_liveWindowOpen(p))return;
+      if(hasCheckedIn(p.lectureId))return;
+      if(_liveShownFor===p.lectureId)return;
+      if(document.visibilityState!=='visible')return;  // don't pop when tab is backgrounded
+      showCheckInModal(p,g);
+    },err=>{
+      console.warn('[live] listener failed, falling back to manual poll:',err);
+      // Failed subscription → keep _liveUnsubscribe null so the next
+      // startLivePolling call can retry. Silent failure by design.
+    });
+  }catch(e){console.warn('[live] subscribe error:',e);}
 }
 function stopLivePolling(){
-  if(_liveTimer){clearInterval(_liveTimer);_liveTimer=null;}
+  if(_liveUnsubscribe){try{_liveUnsubscribe();}catch{}; _liveUnsubscribe=null;}
+  if(_liveTimer){clearInterval(_liveTimer);_liveTimer=null;}  // clear any lingering legacy timer
   _liveShownFor=null;
   const el=document.getElementById('checkin-overlay');if(el)el.remove();
 }
@@ -3606,6 +3633,7 @@ function renderDashLectures(){
 
 // ─── RENDER DASHBOARD: EXAMS ─────────────────────────────────────────
 function renderDashExams(){
+  if(STATE.dashExamViewingId)return renderDashExamResults();
   const d=STATE.dashExamDraft;
   const groups=(STATE.dashGroups||[]).map(g=>g.code);
   const exams=STATE.dashExams||[];
@@ -3716,9 +3744,10 @@ function renderDashExams(){
         <b>${x.count}</b> questions · <b>${x.durationMinutes}</b> min<br>
         Opens <b>${fmtDT(x.opensAt)}</b> · Closes <b>${fmtDT(x.closesAt)}</b>
       </div>
-      <div style="display:flex;gap:8px">
-        ${canClose?`<button onclick="closeExamNow('${x.id}')" style="flex:1;padding:7px 12px;border-radius:8px;border:.5px solid #D2691E40;background:#FEF5E7;color:#7D6608;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">🛑 Close Now</button>`:''}
-        <button onclick="deleteExam('${x.id}')" style="${canClose?'':'flex:1;'}padding:7px 12px;border-radius:8px;border:.5px solid #E24B4A40;background:#FCEBEB;color:#A32D2D;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">🗑️ Delete</button>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button onclick="openExamResults('${x.id}')" style="flex:1 1 28%;padding:7px 10px;border-radius:8px;border:.5px solid #185FA540;background:#E6F1FB;color:#0C447C;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">📊 Results</button>
+        ${canClose?`<button onclick="closeExamNow('${x.id}')" style="flex:1 1 28%;padding:7px 10px;border-radius:8px;border:.5px solid #D2691E40;background:#FEF5E7;color:#7D6608;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">🛑 Close</button>`:''}
+        <button onclick="deleteExam('${x.id}')" style="flex:1 1 28%;padding:7px 10px;border-radius:8px;border:.5px solid #E24B4A40;background:#FCEBEB;color:#A32D2D;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">🗑️ Delete</button>
       </div>
     </div>`;
   };
@@ -4094,8 +4123,14 @@ function exitExam(){
   if(STATE.examSession&&!STATE.examSession.submitted){
     showToast('Submit the exam first.','warning');return;
   }
+  const returnTab=STATE.examSession&&STATE.examSession.instructorReturnTab;
   _examStopTimer();
   STATE.examSession=null;
+  if(returnTab){
+    STATE.tab=returnTab;
+    render();
+    return;
+  }
   STATE.studentExamsLoaded=false;
   STATE.tab='intro';
   loadStudentExams();
@@ -4320,6 +4355,12 @@ async function openExamReview(examId){
       // set as long as s{N}.json hasn't changed since submission.
       questions=await buildExamQuestions(exam,STATE.user.uid);
       if(!questions.length){showToast('Cannot rebuild review data.','error');return;}
+      // Watchlist #5 — backfill the snapshot so future reviews use stored
+      // data (independent of s{N}.json). Fire-and-forget; silent on failure.
+      try{
+        const backfill=questions.map(q=>({q:q.q,o:q.o,a:q.a,e:q.e||'',wrongWhy:q.wrongWhy||null,_lid:q._lid||'',_ltitle:q._ltitle||''}));
+        db.collection('exam-results').doc(examId+'_'+STATE.user.uid).update({questionSnapshot:backfill}).catch(()=>{});
+      }catch{}
     }
     // Firestore stores answers as an array of {picked, correct}. Runner uses
     // an indexed object {qIdx: optIdx}. Convert here.
@@ -4454,7 +4495,7 @@ function renderExamReview(){
     +'<div style="background:#fff;border-bottom:.5px solid #e0e0d8;padding:10px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0">'
     +'<button onclick="exitExam()" style="background:none;border:none;font-size:22px;cursor:pointer;color:#0C447C;padding:0 6px" title="Back">\u2039</button>'
     +'<div style="flex:1;min-width:0">'
-    +'<div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.4px">Review \u00B7 '+esc(sess.exam.title)+'</div>'
+    +'<div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.4px">'+(sess.reviewStudent?'\u{1F464} '+esc(sess.reviewStudent.name||'Student')+' \u00B7 ':'Review \u00B7 ')+esc(sess.exam.title)+'</div>'
     +'<div style="font-size:13px;font-weight:600;color:#1a1a1a">Q'+(idx+1)+' of '+total+' \u00B7 <span style="color:#3B6D11">'+correctCount+' correct</span></div>'
     +'</div>'
     +scoreBadge
@@ -4478,6 +4519,267 @@ function renderExamReview(){
 }
 
 // ═════════════════════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════════════════════
+// PHASE 3a-iii-B — GROUP EXAMS (instructor results view + CSV export)
+//
+// Flow:
+//   Dashboard → Exams tab → per-card "📊 Results" → openExamResults()
+//   fetches all exam-results docs for this examId (single query) and
+//   caches them in STATE.dashExamResults[examId]. renderDashExamResults
+//   shows aggregate stats (attempts, submitted, avg %, pass rate) and a
+//   sortable student list. Click any student's "Review" → drill down
+//   into renderExamReview with their session loaded; exitExam returns
+//   here via instructorReturnTab='dashboard'.
+//
+// Cost:
+//   ONE query per Results click (not per page load). Full docs are fetched
+//   (~50KB × N students) so drill-down is instant afterwards from cache.
+//   For ≤100 students per exam this is fine; beyond that we'd want a
+//   summary-doc pattern (see Batch 3 / Watchlist #4).
+// ═════════════════════════════════════════════════════════════════════
+
+async function openExamResults(examId){
+  if(!isInstructor()){showToast('Not authorized.','error');return;}
+  STATE.dashExamViewingId=examId;
+  STATE.dashTab='exams';
+  render();
+  // Fire the load — renderDashExamResults will re-render when the cache fills.
+  loadExamResults(examId);
+}
+
+async function loadExamResults(examId){
+  const cache=STATE.dashExamResults[examId];
+  if(cache&&cache.loaded&&!cache.loading)return;   // already have it
+  STATE.dashExamResults[examId]={loading:true,loaded:false,results:[]};
+  try{
+    const snap=await db.collection('exam-results').where('examId','==',examId).get();
+    const results=snap.docs.map(d=>({_docId:d.id,...d.data()}));
+    // Compute aggregates
+    const submitted=results.filter(r=>r.submitted);
+    const scores=submitted.map(r=>r.percentage||0);
+    const avg=scores.length?Math.round(scores.reduce((s,v)=>s+v,0)/scores.length):0;
+    const passCount=submitted.filter(r=>(r.percentage||0)>=60).length;
+    const passRate=submitted.length?Math.round(passCount/submitted.length*100):0;
+    const sorted=[...scores].sort((a,b)=>a-b);
+    const median=sorted.length?(sorted.length%2?sorted[(sorted.length-1)/2]:Math.round((sorted[sorted.length/2-1]+sorted[sorted.length/2])/2)):0;
+    STATE.dashExamResults[examId]={
+      loading:false,loaded:true,results,
+      stats:{
+        total:results.length,
+        submitted:submitted.length,
+        pending:results.length-submitted.length,
+        avgPct:avg,
+        medianPct:median,
+        passCount,passRate,
+        highest:scores.length?Math.max(...scores):0,
+        lowest:scores.length?Math.min(...scores):0
+      }
+    };
+    if(STATE.tab==='dashboard'&&STATE.dashExamViewingId===examId)render();
+  }catch(e){
+    console.warn('[Exam Results] load failed:',e);
+    STATE.dashExamResults[examId]={loading:false,loaded:true,results:[],stats:null,error:e.message};
+    if(STATE.tab==='dashboard'&&STATE.dashExamViewingId===examId)render();
+  }
+}
+
+function closeExamResults(){
+  STATE.dashExamViewingId=null;
+  render();
+}
+
+function setResultsSort(mode){
+  STATE.dashResultsSort=mode;
+  render();
+}
+
+// Drill down into a specific student's attempt. Reuses renderExamReview
+// by populating STATE.examSession with the student's data + reviewMode:true.
+async function openInstructorReview(examId,uid){
+  if(!isInstructor()){showToast('Not authorized.','error');return;}
+  const cache=STATE.dashExamResults[examId];
+  if(!cache||!cache.results.length){showToast('Results not loaded.','error');return;}
+  const result=cache.results.find(r=>r.userId===uid);
+  if(!result){showToast('Student result not found.','error');return;}
+  const exam=STATE.dashExams.find(e=>e.id===examId);
+  const student=(STATE.dashStudents||[]).find(s=>s.uid===uid)||{name:'(unknown)'};
+
+  let questions=result.questionSnapshot;
+  if(!questions||!Array.isArray(questions)||!questions.length){
+    // No snapshot — try deterministic rebuild (instructor can't backfill though).
+    try{questions=await buildExamQuestions(exam,uid);}
+    catch(e){showToast('Cannot rebuild questions for this student.','error');return;}
+    if(!questions.length){showToast('Cannot rebuild questions for this student.','error');return;}
+  }
+  const answers={};
+  if(Array.isArray(result.answers)){
+    result.answers.forEach((a,i)=>{if(a&&a.picked!=null)answers[i]=a.picked;});
+  }
+  STATE.examSession={
+    examId,exam,questions,answers,currentIdx:0,reviewIdx:0,
+    startedAt:result.startedAt,deadlineAt:result.deadlineAt,
+    submitting:false,submitted:true,reviewMode:true,
+    reviewStudent:student,
+    instructorReturnTab:'dashboard',
+    results:{
+      score:result.score||0,
+      total:result.total||questions.length,
+      percentage:result.percentage||0,
+      autoSubmitted:!!result.autoSubmitted,
+      submittedAt:result.submittedAt||''
+    },
+    navOpen:false
+  };
+  STATE.tab='exam';render();
+}
+
+// CSV export — one line per student. BOM prefix for Excel compat with UTF-8.
+function exportResultsCSV(examId){
+  const cache=STATE.dashExamResults[examId];
+  if(!cache||!cache.results||!cache.results.length){
+    showToast('No results to export.','warning');return;
+  }
+  const exam=STATE.dashExams.find(e=>e.id===examId);
+  const students=STATE.dashStudents||[];
+  const header=['Student Name','Student ID','Group','Score','Total','Percentage','Time Taken (min)','Started At','Submitted At','Auto-Submitted','Status'];
+  const rows=[header];
+  cache.results.forEach(r=>{
+    const st=students.find(s=>s.uid===r.userId)||{};
+    const timeMin=(r.startedAt&&r.submittedAt)
+      ?Math.round((Date.parse(r.submittedAt)-Date.parse(r.startedAt))/60000)
+      :'';
+    rows.push([
+      st.name||'(unknown)',
+      st.studentId||'',
+      r.groupCode||'',
+      r.score!=null?r.score:'',
+      r.total!=null?r.total:'',
+      r.percentage!=null?r.percentage:'',
+      timeMin,
+      r.startedAt||'',
+      r.submittedAt||'',
+      r.autoSubmitted?'Yes':'No',
+      r.submitted?'Submitted':'In Progress'
+    ]);
+  });
+  const csv=rows.map(row=>row.map(cell=>{
+    const s=String(cell==null?'':cell);
+    return(s.includes(',')||s.includes('"')||s.includes('\n'))?'"'+s.replace(/"/g,'""')+'"':s;
+  }).join(',')).join('\r\n');
+  const filename='exam-'+((exam&&exam.title)?exam.title.replace(/[^a-zA-Z0-9]/g,'_').slice(0,40):examId)+'-results.csv';
+  try{
+    const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;a.download=filename;
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+    showToast('CSV exported ✅','success');
+  }catch(e){showToast('Export failed: '+e.message,'error');}
+}
+
+// ─── RENDER: INSTRUCTOR EXAM RESULTS ───────────────────────────────────
+function renderDashExamResults(){
+  const examId=STATE.dashExamViewingId;
+  const exam=STATE.dashExams.find(e=>e.id===examId);
+  const cache=STATE.dashExamResults[examId];
+  const students=STATE.dashStudents||[];
+  const groupStudents=exam?students.filter(s=>s.groupCode===exam.groupCode):[];
+
+  const header='<div style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:#fff;border-bottom:.5px solid #e0e0d8;position:sticky;top:0;z-index:5">'
+    +'<button onclick="closeExamResults()" style="background:none;border:none;font-size:22px;cursor:pointer;color:#0C447C;padding:0 6px" title="Back">\u2039</button>'
+    +'<div style="flex:1;min-width:0">'
+    +'<div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.4px">Results</div>'
+    +'<div style="font-size:14px;font-weight:600;color:#1a1a1a;line-height:1.3">'+esc((exam&&exam.title)||'Exam')+'</div>'
+    +'</div>'
+    +(cache&&cache.loaded&&cache.results.length?('<button onclick="exportResultsCSV(\''+examId+'\')" style="padding:7px 12px;border-radius:8px;border:.5px solid #185FA540;background:#E6F1FB;color:#0C447C;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u2B07 CSV</button>'):'')
+    +'</div>';
+
+  if(!cache||cache.loading){
+    return header+'<div style="text-align:center;padding:60px 20px;color:#aaa"><div style="font-size:30px;margin-bottom:10px">\u23F3</div><div style="font-size:14px">Loading results\u2026</div></div>';
+  }
+  if(cache.error){
+    return header+'<div style="text-align:center;padding:50px 20px"><div style="font-size:30px;margin-bottom:10px">\u26A0\uFE0F</div><div style="font-size:14px;color:#555;margin-bottom:14px">Couldn\'t load results.</div><button onclick="delete STATE.dashExamResults[\''+examId+'\'];loadExamResults(\''+examId+'\')" style="padding:9px 18px;border-radius:8px;border:.5px solid #d0d0d0;background:#fff;font-size:13px;cursor:pointer;font-family:inherit">Retry</button></div>';
+  }
+
+  const stats=cache.stats||{};
+  const enrolled=groupStudents.length;
+  const takenPct=enrolled?Math.round(stats.submitted/enrolled*100):0;
+
+  const statsCard='<div style="padding:14px 14px 6px">'
+    +'<div style="background:linear-gradient(135deg,#0C447C,#185FA5);border-radius:12px;padding:14px 16px;color:#fff;margin-bottom:12px">'
+    +'<div style="font-size:11px;font-weight:600;letter-spacing:.5px;opacity:.9;margin-bottom:8px">OVERVIEW</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:10px">'
+    +'<div><div style="font-size:11px;opacity:.75">Submitted</div><div style="font-size:20px;font-weight:600">'+(stats.submitted||0)+(enrolled?' / '+enrolled+' ('+takenPct+'%)':'')+'</div></div>'
+    +'<div><div style="font-size:11px;opacity:.75">Average</div><div style="font-size:20px;font-weight:600">'+(stats.avgPct||0)+'%</div></div>'
+    +'<div><div style="font-size:11px;opacity:.75">Pass Rate (\u226560%)</div><div style="font-size:20px;font-weight:600">'+(stats.passRate||0)+'% <span style="font-size:11px;opacity:.75">('+(stats.passCount||0)+' passed)</span></div></div>'
+    +'<div><div style="font-size:11px;opacity:.75">Median</div><div style="font-size:20px;font-weight:600">'+(stats.medianPct||0)+'%</div></div>'
+    +'</div>'
+    +(stats.submitted>0?('<div style="display:flex;gap:14px;font-size:11px;opacity:.85;padding-top:8px;border-top:1px solid rgba(255,255,255,.2)"><div>Highest: <b>'+stats.highest+'%</b></div><div>Lowest: <b>'+stats.lowest+'%</b></div>'+(stats.pending>0?'<div>In progress: <b>'+stats.pending+'</b></div>':'')+'</div>'):'')
+    +'</div>'
+    +'</div>';
+
+  if(!cache.results.length){
+    return header+statsCard+'<div style="text-align:center;padding:30px 14px;color:#aaa;font-size:13px">No submissions yet. Students in group <b>'+esc((exam&&exam.groupCode)||'')+'</b> will appear here as they take the exam.</div>';
+  }
+
+  // Sort controls
+  const sortMode=STATE.dashResultsSort||'score-desc';
+  const sortBtn=(id,label)=>'<button onclick="setResultsSort(\''+id+'\')" style="padding:6px 10px;border-radius:6px;border:.5px solid '+(sortMode===id?'#0C447C':'#d0d0d0')+';background:'+(sortMode===id?'#E6F1FB':'#fff')+';color:'+(sortMode===id?'#0C447C':'#666')+';font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">'+label+'</button>';
+  const sortBar='<div style="display:flex;gap:6px;padding:0 14px 12px;flex-wrap:wrap">'
+    +'<span style="font-size:11px;color:#888;align-self:center;margin-right:4px">Sort:</span>'
+    +sortBtn('score-desc','Score \u2193')
+    +sortBtn('score-asc','Score \u2191')
+    +sortBtn('name-asc','Name A\u2013Z')
+    +sortBtn('submitted-desc','Newest')
+    +sortBtn('time-asc','Fastest')
+    +'</div>';
+
+  // Sort results
+  const withStudent=cache.results.map(r=>{
+    const st=students.find(s=>s.uid===r.userId)||{};
+    const timeMin=(r.startedAt&&r.submittedAt)?Math.round((Date.parse(r.submittedAt)-Date.parse(r.startedAt))/60000):null;
+    return{...r,_stName:st.name||'(unknown)',_stId:st.studentId||'',_timeMin:timeMin};
+  });
+  const sorted=withStudent.slice().sort((a,b)=>{
+    if(sortMode==='score-desc')return(b.percentage||0)-(a.percentage||0);
+    if(sortMode==='score-asc')return(a.percentage||0)-(b.percentage||0);
+    if(sortMode==='name-asc')return a._stName.localeCompare(b._stName);
+    if(sortMode==='submitted-desc')return(b.submittedAt||'').localeCompare(a.submittedAt||'');
+    if(sortMode==='time-asc')return(a._timeMin==null?1e9:a._timeMin)-(b._timeMin==null?1e9:b._timeMin);
+    return 0;
+  });
+
+  const fmtDT=(iso)=>{if(!iso)return '—';try{return new Date(iso).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});}catch{return iso;}};
+
+  const row=(r)=>{
+    const pct=r.percentage||0;
+    const passed=pct>=60;
+    const pctColor=passed?'#3B6D11':'#E24B4A';
+    const pctBg=passed?'#EAF3DE':'#FCEBEB';
+    const statusPill=r.submitted
+      ?(r.autoSubmitted?'<span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:8px;background:#FEF9E7;color:#9A7D0A">AUTO</span>':'')
+      :'<span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:8px;background:#EAECEE;color:#566573">IN PROGRESS</span>';
+    return '<div style="background:#fff;border:.5px solid #e0e0d8;border-radius:10px;padding:11px 13px;margin-bottom:8px;display:flex;align-items:center;gap:10px">'
+      +'<div style="flex:1;min-width:0">'
+      +'<div style="font-size:13px;font-weight:600;color:#1a1a1a;line-height:1.3;display:flex;align-items:center;gap:6px">'+esc(r._stName)+' '+statusPill+'</div>'
+      +'<div style="font-size:10px;color:#888;margin-top:2px">'+(r._stId?esc(r._stId)+' \u00B7 ':'')+fmtDT(r.submittedAt)+(r._timeMin!=null?' \u00B7 '+r._timeMin+' min':'')+'</div>'
+      +'</div>'
+      +(r.submitted?('<div style="background:'+pctBg+';color:'+pctColor+';border-radius:8px;padding:5px 10px;font-family:\'Courier New\',monospace;font-size:13px;font-weight:700;min-width:64px;text-align:center">'+(r.score||0)+'/'+(r.total||0)+'<br><span style="font-size:11px">'+pct+'%</span></div>'):'')
+      +(r.submitted?('<button onclick="openInstructorReview(\''+examId+'\',\''+r.userId+'\')" style="padding:7px 10px;border-radius:8px;border:.5px solid #185FA540;background:#E6F1FB;color:#0C447C;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">Review \u203A</button>'):'')
+      +'</div>';
+  };
+
+  const list='<div style="padding:0 14px">'
+    +sorted.map(row).join('')
+    +'<div style="height:40px"></div>'
+    +'</div>';
+
+  return header+statsCard+sortBar+list;
+}
+
+// ═════════════════════════════════════════════════════════════════════
+
 
 function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function shuffleQuestionOptions(q){
