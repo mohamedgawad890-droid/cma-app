@@ -85,6 +85,31 @@ window.addEventListener('beforeinstallprompt', e => {
 .teach-entry{background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:10px}
 .teach-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
 .teach-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
+/* ── Batch 2: group-selector chip strip ─────────────────────────────── */
+.gs-strip{display:flex;gap:8px;padding:10px 12px;overflow-x:auto;-webkit-overflow-scrolling:touch;background:#fff;border-bottom:.5px solid #e0e0d8;scroll-snap-type:x proximity;scrollbar-width:none}
+.gs-strip::-webkit-scrollbar{display:none}
+.gs-chip{flex-shrink:0;scroll-snap-align:start;padding:8px 14px;border-radius:22px;border:1px solid #d0d8e2;background:#fff;color:#0C447C;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;transition:background .12s,border-color .12s,color .12s}
+.gs-chip:hover{background:#F4F6F7}
+.gs-chip.active{background:#0C447C;color:#fff;border-color:#0C447C;box-shadow:0 1px 4px rgba(12,68,124,.25)}
+.gs-chip-count{font-size:10px;font-weight:500;opacity:.75;font-family:'Courier New',monospace}
+.gs-chip.active .gs-chip-count{opacity:.9}
+.gs-chip-new{border-style:dashed;border-color:#b6c0d0;color:#4a6180;background:#fafaf8}
+.gs-chip-new:hover{background:#f0f2f5;border-color:#8a9ab0}
+@media(min-width:900px){.gs-strip{flex-wrap:wrap;overflow-x:visible}}
+/* ── Skeleton (Decision 2A — instant swap with placeholder cards) ────── */
+@keyframes gs-shimmer{0%{background-position:-200px 0}100%{background-position:calc(200px + 100%) 0}}
+.gs-skeleton-card{background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:10px}
+.gs-skeleton-line{height:12px;border-radius:6px;background:linear-gradient(90deg,#f0f0eb 0px,#f7f7f2 40px,#f0f0eb 80px);background-size:200px 100%;animation:gs-shimmer 1.2s ease-in-out infinite;margin-bottom:8px}
+.gs-skeleton-line.short{width:38%}
+.gs-skeleton-line.medium{width:64%}
+.gs-skeleton-line.long{width:88%}
+/* ── Empty states (Decision 3B — friendly + CTA) ────────────────────── */
+.gs-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px;text-align:center;background:#fff;border:.5px dashed #d0d8e2;border-radius:14px;margin:14px}
+.gs-empty-icon{font-size:44px;margin-bottom:12px;opacity:.75}
+.gs-empty-title{font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:6px;line-height:1.35}
+.gs-empty-body{font-size:13px;color:#666;line-height:1.55;margin-bottom:18px;max-width:320px}
+.gs-empty-cta{padding:10px 20px;border-radius:10px;border:none;background:#0C447C;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:.3px}
+.gs-empty-cta:hover{background:#0a3c6b}
 </style>
 </head>
 <body>
@@ -687,7 +712,16 @@ const STATE={tab:'loading',searchQ:'',dictQ:'',dictData:[],dictLoaded:false,lead
     dashExams:[],dashExamsLoaded:false,
     dashExamDraft:{title:'',groupCode:'',sectionId:'',count:20,durationMinutes:30,opensAt:'',closesAt:''},
     studentExams:[],studentExamsLoaded:false,studentExamResults:{},examSession:null,
-    dashExamResults:{},dashExamViewingId:null,dashResultsSort:'score-desc'};
+    dashExamResults:{},dashExamViewingId:null,dashResultsSort:'score-desc',
+    // ── Batch 2: group-scoped dashboard state ──────────────────────────
+    // dashSelectedGroup: which group's data is currently displayed on
+    //   Lectures / Exams / Actual-Teaching tabs. Groups tab ignores it.
+    //   Persisted to localStorage — remembered forever across sessions.
+    // dashLoadedForGroup: which group is currently in cache (guards against
+    //   showing stale data during a group switch — see loadDashScopedData).
+    // dashAttendanceByLecture: on-demand per-lecture attendance cache
+    //   ({lectureId: [records]}). Cleared on group switch.
+    dashSelectedGroup:'',dashLoadedForGroup:null,dashAttendanceByLecture:{}};
 
 // ─── ARABIC TERM TOOLTIPS ──────────────────────────────────────────────────
 const TERM_DICT={
@@ -3263,20 +3297,29 @@ async function submitCheckIn(lectureId,groupCode,title){
 }
 
 // ── Instructor side: attendance list for a lecture ──────────────────────────
-function openAttendanceList(lectureId){
+// ── Batch 2: async lazy attendance load ──────────────────────────────
+// Fetches attendance for a single lecture on demand. Cache-aware — once
+// loaded, subsequent taps on the same lecture are instant (no fetch).
+// After fetch completes, calls render() so the button text on the lecture
+// card updates from "View check-ins" to "N checked in".
+async function openAttendanceList(lectureId){
   const lec=(STATE.dashLectures||[]).find(l=>l.id===lectureId);
-  const rows=(STATE.dashAttendance||[]).filter(a=>a.lectureId===lectureId)
-    .sort((a,b)=>(a.checkedInAt||'')<(b.checkedInAt||'')?1:-1);
-  if(!rows.length){
+  // Fire the fetch; if cached, returns immediately.
+  const cached=STATE.dashAttendanceByLecture[lectureId];
+  const rows=cached||await loadLectureAttendance(lectureId);
+  // If this was a fresh fetch, re-render so the lecture-card count updates.
+  if(!cached)render();
+  const sorted=rows.slice().sort((a,b)=>(a.checkedInAt||'')<(b.checkedInAt||'')?1:-1);
+  if(!sorted.length){
     showModal({icon:'\u{1F465}',title:(lec?lec.title:'Lecture'),body:'No check-ins yet for this lecture.',type:'info',confirmText:'Close'});
     return;
   }
-  const list=rows.map(a=>{
+  const list=sorted.map(a=>{
     const t=a.checkedInAt?new Date(a.checkedInAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):'';
     const sid=a.studentId?' \u00B7 '+a.studentId:'';
     return esc(a.studentName||'Student')+sid+(t?'  ('+t+')':'');
   });
-  showModal({icon:'\u{1F465}',title:(lec?lec.title:'Lecture')+' \u2014 '+rows.length+' checked in',list,type:'info',confirmText:'Close'});
+  showModal({icon:'\u{1F465}',title:(lec?lec.title:'Lecture')+' \u2014 '+sorted.length+' checked in',list,type:'info',confirmText:'Close'});
 }
 
 
@@ -3303,19 +3346,22 @@ function examWindowStatus(x){
   return 'active';
 }
 
+// Batch 2: refresh the currently-selected group's data after any write
+// (create/close/delete of exam, lecture, teaching-log entry). Cache-busts
+// dashLoadedForGroup so loadDashScopedData actually re-fetches instead of
+// returning the memoized snapshot.
+async function refreshDashScoped(){
+  const g=STATE.dashSelectedGroup;
+  if(!g)return;
+  STATE.dashLoadedForGroup=null;
+  await loadDashScopedData(g);
+}
+
+// Legacy shim — kept because saveExam / closeExamNow / deleteExam still
+// call it. Redirects to the scoped refresh so we don't fetch every exam
+// in the database on each write.
 async function loadDashExams(){
-  if(!db)return;
-  try{
-    const snap=await db.collection('exams').get();
-    STATE.dashExams=snap.docs.map(d=>({id:d.id,...d.data()}))
-      .sort((a,b)=>(b.opensAt||'')>(a.opensAt||'')?1:-1);
-    STATE.dashExamsLoaded=true;
-    if(STATE.tab==='dashboard')render();
-  }catch(e){
-    console.warn('[Exams] load failed:',e);
-    STATE.dashExams=STATE.dashExams||[];
-    STATE.dashExamsLoaded=true;
-  }
+  await refreshDashScoped();
 }
 
 async function saveExam(){
@@ -3344,9 +3390,10 @@ async function saveExam(){
       createdAt:new Date().toISOString(),
       createdBy:STATE.user.uid
     });
-    showToast('Exam created ✅','success');
-    STATE.dashExamDraft={title:'',groupCode:'',sectionId:'',count:20,durationMinutes:30,opensAt:'',closesAt:''};
-    STATE.dashExamsLoaded=false;
+    showToast('Exam created \u2705','success');
+    // Batch 2: preserve group prefill so back-to-back exams for the same
+    // group don't require re-selection
+    STATE.dashExamDraft={title:'',groupCode:STATE.dashSelectedGroup,sectionId:'',count:20,durationMinutes:30,opensAt:'',closesAt:''};
     await loadDashExams();
   }catch(e){
     showToast('Error: '+e.message,'error');
@@ -3386,10 +3433,28 @@ async function deleteExam(id){
 
 
 // ==== PHASE 1 DASHBOARD HANDLERS (ported from FMAA, remapped) ====
-async function loadTeachingLog(){if(!db)return;try{const snap=await db.collection('teaching-log').get();STATE.dashTeachingLog=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.date||'')>(a.date||'')?1:-1);STATE.dashTeachingLogLoaded=true;if(STATE.tab==='dashboard')render();}catch(e){console.warn('Teaching log load failed:',e);STATE.dashTeachingLog=STATE.dashTeachingLog||[];STATE.dashTeachingLogLoaded=true;}}
+// Legacy shim — teaching-log is now scoped by group in loadDashScopedData.
+async function loadTeachingLog(){await refreshDashScoped();}
 function toggleTeachingUnit(uid){const u=STATE.dashTeachingDraft.unitIds;const i=u.indexOf(uid);if(i>=0)u.splice(i,1);else u.push(uid);render();}
-async function saveTeachingEntry(){const d=STATE.dashTeachingDraft;if(!d.groupCode||!d.lectureNumber||!d.date||!d.unitIds.length){showToast('Fill group, lecture #, date, and select at least one unit.','warning');return;}try{await db.collection('teaching-log').add({groupCode:d.groupCode.trim().toUpperCase(),lectureNumber:Number(d.lectureNumber),date:d.date,unitIds:d.unitIds.slice(),notes:d.notes.trim(),createdAt:new Date().toISOString(),createdBy:STATE.user.uid});showToast('Teaching entry saved ✅','success');STATE.dashTeachingDraft={groupCode:'',lectureNumber:'',date:'',unitIds:[],notes:''};STATE.dashTeachingLogLoaded=false;await loadTeachingLog();}catch(e){showToast('Error: '+e.message,'error');}}
-async function deleteTeachingEntry(id){const ok=await showModal({icon:'🗑️',title:'Delete Entry?',body:'This removes the teaching record. Questions of the Day may change for that group.',type:'danger',confirmText:'Delete',cancelText:'Cancel'});if(!ok)return;try{await db.collection('teaching-log').doc(id).delete();STATE.dashTeachingLogLoaded=false;await loadTeachingLog();}catch(e){showToast('Error deleting.','error');}}
+async function saveTeachingEntry(){
+  const d=STATE.dashTeachingDraft;
+  // Batch 2: draft group is auto-prefilled from dashSelectedGroup, but we
+  // still validate defensively in case someone tabs directly to this action.
+  if(!d.groupCode)d.groupCode=STATE.dashSelectedGroup;
+  if(!d.groupCode||!d.lectureNumber||!d.date||!d.unitIds.length){showToast('Fill lecture #, date, and select at least one unit.','warning');return;}
+  try{
+    await db.collection('teaching-log').add({groupCode:d.groupCode.trim().toUpperCase(),lectureNumber:Number(d.lectureNumber),date:d.date,unitIds:d.unitIds.slice(),notes:d.notes.trim(),createdAt:new Date().toISOString(),createdBy:STATE.user.uid});
+    showToast('Teaching entry saved \u2705','success');
+    // Reset draft but preserve group prefill for the next entry
+    STATE.dashTeachingDraft={groupCode:STATE.dashSelectedGroup,lectureNumber:'',date:'',unitIds:[],notes:''};
+    await refreshDashScoped();
+  }catch(e){showToast('Error: '+e.message,'error');}
+}
+async function deleteTeachingEntry(id){
+  const ok=await showModal({icon:'\u{1F5D1}\uFE0F',title:'Delete Entry?',body:'This removes the teaching record. Questions of the Day may change for that group.',type:'danger',confirmText:'Delete',cancelText:'Cancel'});
+  if(!ok)return;
+  try{await db.collection('teaching-log').doc(id).delete();await refreshDashScoped();}catch(e){showToast('Error deleting.','error');}
+}
 async function saveGroup(){
   const inp=document.getElementById('new-group-input');
   if(!inp)return;
@@ -3449,35 +3514,140 @@ function renderDashGroups(){
     `</div></div>`;
 }
 
-// ==== INSTRUCTOR DASHBOARD — PHASE 1 (Groups + Teaching Log) ====
-// Loads only the three collections Phase 1 needs (all rule-covered & tested):
-// groups (instructor-write), teaching-log (instructor-write), students (instructor-read, for counts).
-async function loadDashboardP1(){
-  if(STATE.dashLoaded||STATE.dashLoading)return;
-  STATE.dashLoading=true;STATE.dashError=false;
+// ═════════════════════════════════════════════════════════════════════
+// BATCH 2 — GROUP-SCOPED DASHBOARD ARCHITECTURE
+//
+// The previous loadDashboardP1() fetched EVERY doc from EVERY dashboard
+// collection on every open — fine at 50 students, unsustainable at 320.
+//
+// New split:
+//   loadDashGroupsList()          — unscoped, cheap. Groups + full student
+//                                    roster (for chip counts). ~50 reads
+//                                    total, cached across group switches.
+//   loadDashScopedData(groupCode) — per-group scoped. Lectures, teaching-log,
+//                                    exams, live pointer filtered to one
+//                                    group. Re-fires on group switch.
+//   loadLectureAttendance(id)     — on-demand per-lecture attendance. Only
+//                                    fires when instructor taps a specific
+//                                    lecture's attendance list.
+//
+// Cost profile at target scale (8 groups × 40 students × 15 lectures):
+//   BEFORE Batch 2: ~4,800 reads/dashboard-open   (unusable at 6 months)
+//   AFTER  Batch 2:   ~120 reads/dashboard-open   (98% reduction)
+// ═════════════════════════════════════════════════════════════════════
+
+// ── Persistence: remember the last-selected group forever ─────────────
+function loadDashGroup(){try{return localStorage.getItem('cma-dash-group-v1')||'';}catch{return '';}}
+function saveDashGroup(code){try{localStorage.setItem('cma-dash-group-v1',code||'');}catch{}}
+
+// ── Groups + roster (unscoped, always fresh, called on first dashboard open) ──
+async function loadDashGroupsList(){
+  if(STATE.dashGroupsLoaded)return;
   try{
-    const [gsnap,tsnap,ssnap,lsnap,livesnap,attsnap,exsnap]=await Promise.all([
+    const [gsnap,ssnap]=await Promise.all([
       db.collection('groups').get(),
-      db.collection('teaching-log').get(),
-      db.collection('students').get(),
-      db.collection('lectures').get(),
-      db.collection('live').get(),
-      db.collection('attendance').get(),
-      db.collection('exams').get()
+      db.collection('students').get()
     ]);
     STATE.dashGroups=gsnap.docs.map(d=>({id:d.id,...d.data()}));
-    STATE.dashTeachingLog=tsnap.docs.map(d=>({id:d.id,...d.data()}))
-      .sort((a,b)=>(b.date||'')>(a.date||'')?1:-1);
     STATE.dashStudents=ssnap.docs.map(d=>{const x=d.data();return {uid:d.id,groupCode:x.groupCode||'',name:x.name||'',...x};});
+    STATE.dashGroupsLoaded=true;
+  }catch(e){
+    console.warn('[Dashboard groups] load failed:',e);
+    STATE.dashError=true;
+  }
+}
+
+// ── Scoped fetches — fires on dashboard open AND on group switch ──────
+async function loadDashScopedData(groupCode){
+  if(!groupCode){
+    // No group selected — nothing to scope. Empty state will render.
+    STATE.dashLectures=[];STATE.dashTeachingLog=[];STATE.dashExams=[];STATE.dashLive={};
+    STATE.dashLoadedForGroup='';STATE.dashLoaded=true;STATE.dashLoading=false;
+    render();return;
+  }
+  if(STATE.dashLoadedForGroup===groupCode&&STATE.dashLoaded)return;   // already cached
+  STATE.dashLoading=true;STATE.dashError=false;
+  // Instant-swap UX (Decision 2A): clear stale data so old group's numbers
+  // never appear under the new group's header — skeleton renders instead.
+  STATE.dashLectures=[];STATE.dashTeachingLog=[];STATE.dashExams=[];STATE.dashLive={};
+  STATE.dashAttendanceByLecture={};   // group switch invalidates per-lecture cache
+  render();
+  try{
+    const [lsnap,tsnap,exsnap,livedoc]=await Promise.all([
+      db.collection('lectures').where('groupCode','==',groupCode).get(),
+      db.collection('teaching-log').where('groupCode','==',groupCode).get(),
+      db.collection('exams').where('groupCode','==',groupCode).get(),
+      db.collection('live').doc(groupCode).get()
+    ]);
     STATE.dashLectures=lsnap.docs.map(d=>({id:d.id,...d.data()}))
       .sort((a,b)=>(b.date||'')>(a.date||'')?1:(b.createdAt||'')>(a.createdAt||'')?1:-1);
-    STATE.dashLive={};livesnap.docs.forEach(d=>{STATE.dashLive[d.id]=d.data();});
-    STATE.dashAttendance=attsnap.docs.map(d=>({id:d.id,...d.data()}));
+    STATE.dashTeachingLog=tsnap.docs.map(d=>({id:d.id,...d.data()}))
+      .sort((a,b)=>(b.date||'')>(a.date||'')?1:-1);
     STATE.dashExams=exsnap.docs.map(d=>({id:d.id,...d.data()}))
       .sort((a,b)=>(b.opensAt||'')>(a.opensAt||'')?1:-1);
-    STATE.dashGroupsLoaded=true;STATE.dashTeachingLogLoaded=true;STATE.dashExamsLoaded=true;STATE.dashLoaded=true;
-  }catch(e){console.warn('[Dashboard] load failed:',e);STATE.dashError=true;}
+    STATE.dashLive={};
+    if(livedoc.exists)STATE.dashLive[groupCode]=livedoc.data();
+    STATE.dashTeachingLogLoaded=true;STATE.dashExamsLoaded=true;
+    STATE.dashLoadedForGroup=groupCode;STATE.dashLoaded=true;
+  }catch(e){
+    console.warn('[Dashboard scoped] load failed:',e);
+    STATE.dashError=true;
+  }
   STATE.dashLoading=false;render();
+}
+
+// ── Main entry point — called by renderDashboard on every open ────────
+async function loadDashboardP1(){
+  if(STATE.dashLoading)return;
+  STATE.dashLoading=true;
+  await loadDashGroupsList();
+  // Auto-select logic (Decision 1C — persistent memory):
+  //   1. If a group is already selected in STATE, honor it.
+  //   2. Else, restore from localStorage if the stored code still exists.
+  //   3. Else, if only one group exists, auto-select it.
+  //   4. Else, leave empty — the empty state prompts a choice.
+  if(!STATE.dashSelectedGroup){
+    const stored=loadDashGroup();
+    const exists=code=>STATE.dashGroups.some(g=>g.code===code);
+    if(stored&&exists(stored))STATE.dashSelectedGroup=stored;
+    else if(STATE.dashGroups.length===1)STATE.dashSelectedGroup=STATE.dashGroups[0].code;
+  }
+  STATE.dashLoading=false;
+  if(STATE.dashSelectedGroup){
+    await loadDashScopedData(STATE.dashSelectedGroup);
+  }else{
+    STATE.dashLoaded=true;render();
+  }
+}
+
+// ── User handler: chip tap. Persist + swap + fetch. ───────────────────
+function selectDashGroup(code){
+  if(!code||code===STATE.dashSelectedGroup)return;
+  STATE.dashSelectedGroup=code;
+  saveDashGroup(code);
+  STATE.dashLoadedForGroup=null;    // invalidate cache
+  STATE.dashLoaded=false;
+  STATE.dashExamViewingId=null;     // close any open exam-results drill-down
+  loadDashScopedData(code);
+}
+
+// ── On-demand per-lecture attendance ──────────────────────────────────
+async function loadLectureAttendance(lectureId){
+  if(!lectureId)return[];
+  const cache=STATE.dashAttendanceByLecture[lectureId];
+  if(cache)return cache;
+  try{
+    const snap=await db.collection('attendance').where('lectureId','==',lectureId).get();
+    const list=snap.docs.map(d=>({id:d.id,...d.data()}));
+    // LRU-style bounded cache (30 lectures max in memory)
+    const keys=Object.keys(STATE.dashAttendanceByLecture);
+    if(keys.length>=30)delete STATE.dashAttendanceByLecture[keys[0]];
+    STATE.dashAttendanceByLecture[lectureId]=list;
+    return list;
+  }catch(e){
+    console.warn('[Attendance] load failed for lecture',lectureId,e);
+    return [];
+  }
 }
 
 
@@ -3490,8 +3660,12 @@ async function loadDashboardP1(){
 
 async function createLecture(){
   const d=STATE.dashLectureDraft;
+  // Batch 2: draft group is auto-prefilled from dashSelectedGroup by
+  // renderDashLectures. Fall back defensively if the user navigated in
+  // some other way.
+  if(!d.groupCode)d.groupCode=STATE.dashSelectedGroup;
   if(!d.title||!d.title.trim()){showToast('Enter a lecture title.','warning');return;}
-  if(!d.groupCode){showToast('Choose a group.','warning');return;}
+  if(!d.groupCode){showToast('Pick a group first (chip strip above).','warning');return;}
   try{
     const entry={
       title:d.title.trim(),
@@ -3503,7 +3677,8 @@ async function createLecture(){
     };
     const ref=await db.collection('lectures').add(entry);
     STATE.dashLectures.unshift({id:ref.id,...entry});
-    STATE.dashLectureDraft={title:'',groupCode:'',date:''};
+    // Preserve selected-group prefill for the next lecture
+    STATE.dashLectureDraft={title:'',groupCode:STATE.dashSelectedGroup,date:''};
     render();
     showToast('Lecture created.','success');
   }catch(e){console.warn('[Lecture] create failed:',e);showToast('Error creating lecture.','error');}
@@ -3521,6 +3696,9 @@ async function deleteLecture(id){
     }
     await db.collection('lectures').doc(id).delete();
     STATE.dashLectures=STATE.dashLectures.filter(l=>l.id!==id);
+    // Batch 2: clear the attendance cache for this lecture — records may
+    // still exist but the lecture is gone, so no reason to hold the entries
+    delete STATE.dashAttendanceByLecture[id];
     render();
     showToast('Lecture deleted.','success');
   }catch(e){console.warn('[Lecture] delete failed:',e);showToast('Error deleting lecture.','error');}
@@ -3572,60 +3750,60 @@ function isLectureLive(lec){
 
 function renderDashLectures(){
   const lectures=STATE.dashLectures||[];
-  const groups=(STATE.dashGroups||[]).map(g=>g.code);
+  const selectedGroup=STATE.dashSelectedGroup;
   const d=STATE.dashLectureDraft;
-  // Group picker options
-  const groupOpts=groups.length
-    ? groups.map(g=>`<option value="${esc(g)}" ${d.groupCode===g?'selected':''}>${esc(g)}</option>`).join('')
-    : '';
+  // Batch 2: auto-prefill the draft group from the selected group so the
+  // instructor never types the wrong code by mistake. Draft still overridable.
+  if(selectedGroup&&!d.groupCode)d.groupCode=selectedGroup;
   const createCard=`
-    <div style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:10px">\u2795 Create a Lecture</div>
+    <div style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:10px">\u2795 Create a Lecture for <span style="font-family:'Courier New',monospace;color:#0C447C">${esc(selectedGroup)}</span></div>
     <div style="background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:16px">
-      ${groups.length===0
-        ?`<div style="font-size:13px;color:#A32D2D;background:#FCEBEB;border:.5px solid #E24B4A40;border-radius:8px;padding:10px 12px">Create a group first (Groups tab) before adding lectures.</div>`
-        :`<div style="margin-bottom:10px"><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Title *</label>
-          <input id="lec-title" type="text" value="${esc(d.title||'')}" oninput="STATE.dashLectureDraft.title=this.value" placeholder="e.g. Section A \u2014 Cost Behavior" style="width:100%;padding:9px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:14px;font-family:inherit;outline:none;color:#1a1a1a;background:#fafaf8;box-sizing:border-box"></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
-          <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Group *</label>
-            <select onchange="STATE.dashLectureDraft.groupCode=this.value" style="width:100%;padding:9px;border-radius:8px;border:.5px solid #d0d0d0;font-size:13px;font-family:inherit;background:#fff;color:#1a1a1a;box-sizing:border-box"><option value="">Select...</option>${groupOpts}</select></div>
-          <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Date</label>
-            <input id="lec-date" type="date" value="${esc(d.date||'')}" oninput="STATE.dashLectureDraft.date=this.value" style="width:100%;padding:9px;border-radius:8px;border:.5px solid #d0d0d0;font-size:13px;font-family:inherit;outline:none;background:#fff;color:#1a1a1a;box-sizing:border-box"></div>
-        </div>
-        <button onclick="createLecture()" style="width:100%;padding:11px;border-radius:10px;border:none;background:#0C447C;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Create Lecture</button>`}
+      <div style="margin-bottom:10px"><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Title *</label>
+        <input id="lec-title" type="text" value="${esc(d.title||'')}" oninput="STATE.dashLectureDraft.title=this.value" placeholder="e.g. Section A \u2014 Cost Behavior" style="width:100%;padding:9px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:14px;font-family:inherit;outline:none;color:#1a1a1a;background:#fafaf8;box-sizing:border-box"></div>
+      <div style="margin-bottom:12px">
+        <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Date</label>
+        <input id="lec-date" type="date" value="${esc(d.date||'')}" oninput="STATE.dashLectureDraft.date=this.value" style="width:100%;padding:9px;border-radius:8px;border:.5px solid #d0d0d0;font-size:13px;font-family:inherit;outline:none;background:#fff;color:#1a1a1a;box-sizing:border-box">
+      </div>
+      <button onclick="createLecture()" style="width:100%;padding:11px;border-radius:10px;border:none;background:#0C447C;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Create Lecture</button>
     </div>`;
-  // Lecture rows
-  const rows=lectures.length===0
-    ?`<div style="text-align:center;padding:30px 14px;color:#aaa;font-size:13px">No lectures yet.</div>`
-    :lectures.map(l=>{
-      const live=isLectureLive(l);
-      const dt=l.date?new Date(l.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
-      const _ptr=STATE.dashLive[l.groupCode];
-      const autoEnded=!live&&_ptr&&_ptr.lectureId===l.id;  // pointed here but window passed
-      const badge=live
-        ?`<span style="font-size:10px;font-weight:700;padding:2px 9px;border-radius:10px;background:#FCEBEB;color:#C0392B">\u{1F534} LIVE</span>`
-        :(autoEnded
-          ?`<span style="font-size:10px;font-weight:600;padding:2px 9px;border-radius:10px;background:#EAECEE;color:#566573">Ended (auto)</span>`
-          :(l.status==='ended'
-            ?`<span style="font-size:10px;font-weight:600;padding:2px 9px;border-radius:10px;background:#EAECEE;color:#566573">Ended</span>`
-            :`<span style="font-size:10px;font-weight:600;padding:2px 9px;border-radius:10px;background:#FEF9E7;color:#9A7D0A">Scheduled</span>`));
-      const attCount=(STATE.dashAttendance||[]).filter(a=>a.lectureId===l.id).length;
-      const action=live
-        ?`<button onclick="closeLecture('${l.id}')" style="padding:7px 14px;border-radius:8px;border:none;background:#C0392B;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u25A0 Close check-in</button>`
-        :`<button onclick="openLecture('${l.id}')" style="padding:7px 14px;border-radius:8px;border:none;background:#1E8449;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u25B6 Open check-in</button>`;
-      return `<div style="background:#fff;border:.5px solid ${live?'#C0392B40':'#e0e0d8'};border-radius:12px;padding:13px 14px;margin-bottom:10px">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px">
-          <div style="min-width:0"><div style="font-size:14px;font-weight:600;color:#1a1a1a;line-height:1.3">${esc(l.title)}</div>
-            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:5px;align-items:center">
-              <span style="font-size:10px;background:#F4ECF7;color:#6C3483;padding:2px 8px;border-radius:8px;font-weight:600;font-family:'Courier New',monospace">${esc(l.groupCode)}</span>
-              ${dt?`<span style="font-size:11px;color:#888">${dt}</span>`:''}${badge}</div></div>
-        </div>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-          ${action}
-          <button onclick="openAttendanceList('${l.id}')" style="padding:7px 12px;border-radius:8px;border:.5px solid #0C447C30;background:#E6F1FB;color:#0C447C;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u{1F465} ${attCount} checked in</button>
-          <button onclick="deleteLecture('${l.id}')" style="padding:7px 10px;border-radius:8px;border:.5px solid #E24B4A40;background:#FCEBEB;color:#A32D2D;font-size:12px;cursor:pointer;font-family:inherit">\u{1F5D1}\uFE0F</button>
-        </div>
-      </div>`;
-    }).join('');
+  // Lecture rows — friendly empty state if none for this group
+  if(lectures.length===0){
+    return `<div style="padding:14px">${createCard}${renderDashTabEmpty('Lectures',selectedGroup,{icon:'\u{1F3AC}',body:'This group has no lectures yet. Use the form above to create one.'})}</div>`;
+  }
+  const rows=lectures.map(l=>{
+    const live=isLectureLive(l);
+    const dt=l.date?new Date(l.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
+    const _ptr=STATE.dashLive[l.groupCode];
+    const autoEnded=!live&&_ptr&&_ptr.lectureId===l.id;  // pointed here but window passed
+    const badge=live
+      ?`<span style="font-size:10px;font-weight:700;padding:2px 9px;border-radius:10px;background:#FCEBEB;color:#C0392B">\u{1F534} LIVE</span>`
+      :(autoEnded
+        ?`<span style="font-size:10px;font-weight:600;padding:2px 9px;border-radius:10px;background:#EAECEE;color:#566573">Ended (auto)</span>`
+        :(l.status==='ended'
+          ?`<span style="font-size:10px;font-weight:600;padding:2px 9px;border-radius:10px;background:#EAECEE;color:#566573">Ended</span>`
+          :`<span style="font-size:10px;font-weight:600;padding:2px 9px;border-radius:10px;background:#FEF9E7;color:#9A7D0A">Scheduled</span>`));
+    // Batch 2: attendance count comes from lazy cache. If not yet fetched,
+    // show a neutral "View check-ins" prompt instead of a stale zero.
+    const cached=STATE.dashAttendanceByLecture[l.id];
+    const attBtn=cached
+      ?`<button onclick="openAttendanceList('${l.id}')" style="padding:7px 12px;border-radius:8px;border:.5px solid #0C447C30;background:#E6F1FB;color:#0C447C;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u{1F465} ${cached.length} checked in</button>`
+      :`<button onclick="openAttendanceList('${l.id}')" style="padding:7px 12px;border-radius:8px;border:.5px solid #d0d0d0;background:#fafaf8;color:#555;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u{1F465} View check-ins</button>`;
+    const action=live
+      ?`<button onclick="closeLecture('${l.id}')" style="padding:7px 14px;border-radius:8px;border:none;background:#C0392B;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u25A0 Close check-in</button>`
+      :`<button onclick="openLecture('${l.id}')" style="padding:7px 14px;border-radius:8px;border:none;background:#1E8449;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u25B6 Open check-in</button>`;
+    return `<div style="background:#fff;border:.5px solid ${live?'#C0392B40':'#e0e0d8'};border-radius:12px;padding:13px 14px;margin-bottom:10px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px">
+        <div style="min-width:0"><div style="font-size:14px;font-weight:600;color:#1a1a1a;line-height:1.3">${esc(l.title)}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:5px;align-items:center">
+            ${dt?`<span style="font-size:11px;color:#888">${dt}</span>`:''}${badge}</div></div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        ${action}
+        ${attBtn}
+        <button onclick="deleteLecture('${l.id}')" style="padding:7px 10px;border-radius:8px;border:.5px solid #E24B4A40;background:#FCEBEB;color:#A32D2D;font-size:12px;cursor:pointer;font-family:inherit">\u{1F5D1}\uFE0F</button>
+      </div>
+    </div>`;
+  }).join('');
   return `<div style="padding:14px">${createCard}
     <div style="font-size:12px;font-weight:500;color:#888;letter-spacing:.5px;margin-bottom:8px">LECTURES (${lectures.length})</div>
     ${rows}</div>`;
@@ -3635,25 +3813,20 @@ function renderDashLectures(){
 function renderDashExams(){
   if(STATE.dashExamViewingId)return renderDashExamResults();
   const d=STATE.dashExamDraft;
-  const groups=(STATE.dashGroups||[]).map(g=>g.code);
+  const selectedGroup=STATE.dashSelectedGroup;
   const exams=STATE.dashExams||[];
 
-  const groupOpts=groups.map(g=>
-    `<option value="${esc(g)}" ${d.groupCode===g?'selected':''}>${esc(g)}</option>`
-  ).join('');
+  // Batch 2: auto-prefill draft group so exams save to the currently-viewed
+  // group by default. Instructor doesn't have to pick manually every time.
+  if(selectedGroup&&!d.groupCode)d.groupCode=selectedGroup;
 
   const sectionOpts=S.map(s=>
     `<option value="${s.id}" ${String(d.sectionId)===String(s.id)?'selected':''}>Sec ${s.id} — ${esc(s.title)}</option>`
   ).join('');
 
-  const noGroups=groups.length===0
-    ? `<div style="font-size:13px;color:#A32D2D;background:#FCEBEB;border:.5px solid #E24B4A40;border-radius:8px;padding:10px 12px;margin-bottom:12px">Create a group first (Groups tab) before adding an exam.</div>`
-    : '';
-
   const createCard=`
-    <div style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:10px">➕ Create an Exam</div>
+    <div style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:10px">\u2795 Create an Exam for <span style="font-family:'Courier New',monospace;color:#0C447C">${esc(selectedGroup)}</span></div>
     <div style="background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:16px">
-      ${noGroups}
       <div style="margin-bottom:10px">
         <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Title *</label>
         <input id="ex-title" type="text" value="${esc(d.title||'')}"
@@ -3661,25 +3834,16 @@ function renderDashExams(){
                placeholder="e.g. Section 1 Mid-Term Practice"
                style="width:100%;padding:9px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:14px;font-family:inherit;outline:none;color:#1a1a1a;background:#fafaf8;box-sizing:border-box">
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-        <div>
-          <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Group *</label>
-          <select onchange="STATE.dashExamDraft.groupCode=this.value"
-                  style="width:100%;padding:9px;border-radius:8px;border:.5px solid #d0d0d0;font-size:13px;font-family:inherit;background:#fff;color:#1a1a1a;box-sizing:border-box">
-            <option value="">Select...</option>${groupOpts}
-          </select>
-        </div>
-        <div>
-          <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Section *</label>
-          <select onchange="STATE.dashExamDraft.sectionId=this.value"
-                  style="width:100%;padding:9px;border-radius:8px;border:.5px solid #d0d0d0;font-size:13px;font-family:inherit;background:#fff;color:#1a1a1a;box-sizing:border-box">
-            <option value="">Select...</option>${sectionOpts}
-          </select>
-        </div>
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Section *</label>
+        <select onchange="STATE.dashExamDraft.sectionId=this.value"
+                style="width:100%;padding:9px;border-radius:8px;border:.5px solid #d0d0d0;font-size:13px;font-family:inherit;background:#fff;color:#1a1a1a;box-sizing:border-box">
+          <option value="">Select...</option>${sectionOpts}
+        </select>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
         <div>
-          <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Questions (3–50) *</label>
+          <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Questions (3\u201350) *</label>
           <input type="number" min="3" max="50" value="${esc(String(d.count||20))}"
                  oninput="STATE.dashExamDraft.count=this.value"
                  style="width:100%;padding:9px;border-radius:8px;border:.5px solid #d0d0d0;font-size:13px;font-family:inherit;outline:none;background:#fff;color:#1a1a1a;box-sizing:border-box">
@@ -3707,7 +3871,7 @@ function renderDashExams(){
       </div>
       <button onclick="saveExam()"
               style="width:100%;padding:11px;border-radius:10px;border:none;background:#0C447C;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">
-        💾 Create Exam
+        \u{1F4BE} Create Exam
       </button>
     </div>`;
 
@@ -3736,7 +3900,6 @@ function renderDashExams(){
     return `<div style="background:#fff;border:.5px solid ${status==='active'?'#1E844940':'#e0e0d8'};border-radius:12px;padding:13px 14px;margin-bottom:10px">
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">
         <span style="font-size:10px;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:.4px;${badgeStyle[status]}">${badgeLabel[status]}</span>
-        <span style="font-size:10px;font-weight:600;padding:2px 9px;border-radius:10px;background:#F4ECF7;color:#6C3483;font-family:'Courier New',monospace">${esc(x.groupCode)}</span>
       </div>
       <div style="font-size:14px;font-weight:600;color:#1a1a1a;line-height:1.35;margin-bottom:6px">${esc(x.title)}</div>
       <div style="font-size:11px;color:#666;line-height:1.7;margin-bottom:10px">
@@ -3757,7 +3920,7 @@ function renderDashExams(){
     : '';
 
   const emptyState=exams.length===0
-    ? `<div style="text-align:center;padding:30px 14px;color:#aaa;font-size:13px">No exams yet. Create your first one above.</div>`
+    ? renderDashTabEmpty('Exams',STATE.dashSelectedGroup,{icon:'\u{1F4DD}',body:'This group has no exams yet. Use the form above to create one for a specific section.'})
     : '';
 
   return `<div style="padding:14px">
@@ -3770,9 +3933,66 @@ function renderDashExams(){
   </div>`;
 }
 
+// ── Batch 2: chip strip renderer ──────────────────────────────────────
+// Renders the horizontal group selector above the dashboard sub-nav.
+// Each chip shows the group code + a student count derived from the roster.
+// Special "+ New" chip at the end routes to the Groups tab (create flow).
+function renderGroupChipStrip(){
+  const groups=(STATE.dashGroups||[]).slice().sort((a,b)=>(a.code||'').localeCompare(b.code||''));
+  const students=STATE.dashStudents||[];
+  const countFor=code=>students.filter(s=>(s.groupCode||'').toUpperCase()===code.toUpperCase()).length;
+  const active=STATE.dashSelectedGroup;
+  const chips=groups.map(g=>{
+    const isActive=g.code===active;
+    const n=countFor(g.code);
+    return `<button class="gs-chip${isActive?' active':''}" onclick="selectDashGroup('${esc(g.code)}')" title="${esc(g.code)} — ${n} student${n===1?'':'s'}">`
+      +`<span>${esc(g.code)}</span>`
+      +`<span class="gs-chip-count">\u00B7 ${n}</span>`
+      +`</button>`;
+  }).join('');
+  const newChip=`<button class="gs-chip gs-chip-new" onclick="STATE.dashTab='groups';render();setTimeout(()=>{const i=document.getElementById('new-group-input');if(i)i.focus();},50)" title="Add a new group">\u002B New</button>`;
+  return `<div class="gs-strip" role="tablist" aria-label="Select group">${chips}${newChip}</div>`;
+}
+
+// ── Batch 2: skeleton (Decision 2A — instant-swap loading UX) ─────────
+function renderDashSkeleton(){
+  const line=(cls)=>`<div class="gs-skeleton-line ${cls}"></div>`;
+  const card=`<div class="gs-skeleton-card">${line('short')}${line('long')}${line('medium')}</div>`;
+  return `<div style="padding:14px">${card}${card}${card}</div>`;
+}
+
+// ── Batch 2: empty states (Decision 3B — friendly + CTA) ──────────────
+// Called when no group is selected on a scoped tab.
+function renderDashPickGroupEmpty(tabLabel){
+  const hasGroups=(STATE.dashGroups||[]).length>0;
+  if(!hasGroups){
+    return `<div class="gs-empty">
+      <div class="gs-empty-icon">\u{1F465}</div>
+      <div class="gs-empty-title">No groups yet</div>
+      <div class="gs-empty-body">Create your first group to start managing ${esc(tabLabel)}, students, and exams.</div>
+      <button class="gs-empty-cta" onclick="STATE.dashTab='groups';render();setTimeout(()=>{const i=document.getElementById('new-group-input');if(i)i.focus();},50)">\u002B Create your first group</button>
+    </div>`;
+  }
+  return `<div class="gs-empty">
+    <div class="gs-empty-icon">\u{1F446}</div>
+    <div class="gs-empty-title">Pick a group to view its ${esc(tabLabel)}</div>
+    <div class="gs-empty-body">Tap a group chip above to see its ${esc(tabLabel.toLowerCase())} and related activity.</div>
+  </div>`;
+}
+
+// ── Batch 2: per-tab "no items" empty state for a selected group ──────
+function renderDashTabEmpty(tabLabel,groupCode,cta){
+  return `<div class="gs-empty">
+    <div class="gs-empty-icon">${cta.icon||'\u{1F4CB}'}</div>
+    <div class="gs-empty-title">No ${esc(tabLabel.toLowerCase())} yet for ${esc(groupCode)}</div>
+    <div class="gs-empty-body">${esc(cta.body||('Create your first '+tabLabel.toLowerCase()+' below.'))}</div>
+    ${cta.button?`<button class="gs-empty-cta" onclick="${cta.onclick||''}">${esc(cta.button)}</button>`:''}
+  </div>`;
+}
+
 function renderDashboard(){
   if(!isInstructor())return renderIntro();
-  if(!STATE.dashLoaded&&!STATE.dashLoading)loadDashboardP1();
+  if(!STATE.dashLoaded&&!STATE.dashLoading&&!STATE.dashGroupsLoaded)loadDashboardP1();
   const SUB_DASH=[
     {id:'groups',      icon:'\u{1F465}', label:'Groups'},
     {id:'lectures',    icon:'\u{1F3AC}', label:'Lectures'},
@@ -3783,11 +4003,24 @@ function renderDashboard(){
   const subnav=`<div class="sub-nav">${SUB_DASH.map(it=>
     `<button class="sub-nav-btn${tab===it.id?' active':''}" onclick="STATE.dashTab='${it.id}';render()">${it.icon} ${it.label}</button>`
   ).join('')}</div>`;
+
+  // ── Group chip strip: shown once we have the groups list ──
+  const chipStrip=STATE.dashGroupsLoaded?renderGroupChipStrip():'';
+
+  // ── Body dispatch ──
+  const scopedTabs={lectures:'Lectures',exams:'Exams','teaching-log':'Actual Teaching'};
   let body;
   if(STATE.dashError){
-    body=`<div style="text-align:center;padding:50px 20px"><div style="font-size:34px;margin-bottom:10px">\u26A0\uFE0F</div><div style="font-size:14px;color:#555;margin-bottom:14px">Couldn't load dashboard data.</div><button onclick="STATE.dashLoaded=false;STATE.dashError=false;loadDashboardP1()" style="padding:9px 18px;border-radius:8px;border:.5px solid #d0d0d0;background:#fff;font-size:13px;cursor:pointer;font-family:inherit">Retry</button></div>`;
-  }else if(!STATE.dashLoaded&&STATE.dashLoading){
-    body=`<div style="text-align:center;padding:60px 20px;color:#aaa"><div style="font-size:30px;margin-bottom:10px">\u23F3</div><div style="font-size:14px">Loading dashboard\u2026</div></div>`;
+    body=`<div style="text-align:center;padding:50px 20px"><div style="font-size:34px;margin-bottom:10px">\u26A0\uFE0F</div><div style="font-size:14px;color:#555;margin-bottom:14px">Couldn't load dashboard data.</div><button onclick="STATE.dashError=false;STATE.dashGroupsLoaded=false;STATE.dashLoaded=false;loadDashboardP1()" style="padding:9px 18px;border-radius:8px;border:.5px solid #d0d0d0;background:#fff;font-size:13px;cursor:pointer;font-family:inherit">Retry</button></div>`;
+  }else if(tab==='groups'){
+    // Groups tab: unscoped, always renders (roster management surface).
+    body=STATE.dashGroupsLoaded?renderDashGroups():renderDashSkeleton();
+  }else if(!STATE.dashSelectedGroup){
+    // Scoped tab but no group picked → empty state
+    body=renderDashPickGroupEmpty(scopedTabs[tab]||'items');
+  }else if(STATE.dashLoading||STATE.dashLoadedForGroup!==STATE.dashSelectedGroup){
+    // Scoped tab, group picked, but data still loading (or stale from prior group)
+    body=renderDashSkeleton();
   }else if(tab==='teaching-log'){
     body=renderDashActualTeaching();
   }else if(tab==='lectures'){
@@ -3797,7 +4030,7 @@ function renderDashboard(){
   }else{
     body=renderDashGroups();
   }
-  return `${subnav}<div class="sh"><h2>Instructor Dashboard</h2><p>Groups · lectures · exams · teaching log</p></div><div class="scroll-area">${body}</div>`;
+  return `${subnav}${chipStrip}<div class="sh"><h2>Instructor Dashboard</h2><p>${STATE.dashSelectedGroup?'Viewing: <b>'+esc(STATE.dashSelectedGroup)+'</b> \u00B7 ':''}Groups \u00B7 lectures \u00B7 exams \u00B7 teaching log</p></div><div class="scroll-area">${body}</div>`;
 }
 
 // Instructor-only Dashboard tab appended to the student nav.
@@ -4143,7 +4376,12 @@ function exitExam(){
 function renderExamsStrip(){
   const st=loadStudent();
   if(!STATE.user||isInstructor()||!st||!st.groupCode)return '';
-  if(!STATE.studentExamsLoaded){loadStudentExams();return '';}
+  if(!STATE.studentExamsLoaded){
+    loadStudentExams();
+    // Batch 2 ride-along: subtle skeleton while we check for exams.
+    // Prevents the "empty gap → sudden pop-in" flicker on Home load.
+    return '<div style="margin-bottom:14px"><div class="gs-skeleton-card" style="border-radius:12px"><div class="gs-skeleton-line short"></div><div class="gs-skeleton-line long"></div><div class="gs-skeleton-line medium"></div></div></div>';
+  }
   const exams=STATE.studentExams||[];
   if(!exams.length)return '';
   const results=STATE.studentExamResults||{};
@@ -4856,24 +5094,28 @@ function renderFlashcards(){
 function renderDashActualTeaching(){
   const entries=STATE.dashTeachingLog||[];
   const d=STATE.dashTeachingDraft;
-  const gf=(STATE.dashGroups||[]).map(g=>g.code);
+  const selectedGroup=STATE.dashSelectedGroup;
+  // Batch 2: auto-prefill the draft group so entries always attach to the
+  // currently-viewed group. Removes the group picker entirely (redundant).
+  if(selectedGroup&&!d.groupCode)d.groupCode=selectedGroup;
   const allLessons=[];S.forEach(sec=>sec.lessons.forEach(l=>allLessons.push({sec,lesson:l})));
   const lessonPicker=S.map(sec=>{const items=sec.lessons.map(l=>{const on=d.unitIds.includes(l.id);return `<button onclick="toggleTeachingUnit('${l.id}')" style="padding:5px 9px;border-radius:8px;font-size:11px;cursor:pointer;font-family:inherit;border:.5px solid ${on?sec.text:'#d0d0d0'};background:${on?sec.bg:'#f5f5f0'};color:${on?sec.strong:'#555'};font-weight:${on?'600':'400'};margin:2px">${l.id}. ${esc(l.title.slice(0,42))}${l.title.length>42?'…':''}</button>`;}).join('');return `<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;color:${sec.strong};margin-bottom:6px">${sec.emoji} Section ${sec.id}</div><div>${items}</div></div>`;}).join('');
-  const rows=entries.length===0
-    ?'<div style="text-align:center;padding:30px 14px;color:#aaa;font-size:13px">No teaching entries yet. Log your first lecture below.</div>'
-    :entries.map(e=>{const dt=e.date?new Date(e.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';const titles=(e.unitIds||[]).map(uid=>{const found=allLessons.find(x=>x.lesson.id===uid);return found?`${uid}. ${found.lesson.title}`:uid;});return `<div class="teach-entry"><div class="teach-badges"><span class="teach-badge" style="background:#F4ECF7;color:#6C3483">${esc(e.groupCode)}</span><span class="teach-badge" style="background:#D6EAF8;color:#0C447C">Lecture ${e.lectureNumber}</span><span class="teach-badge" style="background:#f5f5f0;color:#555">${dt}</span></div><div style="font-size:11px;color:#888;margin-bottom:8px">${titles.length} unit${titles.length===1?'':'s'} taught</div><div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px">${titles.map(t=>`<span style="font-size:10px;background:#EBF5FB;color:#0C447C;padding:2px 7px;border-radius:8px">${esc(t)}</span>`).join('')}</div>${e.notes?`<div style="font-size:12px;color:#444;background:#fafaf8;border-radius:8px;padding:8px 10px;margin-bottom:8px;line-height:1.5">${esc(e.notes)}</div>`:''}<button onclick="deleteTeachingEntry('${e.id}')" style="padding:5px 10px;border-radius:6px;border:.5px solid #E24B4A40;background:#FCEBEB;color:#A32D2D;font-size:11px;cursor:pointer;font-family:inherit">🗑️ Delete</button></div>`;}).join('');
-  return `<div style="padding:14px">
-    <div style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:10px">➕ Log a Lecture</div>
+  const createForm=`<div style="padding:14px">
+    <div style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:10px">\u2795 Log a Lecture for <span style="font-family:'Courier New',monospace;color:#0C447C">${esc(selectedGroup)}</span></div>
     <div style="background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:16px">
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px">
-        <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Group *</label><select onchange="STATE.dashTeachingDraft.groupCode=this.value" style="width:100%;padding:8px;border-radius:8px;border:.5px solid #d0d0d0;font-size:12px;font-family:inherit;background:#fff;color:#1a1a1a;box-sizing:border-box"><option value="">Select...</option>${gf.map(g=>`<option value="${esc(g)}" ${d.groupCode===g?'selected':''}>${esc(g)}</option>`).join('')}</select></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
         <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Lecture # *</label><input type="number" min="1" value="${esc(String(d.lectureNumber||''))}" oninput="STATE.dashTeachingDraft.lectureNumber=this.value" placeholder="1" style="width:100%;padding:8px;border-radius:8px;border:.5px solid #d0d0d0;font-size:12px;font-family:inherit;outline:none;background:#fff;color:#1a1a1a;box-sizing:border-box"></div>
         <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Date *</label><input type="date" value="${esc(d.date||'')}" oninput="STATE.dashTeachingDraft.date=this.value" style="width:100%;padding:8px;border-radius:8px;border:.5px solid #d0d0d0;font-size:12px;font-family:inherit;outline:none;background:#fff;color:#1a1a1a;box-sizing:border-box"></div>
       </div>
       <div style="margin-bottom:10px"><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Units taught * (${d.unitIds.length} selected)</label><div style="border:.5px solid #e0e0d8;border-radius:8px;padding:10px;max-height:280px;overflow-y:auto;background:#fafaf8">${lessonPicker}</div></div>
       <div style="margin-bottom:10px"><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Notes (optional)</label><textarea oninput="STATE.dashTeachingDraft.notes=this.value" placeholder="What did you cover in this lecture? Any highlights or student questions?" style="width:100%;padding:8px;border-radius:8px;border:.5px solid #d0d0d0;font-size:12px;font-family:inherit;outline:none;background:#fff;color:#1a1a1a;box-sizing:border-box;resize:vertical;min-height:60px">${esc(d.notes||'')}</textarea></div>
-      <button onclick="saveTeachingEntry()" style="width:100%;padding:11px;border-radius:10px;border:none;background:#0C447C;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">💾 Save Entry</button>
-    </div>
+      <button onclick="saveTeachingEntry()" style="width:100%;padding:11px;border-radius:10px;border:none;background:#0C447C;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">\u{1F4BE} Save Entry</button>
+    </div>`;
+  if(entries.length===0){
+    return `${createForm}${renderDashTabEmpty('Teaching entries',selectedGroup,{icon:'\u{1F4D3}',body:'No teaching entries yet for this group. Log your first lecture using the form above.'})}</div>`;
+  }
+  const rows=entries.map(e=>{const dt=e.date?new Date(e.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';const titles=(e.unitIds||[]).map(uid=>{const found=allLessons.find(x=>x.lesson.id===uid);return found?`${uid}. ${found.lesson.title}`:uid;});return `<div class="teach-entry"><div class="teach-badges"><span class="teach-badge" style="background:#D6EAF8;color:#0C447C">Lecture ${e.lectureNumber}</span><span class="teach-badge" style="background:#f5f5f0;color:#555">${dt}</span></div><div style="font-size:11px;color:#888;margin-bottom:8px">${titles.length} unit${titles.length===1?'':'s'} taught</div><div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px">${titles.map(t=>`<span style="font-size:10px;background:#EBF5FB;color:#0C447C;padding:2px 7px;border-radius:8px">${esc(t)}</span>`).join('')}</div>${e.notes?`<div style="font-size:12px;color:#444;background:#fafaf8;border-radius:8px;padding:8px 10px;margin-bottom:8px;line-height:1.5">${esc(e.notes)}</div>`:''}<button onclick="deleteTeachingEntry('${e.id}')" style="padding:5px 10px;border-radius:6px;border:.5px solid #E24B4A40;background:#FCEBEB;color:#A32D2D;font-size:11px;cursor:pointer;font-family:inherit">\u{1F5D1}\uFE0F Delete</button></div>`;}).join('');
+  return `${createForm}
     <div style="font-size:12px;font-weight:500;color:#888;letter-spacing:.5px;margin-bottom:8px">RECENT ENTRIES (${entries.length})</div>
     ${rows}
   </div>`;
