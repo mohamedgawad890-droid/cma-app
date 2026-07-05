@@ -45,6 +45,42 @@ window.addEventListener('beforeinstallprompt', e => {
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<style id="ported-features">
+.qod-card{background:linear-gradient(135deg,#7D3C98,#5B2C6F);border-radius:14px;padding:14px 16px;margin-bottom:14px;color:#fff}
+.qod-lbl{font-size:10px;font-weight:700;letter-spacing:1px;opacity:.75;margin-bottom:4px}
+.qod-title{font-size:15px;font-weight:600;margin-bottom:8px;line-height:1.4}
+.qod-meta{font-size:11px;color:rgba(255,255,255,.75);margin-bottom:10px}
+.qod-opt{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:9px;padding:9px 12px;margin-bottom:6px;cursor:pointer;font-size:13px;display:flex;align-items:flex-start;gap:8px;transition:background .15s}
+.qod-opt:hover{background:rgba(255,255,255,.18)}
+.qod-opt.correct{background:rgba(46,204,113,.35);border-color:#2ECC71}
+.qod-opt.wrong{background:rgba(231,76,60,.35);border-color:#E74C3C}
+.qod-opt-letter{background:rgba(255,255,255,.2);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.qod-exp{background:rgba(255,255,255,.15);border-radius:8px;padding:9px 12px;margin-top:8px;font-size:12px;line-height:1.5}
+/* ── Flashcards ────────────────────────────────────────────────── */
+.flash-card{background:#fff;border:.5px solid #e0e0d8;border-radius:16px;padding:22px 20px;min-height:280px;display:flex;flex-direction:column;justify-content:center;align-items:center;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.06);transition:transform .2s}
+.flash-card:active{transform:scale(.98)}
+.flash-front{font-size:20px;font-weight:600;color:#0C447C;text-align:center;line-height:1.4}
+.flash-back{font-size:14px;color:#1a1a1a;line-height:1.7;text-align:left;width:100%;white-space:pre-wrap}
+.flash-type-badge{font-size:9px;font-weight:700;letter-spacing:.8px;padding:3px 9px;border-radius:9px;margin-bottom:14px}
+.flash-nav{display:flex;gap:8px;margin-top:14px}
+.flash-btn{flex:1;padding:12px;border-radius:10px;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.flash-btn-review{background:#FCEBEB;color:#A32D2D;border:1px solid #E24B4A40}
+.flash-btn-know{background:#D5F5E3;color:#186A3B;border:1px solid #1E844940}
+.flash-btn-skip{background:#f5f5f0;color:#555;border:1px solid #d0d0d0}
+/* ── Notes tab ─────────────────────────────────────────────────── */
+.notes-item{background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:10px}
+.notes-item-title{font-size:13px;font-weight:600;color:#0C447C;margin-bottom:4px}
+.notes-item-sec{font-size:10px;font-weight:600;letter-spacing:.5px;color:#888;margin-bottom:8px;text-transform:uppercase}
+.notes-item-body{font-size:13px;color:#333;line-height:1.6;white-space:pre-wrap;background:#fafaf8;border-radius:8px;padding:10px 12px}
+/* ── Daily goal ring ───────────────────────────────────────────── */
+.goal-ring-wrap{display:flex;align-items:center;gap:14px;background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:14px}
+.goal-ring{position:relative;width:64px;height:64px;flex-shrink:0}
+.goal-ring svg{transform:rotate(-90deg)}
+.goal-ring-val{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#0C447C}
+/* ── Prev/next lesson footer ───────────────────────────────────── */
+.lesson-nav-footer{display:flex;gap:8px;margin-top:20px;padding-top:16px;border-top:.5px solid #e0e0d8}
+.lesson-nav-btn{flex:1;padding:11px 8px;border-radius:10px;border:.5px solid #d0d0d0;background:#f5f5f0;color:#555;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;gap:2px;text-align:left}
+</style>
 </head>
 <body>
 <div id="app">
@@ -634,7 +670,10 @@ function showToast(message, type = 'info', duration = 3600) {
 // scores to silently disappear after login. Also fixes the Firestore write rejection
 // (rules now permit 'lessonScores' — see firestore.rules Fix 3).
 const STATE={tab:'loading',searchQ:'',dictQ:'',dictData:[],dictLoaded:false,leaderboardData:[],leaderboardLoaded:false,quizMode:{active:false,sectionId:null,idx:0,questions:[],answers:[],selected:null},user:null,authScreen:'login',authError:'',authLoading:false,communityFilter:'all',questionDetail:null,showAskForm:false,communityQuestions:[],communityLastDoc:null,communityHasMore:false,communityLoading:false,communityLoaded:false,questionReplies:[],draftTitle:'',draftBody:'',draftSection:'General',draftReply:'',trackerOpenSects:[],sectId:null,lessonId:null,quizState:null,showProfileWarning:false,progress:{done:[],lessonScores:{},mcqTotal:0,mcqRight:0},
-    showReset:false};
+    showReset:false,
+    flashcards:[],flashcardsIdx:0,flashcardsFlipped:false,flashcardsFilter:'all',flashcardsMode:'study',
+    qotdState:{dateKey:'',question:null,selected:null,answered:false,taughtUnitCount:0},
+    dailyGoalMinutes:30,fontSize:'md'};
 
 // ─── ARABIC TERM TOOLTIPS ──────────────────────────────────────────────────
 const TERM_DICT={
@@ -2254,6 +2293,11 @@ function renderIntro(){
           <strong style="color:#1a1a1a">About me:</strong> I'm currently CFO, with 20 years of experience in Accounting, Inventory Management, Cost Accounting, Financial Planning & Controlling, Forecasting & Budgeting, Data Analysis.</div>
       </div>
 
+      <!-- DAILY GOAL RING (ported) -->
+    ${(()=>{const todayMins=todayStudyMinutes();const goal=STATE.dailyGoalMinutes||30;const pctGoal=Math.min(100,Math.round(todayMins/goal*100));const circ=2*Math.PI*26;const off=circ-(pctGoal/100)*circ;const col=pctGoal>=100?'#1E8449':pctGoal>=60?'#EF9F27':'#1A5276';return `<div class="goal-ring-wrap"><div class="goal-ring"><svg width="64" height="64"><circle cx="32" cy="32" r="26" stroke="#f0f0eb" stroke-width="7" fill="none"/><circle cx="32" cy="32" r="26" stroke="${col}" stroke-width="7" fill="none" stroke-dasharray="${circ}" stroke-dashoffset="${off}" stroke-linecap="round" style="transition:stroke-dashoffset .5s"/></svg><div class="goal-ring-val">${pctGoal}%</div></div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:#1a1a1a">Today's study goal</div><div style="font-size:12px;color:#888;margin-top:2px">${todayMins} / ${goal} min · ${pctGoal>=100?'Goal reached! 🎉':(goal-todayMins)+' min to go'}</div></div></div>`;})()}
+      <!-- QUESTION OF THE DAY (ported; no-ops until instructor logs a lecture) -->
+      ${(()=>{const qs=STATE.qotdState;if(!qs||!qs.question)return '';const q=qs.question;const sel=qs.selected;const answered=qs.answered;const labels=['A','B','C','D'];const optsHTML=q.o.map((opt,i)=>{let cls='qod-opt';if(answered){if(i===q.a)cls+=' correct';else if(i===sel)cls+=' wrong';}return `<div class="${cls}" ${answered?'':`onclick="qotdAnswer(${i})"`}><div class="qod-opt-letter">${labels[i]}</div><div style="flex:1">${esc(opt)}</div></div>`;}).join('');const explanation=answered?`<div class="qod-exp"><strong>${sel===q.a?'✅ Correct!':'❌ Correct answer: '+labels[q.a]}</strong><div style="margin-top:4px">${esc(expFor(q,sel))}</div></div>`:'';return `<div class="qod-card"><div class="qod-lbl">🎯 QUESTION OF THE DAY</div><div class="qod-meta">${esc(q.secTitle||'')} · ${esc(q.lessonTitle||'')}</div><div class="qod-title">${esc(q.q)}</div>${optsHTML}${explanation}</div>`;})()}
+
       <!-- WHAT IS IMA -->
       <div class="info-section">
         <div class="info-title">🏛️ What is IMA?</div>
@@ -3086,6 +3130,151 @@ function nextQuestion(){
 }
 function resetAll(){saveProg({done:[],lessonScores:{},mcqTotal:0,mcqRight:0});STATE.showReset=false;render();}
 
+// ==== PORTED STUDENT-LAYER FEATURES (from FMAA) ====
+
+// --- fontsize+dailygoal ---
+function loadFontSize(){try{return localStorage.getItem('cma-fontsize-v1')||'md';}catch{return 'md';}}
+function saveFontSize(v){try{localStorage.setItem('cma-fontsize-v1',v);}catch{}STATE.fontSize=v;applyFontSize();}
+function applyFontSize(){const c=document.getElementById('content-area');if(!c)return;const map={sm:'.9',md:'1',lg:'1.15'};c.style.zoom=map[STATE.fontSize]||'1';}
+function loadDailyGoal(){try{const v=parseInt(localStorage.getItem('cma-goal-v1'));return v>0?v:30;}catch{return 30;}}
+function saveDailyGoal(mins){const v=Math.max(5,Math.min(240,parseInt(mins)||30));try{localStorage.setItem('cma-goal-v1',String(v));}catch{}STATE.dailyGoalMinutes=v;if(STATE.user)db.collection('students').doc(STATE.user.uid).set({dailyGoalMinutes:v},{merge:true}).catch(()=>{});}
+function todayStudyMinutes(){const st=loadStudyTime();const today=new Date().toDateString();return st.todayDate===today?(st.todayMinutes||0):0;}
+
+// --- buildAllNotes ---
+function buildAllNotes(){const out=[];S.forEach(sec=>{sec.lessons.forEach(l=>{const t=loadLessonNote(l.id);if(t&&t.trim())out.push({lessonId:l.id,lessonTitle:l.title,sec,text:t.trim()});});});return out;}
+
+// --- flashcards ---
+async function buildAllFlashcards(){await Promise.all([1,2,3,4,5,6].map(i=>ensureLessons(i)));const cards=[];S.forEach(sec=>{sec.lessons.forEach(l=>{(l.blocks||[]).forEach((b,i)=>{if(b.t==='def'&&b.term){cards.push({id:`${l.id}:def:${i}`,type:'def',front:b.term,back:b.v||'',sec,lessonId:l.id,lessonTitle:l.title});}else if(b.t==='f'&&b.l){cards.push({id:`${l.id}:f:${i}`,type:'f',front:b.l,back:(b.v||'').replace(/\n/g,'\n'),sec,lessonId:l.id,lessonTitle:l.title});}});});});return cards;}
+function loadFlashReviewSet(){try{const d=localStorage.getItem('cma-flash-review-v1');return d?JSON.parse(d):[];}catch{return[];}}
+function saveFlashReviewSet(arr){try{localStorage.setItem('cma-flash-review-v1',JSON.stringify(arr));}catch{}}
+function toggleFlashReview(cardId){const rs=loadFlashReviewSet();const i=rs.indexOf(cardId);if(i>=0)rs.splice(i,1);else rs.push(cardId);saveFlashReviewSet(rs);}
+async function ensureFlashcards(){if(STATE.flashcards&&STATE.flashcards.length)return;STATE.flashcards=await buildAllFlashcards();}
+function filteredFlashcards(){const all=STATE.flashcards||[];const f=STATE.flashcardsFilter;const mode=STATE.flashcardsMode;let out=all;if(f!=='all'){const sid=parseInt(f);out=out.filter(c=>c.sec&&c.sec.id===sid);}if(mode==='review'){const rs=new Set(loadFlashReviewSet());out=out.filter(c=>rs.has(c.id));}return out;}
+function flashNext(){const list=filteredFlashcards();if(!list.length)return;STATE.flashcardsIdx=(STATE.flashcardsIdx+1)%list.length;STATE.flashcardsFlipped=false;render();}
+function flashPrev(){const list=filteredFlashcards();if(!list.length)return;STATE.flashcardsIdx=(STATE.flashcardsIdx-1+list.length)%list.length;STATE.flashcardsFlipped=false;render();}
+function flashFlip(){STATE.flashcardsFlipped=!STATE.flashcardsFlipped;render();}
+function flashSetFilter(v){STATE.flashcardsFilter=v;STATE.flashcardsIdx=0;STATE.flashcardsFlipped=false;render();}
+function flashSetMode(v){STATE.flashcardsMode=v;STATE.flashcardsIdx=0;STATE.flashcardsFlipped=false;render();}
+function flashMarkReview(cardId){toggleFlashReview(cardId);showToast('Marked for review','info',1500);render();}
+function flashMarkKnow(cardId){const rs=loadFlashReviewSet();const i=rs.indexOf(cardId);if(i>=0){rs.splice(i,1);saveFlashReviewSet(rs);}flashNext();}
+
+// --- qotd+helpers ---
+function _hashCode(s){let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h+s.charCodeAt(i))|0;}return Math.abs(h);}
+function _todayKey(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function loadQotdState(){try{const d=localStorage.getItem('cma-qotd-v1');return d?JSON.parse(d):{};}catch{return{};}}
+function saveQotdState(v){try{localStorage.setItem('cma-qotd-v1',JSON.stringify(v));}catch{}}
+async function ensureQotd(){const st=loadStudent();if(!st||!st.groupCode||!STATE.user)return;const dateKey=_todayKey();const stored=loadQotdState();const key=st.groupCode+'|'+dateKey;const already=stored[key];if(STATE.qotdState.dateKey===dateKey&&STATE.qotdState.question)return;
+  try{const snap=await db.collection('teaching-log').where('groupCode','==',st.groupCode.toUpperCase()).get();const entries=snap.docs.map(d=>d.data());const taughtSet=new Set();entries.forEach(e=>(e.unitIds||[]).forEach(u=>taughtSet.add(u)));if(!taughtSet.size){STATE.qotdState={dateKey,question:null,taughtUnitCount:0,answered:false,selected:null};return;}
+    const secIds=[...new Set([...taughtSet].map(u=>parseInt(u.split('-')[0])).filter(n=>n>0))];await Promise.all(secIds.map(i=>ensureQuizzes(i)));const pool=[];S.forEach(sec=>{sec.lessons.forEach(l=>{if(taughtSet.has(l.id)&&l.quizzes&&l.quizzes.length)l.quizzes.forEach(q=>pool.push({...q,secId:sec.id,secTitle:sec.title,secBar:sec.bar,lessonTitle:l.title}));});});if(!pool.length){STATE.qotdState={dateKey,question:null,taughtUnitCount:taughtSet.size,answered:false,selected:null};return;}
+    const seed=_hashCode(st.groupCode+'|'+dateKey);const q=shuffleQuestionOptions(pool[seed%pool.length]);STATE.qotdState={dateKey,question:q,taughtUnitCount:taughtSet.size,answered:!!(already&&already.answered),selected:already?already.selected:null};if(STATE.tab==='intro')render();
+  }catch(e){console.warn('QoD load failed:',e);}
+}
+function qotdAnswer(i){const st=loadStudent();if(!st||!st.groupCode)return;const q=STATE.qotdState.question;if(!q||STATE.qotdState.answered)return;STATE.qotdState.selected=i;STATE.qotdState.answered=true;const dateKey=_todayKey();const key=st.groupCode+'|'+dateKey;const stored=loadQotdState();stored[key]={answered:true,selected:i,correct:i===q.a};saveQotdState(stored);const p=STATE.progress;saveProg({...p,mcqTotal:(p.mcqTotal||0)+1,mcqRight:(p.mcqRight||0)+(i===q.a?1:0)});updateStreak();render();}
+
+// ─── LESSON PREV/NEXT ────────────────────────────────────────────────────
+function getPrevLesson(secId,lessonId){const si=S.findIndex(s=>s.id===secId);if(si<0)return null;const sec=S[si];const li=sec.lessons.findIndex(l=>l.id===lessonId);if(li>0)return{sec,lesson:sec.lessons[li-1]};if(si>0){const prev=S[si-1];return{sec:prev,lesson:prev.lessons[prev.lessons.length-1]};}return null;}
+
+// --- shuffle ---
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function shuffleQuestionOptions(q){
+  // Create index array [0,1,2,3], shuffle it, remap options and correct answer
+  const idx=[0,1,2,3].slice(0,q.o.length);
+  for(let i=idx.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
+  const newOpts=idx.map(i=>q.o[i]);
+  const newA=idx.indexOf(q.a);
+  const newWrongWhy={};
+  if(q.wrongWhy){for(const[k,v]of Object.entries(q.wrongWhy)){const newK=idx.indexOf(Number(k));if(newK>=0)newWrongWhy[newK]=v;}}
+  return{...q,o:newOpts,a:newA,wrongWhy:Object.keys(newWrongWhy).length?newWrongWhy:q.wrongWhy};
+}
+
+// --- studentId ---
+function genStudentId(){const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<6;i++)s+=chars[Math.floor(Math.random()*chars.length)];return s;}
+async function genUniqueStudentId(){
+  for(let i=0;i<6;i++){
+    const cand=genStudentId();
+    try{
+      const snap=await db.collection('students').where('studentId','==',cand).limit(1).get();
+      if(snap.empty)return cand;
+    }catch(_){return cand;}
+  }
+  return genStudentId();
+}
+
+// --- renderNotes ---
+function renderNotes(){
+  const notes=buildAllNotes();
+  const bySec={};notes.forEach(n=>{const sid=n.sec.id;if(!bySec[sid])bySec[sid]={sec:n.sec,items:[]};bySec[sid].items.push(n);});
+  const groups=Object.values(bySec).sort((a,b)=>a.sec.id-b.sec.id);
+  const body=notes.length===0
+    ?`<div style="text-align:center;padding:40px 20px;color:#aaa"><div style="font-size:36px;margin-bottom:10px">📝</div><div style="font-size:14px">No notes yet.</div><div style="font-size:12px;margin-top:6px;color:#bbb">Open any lesson, scroll down, and write in the Notes box.</div></div>`
+    :groups.map(g=>`<div style="margin-bottom:18px"><div class="notes-item-sec" style="color:${g.sec.text}">${g.sec.emoji} ${esc(g.sec.title)}</div>${g.items.map(n=>`<div class="notes-item"><div class="notes-item-title">${esc(n.lessonTitle)}</div><div class="notes-item-body">${esc(n.text)}</div><button onclick="studyGo(${g.sec.id},'${n.lessonId}')" style="margin-top:8px;padding:6px 12px;border-radius:8px;border:.5px solid #0C447C40;background:#EBF5FB;color:#0C447C;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">Open lesson →</button></div>`).join('')}</div>`).join('');
+  return `${renderSubNav(SUB_REFERENCE,'my-notes')}<div class="sh"><h2>My Notes</h2><p>${notes.length} note${notes.length===1?'':'s'} across your lessons</p></div>
+  <div class="scroll-area pad" style="padding-top:14px">${body}<div style="height:20px"></div></div>`;
+}
+
+// ─── RENDER FLASHCARDS ───────────────────────────────────────────────────
+
+// --- renderFlashcards ---
+function renderFlashcards(){
+  const all=STATE.flashcards||[];
+  if(!all.length)return `${renderSubNav(SUB_REFERENCE,'flashcards')}<div class="sh"><h2>Flashcards</h2><p>Loading cards…</p></div><div class="scroll-area" style="display:flex;align-items:center;justify-content:center;height:60%;color:#aaa"><div style="text-align:center"><div style="font-size:32px;margin-bottom:10px">⏳</div><div>Building cards…</div></div></div>`;
+  const list=filteredFlashcards();
+  const idx=Math.min(STATE.flashcardsIdx,Math.max(0,list.length-1));
+  const card=list[idx];
+  const rs=new Set(loadFlashReviewSet());
+  const filterBtns=[['all','All']].concat(S.map(s=>[String(s.id),s.emoji+' '+String(s.id)])).map(([v,l])=>{const on=STATE.flashcardsFilter===v;return `<button onclick="flashSetFilter('${v}')" style="padding:5px 10px;border-radius:14px;font-size:11px;cursor:pointer;font-family:inherit;border:.5px solid ${on?'#0C447C':'#d0d0d0'};background:${on?'#0C447C':'#f5f5f0'};color:${on?'#fff':'#555'};font-weight:${on?'600':'400'};white-space:nowrap">${l}</button>`;}).join('');
+  const modeBtns=[['study','Study'],['review','Review only ('+rs.size+')']].map(([v,l])=>{const on=STATE.flashcardsMode===v;return `<button onclick="flashSetMode('${v}')" style="flex:1;padding:6px 10px;border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit;border:.5px solid ${on?'#7D3C98':'#d0d0d0'};background:${on?'#F4ECF7':'#fff'};color:${on?'#5B2C6F':'#555'};font-weight:${on?'600':'400'}">${l}</button>`;}).join('');
+  if(!card)return `${renderSubNav(SUB_REFERENCE,'flashcards')}<div class="sh"><h2>Flashcards</h2><p>${all.length} cards total</p></div><div class="scroll-area pad" style="padding-top:14px"><div style="display:flex;gap:6px;overflow-x:auto;margin-bottom:12px;scrollbar-width:none">${filterBtns}</div><div style="display:flex;gap:6px;margin-bottom:14px">${modeBtns}</div><div style="text-align:center;padding:40px 20px;color:#aaa"><div style="font-size:32px;margin-bottom:10px">✅</div><div style="font-size:14px">${STATE.flashcardsMode==='review'?'No cards marked for review!':'No cards match this filter.'}</div></div></div>`;
+  const typeBadge=card.type==='def'?'<span class="flash-type-badge" style="background:#EBF3FA;color:#0C447C">📖 DEFINITION</span>':'<span class="flash-type-badge" style="background:#F4EFFB;color:#5B2C6F">📐 FORMULA</span>';
+  const flipped=STATE.flashcardsFlipped;
+  const isReview=rs.has(card.id);
+  const cardBody=flipped
+    ?`${typeBadge}<div class="flash-back">${esc(card.back).replace(/\n/g,'<br>')}</div>`
+    :`${typeBadge}<div class="flash-front">${esc(card.front)}</div><div style="margin-top:16px;font-size:11px;color:#aaa">Tap to flip</div>`;
+  return `${renderSubNav(SUB_REFERENCE,'flashcards')}<div class="sh"><h2>Flashcards</h2><p>${list.length} card${list.length===1?'':'s'} · card ${idx+1} of ${list.length}</p></div>
+  <div class="scroll-area pad" style="padding-top:14px">
+    <div style="display:flex;gap:6px;overflow-x:auto;margin-bottom:12px;scrollbar-width:none;-webkit-overflow-scrolling:touch">${filterBtns}</div>
+    <div style="display:flex;gap:6px;margin-bottom:14px">${modeBtns}</div>
+    <div class="flash-card" onclick="flashFlip()">${cardBody}</div>
+    <div style="font-size:11px;color:#888;text-align:center;margin-top:10px">${esc(card.sec.title)} · ${esc(card.lessonTitle)}${isReview?' · <span style="color:#A32D2D">📌 Marked</span>':''}</div>
+    <div class="flash-nav">
+      <button class="flash-btn flash-btn-review" onclick="flashMarkReview('${card.id}')">${isReview?'✓ Unmark':'📌 Review'}</button>
+      <button class="flash-btn flash-btn-skip" onclick="flashPrev()">‹ Prev</button>
+      <button class="flash-btn flash-btn-know" onclick="flashMarkKnow('${card.id}')">Know · Next →</button>
+    </div>
+    <div style="height:20px"></div>
+  </div>`;
+}
+
+// ─── RENDER DASHBOARD: ACTUAL TEACHING ───────────────────────────────────
+function renderDashActualTeaching(){
+  const entries=STATE.dashTeachingLog||[];
+  const d=STATE.dashTeachingDraft;
+  const gf=(STATE.dashGroups||[]).map(g=>g.code);
+  const allLessons=[];S.forEach(sec=>sec.lessons.forEach(l=>allLessons.push({sec,lesson:l})));
+  const lessonPicker=S.map(sec=>{const items=sec.lessons.map(l=>{const on=d.unitIds.includes(l.id);return `<button onclick="toggleTeachingUnit('${l.id}')" style="padding:5px 9px;border-radius:8px;font-size:11px;cursor:pointer;font-family:inherit;border:.5px solid ${on?sec.text:'#d0d0d0'};background:${on?sec.bg:'#f5f5f0'};color:${on?sec.strong:'#555'};font-weight:${on?'600':'400'};margin:2px">${l.id}. ${esc(l.title.slice(0,42))}${l.title.length>42?'…':''}</button>`;}).join('');return `<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;color:${sec.strong};margin-bottom:6px">${sec.emoji} Section ${sec.id}</div><div>${items}</div></div>`;}).join('');
+  const rows=entries.length===0
+    ?'<div style="text-align:center;padding:30px 14px;color:#aaa;font-size:13px">No teaching entries yet. Log your first lecture below.</div>'
+    :entries.map(e=>{const dt=e.date?new Date(e.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';const titles=(e.unitIds||[]).map(uid=>{const found=allLessons.find(x=>x.lesson.id===uid);return found?`${uid}. ${found.lesson.title}`:uid;});return `<div class="teach-entry"><div class="teach-badges"><span class="teach-badge" style="background:#F4ECF7;color:#6C3483">${esc(e.groupCode)}</span><span class="teach-badge" style="background:#D6EAF8;color:#0C447C">Lecture ${e.lectureNumber}</span><span class="teach-badge" style="background:#f5f5f0;color:#555">${dt}</span></div><div style="font-size:11px;color:#888;margin-bottom:8px">${titles.length} unit${titles.length===1?'':'s'} taught</div><div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px">${titles.map(t=>`<span style="font-size:10px;background:#EBF5FB;color:#0C447C;padding:2px 7px;border-radius:8px">${esc(t)}</span>`).join('')}</div>${e.notes?`<div style="font-size:12px;color:#444;background:#fafaf8;border-radius:8px;padding:8px 10px;margin-bottom:8px;line-height:1.5">${esc(e.notes)}</div>`:''}<button onclick="deleteTeachingEntry('${e.id}')" style="padding:5px 10px;border-radius:6px;border:.5px solid #E24B4A40;background:#FCEBEB;color:#A32D2D;font-size:11px;cursor:pointer;font-family:inherit">🗑️ Delete</button></div>`;}).join('');
+  return `<div style="padding:14px">
+    <div style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:10px">➕ Log a Lecture</div>
+    <div style="background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:16px">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px">
+        <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Group *</label><select onchange="STATE.dashTeachingDraft.groupCode=this.value" style="width:100%;padding:8px;border-radius:8px;border:.5px solid #d0d0d0;font-size:12px;font-family:inherit;background:#fff;color:#1a1a1a;box-sizing:border-box"><option value="">Select...</option>${gf.map(g=>`<option value="${esc(g)}" ${d.groupCode===g?'selected':''}>${esc(g)}</option>`).join('')}</select></div>
+        <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Lecture # *</label><input type="number" min="1" value="${esc(String(d.lectureNumber||''))}" oninput="STATE.dashTeachingDraft.lectureNumber=this.value" placeholder="1" style="width:100%;padding:8px;border-radius:8px;border:.5px solid #d0d0d0;font-size:12px;font-family:inherit;outline:none;background:#fff;color:#1a1a1a;box-sizing:border-box"></div>
+        <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Date *</label><input type="date" value="${esc(d.date||'')}" oninput="STATE.dashTeachingDraft.date=this.value" style="width:100%;padding:8px;border-radius:8px;border:.5px solid #d0d0d0;font-size:12px;font-family:inherit;outline:none;background:#fff;color:#1a1a1a;box-sizing:border-box"></div>
+      </div>
+      <div style="margin-bottom:10px"><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Units taught * (${d.unitIds.length} selected)</label><div style="border:.5px solid #e0e0d8;border-radius:8px;padding:10px;max-height:280px;overflow-y:auto;background:#fafaf8">${lessonPicker}</div></div>
+      <div style="margin-bottom:10px"><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Notes (optional)</label><textarea oninput="STATE.dashTeachingDraft.notes=this.value" placeholder="What did you cover in this lecture? Any highlights or student questions?" style="width:100%;padding:8px;border-radius:8px;border:.5px solid #d0d0d0;font-size:12px;font-family:inherit;outline:none;background:#fff;color:#1a1a1a;box-sizing:border-box;resize:vertical;min-height:60px">${esc(d.notes||'')}</textarea></div>
+      <button onclick="saveTeachingEntry()" style="width:100%;padding:11px;border-radius:10px;border:none;background:#0C447C;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">💾 Save Entry</button>
+    </div>
+    <div style="font-size:12px;font-weight:500;color:#888;letter-spacing:.5px;margin-bottom:8px">RECENT ENTRIES (${entries.length})</div>
+    ${rows}
+  </div>`;
+}
+
+
+
 
 
 // ── LAZY LESSON LOADER ───────────────────────────────────────────────────────
@@ -3111,6 +3300,9 @@ async function prewarmLessons(){
   try{await Promise.all([1,2,3,4,5,6].map(i=>ensureLessons(i)));}catch(e){}
 }
 setTimeout(prewarmLessons,4000);
+// ── Ported prefs bootstrap ──
+try{STATE.fontSize=loadFontSize();STATE.dailyGoalMinutes=loadDailyGoal();}catch(e){}
+
 
 // ── LAZY QUIZ LOADER ─────────────────────────────────────────────────────────
 const QUIZ_CACHE={};
@@ -3227,7 +3419,7 @@ function activeNavTab(){
   if(t==='study'||t==='quiz-session'||t==='quiz-results'||t==='lessons'||t==='dashboard')return'study';
   if(t==='quiz-mode-select'||t==='quiz-mode'||t==='cbq'||t==='mock-exam'||t==='wrong-answers')return'quiz-mode-select';
   if(t==='progress'||t==='tracker'||t==='leaderboard')return'progress';
-  if(t==='formula-bank'||t==='dictionary')return'formula-bank';
+  if(t==='formula-bank'||t==='dictionary'||t==='flashcards'||t==='my-notes')return'formula-bank';
   if(t==='search')return'search';
   if(t==='community'||t==='question-detail')return'community';
   if(t==='intro'||t==='register'||t==='feedback')return'intro';
@@ -3256,7 +3448,9 @@ const SUB_PROGRESS=[
 ];
 const SUB_REFERENCE=[
   {id:'formula-bank', icon:'📐', label:'Formula'},
-  {id:'dictionary',   icon:'📖', label:'Dictionary'}
+  {id:'dictionary',   icon:'📖', label:'Dictionary'},
+  {id:'flashcards',   icon:'🃏', label:'Flashcards'},
+  {id:'my-notes',     icon:'📝', label:'My Notes'}
 ];
 const SUB_ME=[
   {id:'intro',     icon:'🏠', label:'Home'},
@@ -3275,7 +3469,7 @@ function render(){
 
   let html='';
   switch(STATE.tab){
-    case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'wrong-answers':html=renderWrongAnswers();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;case'formula-bank':html=renderFormulaBank();break;case'dictionary':html=renderDictionary();break;case'cbq':html=renderCBQ();break;case'mock-exam':html=renderMockExamScreen();break;default:html=renderIntro();
+    case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'wrong-answers':html=renderWrongAnswers();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;case'formula-bank':html=renderFormulaBank();break;case'dictionary':html=renderDictionary();break;case'flashcards':html=renderFlashcards();break;case'my-notes':html=renderNotes();break;case'cbq':html=renderCBQ();break;case'mock-exam':html=renderMockExamScreen();break;default:html=renderIntro();
   }
   content.innerHTML=html;
 
@@ -3288,6 +3482,9 @@ function render(){
   if(STATE.tab==='cbq'){content.style.overflow='hidden';setTimeout(()=>cbqInit(),0);}
   if(STATE.tab==='mock-exam'){content.style.overflow='hidden';if(STATE.mockExam.status==='mcq')setTimeout(()=>renderMockMCQContent(),0);if(STATE.mockExam.status==='cbq')setTimeout(()=>mockSetupMockDrag(),0);}
   if(STATE.tab==='study'&&STATE.lessonId){setTimeout(()=>syncNoteFromCloud(STATE.lessonId),0);}
+  try{applyFontSize();}catch(e){}
+  if(STATE.tab==='flashcards'&&(!STATE.flashcards||!STATE.flashcards.length)){ensureFlashcards().then(()=>{if(STATE.tab==='flashcards')render();});}
+  if(STATE.tab==='intro'&&STATE.user){setTimeout(()=>{try{ensureQotd();}catch(e){}},0);}
   if(STATE.tab==='search'){setTimeout(()=>{const inp=document.getElementById('search-input');if(inp){inp.focus();if(STATE.searchQ)updateSearchResults();}},50);}
   if(STATE.tab==='dictionary'){if(!STATE.dictLoaded)setTimeout(ensureDictionary,0);setTimeout(()=>{const i=document.getElementById('dict-input');if(i)i.focus();},50);}
   content.style.display='flex';content.style.flexDirection='column';content.style.overflow=STATE.tab==='cbq'||STATE.tab==='mock-exam'?'hidden':'auto';
@@ -3450,7 +3647,7 @@ function renderRegister(){
       </div>
     </div>
 
-    <div style="background:#f5f5f0;border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:12px;color:#888;text-align:center;line-height:1.5">
+    <div class="info-title" style="font-size:14px;margin-bottom:10px">⚙️ App Preferences</div><div class="card" style="margin-bottom:14px"><div style="margin-bottom:12px"><label style="font-size:12px;color:#888;display:block;margin-bottom:5px">Font size</label><div style="display:flex;gap:6px">${['sm','md','lg'].map(v=>{const on=STATE.fontSize===v;const lbl={sm:'Small',md:'Medium',lg:'Large'}[v];return `<button onclick="saveFontSize('${v}');render()" style="flex:1;padding:10px;border-radius:8px;border:.5px solid ${on?'#0C447C':'#d0d0d0'};background:${on?'#E6F1FB':'#fafaf8'};color:${on?'#0C447C':'#555'};font-size:${v==='sm'?'12px':v==='md'?'13px':'15px'};font-weight:${on?'600':'400'};cursor:pointer;font-family:inherit">${lbl}</button>`;}).join('')}</div><div style="font-size:11px;color:#888;margin-top:4px">Applied instantly across the app.</div></div><div><label style="font-size:12px;color:#888;display:block;margin-bottom:5px">Daily study goal (minutes)</label><div style="display:flex;gap:8px;align-items:center"><input id="f-dailygoal" type="number" min="5" max="240" step="5" value="${STATE.dailyGoalMinutes||30}" style="flex:1;padding:10px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:14px;font-family:inherit;outline:none;color:#1a1a1a;background:#fafaf8"><button onclick="saveDailyGoal(document.getElementById('f-dailygoal').value);showToast('Goal saved ✓','success',1500)" style="padding:10px 16px;border-radius:8px;border:none;background:#0C447C;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Save</button></div><div style="font-size:11px;color:#888;margin-top:4px">Tracked on the Home screen goal ring.</div></div></div><div style="background:#f5f5f0;border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:12px;color:#888;text-align:center;line-height:1.5">
       Fields marked * are required. Job Title, Company, Experience, Level, and Goal are optional.
     </div>
     <button onclick="submitProfile()" class="btn submit-profile-btn" style="background:#0C447C;color:#fff;font-size:15px;margin-bottom:8px">
@@ -4380,7 +4577,7 @@ auth.onAuthStateChanged(async(user)=>{
       if(td.exists){try{localStorage.setItem('cma-tracker-v1',JSON.stringify(td.data()));}catch{}}
     }catch{}
     const st=loadStudent();
-    STATE.tab=st && st.name ? 'study' : 'register';
+    try{applyFontSize();}catch(e){}try{ensureQotd();}catch(e){}STATE.tab=st && st.name ? 'study' : 'register';
     STATE.showProfileWarning=false;
   } else {
     STATE.user=null;STATE.tab=localStorage.getItem('cma-visited')?'login':'onboarding';STATE.authLoading=false;
