@@ -375,7 +375,7 @@ function saveProg(p){
 
 // Force any pending progress to the cloud the moment the app is closed,
 // backgrounded, or the tab is hidden — so nothing waits in the queue.
-document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='hidden') _flushProgToCloud(); });
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='hidden') _flushProgToCloud(); else { try{pollLiveLecture();}catch(e){} } });
 window.addEventListener('pagehide', _flushProgToCloud);
 
 // FIX 4: Non-destructive merge of two progress objects (used at login to converge
@@ -683,7 +683,7 @@ const STATE={tab:'loading',searchQ:'',dictQ:'',dictData:[],dictLoaded:false,lead
     dashTeachingLog:[],dashTeachingLogLoaded:false,
     dashTeachingDraft:{groupCode:'',lectureNumber:'',date:'',unitIds:[],notes:''},
     dashLoaded:false,dashLoading:false,dashError:false,
-    dashLectures:[],dashLive:{},dashLectureDraft:{title:'',groupCode:'',date:''}};
+    dashLectures:[],dashLive:{},dashLectureDraft:{title:'',groupCode:'',date:''},dashAttendance:[]};
 
 // ─── ARABIC TERM TOOLTIPS ──────────────────────────────────────────────────
 const TERM_DICT={
@@ -3140,6 +3140,114 @@ function nextQuestion(){
 }
 function resetAll(){saveProg({done:[],lessonScores:{},mcqTotal:0,mcqRight:0});STATE.showReset=false;render();}
 
+// ==== PHASE 2b — LIVE CHECK-IN (student poller + hard-lock modal + attendance) ====
+// Isolation contract: the poller and modal live OUTSIDE render(). They append/remove
+// their own DOM node on <body> and never touch #content-area or the render loop.
+// Any error fails silent — this subsystem can never block the app.
+const LIVE_POLL_MS = 25000;                    // continuous poll cadence
+const LIVE_AUTOCLOSE_MS = 3*60*60*1000;        // 3h hard bound — a forgotten-open lecture self-expires
+let _liveTimer = null;
+let _liveShownFor = null;                      // lectureId whose modal is currently up
+
+function loadCheckedIn(){try{return JSON.parse(localStorage.getItem('cma-checkedin-v1')||'[]');}catch{return[];}}
+function saveCheckedIn(arr){try{localStorage.setItem('cma-checkedin-v1',JSON.stringify(arr.slice(-80)));}catch{}}
+function hasCheckedIn(lectureId){return loadCheckedIn().includes(lectureId);}
+
+function _liveWindowOpen(p){
+  if(!p||!p.lectureId)return false;
+  const openedMs=p.openedAt?Date.parse(p.openedAt):0;
+  const autoClose=p.autoCloseAt?Date.parse(p.autoCloseAt):(openedMs+LIVE_AUTOCLOSE_MS);
+  return Date.now()<=autoClose;                // past the bound → treated as closed
+}
+
+async function pollLiveLecture(){
+  try{
+    if(!STATE.user||isInstructor())return;     // instructor never checks in
+    const st=loadStudent();
+    if(!st||!st.groupCode)return;              // student not in a group
+    const g=st.groupCode.toUpperCase();
+    const doc=await db.collection('live').doc(g).get();
+    if(!doc.exists)return;
+    const p=doc.data();
+    if(!_liveWindowOpen(p))return;             // closed or past 3h bound
+    if(hasCheckedIn(p.lectureId))return;       // already checked in for this lecture
+    if(_liveShownFor===p.lectureId)return;     // modal already showing
+    showCheckInModal(p,g);
+  }catch(e){/* fail silent — never block the app */}
+}
+
+function startLivePolling(){
+  if(_liveTimer)return;
+  pollLiveLecture();                           // immediate first check
+  _liveTimer=setInterval(()=>{
+    if(document.visibilityState==='visible')pollLiveLecture();  // battery/cost guard
+  },LIVE_POLL_MS);
+}
+function stopLivePolling(){
+  if(_liveTimer){clearInterval(_liveTimer);_liveTimer=null;}
+  _liveShownFor=null;
+  const el=document.getElementById('checkin-overlay');if(el)el.remove();
+}
+
+function showCheckInModal(p,groupCode){
+  if(document.getElementById('checkin-overlay'))return;
+  _liveShownFor=p.lectureId;
+  const ov=document.createElement('div');
+  ov.id='checkin-overlay';
+  ov.setAttribute('style','position:fixed;inset:0;z-index:20000;background:linear-gradient(160deg,#0C447C,#185FA5);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center;animation:fadeIn .2s ease');
+  ov.innerHTML=
+    '<div style="font-size:60px;margin-bottom:16px">\u{1F534}</div>'+
+    '<div style="font-size:13px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,.75);margin-bottom:8px">LIVE LECTURE \u00B7 '+esc(groupCode)+'</div>'+
+    '<div style="font-size:22px;font-weight:700;color:#fff;line-height:1.35;margin-bottom:10px;max-width:340px">'+esc(p.title||'Lecture')+'</div>'+
+    '<div style="font-size:14px;color:rgba(255,255,255,.8);line-height:1.6;margin-bottom:28px;max-width:320px">Your instructor has started a live session. Tap below to record your attendance.</div>'+
+    '<button id="checkin-btn" style="width:100%;max-width:320px;padding:16px;border-radius:14px;border:none;background:#fff;color:#0C447C;font-size:17px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 8px 24px rgba(0,0,0,.25)">\u2705 Check in</button>'+
+    '<div style="font-size:11px;color:rgba(255,255,255,.55);margin-top:16px;max-width:300px;line-height:1.5">This confirms you\u2019re attending this session.</div>';
+  document.body.appendChild(ov);
+  const btn=document.getElementById('checkin-btn');
+  if(btn)btn.onclick=()=>submitCheckIn(p.lectureId,groupCode,p.title||'Lecture');
+}
+
+async function submitCheckIn(lectureId,groupCode,title){
+  const btn=document.getElementById('checkin-btn');
+  if(btn){btn.disabled=true;btn.textContent='\u23F3 Checking in\u2026';}
+  try{
+    const st=loadStudent()||{};
+    await db.collection('attendance').add({
+      lectureId,groupCode,title,
+      userId:STATE.user.uid,                   // MUST match rule: create if userId==request.auth.uid
+      studentName:st.name||STATE.user.displayName||'Student',
+      studentId:st.studentId||'',
+      checkedInAt:new Date().toISOString()
+    });
+    const done=loadCheckedIn();done.push(lectureId);saveCheckedIn(done);
+    const el=document.getElementById('checkin-overlay');if(el)el.remove();
+    _liveShownFor=null;
+    showToast('\u2705 You\u2019re checked in!','success',2200);
+  }catch(e){
+    console.warn('[CheckIn] failed:',e);
+    if(btn){btn.disabled=false;btn.textContent='\u2705 Check in';}
+    showToast('Check-in failed \u2014 tap again.','error');
+  }
+}
+
+// ── Instructor side: attendance list for a lecture ──────────────────────────
+function openAttendanceList(lectureId){
+  const lec=(STATE.dashLectures||[]).find(l=>l.id===lectureId);
+  const rows=(STATE.dashAttendance||[]).filter(a=>a.lectureId===lectureId)
+    .sort((a,b)=>(a.checkedInAt||'')<(b.checkedInAt||'')?1:-1);
+  if(!rows.length){
+    showModal({icon:'\u{1F465}',title:(lec?lec.title:'Lecture'),body:'No check-ins yet for this lecture.',type:'info',confirmText:'Close'});
+    return;
+  }
+  const list=rows.map(a=>{
+    const t=a.checkedInAt?new Date(a.checkedInAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):'';
+    const sid=a.studentId?' \u00B7 '+a.studentId:'';
+    return esc(a.studentName||'Student')+sid+(t?'  ('+t+')':'');
+  });
+  showModal({icon:'\u{1F465}',title:(lec?lec.title:'Lecture')+' \u2014 '+rows.length+' checked in',list,type:'info',confirmText:'Close'});
+}
+
+
 // ==== PHASE 1 DASHBOARD HANDLERS (ported from FMAA, remapped) ====
 async function loadTeachingLog(){if(!db)return;try{const snap=await db.collection('teaching-log').get();STATE.dashTeachingLog=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.date||'')>(a.date||'')?1:-1);STATE.dashTeachingLogLoaded=true;if(STATE.tab==='dashboard')render();}catch(e){console.warn('Teaching log load failed:',e);STATE.dashTeachingLog=STATE.dashTeachingLog||[];STATE.dashTeachingLogLoaded=true;}}
 function toggleTeachingUnit(uid){const u=STATE.dashTeachingDraft.unitIds;const i=u.indexOf(uid);if(i>=0)u.splice(i,1);else u.push(uid);render();}
@@ -3211,12 +3319,13 @@ async function loadDashboardP1(){
   if(STATE.dashLoaded||STATE.dashLoading)return;
   STATE.dashLoading=true;STATE.dashError=false;
   try{
-    const [gsnap,tsnap,ssnap,lsnap,livesnap]=await Promise.all([
+    const [gsnap,tsnap,ssnap,lsnap,livesnap,attsnap]=await Promise.all([
       db.collection('groups').get(),
       db.collection('teaching-log').get(),
       db.collection('students').get(),
       db.collection('lectures').get(),
-      db.collection('live').get()
+      db.collection('live').get(),
+      db.collection('attendance').get()
     ]);
     STATE.dashGroups=gsnap.docs.map(d=>({id:d.id,...d.data()}));
     STATE.dashTeachingLog=tsnap.docs.map(d=>({id:d.id,...d.data()}))
@@ -3225,6 +3334,7 @@ async function loadDashboardP1(){
     STATE.dashLectures=lsnap.docs.map(d=>({id:d.id,...d.data()}))
       .sort((a,b)=>(b.date||'')>(a.date||'')?1:(b.createdAt||'')>(a.createdAt||'')?1:-1);
     STATE.dashLive={};livesnap.docs.forEach(d=>{STATE.dashLive[d.id]=d.data();});
+    STATE.dashAttendance=attsnap.docs.map(d=>({id:d.id,...d.data()}));
     STATE.dashGroupsLoaded=true;STATE.dashTeachingLogLoaded=true;STATE.dashLoaded=true;
   }catch(e){console.warn('[Dashboard] load failed:',e);STATE.dashError=true;}
   STATE.dashLoading=false;render();
@@ -3290,7 +3400,8 @@ async function openLecture(id){
     if(prev){try{await db.collection('lectures').doc(prev.id).update({status:'ended'});prev.status='ended';}catch(e){}}
   }
   try{
-    const pointer={lectureId:id,title:lec.title,openedAt:new Date().toISOString()};
+    const _openedAt=new Date();
+    const pointer={lectureId:id,title:lec.title,openedAt:_openedAt.toISOString(),autoCloseAt:new Date(_openedAt.getTime()+LIVE_AUTOCLOSE_MS).toISOString()};
     await db.collection('live').doc(g).set(pointer);
     STATE.dashLive[g]=pointer;
     // Re-open a previously-ended lecture returns it to scheduled while live.
@@ -3316,7 +3427,7 @@ async function closeLecture(id){
 
 function isLectureLive(lec){
   const p=STATE.dashLive[lec.groupCode];
-  return !!(p&&p.lectureId===lec.id);
+  return !!(p&&p.lectureId===lec.id&&_liveWindowOpen(p));
 }
 
 function renderDashLectures(){
@@ -3348,11 +3459,16 @@ function renderDashLectures(){
     :lectures.map(l=>{
       const live=isLectureLive(l);
       const dt=l.date?new Date(l.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
+      const _ptr=STATE.dashLive[l.groupCode];
+      const autoEnded=!live&&_ptr&&_ptr.lectureId===l.id;  // pointed here but window passed
       const badge=live
         ?`<span style="font-size:10px;font-weight:700;padding:2px 9px;border-radius:10px;background:#FCEBEB;color:#C0392B">\u{1F534} LIVE</span>`
-        :(l.status==='ended'
-          ?`<span style="font-size:10px;font-weight:600;padding:2px 9px;border-radius:10px;background:#EAECEE;color:#566573">Ended</span>`
-          :`<span style="font-size:10px;font-weight:600;padding:2px 9px;border-radius:10px;background:#FEF9E7;color:#9A7D0A">Scheduled</span>`);
+        :(autoEnded
+          ?`<span style="font-size:10px;font-weight:600;padding:2px 9px;border-radius:10px;background:#EAECEE;color:#566573">Ended (auto)</span>`
+          :(l.status==='ended'
+            ?`<span style="font-size:10px;font-weight:600;padding:2px 9px;border-radius:10px;background:#EAECEE;color:#566573">Ended</span>`
+            :`<span style="font-size:10px;font-weight:600;padding:2px 9px;border-radius:10px;background:#FEF9E7;color:#9A7D0A">Scheduled</span>`));
+      const attCount=(STATE.dashAttendance||[]).filter(a=>a.lectureId===l.id).length;
       const action=live
         ?`<button onclick="closeLecture('${l.id}')" style="padding:7px 14px;border-radius:8px;border:none;background:#C0392B;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u25A0 Close check-in</button>`
         :`<button onclick="openLecture('${l.id}')" style="padding:7px 14px;border-radius:8px;border:none;background:#1E8449;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u25B6 Open check-in</button>`;
@@ -3363,8 +3479,9 @@ function renderDashLectures(){
               <span style="font-size:10px;background:#F4ECF7;color:#6C3483;padding:2px 8px;border-radius:8px;font-weight:600;font-family:'Courier New',monospace">${esc(l.groupCode)}</span>
               ${dt?`<span style="font-size:11px;color:#888">${dt}</span>`:''}${badge}</div></div>
         </div>
-        <div style="display:flex;gap:8px;align-items:center">
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           ${action}
+          <button onclick="openAttendanceList('${l.id}')" style="padding:7px 12px;border-radius:8px;border:.5px solid #0C447C30;background:#E6F1FB;color:#0C447C;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u{1F465} ${attCount} checked in</button>
           <button onclick="deleteLecture('${l.id}')" style="padding:7px 10px;border-radius:8px;border:.5px solid #E24B4A40;background:#FCEBEB;color:#A32D2D;font-size:12px;cursor:pointer;font-family:inherit">\u{1F5D1}\uFE0F</button>
         </div>
       </div>`;
@@ -4832,6 +4949,7 @@ function renderMockResults(){
 // ════ END MOCK EXAM ════
 
 auth.onAuthStateChanged(async(user)=>{
+  try{ if(user){ setTimeout(startLivePolling,3000); } else { stopLivePolling(); } }catch(e){}
   if(user){
     STATE.user=user;
     STATE.authLoading=false;
