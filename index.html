@@ -4067,10 +4067,11 @@ async function submitExam(auto){
   const percentage=total?Math.round(score/total*100):0;
   const submittedAt=new Date().toISOString();
   try{
+    const questionSnapshot=sess.questions.map(q=>({q:q.q,o:q.o,a:q.a,e:q.e||'',wrongWhy:q.wrongWhy||null,_lid:q._lid||'',_ltitle:q._ltitle||''}));
     await db.collection('exam-results').doc(sess.examId+'_'+STATE.user.uid).set({
       examId:sess.examId,userId:STATE.user.uid,groupCode:sess.exam.groupCode,sectionId:sess.exam.sectionId,
       startedAt:sess.startedAt,deadlineAt:sess.deadlineAt,
-      answers:answersOut,score,total,percentage,
+      answers:answersOut,questionSnapshot,score,total,percentage,
       submitted:true,submittedAt,autoSubmitted:!!auto
     },{merge:true});
     sess.submitted=true;
@@ -4139,7 +4140,7 @@ function renderExamsStrip(){
     if(submitted){
       banner={bg:'linear-gradient(135deg,#3B6D11,#639922)',label:'\u2705 COMPLETED'};
       body='Score: <b>'+res.score+'/'+res.total+'</b> \u00B7 '+res.percentage+'%';
-      btn='<span style="font-size:11px;color:rgba(255,255,255,.85)">Submitted</span>';
+      btn='<button onclick="openExamReview(\''+ex.id+'\')" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Review \u2192</button>';
     }else if(st==='active'){
       const inProgress=_examLoadLocal(ex.id);
       banner={bg:'linear-gradient(135deg,#0C447C,#185FA5)',label:inProgress?'\u25B6\uFE0F RESUME':'\u{1F7E2} ACTIVE'};
@@ -4167,6 +4168,7 @@ function renderExamsStrip(){
 // Full-screen runner + result. Dispatcher case: 'exam'
 function renderExam(){
   if(!STATE.examSession)return renderIntro();
+  if(STATE.examSession.reviewMode)return renderExamReview();
   if(STATE.examSession.submitted)return renderExamResult();
   return renderExamRunner();
 }
@@ -4261,7 +4263,10 @@ function renderExamResult(){
     +'<div style="font-size:13px;font-weight:600;color:#333;margin-bottom:6px">Result recorded \u2705</div>'
     +'<div style="font-size:12px;color:#666;line-height:1.6">Your instructor can now see this result on their dashboard. A per-question review is coming in the next release.</div>'
     +'</div>'
-    +'<button class="btn" onclick="exitExam()" style="background:#0C447C;color:#fff">Back to Home</button>'
+    +'<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">'
+    +'<button class="btn btn-outline" onclick="exitExam()" style="flex:0 1 auto">Back to Home</button>'
+    +'<button class="btn" onclick="openExamReview(\''+sess.examId+'\')" style="background:#0C447C;color:#fff;flex:0 1 auto">Review Answers \u2192</button>'
+    +'</div>'
     +'<div style="height:20px"></div>'
     +'</div>';
 }
@@ -4274,6 +4279,206 @@ function _examRenderRunner(){
 }
 
 // ═════════════════════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════════════════════
+// PHASE 3a-iii-A — GROUP EXAMS (per-question review, student side)
+//
+// Adds:
+//   • questionSnapshot written to exam-results on submit — full question
+//     objects (as the student saw them, options already shuffled) so review
+//     is bulletproof against future edits to s{N}.json.
+//   • openExamReview(examId) — entry point from result screen or Home strip.
+//     Just-submitted exams reuse the in-memory session (zero Firestore reads);
+//     older exams fetch the exam-results doc and populate STATE.examSession
+//     in reviewMode.
+//   • renderExamReview — per-question walkthrough with verdict banner,
+//     correct answer highlighted, student's wrong pick marked (if any),
+//     explanation from expFor() / q.e, lesson attribution.
+//   • Fallback for pre-3a-iii-A submissions without a snapshot: regenerate
+//     the deterministic set (same seed still produces same questions if
+//     s{N}.json hasn't changed).
+// ═════════════════════════════════════════════════════════════════════
+
+async function openExamReview(examId){
+  // Case 1: we just submitted this exam and the in-memory session is intact.
+  if(STATE.examSession&&STATE.examSession.examId===examId&&STATE.examSession.submitted&&Array.isArray(STATE.examSession.questions)&&STATE.examSession.questions.length){
+    STATE.examSession.reviewMode=true;
+    STATE.examSession.reviewIdx=0;
+    STATE.examSession.navOpen=false;
+    STATE.tab='exam';render();return;
+  }
+  // Case 2: reopening a previously submitted exam — fetch from Firestore.
+  const exam=(STATE.studentExams||[]).find(e=>e.id===examId);
+  if(!exam){showToast('Exam not found.','error');return;}
+  showToast('Loading review\u2026','info',1500);
+  try{
+    const doc=await db.collection('exam-results').doc(examId+'_'+STATE.user.uid).get();
+    if(!doc.exists){showToast('No result found.','error');return;}
+    const data=doc.data();
+    let questions=data.questionSnapshot;
+    if(!questions||!Array.isArray(questions)||!questions.length){
+      // Fallback: regenerate deterministically. Same seed will yield the same
+      // set as long as s{N}.json hasn't changed since submission.
+      questions=await buildExamQuestions(exam,STATE.user.uid);
+      if(!questions.length){showToast('Cannot rebuild review data.','error');return;}
+    }
+    // Firestore stores answers as an array of {picked, correct}. Runner uses
+    // an indexed object {qIdx: optIdx}. Convert here.
+    const answers={};
+    if(Array.isArray(data.answers)){
+      data.answers.forEach((a,i)=>{if(a&&a.picked!=null)answers[i]=a.picked;});
+    }
+    STATE.examSession={
+      examId,exam,questions,answers,currentIdx:0,reviewIdx:0,
+      startedAt:data.startedAt,deadlineAt:data.deadlineAt,
+      submitting:false,submitted:true,reviewMode:true,
+      results:{
+        score:data.score||0,
+        total:data.total||questions.length,
+        percentage:data.percentage||0,
+        autoSubmitted:!!data.autoSubmitted,
+        submittedAt:data.submittedAt||''
+      },
+      navOpen:false
+    };
+    STATE.tab='exam';render();
+  }catch(e){showToast('Could not load review: '+e.message,'error');}
+}
+
+function examReviewGoTo(idx){
+  if(!STATE.examSession)return;
+  const max=STATE.examSession.questions.length-1;
+  STATE.examSession.reviewIdx=Math.max(0,Math.min(max,idx));
+  STATE.examSession.navOpen=false;
+  _examRenderReview();
+}
+function examReviewNavToggle(){
+  if(!STATE.examSession)return;
+  STATE.examSession.navOpen=!STATE.examSession.navOpen;
+  _examRenderReview();
+}
+function _examRenderReview(){
+  if(STATE.tab!=='exam'||!STATE.examSession||!STATE.examSession.reviewMode){render();return;}
+  const area=document.getElementById('content-area');
+  if(!area){render();return;}
+  area.innerHTML=renderExamReview();
+}
+
+function renderExamReview(){
+  const sess=STATE.examSession;
+  if(!sess||!Array.isArray(sess.questions)||!sess.questions.length)return renderIntro();
+  const idx=sess.reviewIdx||0;
+  const q=sess.questions[idx];
+  const total=sess.questions.length;
+  const picked=sess.answers[idx];
+  const correct=picked===q.a;
+  const skipped=picked==null;
+  const correctCount=sess.questions.reduce((n,q2,i)=>n+(sess.answers[i]===q2.a?1:0),0);
+
+  // Options: correct answer green, student's wrong pick red, others neutral.
+  const opts=q.o.map((opt,i)=>{
+    let bg='#f5f5f0',border='.5px solid #e0e0d8',textC='#1a1a1a',circBg='#e5e5e0',circC='#666',circTxt=String.fromCharCode(65+i);
+    if(i===q.a){bg='#EAF3DE';border='1px solid #639922';textC='#27500A';circBg='#c0dd97';circC='#27500A';circTxt='\u2713';}
+    else if(i===picked){bg='#FCEBEB';border='1px solid #E24B4A';textC='#791F1F';circBg='#f7c1c1';circC='#791F1F';circTxt='\u2717';}
+    else{textC='#888';}
+    return '<div class="q-opt" style="background:'+bg+';border:'+border+';cursor:default">'
+      +'<div class="q-circle" style="background:'+circBg+';color:'+circC+';border:.5px solid #bbb">'+circTxt+'</div>'
+      +'<div class="q-text" style="color:'+textC+'">'+esc(normalizeCase(opt))+'</div>'
+      +'</div>';
+  }).join('');
+
+  const verdictBar=skipped
+    ?'<div style="background:#F4ECF7;border:1px solid #D2B4DE;color:#6C3483;padding:9px 12px;border-radius:8px;font-size:12px;font-weight:600;margin-bottom:12px">\u25CB Not answered</div>'
+    :correct
+      ?'<div style="background:#EAF3DE;border:1px solid #639922;color:#27500A;padding:9px 12px;border-radius:8px;font-size:12px;font-weight:600;margin-bottom:12px">\u2705 Correct</div>'
+      :'<div style="background:#FCEBEB;border:1px solid #E24B4A;color:#A32D2D;padding:9px 12px;border-radius:8px;font-size:12px;font-weight:600;margin-bottom:12px">\u274C Incorrect</div>';
+
+  // Prefer per-option wrongWhy via expFor() for wrong picks; else use q.e.
+  let explanationText='';
+  if(!correct&&!skipped&&typeof expFor==='function'){
+    try{explanationText=expFor(q,picked)||q.e||'';}catch{explanationText=q.e||'';}
+  }else{
+    explanationText=q.e||'';
+  }
+  const explanation=explanationText
+    ?'<div style="margin-top:14px;padding:13px 14px;border-radius:10px;background:#fafaf8;border:.5px solid #e0e0d8">'
+     +'<div style="font-size:11px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">Explanation</div>'
+     +'<div style="font-size:13px;color:#333;line-height:1.6">'+esc(explanationText)+'</div>'
+     +'</div>'
+    :'';
+
+  const attribution=q._ltitle
+    ?'<div style="font-size:11px;color:#888;margin-top:10px;font-style:italic">From: '+esc(q._ltitle)+'</div>'
+    :'';
+
+  const navGrid=sess.navOpen
+    ?'<div style="position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200" onclick="examReviewNavToggle()">'
+     +'<div onclick="event.stopPropagation()" style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:16px 16px 0 0;padding:16px;max-height:75vh;overflow-y:auto">'
+     +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'
+     +'<div style="font-size:14px;font-weight:600">Review Questions</div>'
+     +'<button onclick="examReviewNavToggle()" style="background:none;border:none;font-size:22px;cursor:pointer;color:#888">\u00D7</button>'
+     +'</div>'
+     +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:8px">'
+     +sess.questions.map((q2,i)=>{
+        const p=sess.answers[i];
+        const c=p===q2.a;
+        const sk=p==null;
+        const bg=sk?'#F4ECF7':c?'#EAF3DE':'#FCEBEB';
+        const col=sk?'#6C3483':c?'#27500A':'#A32D2D';
+        const cur=i===idx;
+        return '<button onclick="examReviewGoTo('+i+')" style="padding:9px 0;border-radius:8px;border:'+(cur?'2px solid #0C447C':'.5px solid #d0d0d0')+';background:'+bg+';color:'+col+';font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">'+(i+1)+'</button>';
+      }).join('')
+     +'</div>'
+     +'<div style="display:flex;gap:10px;margin-top:14px;font-size:11px;color:#888">'
+     +'<div><span style="display:inline-block;width:10px;height:10px;background:#EAF3DE;border-radius:2px;vertical-align:middle;margin-right:4px"></span>Correct</div>'
+     +'<div><span style="display:inline-block;width:10px;height:10px;background:#FCEBEB;border-radius:2px;vertical-align:middle;margin-right:4px"></span>Wrong</div>'
+     +'<div><span style="display:inline-block;width:10px;height:10px;background:#F4ECF7;border-radius:2px;vertical-align:middle;margin-right:4px"></span>Skipped</div>'
+     +'</div>'
+     +'</div></div>'
+    :'';
+
+  const prevBtn=idx>0
+    ?'<button onclick="examReviewGoTo('+(idx-1)+')" style="flex:0 0 auto;padding:11px 16px;border-radius:10px;border:.5px solid #d0d0d0;background:#fff;color:#333;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit">\u2039 Prev</button>'
+    :'<div style="flex:0 0 auto;width:1px"></div>';
+  const isLast=idx>=total-1;
+  const nextBtn=isLast
+    ?'<button onclick="exitExam()" style="flex:1;padding:11px;border-radius:10px;border:none;background:#0C447C;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Done \u2713</button>'
+    :'<button onclick="examReviewGoTo('+(idx+1)+')" style="flex:1;padding:11px;border-radius:10px;border:none;background:#0C447C;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Next \u203A</button>';
+  const barW=Math.round((idx+1)/total*100);
+
+  const r=sess.results||{};
+  const scoreBadge=r.score!=null
+    ?'<div style="background:'+((r.percentage||0)>=60?'#EAF3DE':'#FCEBEB')+';color:'+((r.percentage||0)>=60?'#27500A':'#A32D2D')+';border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;font-family:\'Courier New\',monospace">'+r.score+'/'+r.total+' \u00B7 '+(r.percentage||0)+'%</div>'
+    :'';
+
+  return '<div style="display:flex;flex-direction:column;height:100%">'
+    +'<div style="background:#fff;border-bottom:.5px solid #e0e0d8;padding:10px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0">'
+    +'<button onclick="exitExam()" style="background:none;border:none;font-size:22px;cursor:pointer;color:#0C447C;padding:0 6px" title="Back">\u2039</button>'
+    +'<div style="flex:1;min-width:0">'
+    +'<div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.4px">Review \u00B7 '+esc(sess.exam.title)+'</div>'
+    +'<div style="font-size:13px;font-weight:600;color:#1a1a1a">Q'+(idx+1)+' of '+total+' \u00B7 <span style="color:#3B6D11">'+correctCount+' correct</span></div>'
+    +'</div>'
+    +scoreBadge
+    +'<button onclick="examReviewNavToggle()" style="padding:6px 10px;border-radius:8px;border:.5px solid #d0d0d0;background:#fafaf8;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u2630 Nav</button>'
+    +'</div>'
+    +'<div style="height:4px;background:#ebebea;flex-shrink:0"><div style="height:100%;width:'+barW+'%;background:#0C447C;transition:width .3s"></div></div>'
+    +'<div class="scroll-area pad" style="padding-top:14px">'
+    +verdictBar
+    +'<div class="card" style="margin-bottom:12px">'
+    +'<p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:16px">'+esc(q.q)+'</p>'
+    +(typeof dataTableHTML==='function'?dataTableHTML(q):'')
+    +opts
+    +explanation
+    +attribution
+    +'</div>'
+    +'<div style="display:flex;gap:8px;margin-bottom:14px">'+prevBtn+nextBtn+'</div>'
+    +'<div style="height:20px"></div>'
+    +'</div>'
+    +navGrid
+    +'</div>';
+}
+
+// ═════════════════════════════════════════════════════════════════════
+
 function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function shuffleQuestionOptions(q){
   // Create index array [0,1,2,3], shuffle it, remap options and correct answer
