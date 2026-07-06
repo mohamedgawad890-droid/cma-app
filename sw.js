@@ -1,12 +1,17 @@
-// CMA Prep — Service Worker v14
+// CMA Prep — Service Worker v15
 // Strategy: Network-first with cache fallback
 // Auto-update: listens for SKIP_WAITING from the page → triggers instant reload
 //
-// v14 (Batch 2): version bump — forces browsers to drop the v13 cache so
-// instructors pick up the new dashboard with the group-selector chip strip,
-// lazy attendance loading, and empty-state UI on scoped tabs.
+// v15 (Batch 4): version bump forces browsers to drop the v14 cache and
+// register the new `push` and `notificationclick` handlers below. These
+// handlers ship inert in Batch 4 — they wire up the plumbing so that when
+// Batch 3-A adds server-scheduled push via Cloud Functions, notifications
+// route through the SW and deep-link into the correct app screen without
+// a further SW change. In the meantime, in-app engagement cards (client-
+// side) and best-effort browser notifications (setTimeout while the app is
+// open) handle daily nudges.
 
-const CACHE_NAME = 'cma-prep-v14';
+const CACHE_NAME = 'cma-prep-v15';
 const OFFLINE_URLS = [
   './',
   './index.html',
@@ -84,5 +89,66 @@ self.addEventListener('fetch', event => {
           return caches.match('./');
         });
       })
+  );
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  BATCH 4 — PUSH NOTIFICATION HANDLERS
+// ═══════════════════════════════════════════════════════════════════════════
+// These handlers ship in v15 but are inert until Batch 3-A adds a Cloud
+// Function that pushes payloads. Wiring them now means the future switch
+// is a pure server-side change — no client refresh required.
+
+self.addEventListener('push', event => {
+  // Expected payload shape from future Cloud Function:
+  //   { title, body, deepLink }  (deepLink one of: qod, wrong-answers, community, dashboard)
+  let data = {};
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch (err) {
+    // Malformed payload — fall through to defaults
+    data = { title: 'CMA Prep', body: 'Time for today\'s session' };
+  }
+
+  const title = data.title || 'CMA Prep';
+  const options = {
+    body: data.body || 'Time for today\'s session',
+    icon: './icon-192.png',
+    badge: './icon-192.png',
+    tag: 'cma-daily',        // one active daily notification at a time
+    renotify: false,
+    dir: 'auto',             // auto-detect RTL for Arabic content
+    data: {
+      deepLink: data.deepLink || 'qod',
+      timestamp: Date.now()
+    }
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(title, options)
+  );
+});
+
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  const deepLink = (event.notification.data && event.notification.data.deepLink) || 'qod';
+
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clients => {
+      // Prefer focusing an existing tab and posting the deep-link intent to it
+      for (const client of clients) {
+        if (client.url.includes(self.location.origin) && 'focus' in client) {
+          client.focus();
+          try {
+            client.postMessage({ type: 'DEEP_LINK', target: deepLink });
+          } catch {}
+          return;
+        }
+      }
+      // No open tab → open a fresh one with the deep link as a hash fragment
+      if (self.clients.openWindow) {
+        return self.clients.openWindow('./#' + encodeURIComponent(deepLink));
+      }
+    })
   );
 });
