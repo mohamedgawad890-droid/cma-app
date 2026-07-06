@@ -222,6 +222,10 @@ const CLD_PRESET='cma_students';
 // ─── BATCH 4: RETENTION CONFIG ───────────────────────────────────────────────
 // Apps Script webhook that sends the weekly email digest. Deployed separately.
 const EMAIL_DIGEST_URL='https://script.google.com/macros/s/AKfycbyNL4KbrnRPHOjmM9IKI4_-lXP6jrJmdbh9o1hypTB1ytklyt4LG3lwCblZlHj9itoT/exec';
+// Batch 4.1: shared secret prevents anonymous flooding of the Apps Script quota.
+// The Apps Script side must be updated to reject payloads where secret !== this value.
+// (Inert until the Apps Script is updated — old requests still succeed.)
+const DIGEST_SECRET='cma-digest-v1-8f3a2c9d1e';
 // Rotating notification copy — never references new lessons (content-slow phase).
 const NOTIFICATION_VARIANTS=[
   {id:'qod',   body:'\u2753 Question of the Day is ready \u2014 30s to keep your streak.', link:'intro'},
@@ -750,15 +754,21 @@ function buildDigestPayload(st){
   // Weakest section by per-section accuracy in lessonScores (best-effort).
   let weakest='';
   try{
+    // Batch 4.1: capture the KEY of the lowest score, not just the value.
     const scores=p.lessonScores||{};let worst=101;
-    Object.keys(scores).forEach(k=>{const v=scores[k];if(typeof v==='number'&&v<worst){worst=v;}});
+    Object.keys(scores).forEach(k=>{const v=scores[k];if(typeof v==='number'&&v<worst){worst=v;weakest=k;}});
   }catch(e){}
   const variant = (daysSince>=7 || last7===0) ? 'missed_you'
                 : (last7<60 ? 'returning' : 'engaged');
+  // Batch 4.1: honest payload — dropped hardcoded 0s (mcqsThisWeek, accuracyDelta),
+  // renamed accuracyThisWeek → accuracyOverall (it IS lifetime, not weekly),
+  // added minutesLast7Days (real data), and secret for endpoint auth.
   return{
+    secret:DIGEST_SECRET,
     email:st.email,name:st.name||'',language:st.language||'ar',variant,
     streakCount:streak.count||0,
-    mcqsThisWeek:0, accuracyThisWeek:acc, accuracyDelta:0,
+    accuracyOverall:acc,
+    minutesLast7Days:last7,
     weakestSection:weakest, recommendedTopics:[],
     silentDays:isFinite(daysSince)?daysSince:0
   };
@@ -862,9 +872,11 @@ function runRetentionBoot(){
     const r=updateStreak();
     if(r==='froze'){showToast('\u2744\uFE0F Used a Streak Freeze to protect your streak','success',4000);}
     else if(r==='grace-needed'){setTimeout(()=>{showGraceModal();},600);}
+    // Batch 4.1: seed the study-time history BEFORE the first analytics sync,
+    // so last7DaysMinutes / previous7DaysMinutes are honest on the initial write.
+    recordStudyMinutes(0); // ensure history key exists
     // Analytics: initial sync (forced, ignores debounce).
     syncStudentAnalytics(true);
-    recordStudyMinutes(0); // ensure history key exists
     // Notifications: iOS completion + engagement card.
     maybeCompleteIOSNotif();
     maybeShowEngagementCard();
