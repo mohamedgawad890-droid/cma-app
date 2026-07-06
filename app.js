@@ -916,7 +916,7 @@ const STATE={tab:'loading',searchQ:'',dictQ:'',dictData:[],dictLoaded:false,lead
     dashLoaded:false,dashLoading:false,dashError:false,
     dashLectures:[],dashLive:{},dashLectureDraft:{title:'',groupCode:'',date:''},dashAttendance:[],
     dashExams:[],dashExamsLoaded:false,
-    dashExamDraft:{title:'',groupCode:'',sectionId:'',count:20,durationMinutes:30,opensAt:'',closesAt:''},
+    dashExamDraft:{title:'',groupCode:'',sectionId:'',unitIds:[],count:20,durationMinutes:30,opensAt:'',closesAt:''},
     studentExams:[],studentExamsLoaded:false,studentExamResults:{},examSession:null,
     dashExamResults:{},dashExamViewingId:null,dashResultsSort:'score-desc',
     // ── Batch 2: group-scoped dashboard state ──────────────────────────
@@ -930,7 +930,7 @@ const STATE={tab:'loading',searchQ:'',dictQ:'',dictData:[],dictLoaded:false,lead
     dashSelectedGroup:'',dashLoadedForGroup:null,dashAttendanceByLecture:{},
     // ── Batch 4: retention state ──
     dashAtRisk:[],dashAtRiskLoadedFor:null,dashAtRiskLoading:false,
-    _engagementCard:null,_graceActive:false,_streakWas:0};
+    _engagementCard:null,_feedbackPromptFor:null,_graceActive:false,_streakWas:0};
 
 // ─── ARABIC TERM TOOLTIPS ──────────────────────────────────────────────────
 const TERM_DICT={
@@ -3419,8 +3419,10 @@ async function pollLiveLecture(){
     if(!st||!st.groupCode)return;              // student not in a group
     const g=st.groupCode.toUpperCase();
     const doc=await db.collection('live').doc(g).get();
-    if(!doc.exists)return;
+    if(!doc.exists){STATE.dashLive[g]={lectureId:null};return;}
     const p=doc.data();
+    // Batch 5: stash for feedback prompt detection.
+    STATE.dashLive[g]=p;
     if(!_liveWindowOpen(p))return;             // closed or past 3h bound
     if(hasCheckedIn(p.lectureId))return;       // already checked in for this lecture
     if(_liveShownFor===p.lectureId)return;     // modal already showing
@@ -3472,26 +3474,55 @@ function showCheckInModal(p,groupCode){
   _liveShownFor=p.lectureId;
   const ov=document.createElement('div');
   ov.id='checkin-overlay';
-  ov.setAttribute('style','position:fixed;inset:0;z-index:20000;background:linear-gradient(160deg,#0C447C,#185FA5);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center;animation:fadeIn .2s ease');
+  ov.setAttribute('style','position:fixed;inset:0;z-index:20000;background:linear-gradient(160deg,#0C447C,#185FA5);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center;animation:fadeIn .2s ease;overflow-y:auto');
   ov.innerHTML=
     '<div style="font-size:60px;margin-bottom:16px">\u{1F534}</div>'+
     '<div style="font-size:13px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,.75);margin-bottom:8px">LIVE LECTURE \u00B7 '+esc(groupCode)+'</div>'+
     '<div style="font-size:22px;font-weight:700;color:#fff;line-height:1.35;margin-bottom:10px;max-width:340px">'+esc(p.title||'Lecture')+'</div>'+
-    '<div style="font-size:14px;color:rgba(255,255,255,.8);line-height:1.6;margin-bottom:28px;max-width:320px">Your instructor has started a live session. Tap below to record your attendance.</div>'+
-    '<button id="checkin-btn" style="width:100%;max-width:320px;padding:16px;border-radius:14px;border:none;background:#fff;color:#0C447C;font-size:17px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 8px 24px rgba(0,0,0,.25)">\u2705 Check in</button>'+
+    '<div style="font-size:14px;color:rgba(255,255,255,.8);line-height:1.6;margin-bottom:20px;max-width:320px">Your instructor has started a live session. Choose how you\u2019re attending, then check in.</div>'+
+    '<div style="font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,.65);margin-bottom:10px">HOW ARE YOU ATTENDING?</div>'+
+    '<div id="checkin-mode-group" style="display:flex;gap:10px;margin-bottom:22px;max-width:320px;width:100%">'+
+      '<button type="button" data-mode="online" class="checkin-mode-btn" style="flex:1;padding:14px 10px;border-radius:12px;border:2px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:4px"><span style="font-size:22px">\u{1F4BB}</span><span>Online</span></button>'+
+      '<button type="button" data-mode="offline" class="checkin-mode-btn" style="flex:1;padding:14px 10px;border-radius:12px;border:2px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:4px"><span style="font-size:22px">\u{1F3EB}</span><span>In-person</span></button>'+
+    '</div>'+
+    '<button id="checkin-btn" disabled style="width:100%;max-width:320px;padding:16px;border-radius:14px;border:none;background:rgba(255,255,255,.35);color:#0C447C;font-size:17px;font-weight:700;cursor:not-allowed;font-family:inherit;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:background .15s,cursor .15s">Pick a mode to check in</button>'+
     '<div style="font-size:11px;color:rgba(255,255,255,.55);margin-top:16px;max-width:300px;line-height:1.5">This confirms you\u2019re attending this session.</div>';
   document.body.appendChild(ov);
-  const btn=document.getElementById('checkin-btn');
-  if(btn)btn.onclick=()=>submitCheckIn(p.lectureId,groupCode,p.title||'Lecture');
+  // Wire mode buttons
+  let _picked=null;
+  const modeBtns=ov.querySelectorAll('.checkin-mode-btn');
+  const cbtn=document.getElementById('checkin-btn');
+  modeBtns.forEach(mb=>{
+    mb.onclick=()=>{
+      _picked=mb.getAttribute('data-mode');
+      modeBtns.forEach(x=>{
+        const on=x===mb;
+        x.style.background=on?'#fff':'rgba(255,255,255,.08)';
+        x.style.color=on?'#0C447C':'#fff';
+        x.style.borderColor=on?'#fff':'rgba(255,255,255,.35)';
+      });
+      cbtn.disabled=false;
+      cbtn.style.background='#fff';
+      cbtn.style.cursor='pointer';
+      cbtn.textContent='\u2705 Check in';
+    };
+  });
+  if(cbtn)cbtn.onclick=()=>{
+    if(!_picked){showToast('Please pick a mode first.','warning');return;}
+    submitCheckIn(p.lectureId,groupCode,p.title||'Lecture',_picked);
+  };
 }
 
-async function submitCheckIn(lectureId,groupCode,title){
+async function submitCheckIn(lectureId,groupCode,title,mode){
   const btn=document.getElementById('checkin-btn');
   if(btn){btn.disabled=true;btn.textContent='\u23F3 Checking in\u2026';}
   try{
     const st=loadStudent()||{};
+    // Batch 5: mode is now required at the UI layer; guard defensively.
+    if(mode!=='online'&&mode!=='offline')mode='offline';
     await db.collection('attendance').add({
       lectureId,groupCode,title,
+      mode,                                    // Batch 5: 'online' | 'offline'
       userId:STATE.user.uid,                   // MUST match rule: create if userId==request.auth.uid
       studentName:st.name||STATE.user.displayName||'Student',
       studentId:st.studentId||'',
@@ -3506,6 +3537,109 @@ async function submitCheckIn(lectureId,groupCode,title){
     if(btn){btn.disabled=false;btn.textContent='\u2705 Check in';}
     showToast('Check-in failed \u2014 tap again.','error');
   }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// BATCH 5 — LECTURE FEEDBACK (student submits rating + comment per lecture)
+// ═══════════════════════════════════════════════════════════════════════════
+// Data model:  lecture-feedback/{docId} = {
+//   lectureId, groupCode, userId, studentName, rating(1-5), comment, submittedAt
+// }
+// Rules (added to firestore.rules):
+//   read: instructor OR (owner of doc via userId)
+//   create: any signed-in user, doc.userId must equal auth.uid
+//   update/delete: instructor only
+// Instructor controls open/close via live/{groupCode}.feedbackOpen (independent
+// from checkinOpen). Feedback surface appears in the student check-in overlay
+// AND as a floating card on any tab while a lecture's feedback window is open
+// AND the student has already checked in for that lecture.
+
+// LocalStorage key for lecture feedback the student has already submitted
+function loadFeedbackSubmitted(){try{return JSON.parse(localStorage.getItem('cma-lec-feedback-v1')||'[]');}catch{return[];}}
+function saveFeedbackSubmitted(arr){try{localStorage.setItem('cma-lec-feedback-v1',JSON.stringify(arr));}catch{}}
+function hasSubmittedFeedback(lectureId){return loadFeedbackSubmitted().includes(lectureId);}
+
+// Public: show the feedback modal for a specific lecture pointer.
+function showFeedbackModal(p,groupCode){
+  if(document.getElementById('feedback-overlay'))return;
+  const ov=document.createElement('div');
+  ov.id='feedback-overlay';
+  ov.setAttribute('style','position:fixed;inset:0;z-index:20000;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .15s ease');
+  ov.innerHTML=
+    '<div style="background:#fff;border-radius:18px;width:100%;max-width:400px;padding:22px 20px;box-shadow:0 24px 64px rgba(0,0,0,.25)">'+
+      '<div style="font-size:32px;text-align:center;margin-bottom:6px">\u2B50</div>'+
+      '<div style="font-size:17px;font-weight:600;color:#1a1a1a;text-align:center;line-height:1.3;margin-bottom:4px">Rate this lecture</div>'+
+      '<div style="font-size:12px;color:#888;text-align:center;margin-bottom:14px">'+esc(p.title||'Lecture')+' \u00B7 '+esc(groupCode)+'</div>'+
+      '<div id="fb-stars" style="display:flex;justify-content:center;gap:8px;margin-bottom:16px">'+
+        [1,2,3,4,5].map(i=>'<button type="button" data-star="'+i+'" style="background:none;border:none;cursor:pointer;padding:4px;font-size:34px;color:#e0e0d8;line-height:1;font-family:inherit">\u2605</button>').join('')+
+      '</div>'+
+      '<textarea id="fb-comment" placeholder="Optional comment (max 500 chars)\u2026" maxlength="500" style="width:100%;padding:10px 12px;border-radius:10px;border:.5px solid #d0d0d0;font-size:13px;font-family:inherit;outline:none;background:#fafaf8;color:#1a1a1a;box-sizing:border-box;resize:vertical;min-height:70px;margin-bottom:12px"></textarea>'+
+      '<div style="display:flex;gap:8px">'+
+        '<button id="fb-cancel" style="flex:1;padding:11px;border-radius:10px;border:.5px solid #d0d0d0;background:#fff;color:#555;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit">Later</button>'+
+        '<button id="fb-submit" disabled style="flex:2;padding:11px;border-radius:10px;border:none;background:rgba(12,68,124,.35);color:#fff;font-size:14px;font-weight:600;cursor:not-allowed;font-family:inherit">Submit</button>'+
+      '</div>'+
+    '</div>';
+  document.body.appendChild(ov);
+  let _r=0;
+  const stars=ov.querySelectorAll('#fb-stars button');
+  const submitBtn=document.getElementById('fb-submit');
+  stars.forEach((s,i)=>{
+    s.onclick=()=>{
+      _r=i+1;
+      stars.forEach((x,j)=>{x.style.color=j<=i?'#F5B041':'#e0e0d8';});
+      submitBtn.disabled=false;
+      submitBtn.style.background='#0C447C';
+      submitBtn.style.cursor='pointer';
+    };
+  });
+  document.getElementById('fb-cancel').onclick=()=>{ov.remove();};
+  submitBtn.onclick=()=>{
+    if(!_r){showToast('Pick a rating first.','warning');return;}
+    const comment=(document.getElementById('fb-comment').value||'').trim().slice(0,500);
+    submitLectureFeedback(p.lectureId,groupCode,p.title||'Lecture',_r,comment);
+  };
+}
+
+async function submitLectureFeedback(lectureId,groupCode,title,rating,comment){
+  const submitBtn=document.getElementById('fb-submit');
+  if(submitBtn){submitBtn.disabled=true;submitBtn.textContent='\u23F3 Sending\u2026';}
+  try{
+    const st=loadStudent()||{};
+    await db.collection('lecture-feedback').add({
+      lectureId,groupCode,title,
+      userId:STATE.user.uid,
+      studentName:st.name||STATE.user.displayName||'Student',
+      studentId:st.studentId||'',
+      rating,comment,
+      submittedAt:new Date().toISOString()
+    });
+    const done=loadFeedbackSubmitted();if(!done.includes(lectureId)){done.push(lectureId);saveFeedbackSubmitted(done);}
+    const el=document.getElementById('feedback-overlay');if(el)el.remove();
+    showToast('\u2B50 Thanks for the feedback!','success',2200);
+  }catch(e){
+    console.warn('[Feedback] submit failed:',e);
+    if(submitBtn){submitBtn.disabled=false;submitBtn.textContent='Submit';}
+    showToast('Submit failed \u2014 try again.','error');
+  }
+}
+
+// Poller-adjacent: whenever we see a live pointer with feedbackOpen=true and
+// the student has already checked in and not yet submitted feedback, surface a
+// floating card that opens the feedback modal.
+function maybeShowFeedbackPrompt(){
+  if(!STATE.user)return;
+  const groups=Object.keys(STATE.dashLive||{});
+  for(const g of groups){
+    const p=STATE.dashLive[g];
+    if(!p||!p.lectureId)continue;
+    if(!p.feedbackOpen)continue;
+    if(!hasCheckedIn(p.lectureId))continue;      // only prompt those who attended
+    if(hasSubmittedFeedback(p.lectureId))continue; // already done
+    if(document.getElementById('feedback-overlay'))continue;
+    STATE._feedbackPromptFor={lectureId:p.lectureId,title:p.title,groupCode:g};
+    return;
+  }
+  STATE._feedbackPromptFor=null;
 }
 
 // ── Instructor side: attendance list for a lecture ──────────────────────────
@@ -3529,9 +3663,16 @@ async function openAttendanceList(lectureId){
   const list=sorted.map(a=>{
     const t=a.checkedInAt?new Date(a.checkedInAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):'';
     const sid=a.studentId?' \u00B7 '+a.studentId:'';
-    return esc(a.studentName||'Student')+sid+(t?'  ('+t+')':'');
+    // Batch 5: mode badge — falls back to \u2014 for legacy records without mode.
+    const modeIcon=a.mode==='online'?'\u{1F4BB} Online':(a.mode==='offline'?'\u{1F3EB} In-person':'\u2014');
+    return esc(a.studentName||'Student')+sid+'  '+modeIcon+(t?'  ('+t+')':'');
   });
-  showModal({icon:'\u{1F465}',title:(lec?lec.title:'Lecture')+' \u2014 '+sorted.length+' checked in',list,type:'info',confirmText:'Close'});
+  // Batch 5: quick counts in title.
+  const _on=sorted.filter(a=>a.mode==='online').length;
+  const _off=sorted.filter(a=>a.mode==='offline').length;
+  const _unk=sorted.length-_on-_off;
+  const _titleSuffix=' \u2014 '+sorted.length+' checked in ('+_on+' online, '+_off+' in-person'+(_unk?', '+_unk+' \u2014':'')+')';
+  showModal({icon:'\u{1F465}',title:(lec?lec.title:'Lecture')+_titleSuffix,list,type:'info',confirmText:'Close'});
 }
 
 
@@ -3591,11 +3732,42 @@ async function saveExam(){
   if(new Date(closesISO)<=new Date(opensISO)){showToast('Closes must be after opens.','warning');return;}
   if(new Date(closesISO)<=new Date()){showToast('Closes time is in the past.','warning');return;}
   try{
+    // Batch 5: build the frozen question set at creation. Same question set for
+    // every student; per-student seeded order + option shuffling happens at
+    // exam-start time via buildExamQuestions().
+    const secId=parseInt(d.sectionId);
+    const unitIds=Array.isArray(d.unitIds)?d.unitIds.map(String).filter(Boolean):[];
+    await ensureQuizzes(secId);
+    const sec=S.find(s=>s.id===secId);
+    if(!sec){showToast('Section not found.','error');return;}
+    // Pool: if unitIds is non-empty, restrict to lessons whose id is in unitIds.
+    // Else, whole section.
+    const lessonMatch=(lid)=>!unitIds.length||unitIds.includes(String(lid));
+    const pool=[];
+    sec.lessons.forEach(l=>{
+      if(!lessonMatch(l.id))return;
+      if(l.quizzes&&l.quizzes.length)l.quizzes.forEach((q,i)=>{
+        pool.push({qid:l.id+':'+(q.id||i),_lid:l.id});
+      });
+    });
+    if(pool.length<count){
+      showToast('Only '+pool.length+' questions available in your selection. Reduce Question count or pick more units.','warning');
+      return;
+    }
+    // Random freeze from pool
+    const shuffled=pool.slice();
+    for(let i=shuffled.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];
+    }
+    const questionIds=shuffled.slice(0,count).map(x=>x.qid);
     await db.collection('exams').add({
       title:d.title.trim(),
       groupCode:d.groupCode.toUpperCase(),
       questionSource:'auto',
-      sectionId:parseInt(d.sectionId),
+      sectionId:secId,
+      unitIds,                                 // Batch 5: unit filter (empty = whole section)
+      questionIds,                             // Batch 5: frozen set — same for all students
       count,durationMinutes:dur,
       opensAt:opensISO,closesAt:closesISO,
       status:'scheduled',
@@ -3605,7 +3777,7 @@ async function saveExam(){
     showToast('Exam created \u2705','success');
     // Batch 2: preserve group prefill so back-to-back exams for the same
     // group don't require re-selection
-    STATE.dashExamDraft={title:'',groupCode:STATE.dashSelectedGroup,sectionId:'',count:20,durationMinutes:30,opensAt:'',closesAt:''};
+    STATE.dashExamDraft={title:'',groupCode:STATE.dashSelectedGroup,sectionId:'',unitIds:[],count:20,durationMinutes:30,opensAt:'',closesAt:''};
     await loadDashExams();
   }catch(e){
     showToast('Error: '+e.message,'error');
@@ -4048,11 +4220,12 @@ function renderDashExams(){
       </div>
       <div style="margin-bottom:10px">
         <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Section *</label>
-        <select onchange="STATE.dashExamDraft.sectionId=this.value"
+        <select onchange="onExamSectionChange(this.value)"
                 style="width:100%;padding:9px;border-radius:8px;border:.5px solid #d0d0d0;font-size:13px;font-family:inherit;background:#fff;color:#1a1a1a;box-sizing:border-box">
           <option value="">Select...</option>${sectionOpts}
         </select>
       </div>
+      ${renderExamUnitPicker(d)}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
         <div>
           <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Questions (3\u201350) *</label>
@@ -4121,6 +4294,7 @@ function renderDashExams(){
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
         <button onclick="openExamResults('${x.id}')" style="flex:1 1 28%;padding:7px 10px;border-radius:8px;border:.5px solid #185FA540;background:#E6F1FB;color:#0C447C;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">📊 Results</button>
+        ${status==='scheduled'?`<button onclick="reshuffleExam('${x.id}')" style="flex:1 1 28%;padding:7px 10px;border-radius:8px;border:.5px solid #7D3C9840;background:#F4ECF7;color:#5B2C6F;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">🔄 Re-shuffle</button>`:''}
         ${canClose?`<button onclick="closeExamNow('${x.id}')" style="flex:1 1 28%;padding:7px 10px;border-radius:8px;border:.5px solid #D2691E40;background:#FEF5E7;color:#7D6608;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">🛑 Close</button>`:''}
         <button onclick="deleteExam('${x.id}')" style="flex:1 1 28%;padding:7px 10px;border-radius:8px;border:.5px solid #E24B4A40;background:#FCEBEB;color:#A32D2D;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">🗑️ Delete</button>
       </div>
@@ -4207,12 +4381,19 @@ function renderDashboard(){
   if(!STATE.dashLoaded&&!STATE.dashLoading&&!STATE.dashGroupsLoaded)loadDashboardP1();
   const SUB_DASH=[
     {id:'groups',      icon:'\u{1F465}', label:'Groups'},
+    {id:'students',    icon:'\u{1F464}', label:'Students'},
     {id:'lectures',    icon:'\u{1F3AC}', label:'Lectures'},
+    {id:'attendance',  icon:'\u{2705}', label:'Attendance'},
     {id:'exams',       icon:'\u{1F4DD}', label:'Exams'},
+    {id:'results',     icon:'\u{1F4CA}', label:'Results'},
+    {id:'progress',    icon:'\u{1F4C8}', label:'Progress'},
+    {id:'leader',      icon:'\u{1F3C5}', label:'Leader'},
+    {id:'plan',        icon:'\u{1F5D3}\uFE0F', label:'Plan'},
     {id:'teaching-log',icon:'\u{1F4D3}', label:'Actual Teaching'},
     {id:'at-risk',     icon:'\u{1F6A8}', label:'At Risk'}
   ];
-  const tab=['teaching-log','lectures','groups','exams','at-risk'].includes(STATE.dashTab)?STATE.dashTab:'groups';
+  const _validTabs=['groups','students','lectures','attendance','exams','results','progress','leader','plan','teaching-log','at-risk'];
+  const tab=_validTabs.includes(STATE.dashTab)?STATE.dashTab:'groups';
   const subnav=`<div class="sub-nav">${SUB_DASH.map(it=>
     `<button class="sub-nav-btn${tab===it.id?' active':''}" onclick="STATE.dashTab='${it.id}';render()">${it.icon} ${it.label}</button>`
   ).join('')}</div>`;
@@ -4221,13 +4402,16 @@ function renderDashboard(){
   const chipStrip=STATE.dashGroupsLoaded?renderGroupChipStrip():'';
 
   // ── Body dispatch ──
-  const scopedTabs={lectures:'Lectures',exams:'Exams','teaching-log':'Actual Teaching','at-risk':'At-Risk students'};
+  const scopedTabs={lectures:'Lectures',exams:'Exams','teaching-log':'Actual Teaching','at-risk':'At-Risk students',students:'Students',attendance:'Attendance',results:'Results',progress:'Progress',leader:'Leader',plan:'Weekly Plan'};
   let body;
   if(STATE.dashError){
     body=`<div style="text-align:center;padding:50px 20px"><div style="font-size:34px;margin-bottom:10px">\u26A0\uFE0F</div><div style="font-size:14px;color:#555;margin-bottom:14px">Couldn't load dashboard data.</div><button onclick="STATE.dashError=false;STATE.dashGroupsLoaded=false;STATE.dashLoaded=false;loadDashboardP1()" style="padding:9px 18px;border-radius:8px;border:.5px solid #d0d0d0;background:#fff;font-size:13px;cursor:pointer;font-family:inherit">Retry</button></div>`;
   }else if(tab==='groups'){
     // Groups tab: unscoped, always renders (roster management surface).
     body=STATE.dashGroupsLoaded?renderDashGroups():renderDashSkeleton();
+  }else if(tab==='students'){
+    // Batch 5 Students tab: unscoped (roster is already loaded with groups).
+    body=STATE.dashGroupsLoaded?renderDashStudents():renderDashSkeleton();
   }else if(!STATE.dashSelectedGroup){
     // Scoped tab but no group picked → empty state
     body=renderDashPickGroupEmpty(scopedTabs[tab]||'items');
@@ -4238,8 +4422,18 @@ function renderDashboard(){
     body=renderDashActualTeaching();
   }else if(tab==='lectures'){
     body=renderDashLectures();
+  }else if(tab==='attendance'){
+    body=renderDashAttendance();
   }else if(tab==='exams'){
     body=renderDashExams();
+  }else if(tab==='results'){
+    body=renderDashResults();
+  }else if(tab==='progress'){
+    body=renderDashProgress();
+  }else if(tab==='leader'){
+    body=renderDashLeader();
+  }else if(tab==='plan'){
+    body=renderDashPlan();
   }else if(tab==='at-risk'){
     body=renderDashAtRisk();
   }else{
@@ -4470,24 +4664,55 @@ async function loadStudentExams(){
 }
 
 // ── Build the deterministic question set for this student ──────────────
+// Batch 5: if exam has a frozen `questionIds` array, look up those questions
+// from the section pool by qid (format: `${lessonId}:${qid||index}`). Every
+// student sees the SAME set; only ORDER and OPTION ORDER are shuffled per-uid.
+// Legacy exams (created before Batch 5) fall through to the pool-random path.
 async function buildExamQuestions(exam,uid){
   await ensureQuizzes(exam.sectionId);
   const sec=S.find(s=>s.id===exam.sectionId);
   if(!sec)return[];
-  const pool=[];
+  // Build a full pool with qid keys so we can resolve frozen sets and honor unit filter
+  const poolAll=[];
+  const unitIds=Array.isArray(exam.unitIds)?exam.unitIds.map(String).filter(Boolean):[];
+  const lessonMatch=(lid)=>!unitIds.length||unitIds.includes(String(lid));
   sec.lessons.forEach(l=>{
-    if(l.quizzes&&l.quizzes.length)l.quizzes.forEach(q=>pool.push({...q,_lid:l.id,_ltitle:l.title}));
+    if(!lessonMatch(l.id))return;
+    if(l.quizzes&&l.quizzes.length)l.quizzes.forEach((q,i)=>{
+      const qid=l.id+':'+(q.id||i);
+      poolAll.push({...q,_qid:qid,_lid:l.id,_ltitle:l.title});
+    });
   });
-  if(!pool.length)return[];
+  if(!poolAll.length)return[];
   const seed=exam.id+':'+uid;
   const rand=_mulberry32(_hashStr(seed));
-  const shuffled=pool.slice();
+  let picked;
+  if(Array.isArray(exam.questionIds)&&exam.questionIds.length){
+    // Batch 5 path — resolve frozen set in order, then per-uid shuffle
+    const map=new Map(poolAll.map(q=>[q._qid,q]));
+    picked=exam.questionIds.map(qid=>map.get(qid)).filter(Boolean);
+    // If some frozen IDs are missing (e.g. content rebuild), top up from pool
+    if(picked.length<exam.count){
+      const have=new Set(picked.map(q=>q._qid));
+      const filler=poolAll.filter(q=>!have.has(q._qid));
+      // fill up to exam.count
+      while(picked.length<exam.count&&filler.length){
+        const j=Math.floor(rand()*filler.length);
+        picked.push(filler.splice(j,1)[0]);
+      }
+    }
+  }else{
+    // Legacy path — deterministic pool shuffle & slice (backward compat)
+    picked=poolAll.slice();
+  }
+  // Shuffle picked order per-uid
+  const shuffled=picked.slice();
   for(let i=shuffled.length-1;i>0;i--){
     const j=Math.floor(rand()*(i+1));
     [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];
   }
-  const picked=shuffled.slice(0,Math.min(exam.count,shuffled.length));
-  return picked.map(q=>seededShuffleOptions(q,rand));
+  const finalPicked=shuffled.slice(0,Math.min(exam.count,shuffled.length));
+  return finalPicked.map(q=>seededShuffleOptions(q,rand));
 }
 
 // ── Start / Resume / Answer / Submit ───────────────────────────────────
@@ -4817,7 +5042,7 @@ function renderExamResult(){
     +'<div style="font-size:15px;color:#666;margin-bottom:20px">'+r.score+' out of '+r.total+' correct</div>'
     +'<div class="card" style="text-align:left;margin-bottom:14px">'
     +'<div style="font-size:13px;font-weight:600;color:#333;margin-bottom:6px">Result recorded \u2705</div>'
-    +'<div style="font-size:12px;color:#666;line-height:1.6">Your instructor can now see this result on their dashboard. A per-question review is coming in the next release.</div>'
+    +'<div style="font-size:12px;color:#666;line-height:1.6">Your instructor can now see this result on their dashboard. Tap <b>Review Answers</b> to see the correct answers and explanations.</div>'
     +'</div>'
     +'<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">'
     +'<button class="btn btn-outline" onclick="exitExam()" style="flex:0 1 auto">Back to Home</button>'
@@ -5109,6 +5334,654 @@ function closeExamResults(){
   render();
 }
 
+
+// ═══════════════════════════════════════════════════════════════════════════
+// BATCH 5 — DASHBOARD EXPANSION (Students / Attendance / Results / Progress /
+//   Leader / Plan) + Weekly Plan surface for students
+// ═══════════════════════════════════════════════════════════════════════════
+
+// ── UI helpers ──────────────────────────────────────────────────────────────
+function _dashSecTitle(secId){const s=S.find(x=>x.id===Number(secId));return s?s.title:('Section '+secId);}
+
+// Unit picker used by the Exam create form. Empty selection = whole section.
+function renderExamUnitPicker(d){
+  const secId=d&&d.sectionId?parseInt(d.sectionId):0;
+  if(!secId)return '<div style="margin-bottom:10px;font-size:11px;color:#aaa">Pick a section to filter by units.</div>';
+  const sec=S.find(s=>s.id===secId);
+  if(!sec)return '';
+  const selected=new Set((d.unitIds||[]).map(String));
+  const chips=sec.lessons.map((l,idx)=>{
+    const on=selected.has(String(l.id));
+    return `<button type="button" onclick="toggleExamUnit('${l.id}')" style="padding:6px 10px;border-radius:14px;border:1px solid ${on?'#0C447C':'#d0d0d0'};background:${on?'#0C447C':'#fff'};color:${on?'#fff':'#555'};font-size:11px;font-weight:${on?'600':'500'};cursor:pointer;font-family:inherit;white-space:nowrap">U${idx+1}: ${esc(l.title.length>28?l.title.slice(0,26)+'\u2026':l.title)}</button>`;
+  }).join('');
+  const allCount=sec.lessons.length;
+  const sel=selected.size;
+  const label=sel===0?`All units (${allCount})`:`${sel} of ${allCount} units`;
+  return `<div style="margin-bottom:10px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+      <label style="font-size:11px;color:#888">Units <span style="font-weight:600;color:#0C447C">${label}</span></label>
+      <button type="button" onclick="clearExamUnits()" style="background:none;border:none;color:#0C447C;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">Clear \u2192 all</button>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;padding:8px;background:#fafaf8;border:.5px solid #e0e0d8;border-radius:8px;max-height:150px;overflow-y:auto">${chips}</div>
+    <div style="font-size:11px;color:#888;margin-top:4px">Leave empty to include the whole section.</div>
+  </div>`;
+}
+function onExamSectionChange(v){
+  STATE.dashExamDraft.sectionId=v;
+  STATE.dashExamDraft.unitIds=[];   // section change resets units
+  render();
+}
+function toggleExamUnit(uid){
+  const arr=STATE.dashExamDraft.unitIds||[];
+  const i=arr.indexOf(uid);
+  if(i>=0)arr.splice(i,1);else arr.push(uid);
+  STATE.dashExamDraft.unitIds=arr.slice();
+  render();
+}
+function clearExamUnits(){STATE.dashExamDraft.unitIds=[];render();}
+
+// ── Ticket #9 exam re-shuffle (only while status === 'scheduled') ──────────
+async function reshuffleExam(examId){
+  if(!isInstructor()){showToast('Not authorized.','error');return;}
+  const ex=(STATE.dashExams||[]).find(e=>e.id===examId);
+  if(!ex){showToast('Exam not found.','error');return;}
+  if(examWindowStatus(ex)!=='scheduled'){showToast('Only scheduled exams can be re-shuffled.','warning');return;}
+  const ok=await showModal({icon:'\u{1F504}',title:'Re-shuffle Questions?',body:'This picks a fresh random set of '+ex.count+' questions from the same units. Students haven\u2019t started yet, so this is safe.',type:'info',confirmText:'Re-shuffle',cancelText:'Cancel'});
+  if(!ok)return;
+  try{
+    await ensureQuizzes(ex.sectionId);
+    const sec=S.find(s=>s.id===ex.sectionId);
+    if(!sec){showToast('Section not found.','error');return;}
+    const unitIds=Array.isArray(ex.unitIds)?ex.unitIds.map(String).filter(Boolean):[];
+    const lessonMatch=(lid)=>!unitIds.length||unitIds.includes(String(lid));
+    const pool=[];
+    sec.lessons.forEach(l=>{
+      if(!lessonMatch(l.id))return;
+      if(l.quizzes&&l.quizzes.length)l.quizzes.forEach((q,i)=>pool.push(l.id+':'+(q.id||i)));
+    });
+    if(pool.length<ex.count){showToast('Only '+pool.length+' questions available now.','warning');return;}
+    for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+    const questionIds=pool.slice(0,ex.count);
+    await db.collection('exams').doc(examId).update({questionIds,reshuffledAt:new Date().toISOString()});
+    showToast('Questions re-shuffled \u2705','success');
+    await refreshDashScoped();
+  }catch(e){console.warn('[reshuffleExam]',e);showToast('Error: '+e.message,'error');}
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  STUDENTS TAB — all-groups roster with filter + search
+// ═══════════════════════════════════════════════════════════════════════════
+STATE.dashStudentsFilter='';        // '' = All groups
+STATE.dashStudentsSearch='';
+STATE.dashStudentDetailUid=null;    // when set, opens profile view
+
+function renderDashStudents(){
+  if(STATE.dashStudentDetailUid)return renderDashStudentDetail();
+  const all=STATE.dashStudents||[];
+  const groups=(STATE.dashGroups||[]).slice().sort((a,b)=>(a.code||'').localeCompare(b.code||''));
+  const f=(STATE.dashStudentsFilter||'').toUpperCase();
+  const q=(STATE.dashStudentsSearch||'').trim().toLowerCase();
+  let list=all.slice();
+  if(f)list=list.filter(s=>(s.groupCode||'').toUpperCase()===f);
+  if(q)list=list.filter(s=>{
+    const hay=((s.name||'')+' '+(s.email||'')+' '+(s.mobile||'')+' '+(s.groupCode||'')).toLowerCase();
+    return hay.includes(q);
+  });
+  list.sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+  const filterBtn=(v,l)=>{
+    const on=(STATE.dashStudentsFilter||'')===v;
+    return `<button onclick="STATE.dashStudentsFilter='${esc(v)}';render()" style="padding:6px 12px;border-radius:16px;border:1px solid ${on?'#0C447C':'#d0d0d0'};background:${on?'#0C447C':'#fff'};color:${on?'#fff':'#555'};font-size:12px;font-weight:${on?'600':'500'};cursor:pointer;font-family:inherit;white-space:nowrap">${esc(l)}</button>`;
+  };
+  const filterChips='<div style="display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none">'+
+    filterBtn('','All ('+all.length+')')+
+    groups.map(g=>{const n=all.filter(s=>(s.groupCode||'').toUpperCase()===g.code.toUpperCase()).length;return filterBtn(g.code,g.code+' ('+n+')');}).join('')+
+    '</div>';
+  if(!all.length){
+    return `<div style="padding:14px">
+      <div class="gs-empty">
+        <div class="gs-empty-icon">\u{1F464}</div>
+        <div class="gs-empty-title">No students yet</div>
+        <div class="gs-empty-body">Once students register with a group code, they\u2019ll appear here.</div>
+      </div></div>`;
+  }
+  const rows=list.map(s=>{
+    const initials=(s.name||'?').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase();
+    const avatar=s.photo?`<img src="${esc(s.photo)}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;flex-shrink:0">`:`<div style="width:44px;height:44px;border-radius:50%;background:#E6F1FB;color:#0C447C;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0">${esc(initials)}</div>`;
+    return `<div onclick="STATE.dashStudentDetailUid='${esc(s.uid)}';render()" style="background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer">
+      ${avatar}
+      <div style="min-width:0;flex:1">
+        <div style="font-size:14px;font-weight:600;color:#1a1a1a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(s.name||'Unnamed')}</div>
+        <div style="font-size:11px;color:#888;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(s.groupCode||'\u2014 no group')} \u00B7 ${esc(s.email||s.mobile||'\u2014')}</div>
+      </div>
+      <span style="color:#bbb;font-size:20px">\u203A</span>
+    </div>`;
+  }).join('')||`<div style="text-align:center;padding:34px 20px;color:#888;font-size:13px">No students match your search.</div>`;
+  return `<div style="padding:14px">
+    <input type="text" placeholder="\u{1F50D} Search by name, email, mobile\u2026" value="${esc(STATE.dashStudentsSearch||'')}"
+      oninput="STATE.dashStudentsSearch=this.value;render()"
+      style="width:100%;padding:10px 12px;border-radius:10px;border:.5px solid #d0d0d0;font-size:13px;font-family:inherit;outline:none;background:#fafaf8;box-sizing:border-box;margin-bottom:10px">
+    ${filterChips}
+    <div style="font-size:12px;font-weight:500;color:#888;letter-spacing:.5px;margin:6px 0 8px">STUDENTS (${list.length})</div>
+    ${rows}
+    <div style="height:30px"></div>
+  </div>`;
+}
+
+function renderDashStudentDetail(){
+  const uid=STATE.dashStudentDetailUid;
+  const s=(STATE.dashStudents||[]).find(x=>x.uid===uid);
+  if(!s){STATE.dashStudentDetailUid=null;return renderDashStudents();}
+  const initials=(s.name||'?').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase();
+  const avatar=s.photo?`<img src="${esc(s.photo)}" style="width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid #E6F1FB">`:`<div style="width:96px;height:96px;border-radius:50%;background:#E6F1FB;color:#0C447C;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;border:3px solid #E6F1FB">${esc(initials)}</div>`;
+  const field=(l,v)=>{if(!v)return '';return `<div style="font-size:11px;color:#888;margin-bottom:2px">${esc(l)}</div><div style="font-size:14px;color:#1a1a1a;font-weight:500;margin-bottom:12px;word-break:break-word">${esc(v)}</div>`;};
+  const examdate=s.examdate?(function(){try{const d=new Date(s.examdate+'-01');return d.toLocaleDateString('en-GB',{month:'long',year:'numeric'});}catch{return s.examdate;}})():'';
+  return `<div style="padding:14px">
+    <button onclick="STATE.dashStudentDetailUid=null;render()" style="background:none;border:none;color:#0C447C;font-size:14px;cursor:pointer;font-family:inherit;padding:0 0 12px;font-weight:500">\u2039 Back to students</button>
+    <div style="background:linear-gradient(135deg,#0C447C,#185FA5);border-radius:16px;padding:22px;text-align:center;color:#fff;margin-bottom:16px">
+      <div style="display:flex;justify-content:center;margin-bottom:12px">${avatar}</div>
+      <div style="font-size:18px;font-weight:600;margin-bottom:4px">${esc(s.name||'Unnamed')}</div>
+      <div style="font-size:12px;opacity:.85">${esc(s.groupCode||'\u2014 no group')}${s.country?' \u00B7 '+esc(s.country):''}</div>
+    </div>
+    <div style="background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:12px">
+      <div style="font-size:12px;font-weight:600;color:#0C447C;margin-bottom:10px;letter-spacing:.5px">CONTACT</div>
+      ${field('Email',s.email)}
+      ${field('Mobile',s.mobile)}
+      ${field('Country',s.country)}
+    </div>
+    <div style="background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:12px">
+      <div style="font-size:12px;font-weight:600;color:#0C447C;margin-bottom:10px;letter-spacing:.5px">EDUCATION & CAREER</div>
+      ${field('University',s.university)}
+      ${field('Faculty',s.faculty)}
+      ${field('Graduation Year',s.gradyear)}
+      ${field('Job Title',s.title)}
+      ${field('Company',s.company)}
+      ${field('Years of Experience',s.experience)}
+    </div>
+    <div style="background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:12px">
+      <div style="font-size:12px;font-weight:600;color:#0C447C;margin-bottom:10px;letter-spacing:.5px">CMA STUDY PROFILE</div>
+      ${field('Accounting/Finance Level',s.level)}
+      ${field('CMA Goal',s.goal)}
+      ${field('Target Exam Date',examdate)}
+    </div>
+    <div style="height:30px"></div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  ATTENDANCE TAB — per-lecture summary with online/offline/absent counts
+// ═══════════════════════════════════════════════════════════════════════════
+function renderDashAttendance(){
+  const g=STATE.dashSelectedGroup;
+  const lectures=(STATE.dashLectures||[]).slice();
+  const students=(STATE.dashStudents||[]).filter(s=>(s.groupCode||'').toUpperCase()===g.toUpperCase());
+  const total=students.length;
+  if(!lectures.length){
+    return `<div style="padding:14px">${renderDashTabEmpty('Attendance',g,{icon:'\u2705',body:'No lectures yet for this group. Create a lecture first, then attendance summaries will appear here.'})}</div>`;
+  }
+  const rows=lectures.map(l=>{
+    const cached=STATE.dashAttendanceByLecture[l.id];
+    if(!cached){
+      // Lazy load — trigger fetch and render skeleton row
+      loadLectureAttendance(l.id).then(()=>{if(STATE.tab==='dashboard'&&STATE.dashTab==='attendance')render();}).catch(()=>{});
+      const dt=l.date?new Date(l.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'';
+      return `<div class="gs-skeleton-card"><div class="gs-skeleton-line long"></div><div class="gs-skeleton-line medium"></div><div class="gs-skeleton-line short"></div></div>`;
+    }
+    const on=cached.filter(a=>a.mode==='online').length;
+    const off=cached.filter(a=>a.mode==='offline').length;
+    const unk=cached.length-on-off;
+    const absent=Math.max(0,total-cached.length);
+    const dt=l.date?new Date(l.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
+    return `<div style="background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:10px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px">
+        <div style="min-width:0"><div style="font-size:14px;font-weight:600;color:#1a1a1a">${esc(l.title)}</div>
+          <div style="font-size:11px;color:#888;margin-top:2px">${esc(dt)}</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px">
+        <div style="background:#EBF3FA;border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:700;color:#0C447C">${cached.length}</div><div style="font-size:9px;font-weight:600;color:#0C447C;letter-spacing:.5px;text-transform:uppercase">Total</div></div>
+        <div style="background:#E8F5E9;border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:700;color:#186A3B">${on}</div><div style="font-size:9px;font-weight:600;color:#186A3B;letter-spacing:.5px;text-transform:uppercase">Online</div></div>
+        <div style="background:#FEF5E7;border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:700;color:#7D6608">${off}</div><div style="font-size:9px;font-weight:600;color:#7D6608;letter-spacing:.5px;text-transform:uppercase">In-person</div></div>
+        <div style="background:#FCEBEB;border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:700;color:#A32D2D">${absent}</div><div style="font-size:9px;font-weight:600;color:#A32D2D;letter-spacing:.5px;text-transform:uppercase">Absent</div></div>
+      </div>
+      ${unk?`<div style="font-size:11px;color:#888;margin-top:4px">${unk} legacy record${unk===1?'':'s'} with no mode.</div>`:''}
+      <div style="display:flex;gap:6px;margin-top:10px">
+        <button onclick="openAttendanceList('${l.id}')" style="flex:1;padding:8px;border-radius:8px;border:.5px solid #185FA540;background:#E6F1FB;color:#0C447C;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u{1F465} View details</button>
+        <button onclick="openLectureFeedback('${l.id}')" style="flex:1;padding:8px;border-radius:8px;border:.5px solid #7D3C9840;background:#F4ECF7;color:#5B2C6F;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u2B50 Feedback</button>
+        ${_lectureFeedbackToggleBtn(l)}
+      </div>
+    </div>`;
+  }).join('');
+  return `<div style="padding:14px">
+    <div style="font-size:12px;color:#888;margin-bottom:12px">Group has <b>${total}</b> student${total===1?'':'s'} \u00B7 attendance auto-refreshes when you open a lecture</div>
+    ${rows}
+    <div style="height:30px"></div>
+  </div>`;
+}
+
+// Feedback open/close toggle button per lecture (in Attendance tab)
+function _lectureFeedbackToggleBtn(lec){
+  const p=STATE.dashLive[lec.groupCode];
+  const isPointer=p&&p.lectureId===lec.id;
+  const on=!!(isPointer&&p.feedbackOpen);
+  return `<button onclick="toggleLectureFeedback('${lec.id}','${lec.groupCode}')" style="padding:8px 10px;border-radius:8px;border:.5px solid ${on?'#C0392B40':'#1E844940'};background:${on?'#FCEBEB':'#D5F5E3'};color:${on?'#A32D2D':'#186A3B'};font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;flex:1">${on?'\u{1F6D1} Close Feedback':'\u25B6 Open Feedback'}</button>`;
+}
+
+async function toggleLectureFeedback(lectureId,groupCode){
+  if(!isInstructor()){showToast('Not authorized.','error');return;}
+  const lec=(STATE.dashLectures||[]).find(l=>l.id===lectureId);
+  if(!lec)return;
+  const p=STATE.dashLive[groupCode]||{};
+  const wasOn=p.lectureId===lectureId&&!!p.feedbackOpen;
+  try{
+    // Point live doc at this lecture (if not already) and flip feedbackOpen.
+    const _now=new Date();
+    const nextPointer={
+      lectureId,
+      title:lec.title,
+      openedAt:p.openedAt||_now.toISOString(),
+      autoCloseAt:p.autoCloseAt||new Date(_now.getTime()+LIVE_AUTOCLOSE_MS).toISOString(),
+      // Preserve checkinOpen semantics via existing lectureId pointer
+      feedbackOpen:!wasOn
+    };
+    await db.collection('live').doc(groupCode).set(nextPointer,{merge:true});
+    STATE.dashLive[groupCode]=nextPointer;
+    showToast(wasOn?'Feedback closed for '+lec.title:'Feedback open for '+lec.title,'success');
+    render();
+  }catch(e){console.warn('[feedback toggle]',e);showToast('Error: '+e.message,'error');}
+}
+
+// Load & display feedback for a lecture (instructor view)
+async function openLectureFeedback(lectureId){
+  if(!isInstructor()){showToast('Not authorized.','error');return;}
+  const lec=(STATE.dashLectures||[]).find(l=>l.id===lectureId);
+  try{
+    const snap=await db.collection('lecture-feedback').where('lectureId','==',lectureId).get();
+    const rows=snap.docs.map(d=>d.data()).sort((a,b)=>(b.submittedAt||'').localeCompare(a.submittedAt||''));
+    if(!rows.length){showModal({icon:'\u2B50',title:(lec?lec.title:'Lecture')+' \u2014 Feedback',body:'No feedback submitted yet.',type:'info',confirmText:'Close'});return;}
+    const avg=Math.round((rows.reduce((s,r)=>s+(r.rating||0),0)/rows.length)*10)/10;
+    const list=rows.map(r=>{
+      const stars='\u2605'.repeat(r.rating||0)+'\u2606'.repeat(5-(r.rating||0));
+      const dt=r.submittedAt?new Date(r.submittedAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'';
+      const c=r.comment?' \u2014 "'+r.comment+'"':'';
+      return esc(r.studentName||'Student')+'  '+stars+c+(dt?'  ('+dt+')':'');
+    });
+    showModal({icon:'\u2B50',title:(lec?lec.title:'Lecture')+' \u2014 '+rows.length+' feedback (avg '+avg+'\u2B50)',list,type:'info',confirmText:'Close'});
+  }catch(e){console.warn('[openLectureFeedback]',e);showToast('Error: '+e.message,'error');}
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  RESULTS TAB — all exam results for the group, expandable per exam
+// ═══════════════════════════════════════════════════════════════════════════
+STATE.dashResultsExpanded={};
+
+function renderDashResults(){
+  const exams=(STATE.dashExams||[]).slice();
+  if(!exams.length){
+    return `<div style="padding:14px">${renderDashTabEmpty('Results',STATE.dashSelectedGroup,{icon:'\u{1F4CA}',body:'No exams yet for this group. Create one from the Exams tab.'})}</div>`;
+  }
+  const closed=exams.filter(x=>examWindowStatus(x)==='closed');
+  const active=exams.filter(x=>examWindowStatus(x)==='active');
+  const scheduled=exams.filter(x=>examWindowStatus(x)==='scheduled');
+  const order=[...closed,...active,...scheduled];
+  const rows=order.map(x=>renderResultsCard(x)).join('');
+  return `<div style="padding:14px">
+    <div style="font-size:12px;color:#888;margin-bottom:10px">Tap any exam to expand per-student breakdown.</div>
+    ${rows}
+    <div style="height:30px"></div>
+  </div>`;
+}
+
+function renderResultsCard(exam){
+  const expanded=!!STATE.dashResultsExpanded[exam.id];
+  const cache=STATE.dashExamResults[exam.id];
+  const status=examWindowStatus(exam);
+  const badgeStyle={active:'background:#D5F5E3;color:#186A3B',scheduled:'background:#FEF9E7;color:#9A7D0A',closed:'background:#EAECEE;color:#566573'};
+  const badgeLabel={active:'\u{1F7E2} ACTIVE',scheduled:'\u23F3 SCHEDULED',closed:'\u26AB CLOSED'};
+  if(expanded&&(!cache||!cache.loaded)){
+    loadExamResults(exam.id).then(()=>{if(STATE.tab==='dashboard'&&STATE.dashTab==='results')render();}).catch(()=>{});
+  }
+  const stats=(cache&&cache.stats)?cache.stats:null;
+  const summary=stats?`<div style="font-size:12px;color:#555;margin-top:4px;line-height:1.6">Submitted: <b>${stats.submitted}</b> \u00B7 Avg <b>${stats.avgPct}%</b> \u00B7 Pass rate <b>${stats.passRate}%</b> \u00B7 High <b>${stats.highest}%</b>, Low <b>${stats.lowest}%</b></div>`:'<div style="font-size:12px;color:#888;margin-top:4px">Tap to load results.</div>';
+  const arrow=expanded?'\u25BE':'\u25B8';
+  let bodyRows='';
+  if(expanded){
+    if(!cache||cache.loading){bodyRows='<div style="text-align:center;padding:20px;color:#888">Loading\u2026</div>';}
+    else if(!cache.results||!cache.results.length){bodyRows='<div style="text-align:center;padding:20px;color:#888;font-size:13px">No students have started this exam.</div>';}
+    else{
+      const sorted=cache.results.slice().sort((a,b)=>(b.percentage||0)-(a.percentage||0));
+      bodyRows=sorted.map(r=>{
+        const pct=r.percentage||0;
+        const color=pct>=80?'#186A3B':pct>=60?'#7D6608':'#A32D2D';
+        const bg=pct>=80?'#D5F5E3':pct>=60?'#FEF5E7':'#FCEBEB';
+        const submittedFlag=r.submitted?'\u2705':'\u23F3 in progress';
+        return `<div onclick="openInstructorReview('${exam.id}','${esc(r.userId||'')}')" style="background:#fff;border:.5px solid #e0e0d8;border-radius:10px;padding:10px 12px;margin-top:6px;display:flex;align-items:center;gap:10px;cursor:pointer">
+          <div style="min-width:0;flex:1"><div style="font-size:13px;font-weight:600;color:#1a1a1a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r.studentName||'Student')}</div>
+          <div style="font-size:11px;color:#888;margin-top:2px">${submittedFlag} \u00B7 ${r.score||0}/${r.total||0}</div></div>
+          <div style="background:${bg};color:${color};padding:5px 12px;border-radius:14px;font-size:13px;font-weight:700;flex-shrink:0">${pct}%</div>
+        </div>`;
+      }).join('');
+    }
+  }
+  return `<div style="background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:12px 14px;margin-bottom:10px">
+    <div onclick="toggleResultsExpand('${exam.id}')" style="cursor:pointer">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">
+        <span style="font-size:16px;color:#888">${arrow}</span>
+        <span style="font-size:10px;font-weight:700;padding:2px 9px;border-radius:10px;${badgeStyle[status]}">${badgeLabel[status]}</span>
+      </div>
+      <div style="font-size:14px;font-weight:600;color:#1a1a1a">${esc(exam.title)}</div>
+      ${summary}
+    </div>
+    ${bodyRows?'<div style="padding-top:10px;margin-top:8px;border-top:.5px solid #e0e0d8">'+bodyRows+'</div>':''}
+  </div>`;
+}
+function toggleResultsExpand(examId){
+  STATE.dashResultsExpanded[examId]=!STATE.dashResultsExpanded[examId];
+  render();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  PROGRESS TAB — per-student progress across the group
+// ═══════════════════════════════════════════════════════════════════════════
+STATE.dashProgressByGroup={}; // {groupCode: {loaded, loading, rows}}
+
+function renderDashProgress(){
+  const g=STATE.dashSelectedGroup;
+  const cache=STATE.dashProgressByGroup[g];
+  if(!cache||!cache.loaded){
+    if(!cache||!cache.loading){loadDashProgress(g);}
+    return `<div style="padding:14px">${renderDashSkeleton()}</div>`;
+  }
+  const students=(STATE.dashStudents||[]).filter(s=>(s.groupCode||'').toUpperCase()===g.toUpperCase());
+  if(!students.length){return `<div style="padding:14px">${renderDashTabEmpty('Progress',g,{icon:'\u{1F4C8}',body:'No students in this group yet.'})}</div>`;}
+  const rows=cache.rows.slice().sort((a,b)=>(b.acc||0)-(a.acc||0)).map(r=>{
+    const pct=r.acc||0;
+    const color=pct>=80?'#186A3B':pct>=60?'#7D6608':'#A32D2D';
+    return `<div style="background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:12px 14px;margin-bottom:8px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px">
+        <div style="font-size:13px;font-weight:600;color:#1a1a1a;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r.name||'Student')}</div>
+        <div style="font-size:12px;font-weight:700;color:${color};flex-shrink:0">${pct}%</div>
+      </div>
+      <div style="font-size:11px;color:#888;line-height:1.6">
+        Lessons: <b>${r.lessons||0}</b> \u00B7 MCQs: <b>${r.mcqRight||0}/${r.mcqTotal||0}</b>${r.lastSeen?' \u00B7 Last seen <b>'+esc(r.lastSeen)+'</b>':''}
+      </div>
+    </div>`;
+  }).join('')||`<div style="text-align:center;padding:30px 20px;color:#888;font-size:13px">No progress records yet for this group.</div>`;
+  return `<div style="padding:14px">
+    <div style="font-size:12px;color:#888;margin-bottom:12px">${cache.rows.length} of ${students.length} students have progress data</div>
+    ${rows}
+    <div style="height:30px"></div>
+  </div>`;
+}
+
+async function loadDashProgress(g){
+  STATE.dashProgressByGroup[g]={loading:true,loaded:false,rows:[]};
+  render();
+  try{
+    const students=(STATE.dashStudents||[]).filter(s=>(s.groupCode||'').toUpperCase()===g.toUpperCase());
+    // Fetch progress docs one-by-one (allow-owner-or-instructor rule requires doc-by-doc reads)
+    const rows=await Promise.all(students.map(async s=>{
+      try{
+        const doc=await db.collection('progress').doc(s.uid).get();
+        if(!doc.exists)return null;
+        const p=doc.data()||{};
+        const mcqRight=p.mcqRight||0,mcqTotal=p.mcqTotal||0;
+        const acc=mcqTotal>0?Math.round((mcqRight/mcqTotal)*100):0;
+        const lessonsDone=p.lessonsDone?Object.keys(p.lessonsDone).length:0;
+        return {uid:s.uid,name:s.name||'Student',acc,mcqRight,mcqTotal,lessons:lessonsDone,lastSeen:p.lastSeen||''};
+      }catch(e){return null;}
+    }));
+    STATE.dashProgressByGroup[g]={loading:false,loaded:true,rows:rows.filter(Boolean)};
+    if(STATE.tab==='dashboard'&&STATE.dashTab==='progress')render();
+  }catch(e){
+    console.warn('[loadDashProgress]',e);
+    STATE.dashProgressByGroup[g]={loading:false,loaded:true,rows:[],error:e.message};
+    if(STATE.tab==='dashboard'&&STATE.dashTab==='progress')render();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  LEADER TAB — group leaderboard
+// ═══════════════════════════════════════════════════════════════════════════
+STATE.dashLeaderByGroup={}; // {groupCode: {loaded, loading, rows}}
+
+function renderDashLeader(){
+  const g=STATE.dashSelectedGroup;
+  const cache=STATE.dashLeaderByGroup[g];
+  if(!cache||!cache.loaded){
+    if(!cache||!cache.loading){loadDashLeader(g);}
+    return `<div style="padding:14px">${renderDashSkeleton()}</div>`;
+  }
+  const rows=cache.rows;
+  if(!rows.length){return `<div style="padding:14px">${renderDashTabEmpty('Leader',g,{icon:'\u{1F3C5}',body:'No leaderboard entries for this group yet. Students need to complete quizzes for a ranking to appear.'})}</div>`;}
+  const medals=['\u{1F947}','\u{1F948}','\u{1F949}'];
+  const items=rows.map((r,i)=>{
+    const medal=i<3?medals[i]:('#'+(i+1));
+    const pct=r.accuracy||0;
+    return `<div style="background:#fff;border:.5px solid ${i<3?'#F5B04140':'#e0e0d8'};border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px">
+      <div style="font-size:${i<3?'22px':'14px'};font-weight:700;color:#0C447C;min-width:34px;text-align:center">${medal}</div>
+      <div style="min-width:0;flex:1">
+        <div style="font-size:14px;font-weight:600;color:#1a1a1a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r.name||'Student')}</div>
+        <div style="font-size:11px;color:#888;margin-top:2px">${r.lessons||0} lessons \u00B7 ${r.mcqRight||0}/${r.mcqTotal||0} MCQs</div>
+      </div>
+      <div style="background:#E6F1FB;color:#0C447C;padding:5px 12px;border-radius:14px;font-size:13px;font-weight:700;flex-shrink:0">${pct}%</div>
+    </div>`;
+  }).join('');
+  return `<div style="padding:14px">
+    <div style="font-size:12px;color:#888;margin-bottom:10px">Top ${rows.length} of ${g} \u2014 by accuracy</div>
+    ${items}
+    <div style="height:30px"></div>
+  </div>`;
+}
+
+async function loadDashLeader(g){
+  STATE.dashLeaderByGroup[g]={loading:true,loaded:false,rows:[]};
+  render();
+  try{
+    const students=(STATE.dashStudents||[]).filter(s=>(s.groupCode||'').toUpperCase()===g.toUpperCase());
+    const rows=await Promise.all(students.map(async s=>{
+      try{
+        const doc=await db.collection('leaderboard').doc(s.uid).get();
+        if(!doc.exists)return null;
+        const p=doc.data()||{};
+        return {uid:s.uid,name:p.name||s.name||'Student',accuracy:p.accuracy||0,lessons:p.lessons||0,mcqRight:p.mcqRight||0,mcqTotal:p.mcqTotal||0};
+      }catch(e){return null;}
+    }));
+    const filtered=rows.filter(Boolean).sort((a,b)=>{
+      if((b.accuracy||0)!==(a.accuracy||0))return (b.accuracy||0)-(a.accuracy||0);
+      return (b.mcqRight||0)-(a.mcqRight||0);
+    }).slice(0,50);
+    STATE.dashLeaderByGroup[g]={loading:false,loaded:true,rows:filtered};
+    if(STATE.tab==='dashboard'&&STATE.dashTab==='leader')render();
+  }catch(e){
+    console.warn('[loadDashLeader]',e);
+    STATE.dashLeaderByGroup[g]={loading:false,loaded:true,rows:[],error:e.message};
+    if(STATE.tab==='dashboard'&&STATE.dashTab==='leader')render();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  PLAN TAB — weekly plan CRUD (one active per group; publish auto-archives)
+// ═══════════════════════════════════════════════════════════════════════════
+STATE.dashPlanByGroup={};   // {groupCode: {loaded, loading, active, history}}
+STATE.dashPlanDraft={weekLabel:'',sectionId:'',unitIds:[],note:''};
+
+function renderDashPlan(){
+  const g=STATE.dashSelectedGroup;
+  const cache=STATE.dashPlanByGroup[g];
+  if(!cache||!cache.loaded){
+    if(!cache||!cache.loading)loadDashPlan(g);
+    return `<div style="padding:14px">${renderDashSkeleton()}</div>`;
+  }
+  const active=cache.active;
+  const history=cache.history||[];
+  const d=STATE.dashPlanDraft;
+  const secOpts=S.map(s=>`<option value="${s.id}" ${String(d.sectionId)===String(s.id)?'selected':''}>Sec ${s.id} \u2014 ${esc(s.title)}</option>`).join('');
+  const secId=d.sectionId?parseInt(d.sectionId):0;
+  const sec=secId?S.find(s=>s.id===secId):null;
+  const selected=new Set((d.unitIds||[]).map(String));
+  const unitChips=sec?sec.lessons.map((l,idx)=>{
+    const on=selected.has(String(l.id));
+    return `<button type="button" onclick="togglePlanUnit('${l.id}')" style="padding:6px 10px;border-radius:14px;border:1px solid ${on?'#0C447C':'#d0d0d0'};background:${on?'#0C447C':'#fff'};color:${on?'#fff':'#555'};font-size:11px;font-weight:${on?'600':'500'};cursor:pointer;font-family:inherit;white-space:nowrap">U${idx+1}: ${esc(l.title.length>28?l.title.slice(0,26)+'\u2026':l.title)}</button>`;
+  }).join(''):'<div style="font-size:11px;color:#aaa;padding:8px">Pick a section to select units.</div>';
+  const activeCard=active?`
+    <div style="background:linear-gradient(135deg,#0C447C,#185FA5);border-radius:14px;padding:16px;margin-bottom:14px;color:#fff">
+      <div style="font-size:10px;font-weight:700;letter-spacing:1px;opacity:.85;margin-bottom:6px">\u{1F5D3}\uFE0F CURRENT ACTIVE PLAN</div>
+      <div style="font-size:16px;font-weight:600;margin-bottom:4px">${esc(active.weekLabel||'This Week')}</div>
+      <div style="font-size:12px;opacity:.85;margin-bottom:8px">Section ${active.sectionId} \u00B7 ${(active.unitIds||[]).length||'All'} units</div>
+      ${active.note?`<div style="background:rgba(255,255,255,.15);border-radius:8px;padding:9px 12px;font-size:12px;line-height:1.5;margin-bottom:10px">${esc(active.note)}</div>`:''}
+      <button onclick="archivePlan('${active.id}')" style="padding:7px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u{1F5C4}\uFE0F Archive</button>
+    </div>`:'';
+  const historyList=history.length?`<div style="font-size:12px;font-weight:500;color:#888;letter-spacing:.5px;margin:14px 0 8px">HISTORY (${history.length})</div>${history.map(h=>{
+    const dt=h.publishedAt?new Date(h.publishedAt).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'';
+    return `<div style="background:#fafaf8;border:.5px solid #e0e0d8;border-radius:10px;padding:10px 12px;margin-bottom:6px;font-size:12px;color:#555">
+      <div style="font-weight:600;color:#1a1a1a">${esc(h.weekLabel||'Week')}</div>
+      <div style="font-size:11px;color:#888;margin-top:2px">Sec ${h.sectionId} \u00B7 ${(h.unitIds||[]).length||'All'} units \u00B7 ${esc(dt)}</div>
+    </div>`;
+  }).join('')}`:'';
+  return `<div style="padding:14px">
+    ${activeCard}
+    <div style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:10px">\u2795 ${active?'Publish New Plan':'Create Weekly Plan'}</div>
+    <div style="background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:14px">
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Week label *</label>
+        <input type="text" value="${esc(d.weekLabel||'')}"
+          oninput="STATE.dashPlanDraft.weekLabel=this.value"
+          placeholder="e.g. Week 5 \u2014 Cost Behavior"
+          style="width:100%;padding:9px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:14px;font-family:inherit;outline:none;color:#1a1a1a;background:#fafaf8;box-sizing:border-box">
+      </div>
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Section *</label>
+        <select onchange="onPlanSectionChange(this.value)"
+          style="width:100%;padding:9px;border-radius:8px;border:.5px solid #d0d0d0;font-size:13px;font-family:inherit;background:#fff;color:#1a1a1a;box-sizing:border-box">
+          <option value="">Select...</option>${secOpts}
+        </select>
+      </div>
+      <div style="margin-bottom:10px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <label style="font-size:11px;color:#888">Units <span style="font-weight:600;color:#0C447C">${d.unitIds&&d.unitIds.length?d.unitIds.length+' selected':'All'}</span></label>
+          <button type="button" onclick="STATE.dashPlanDraft.unitIds=[];render()" style="background:none;border:none;color:#0C447C;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">Clear</button>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;padding:8px;background:#fafaf8;border:.5px solid #e0e0d8;border-radius:8px;max-height:150px;overflow-y:auto">${unitChips}</div>
+      </div>
+      <div style="margin-bottom:14px">
+        <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Note (optional)</label>
+        <textarea rows="3" oninput="STATE.dashPlanDraft.note=this.value" placeholder="e.g. Focus on cost drivers this week. Solve chapters 2 & 3 MCQs before Friday."
+          style="width:100%;padding:9px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:13px;font-family:inherit;outline:none;color:#1a1a1a;background:#fafaf8;box-sizing:border-box;resize:vertical">${esc(d.note||'')}</textarea>
+      </div>
+      <button onclick="publishPlan()" style="width:100%;padding:11px;border-radius:10px;border:none;background:#0C447C;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">
+        \u{1F4E4} ${active?'Publish (archives current)':'Publish Plan'}
+      </button>
+    </div>
+    ${historyList}
+    <div style="height:30px"></div>
+  </div>`;
+}
+
+function onPlanSectionChange(v){
+  STATE.dashPlanDraft.sectionId=v;
+  STATE.dashPlanDraft.unitIds=[];
+  render();
+}
+function togglePlanUnit(uid){
+  const arr=STATE.dashPlanDraft.unitIds||[];
+  const i=arr.indexOf(uid);
+  if(i>=0)arr.splice(i,1);else arr.push(uid);
+  STATE.dashPlanDraft.unitIds=arr.slice();
+  render();
+}
+
+async function loadDashPlan(g){
+  STATE.dashPlanByGroup[g]={loading:true,loaded:false,active:null,history:[]};
+  render();
+  try{
+    const snap=await db.collection('weekly-plans').where('groupCode','==',g).get();
+    const rows=snap.docs.map(d=>({id:d.id,...d.data()}));
+    const active=rows.filter(r=>r.active).sort((a,b)=>(b.publishedAt||'').localeCompare(a.publishedAt||''))[0]||null;
+    const history=rows.filter(r=>!r.active).sort((a,b)=>(b.publishedAt||'').localeCompare(a.publishedAt||''));
+    STATE.dashPlanByGroup[g]={loading:false,loaded:true,active,history};
+    if(STATE.tab==='dashboard'&&STATE.dashTab==='plan')render();
+  }catch(e){
+    console.warn('[loadDashPlan]',e);
+    STATE.dashPlanByGroup[g]={loading:false,loaded:true,active:null,history:[],error:e.message};
+    if(STATE.tab==='dashboard'&&STATE.dashTab==='plan')render();
+  }
+}
+
+async function publishPlan(){
+  if(!isInstructor()){showToast('Not authorized.','error');return;}
+  const g=STATE.dashSelectedGroup;
+  const d=STATE.dashPlanDraft;
+  if(!g){showToast('Pick a group first.','warning');return;}
+  if(!d.weekLabel||!d.weekLabel.trim()){showToast('Add a week label.','warning');return;}
+  if(!d.sectionId){showToast('Pick a section.','warning');return;}
+  try{
+    const cache=STATE.dashPlanByGroup[g]||{active:null};
+    // Atomic: archive previous active + create new active
+    const batch=db.batch();
+    if(cache.active&&cache.active.id){
+      batch.update(db.collection('weekly-plans').doc(cache.active.id),{active:false,archivedAt:new Date().toISOString()});
+    }
+    const newRef=db.collection('weekly-plans').doc();
+    batch.set(newRef,{
+      groupCode:g,
+      weekLabel:d.weekLabel.trim(),
+      sectionId:parseInt(d.sectionId),
+      unitIds:(d.unitIds||[]).map(String).filter(Boolean),
+      note:(d.note||'').trim().slice(0,1000),
+      active:true,
+      publishedAt:new Date().toISOString(),
+      publishedBy:STATE.user.uid
+    });
+    await batch.commit();
+    showToast('Plan published \u2705','success');
+    STATE.dashPlanDraft={weekLabel:'',sectionId:'',unitIds:[],note:''};
+    STATE.dashPlanByGroup[g]={loading:false,loaded:false,active:null,history:[]};
+    loadDashPlan(g);
+  }catch(e){console.warn('[publishPlan]',e);showToast('Error: '+e.message,'error');}
+}
+
+async function archivePlan(planId){
+  if(!isInstructor()){showToast('Not authorized.','error');return;}
+  const ok=await showModal({icon:'\u{1F5C4}\uFE0F',title:'Archive Plan?',body:'Students will no longer see this plan at the top of their Study tab.',type:'warning',confirmText:'Archive',cancelText:'Cancel'});
+  if(!ok)return;
+  try{
+    await db.collection('weekly-plans').doc(planId).update({active:false,archivedAt:new Date().toISOString()});
+    const g=STATE.dashSelectedGroup;
+    if(g){STATE.dashPlanByGroup[g]={loading:false,loaded:false,active:null,history:[]};loadDashPlan(g);}
+    showToast('Plan archived.','info');
+  }catch(e){console.warn('[archivePlan]',e);showToast('Error: '+e.message,'error');}
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  STUDENT-SIDE — Weekly Plan surface at the top of Study tab
+// ═══════════════════════════════════════════════════════════════════════════
+STATE.studentActivePlan=null;
+STATE.studentPlanLoaded=false;
+
+async function ensureStudentPlan(){
+  if(STATE.studentPlanLoaded)return;
+  STATE.studentPlanLoaded=true;
+  const st=loadStudent();
+  const g=st&&st.groupCode?st.groupCode.toUpperCase():'';
+  if(!g||!db||!STATE.user)return;
+  try{
+    const snap=await db.collection('weekly-plans').where('groupCode','==',g).where('active','==',true).limit(1).get();
+    if(!snap.empty){STATE.studentActivePlan={id:snap.docs[0].id,...snap.docs[0].data()};if(STATE.tab==='study')render();}
+  }catch(e){console.warn('[ensureStudentPlan]',e);}
+}
+
+function renderStudentActivePlanBanner(){
+  const p=STATE.studentActivePlan;
+  if(!p)return '';
+  const sec=S.find(s=>s.id===Number(p.sectionId));
+  const units=(p.unitIds||[]).length?(p.unitIds.length+' unit'+(p.unitIds.length===1?'':'s')):'All units';
+  return `<div style="background:linear-gradient(135deg,#7D3C98,#5B2C6F);border-radius:14px;padding:14px 16px;margin:0 0 14px;color:#fff">
+    <div style="font-size:10px;font-weight:700;letter-spacing:1px;opacity:.85;margin-bottom:4px">\u{1F5D3}\uFE0F WEEKLY PLAN</div>
+    <div style="font-size:15px;font-weight:600;margin-bottom:4px;line-height:1.3">${esc(p.weekLabel||'This Week')}</div>
+    <div style="font-size:11px;opacity:.85;margin-bottom:${p.note?'8px':'0'}">${sec?esc(sec.emoji+' '+sec.title):'Section '+p.sectionId} \u00B7 ${units}</div>
+    ${p.note?`<div style="background:rgba(255,255,255,.15);border-radius:8px;padding:8px 11px;font-size:12px;line-height:1.5;white-space:pre-wrap">${esc(p.note)}</div>`:''}
+  </div>`;
+}
+
 function setResultsSort(mode){
   STATE.dashResultsSort=mode;
   render();
@@ -5344,21 +6217,21 @@ function renderNotes(){
 // --- renderFlashcards ---
 function renderFlashcards(){
   const all=STATE.flashcards||[];
-  if(!all.length)return `${renderSubNav(SUB_REFERENCE,'flashcards')}<div class="sh"><h2>Flashcards</h2><p>Loading cards…</p></div><div class="scroll-area" style="display:flex;align-items:center;justify-content:center;height:60%;color:#aaa"><div style="text-align:center"><div style="font-size:32px;margin-bottom:10px">⏳</div><div>Building cards…</div></div></div>`;
+  if(!all.length)return `${renderSubNav(SUB_PRACTICE,'flashcards')}<div class="sh"><h2>Flashcards</h2><p>Loading cards…</p></div><div class="scroll-area" style="display:flex;align-items:center;justify-content:center;height:60%;color:#aaa"><div style="text-align:center"><div style="font-size:32px;margin-bottom:10px">⏳</div><div>Building cards…</div></div></div>`;
   const list=filteredFlashcards();
   const idx=Math.min(STATE.flashcardsIdx,Math.max(0,list.length-1));
   const card=list[idx];
   const rs=new Set(loadFlashReviewSet());
   const filterBtns=[['all','All']].concat(S.map(s=>[String(s.id),s.emoji+' '+String(s.id)])).map(([v,l])=>{const on=STATE.flashcardsFilter===v;return `<button onclick="flashSetFilter('${v}')" style="padding:5px 10px;border-radius:14px;font-size:11px;cursor:pointer;font-family:inherit;border:.5px solid ${on?'#0C447C':'#d0d0d0'};background:${on?'#0C447C':'#f5f5f0'};color:${on?'#fff':'#555'};font-weight:${on?'600':'400'};white-space:nowrap">${l}</button>`;}).join('');
   const modeBtns=[['study','Study'],['review','Review only ('+rs.size+')']].map(([v,l])=>{const on=STATE.flashcardsMode===v;return `<button onclick="flashSetMode('${v}')" style="flex:1;padding:6px 10px;border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit;border:.5px solid ${on?'#7D3C98':'#d0d0d0'};background:${on?'#F4ECF7':'#fff'};color:${on?'#5B2C6F':'#555'};font-weight:${on?'600':'400'}">${l}</button>`;}).join('');
-  if(!card)return `${renderSubNav(SUB_REFERENCE,'flashcards')}<div class="sh"><h2>Flashcards</h2><p>${all.length} cards total</p></div><div class="scroll-area pad" style="padding-top:14px"><div style="display:flex;gap:6px;overflow-x:auto;margin-bottom:12px;scrollbar-width:none">${filterBtns}</div><div style="display:flex;gap:6px;margin-bottom:14px">${modeBtns}</div><div style="text-align:center;padding:40px 20px;color:#aaa"><div style="font-size:32px;margin-bottom:10px">✅</div><div style="font-size:14px">${STATE.flashcardsMode==='review'?'No cards marked for review!':'No cards match this filter.'}</div></div></div>`;
+  if(!card)return `${renderSubNav(SUB_PRACTICE,'flashcards')}<div class="sh"><h2>Flashcards</h2><p>${all.length} cards total</p></div><div class="scroll-area pad" style="padding-top:14px"><div style="display:flex;gap:6px;overflow-x:auto;margin-bottom:12px;scrollbar-width:none">${filterBtns}</div><div style="display:flex;gap:6px;margin-bottom:14px">${modeBtns}</div><div style="text-align:center;padding:40px 20px;color:#aaa"><div style="font-size:32px;margin-bottom:10px">✅</div><div style="font-size:14px">${STATE.flashcardsMode==='review'?'No cards marked for review!':'No cards match this filter.'}</div></div></div>`;
   const typeBadge=card.type==='def'?'<span class="flash-type-badge" style="background:#EBF3FA;color:#0C447C">📖 DEFINITION</span>':'<span class="flash-type-badge" style="background:#F4EFFB;color:#5B2C6F">📐 FORMULA</span>';
   const flipped=STATE.flashcardsFlipped;
   const isReview=rs.has(card.id);
   const cardBody=flipped
     ?`${typeBadge}<div class="flash-back">${esc(card.back).replace(/\n/g,'<br>')}</div>`
     :`${typeBadge}<div class="flash-front">${esc(card.front)}</div><div style="margin-top:16px;font-size:11px;color:#aaa">Tap to flip</div>`;
-  return `${renderSubNav(SUB_REFERENCE,'flashcards')}<div class="sh"><h2>Flashcards</h2><p>${list.length} card${list.length===1?'':'s'} · card ${idx+1} of ${list.length}</p></div>
+  return `${renderSubNav(SUB_PRACTICE,'flashcards')}<div class="sh"><h2>Flashcards</h2><p>${list.length} card${list.length===1?'':'s'} · card ${idx+1} of ${list.length}</p></div>
   <div class="scroll-area pad" style="padding-top:14px">
     <div style="display:flex;gap:6px;overflow-x:auto;margin-bottom:12px;scrollbar-width:none;-webkit-overflow-scrolling:touch">${filterBtns}</div>
     <div style="display:flex;gap:6px;margin-bottom:14px">${modeBtns}</div>
@@ -5547,10 +6420,10 @@ const TABS=[
 // Maps every screen → its primary nav tab
 function activeNavTab(){
   const t=STATE.tab;
-  if(t==='study'||t==='quiz-session'||t==='quiz-results'||t==='lessons'||t==='dashboard')return'study';
-  if(t==='quiz-mode-select'||t==='quiz-mode'||t==='cbq'||t==='mock-exam'||t==='wrong-answers')return'quiz-mode-select';
+  if(t==='study'||t==='quiz-session'||t==='quiz-results'||t==='lessons')return'study';
+  if(t==='quiz-mode-select'||t==='quiz-mode'||t==='cbq'||t==='mock-exam'||t==='flashcards'||t==='wrong-answers')return'quiz-mode-select';
   if(t==='progress'||t==='tracker'||t==='leaderboard')return'progress';
-  if(t==='formula-bank'||t==='dictionary'||t==='flashcards'||t==='my-notes')return'formula-bank';
+  if(t==='formula-bank'||t==='dictionary'||t==='my-notes')return'formula-bank';
   if(t==='search')return'search';
   if(t==='community'||t==='question-detail')return'community';
   if(t==='dashboard')return'dashboard';
@@ -5571,6 +6444,7 @@ const SUB_PRACTICE=[
   {id:'quiz-mode-select', icon:'🎯', label:'MCQ Quiz'},
   {id:'cbq',              icon:'📝', label:'CBQ'},
   {id:'mock-exam',        icon:'🏆', label:'Mock Exam'},
+  {id:'flashcards',       icon:'🃏', label:'Flashcards'},
   {id:'wrong-answers',    icon:'❌', label:'Wrong Answers'}
 ];
 const SUB_PROGRESS=[
@@ -5581,7 +6455,6 @@ const SUB_PROGRESS=[
 const SUB_REFERENCE=[
   {id:'formula-bank', icon:'📐', label:'Formula'},
   {id:'dictionary',   icon:'📖', label:'Dictionary'},
-  {id:'flashcards',   icon:'🃏', label:'Flashcards'},
   {id:'my-notes',     icon:'📝', label:'My Notes'}
 ];
 const SUB_ME=[
@@ -5605,6 +6478,31 @@ function render(){
   }
   content.innerHTML=html;
 
+  // Batch 5: weekly plan banner — floats above content on Study tab.
+  if(STATE.tab==='study' && STATE.studentActivePlan){
+    try{
+      const _bannerHTML=renderStudentActivePlanBanner();
+      if(_bannerHTML){
+        const _wrap=document.createElement('div');
+        _wrap.style.cssText='margin:10px 12px 0;flex-shrink:0';
+        _wrap.innerHTML=_bannerHTML;
+        content.insertBefore(_wrap,content.firstChild);
+      }
+    }catch(e){}
+  }
+
+  // Batch 5: lecture feedback prompt — appears when instructor opens feedback
+  // AND student attended AND hasn't submitted yet. Non-blocking floating card.
+  try{ maybeShowFeedbackPrompt(); }catch(e){}
+  if(STATE._feedbackPromptFor && !['loading','login','onboarding','quiz-session','exam','cbq','mock-exam'].includes(STATE.tab)){
+    const fp=STATE._feedbackPromptFor;
+    const fpCard=document.createElement('div');
+    fpCard.style.cssText='margin:10px 12px 0;background:linear-gradient(135deg,#7D3C98,#5B2C6F);border-radius:12px;padding:12px 14px;color:#fff;display:flex;align-items:center;gap:11px;box-shadow:0 3px 12px rgba(125,60,152,.25);cursor:pointer;flex-shrink:0';
+    fpCard.innerHTML='<span style="font-size:20px;flex-shrink:0">\u2B50</span><span style="flex:1;font-size:13px;line-height:1.4">Rate today\u2019s lecture: <b>'+esc(fp.title||'Lecture')+'</b> \u2014 takes 30 seconds</span>';
+    fpCard.onclick=()=>{try{showFeedbackModal({lectureId:fp.lectureId,title:fp.title},fp.groupCode);}catch(e){}};
+    content.insertBefore(fpCard,content.firstChild);
+  }
+
   // Batch 4: engagement card — floats above content on normal student screens.
   if(STATE._engagementCard && !['loading','login','onboarding','quiz-session','exam','cbq','mock-exam'].includes(STATE.tab)){
     const v=STATE._engagementCard;
@@ -5626,7 +6524,8 @@ function render(){
   if(STATE.tab==='study'&&STATE.lessonId){setTimeout(()=>syncNoteFromCloud(STATE.lessonId),0);}
   try{applyFontSize();}catch(e){}
   if(STATE.tab==='flashcards'&&(!STATE.flashcards||!STATE.flashcards.length)){ensureFlashcards().then(()=>{if(STATE.tab==='flashcards')render();});}
-  if(STATE.tab==='intro'&&STATE.user){setTimeout(()=>{try{ensureQotd();}catch(e){}},0);}
+  if(STATE.tab==='intro'&&STATE.user){setTimeout(()=>{try{ensureQotd();}catch(e){}try{ensureStudentPlan();}catch(e){}},0);}
+  if(STATE.tab==='study'&&STATE.user){setTimeout(()=>{try{ensureStudentPlan();}catch(e){}},0);}
   if(STATE.tab==='search'){setTimeout(()=>{const inp=document.getElementById('search-input');if(inp){inp.focus();if(STATE.searchQ)updateSearchResults();}},50);}
   if(STATE.tab==='dictionary'){if(!STATE.dictLoaded)setTimeout(ensureDictionary,0);setTimeout(()=>{const i=document.getElementById('dict-input');if(i)i.focus();},50);}
   content.style.display='flex';content.style.flexDirection='column';content.style.overflow=STATE.tab==='cbq'||STATE.tab==='mock-exam'?'hidden':'auto';
@@ -5797,7 +6696,7 @@ function renderRegister(){
       </div>
     </div>
 
-    <div class="info-title" style="font-size:14px;margin-bottom:10px">👥 Group Code <span style="font-size:11px;color:#aaa;font-weight:400">· if you're in a class</span></div><div class="card" style="margin-bottom:14px"><label style="font-size:12px;color:#888;display:block;margin-bottom:5px">Your instructor's group code</label><input id="f-groupcode" type="text" value="${fval('groupCode')}" placeholder="e.g. CMA-JUN26" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9\x2D]/g,'')" maxlength="20" style="width:100%;padding:10px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:14px;font-family:'Courier New',monospace;letter-spacing:.5px;outline:none;color:#1a1a1a;background:#fafaf8;text-transform:uppercase"><div style="font-size:11px;color:#888;margin-top:6px;line-height:1.5">Enter the code your instructor gave you to unlock your group's <b>Question of the Day</b>. Leave blank if you're studying on your own.</div></div><div class="info-title" style="font-size:14px;margin-bottom:10px">📊 CMA Study Profile <span style="font-size:11px;color:#aaa;font-weight:400">· optional</span></div>
+    <div class="info-title" style="font-size:14px;margin-bottom:10px">👥 Group Code <span style="font-size:11px;color:#aaa;font-weight:400">· if you're in a class</span></div><div class="card" style="margin-bottom:14px"><label style="font-size:12px;color:#888;display:block;margin-bottom:5px">Your instructor's group code</label><input id="f-groupcode" type="text" value="${fval('groupCode')}" placeholder="" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9\x2D]/g,'')" maxlength="20" style="width:100%;padding:10px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:14px;font-family:'Courier New',monospace;letter-spacing:.5px;outline:none;color:#1a1a1a;background:#fafaf8;text-transform:uppercase"><div style="font-size:11px;color:#888;margin-top:6px;line-height:1.5">Enter the code your instructor gave you to unlock your group's <b>Question of the Day</b>. Leave blank if you're studying on your own.</div></div><div class="info-title" style="font-size:14px;margin-bottom:10px">📊 CMA Study Profile <span style="font-size:11px;color:#aaa;font-weight:400">· optional</span></div>
     <div class="card" style="margin-bottom:14px">
       <div style="margin-bottom:12px">
         <label style="font-size:12px;color:#888;display:block;margin-bottom:5px">Your current accounting/finance level</label>
@@ -5815,7 +6714,7 @@ function renderRegister(){
       </div>
       <div>
         <label style="font-size:12px;color:#888;display:block;margin-bottom:5px">Target exam date (approximate)</label>
-        <input id="f-examdate" type="month" value="${fval('examdate')}" style="width:100%;padding:10px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:14px;font-family:inherit;outline:none;color:#1a1a1a;background:#fafaf8">
+        <input id="f-examdate" type="month" min="2026-01" max="2028-12" value="${fval('examdate')}" style="width:100%;padding:10px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:14px;font-family:inherit;outline:none;color:#1a1a1a;background:#fafaf8">
       </div>
     </div>
 
