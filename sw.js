@@ -1,4 +1,4 @@
-// CMA Prep — Service Worker v15
+// CMA Prep — Service Worker v15  (redeploy nudge)
 // Strategy: Network-first with cache fallback
 // Auto-update: listens for SKIP_WAITING from the page → triggers instant reload
 //
