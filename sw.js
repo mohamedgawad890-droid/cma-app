@@ -14,11 +14,19 @@
 // v15 (Batch 4.1): SW file bytes change (default deep-link fix below),
 // so browsers re-register this SW. CACHE_NAME stays 'cma-prep-v15' — the
 // cache manifest (OFFLINE_URLS) did not change, so nothing to invalidate.
+//
+// v16 (Batch 4.5): OFFLINE_URLS now includes './app.js' — the main app
+// script has been extracted from index.html into a separate file. Cache
+// version MUST bump so the new manifest is picked up and app.js is
+// pre-cached for offline use. If './app.js' isn't yet deployed when this
+// SW installs, cache.add() will fail gracefully (per-URL try/catch below)
+// and the network-first fetch handler will cache it on first request.
 
-const CACHE_NAME = 'cma-prep-v15';
+const CACHE_NAME = 'cma-prep-v16';
 const OFFLINE_URLS = [
   './',
   './index.html',
+  './app.js',
   './app.css',
   './cbq-data.js',
   './s1.json',
