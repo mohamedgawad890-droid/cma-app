@@ -219,6 +219,18 @@ const db=firebase.firestore();
 const CLD_CLOUD='dvr6ygjhe';
 const CLD_PRESET='cma_students';
 
+// ─── BATCH 4: RETENTION CONFIG ───────────────────────────────────────────────
+// Apps Script webhook that sends the weekly email digest. Deployed separately.
+const EMAIL_DIGEST_URL='https://script.google.com/macros/s/AKfycbyNL4KbrnRPHOjmM9IKI4_-lXP6jrJmdbh9o1hypTB1ytklyt4LG3lwCblZlHj9itoT/exec';
+// Rotating notification copy — never references new lessons (content-slow phase).
+const NOTIFICATION_VARIANTS=[
+  {id:'qod',   body:'\u2753 Question of the Day is ready \u2014 30s to keep your streak.', link:'intro'},
+  {id:'wrong', body:'\u{1F4DD} You have wrong answers waiting for a quick review.',        link:'wrong-answers'},
+  {id:'comm',  body:'\u{1F4AC} New questions in the community since yesterday.',            link:'community'},
+  {id:'streak',body:'\u{1F525} Keep your streak alive with a 5-minute session.',           link:'intro'},
+  {id:'mock',  body:'\u{1F4CA} Ready for today\u2019s mock exam warm-up?',                  link:'mock-exam'}
+];
+
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
 
@@ -454,15 +466,140 @@ async function syncNoteFromCloud(lid){
 }
 
 
-function loadStreak(){try{const d=localStorage.getItem('cma-streak-v1');return d?JSON.parse(d):{count:0,lastDate:''};}catch{return{count:0,lastDate:''};}}
+function loadStreak(){
+  try{
+    const d=localStorage.getItem('cma-streak-v1');
+    const s=d?JSON.parse(d):{count:0,lastDate:''};
+    // Batch 4 migration: backfill new fields on legacy {count,lastDate} docs.
+    if(s.freezeTokens===undefined)s.freezeTokens=0;
+    if(s.lastFreezeEarned===undefined)s.lastFreezeEarned='';
+    if(s.graceLastUsed===undefined)s.graceLastUsed='';
+    return s;
+  }catch{return{count:0,lastDate:'',freezeTokens:0,lastFreezeEarned:'',graceLastUsed:''};}
+}
 function saveStreak(s){try{localStorage.setItem('cma-streak-v1',JSON.stringify(s));}catch{}}
+
+// Batch 4 — helper: days between two toDateString() values (integer, >=0).
+function _daysBetween(aStr,bStr){
+  if(!aStr||!bStr)return Infinity;
+  const a=new Date(aStr),b=new Date(bStr);
+  if(isNaN(a)||isNaN(b))return Infinity;
+  return Math.round((b-a)/86400000);
+}
+
+// Batch 4 — award a Freeze token every 14 consecutive active days (max 2).
+function _maybeEarnFreeze(s,today){
+  if(s.freezeTokens>=2)return s;
+  if(!s.lastFreezeEarned){ // first-ever: seed the clock, don't grant yet
+    if(s.count>0)s.lastFreezeEarned=today;
+    return s;
+  }
+  if(_daysBetween(s.lastFreezeEarned,today)>=14 && s.count>=14){
+    s.freezeTokens=Math.min(2,s.freezeTokens+1);
+    s.lastFreezeEarned=today;
+  }
+  return s;
+}
+
+// Batch 4 — core streak update with Freeze + Grace recovery.
+// Returns one of: 'same' | 'incremented' | 'froze' | 'grace-needed' | 'reset'.
+// The caller (app boot) inspects the return to fire a toast or the Grace modal.
 function updateStreak(){
   const today=new Date().toDateString();
-  const s=loadStreak();
-  if(s.lastDate===today)return;
   const yesterday=new Date(Date.now()-86400000).toDateString();
-  const newCount=s.lastDate===yesterday?s.count+1:1;
-  saveStreak({count:newCount,lastDate:today});
+  const twoDaysAgo=new Date(Date.now()-2*86400000).toDateString();
+  let s=loadStreak();
+
+  if(s.lastDate===today){ // already counted today
+    s=_maybeEarnFreeze(s,today);saveStreak(s);return'same';
+  }
+  if(s.lastDate===yesterday){ // normal continuation
+    s.count=s.count+1;s.lastDate=today;s=_maybeEarnFreeze(s,today);saveStreak(s);return'incremented';
+  }
+  if(s.lastDate===twoDaysAgo && s.freezeTokens>0){ // one missed day → auto-Freeze
+    s.freezeTokens=s.freezeTokens-1;s.count=s.count+1;s.lastDate=today;
+    s=_maybeEarnFreeze(s,today);saveStreak(s);return'froze';
+  }
+  if(s.lastDate===twoDaysAgo && s.count>0){ // one missed day, no Freeze → maybe Grace
+    const graceCd=_daysBetween(s.graceLastUsed,today);
+    if(graceCd>=14){ // Grace available — defer the decision to the modal
+      return'grace-needed';
+    }
+  }
+  // 2+ days missed, or Grace on cooldown → silent reset (no shame modal).
+  // Seed the Freeze clock here so a fresh streak starts earning from day 1.
+  s.count=1;s.lastDate=today;s.lastFreezeEarned=today;saveStreak(s);return'reset';
+}
+
+// Batch 4 — called when the student accepts the Grace mini-review.
+// Preserves the streak and stamps the cooldown.
+function grantStreakGrace(){
+  const today=new Date().toDateString();
+  const s=loadStreak();
+  s.count=s.count+1;s.lastDate=today;s.graceLastUsed=today;
+  saveStreak(s);
+}
+// Batch 4 — called when the student declines Grace → clean reset.
+function declineStreakGrace(){
+  const today=new Date().toDateString();
+  const s=loadStreak();
+  s.count=1;s.lastDate=today;saveStreak(s);
+}
+
+// Batch 4 — Grace modal + 5-question mini-review pulled from wrong-answer pool
+// (falls back to random taught MCQs). Shown once on boot when updateStreak
+// returns 'grace-needed'. Uses the existing quizMode engine to run the set.
+async function showGraceModal(){
+  const s=loadStreak();
+  const ok=await showModal({
+    icon:'\u{1F525}',
+    title:'You missed a day',
+    body:'No big deal \u2014 keep your '+s.count+'-day streak with a quick 5-minute review?',
+    type:'warning',
+    confirmText:'Yes, quick review',
+    cancelText:'Reset streak',
+    dismissable:false
+  });
+  if(!ok){declineStreakGrace();render();return;}
+  // Build a 5-question set: prefer wrong answers, fall back to taught MCQs.
+  try{
+    const set=await buildGraceMiniSet();
+    if(!set.length){ // nothing to serve → grant grace anyway, don't punish
+      grantStreakGrace();showToast('Streak saved \u2014 keep it going!','success',3000);render();return;
+    }
+    STATE._graceActive=true;
+    STATE.quizMode={active:true,sectionId:null,idx:0,questions:set,answers:[],selected:null,done:false,isGrace:true,questionTimes:[],quizStartTime:Date.now(),qTimerStart:Date.now(),qTimerElapsed:null};
+    STATE.tab='quiz-mode';render();
+  }catch(e){
+    console.warn('Grace set failed:',e);
+    grantStreakGrace();showToast('Streak saved!','success',2500);render();
+  }
+}
+
+// Batch 4 — assemble up to 5 questions for the Grace review.
+async function buildGraceMiniSet(){
+  const out=[];
+  // 1) Wrong answers first (highest learning value).
+  try{
+    const wrong=(typeof buildWrongAnswers==='function')?buildWrongAnswers():[];
+    wrong.slice(0,5).forEach(w=>{if(w&&w.q)out.push(shuffleQuestionOptions({...w.q,secId:w.secId,secTitle:w.secTitle,lessonTitle:w.lessonTitle}));});
+  }catch(e){}
+  if(out.length>=5)return out.slice(0,5);
+  // 2) Fall back to random taught MCQs.
+  try{
+    const st=loadStudent();
+    if(st&&st.groupCode){
+      const snap=await db.collection('teaching-log').where('groupCode','==',st.groupCode.toUpperCase()).get();
+      const taught=new Set();snap.docs.forEach(d=>(d.data().unitIds||[]).forEach(u=>taught.add(u)));
+      const secIds=[...new Set([...taught].map(u=>parseInt(u.split('-')[0])).filter(n=>n>0))];
+      await Promise.all(secIds.map(i=>ensureQuizzes(i)));
+      const pool=[];
+      S.forEach(sec=>sec.lessons.forEach(l=>{if(taught.has(l.id)&&l.quizzes)l.quizzes.forEach(q=>pool.push({...q,secId:sec.id,secTitle:sec.title,lessonTitle:l.title}));}));
+      for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+      pool.slice(0,5-out.length).forEach(q=>out.push(shuffleQuestionOptions(q)));
+    }
+  }catch(e){}
+  return out.slice(0,5);
 }
 
 // ── Mock Exam History ────────────────────────────────────────────────────────
@@ -502,6 +639,7 @@ function endStudyTimer(){
   _studyTimerStart=null;
   _studyTimerScreen=null;
   if(elapsed<1)return; // ignore sessions under 1 minute
+  try{recordStudyMinutes(elapsed);}catch(e){} // Batch 4: feed trend history
   const st=loadStudyTime();
   const today=new Date().toDateString();
   const todayMin=st.todayDate===today?st.todayMinutes:0;
@@ -510,12 +648,229 @@ function endStudyTimer(){
     todayDate:today,
     todayMinutes:todayMin+elapsed
   });
+  // Batch 4: push a rolling engagement summary to Firestore (debounced).
+  try{syncStudentAnalytics();}catch(e){}
 }
 function fmtStudyTime(mins){
   if(!mins||mins<1)return'0 min';
   if(mins<60)return`${mins} min`;
   const h=Math.floor(mins/60),m=mins%60;
   return m>0?`${h}h ${m}m`:`${h}h`;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// BATCH 4 — DAILY STUDY-MINUTES HISTORY (feeds analytics trend)
+// ═══════════════════════════════════════════════════════════════════════════
+// Keeps a rolling per-day minutes map so we can compute last-7 vs prev-7 trend.
+// { "Mon Jul 06 2026": 24, ... } — pruned to last 30 days on write.
+function loadStudyHistory(){try{const d=localStorage.getItem('cma-studyhist-v1');return d?JSON.parse(d):{};}catch{return{};}}
+function saveStudyHistory(h){try{localStorage.setItem('cma-studyhist-v1',JSON.stringify(h));}catch{}}
+function recordStudyMinutes(mins){
+  if(!mins||mins<1)return;
+  const h=loadStudyHistory();
+  const today=new Date().toDateString();
+  h[today]=(h[today]||0)+mins;
+  // prune >30 days
+  const cutoff=Date.now()-31*86400000;
+  Object.keys(h).forEach(k=>{const t=new Date(k).getTime();if(isNaN(t)||t<cutoff)delete h[k];});
+  saveStudyHistory(h);
+}
+function sumMinutesWindow(daysAgoStart,daysAgoEnd){
+  // inclusive window [daysAgoEnd .. daysAgoStart] in days-ago terms
+  const h=loadStudyHistory();let sum=0;
+  for(let d=daysAgoEnd;d<=daysAgoStart;d++){
+    const key=new Date(Date.now()-d*86400000).toDateString();
+    sum+=(h[key]||0);
+  }
+  return sum;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// BATCH 4 — PILLAR 4: student-analytics sync (debounced, one write / 15 min)
+// ═══════════════════════════════════════════════════════════════════════════
+let _lastAnalyticsSync=0;
+function syncStudentAnalytics(force){
+  if(!STATE.user||!db)return;
+  const now=Date.now();
+  if(!force && now-_lastAnalyticsSync < 15*60*1000)return; // 15-min debounce
+  const st=loadStudent();if(!st)return;
+  const streak=loadStreak();
+  const last7=sumMinutesWindow(6,0);
+  const prev7=sumMinutesWindow(13,7);
+  const lastActive=streak.lastDate||new Date().toDateString();
+  const daysSince=_daysBetween(lastActive,new Date().toDateString());
+  const p=STATE.progress||{};
+  const doc={
+    userId:STATE.user.uid,
+    groupCode:(st.groupCode||'').toUpperCase(),
+    displayName:st.name||'',
+    phoneNumber:st.mobile||'',
+    language:st.language||'ar',
+    lastActiveDate:lastActive,
+    daysSinceActive:isFinite(daysSince)?daysSince:999,
+    streakCount:streak.count||0,
+    streakWas:Math.max(streak.count||0,(STATE._streakWas||0)),
+    last7DaysMinutes:last7,
+    previous7DaysMinutes:prev7,
+    mcqsLast7Days:0, // reserved — needs per-day mcq history (future)
+    updatedAt:new Date().toISOString()
+  };
+  _lastAnalyticsSync=now;
+  db.collection('student-analytics').doc(STATE.user.uid).set(doc,{merge:true}).catch(()=>{});
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// BATCH 4 — PILLAR 3: weekly email digest (client-scheduled, Apps Script send)
+// ═══════════════════════════════════════════════════════════════════════════
+function _isoWeekStart(){ // Sunday of the current week, yyyy-mm-dd
+  const d=new Date();const day=d.getDay();const sunday=new Date(d.getTime()-day*86400000);
+  return sunday.getFullYear()+'-'+String(sunday.getMonth()+1).padStart(2,'0')+'-'+String(sunday.getDate()).padStart(2,'0');
+}
+async function maybeSendDigest(){
+  if(!STATE.user||!db)return;
+  const st=loadStudent();
+  if(!st||!st.email)return;
+  const prefs=st.notifPrefs||{};
+  if(!prefs.emailDigestOptedIn)return;
+  const weekStart=_isoWeekStart();
+  if(prefs.lastDigestSent===weekStart)return; // already sent this week
+  const payload=buildDigestPayload(st);
+  const ok=await postDigest(payload);
+  if(ok){
+    const next={...(st.notifPrefs||{}),lastDigestSent:weekStart};
+    saveStudent({...st,notifPrefs:next});
+  }
+}
+function buildDigestPayload(st){
+  const streak=loadStreak();
+  const last7=sumMinutesWindow(6,0);
+  const daysSince=_daysBetween(streak.lastDate||'',new Date().toDateString());
+  const p=STATE.progress||{};
+  const acc=(p.mcqTotal>0)?Math.round((p.mcqRight/p.mcqTotal)*100):0;
+  // Weakest section by per-section accuracy in lessonScores (best-effort).
+  let weakest='';
+  try{
+    const scores=p.lessonScores||{};let worst=101;
+    Object.keys(scores).forEach(k=>{const v=scores[k];if(typeof v==='number'&&v<worst){worst=v;}});
+  }catch(e){}
+  const variant = (daysSince>=7 || last7===0) ? 'missed_you'
+                : (last7<60 ? 'returning' : 'engaged');
+  return{
+    email:st.email,name:st.name||'',language:st.language||'ar',variant,
+    streakCount:streak.count||0,
+    mcqsThisWeek:0, accuracyThisWeek:acc, accuracyDelta:0,
+    weakestSection:weakest, recommendedTopics:[],
+    silentDays:isFinite(daysSince)?daysSince:0
+  };
+}
+async function postDigest(payload){
+  try{
+    await fetch(EMAIL_DIGEST_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    return true; // no-cors is opaque; assume success, weekly guard prevents dupes
+  }catch(e){console.warn('digest send failed',e);return false;}
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// BATCH 4 — PILLAR 2: notifications (in-app card + browser notif + iOS coach)
+// ═══════════════════════════════════════════════════════════════════════════
+function _isIOS(){return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;}
+function _isStandalone(){return window.navigator.standalone===true || (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);}
+
+function getNotifPrefs(){const st=loadStudent();return (st&&st.notifPrefs)||{};}
+function setNotifPrefs(patch){
+  const st=loadStudent();if(!st)return;
+  const next={...(st.notifPrefs||{}),...patch};
+  saveStudent({...st,notifPrefs:next});
+}
+
+// Pick a variant that wasn't shown on the last 2 days.
+function pickNotifVariant(){
+  const prefs=getNotifPrefs();
+  const hist=prefs.variantHistory||[];
+  const avail=NOTIFICATION_VARIANTS.filter(v=>!hist.slice(-2).includes(v.id));
+  const pool=avail.length?avail:NOTIFICATION_VARIANTS;
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+
+// Called on boot. Shows the in-app engagement card if past preferred time today.
+function maybeShowEngagementCard(){
+  const prefs=getNotifPrefs();
+  if(!prefs.desired||!prefs.dailyTime)return;
+  const today=new Date().toDateString();
+  if(prefs.lastEngagementFired===today)return;
+  const [hh,mm]=(prefs.dailyTime||'19:00').split(':').map(Number);
+  const now=new Date();
+  const target=new Date();target.setHours(hh||19,mm||0,0,0);
+  if(now<target)return; // not time yet today
+  const v=pickNotifVariant();
+  STATE._engagementCard=v;
+  const hist=(prefs.variantHistory||[]).concat(v.id).slice(-3);
+  setNotifPrefs({lastEngagementFired:today,variantHistory:hist});
+  // Also fire a real browser notification if permitted (best-effort).
+  try{
+    if('Notification' in window && Notification.permission==='granted'){
+      const n=new Notification('CMA Prep',{body:v.body,icon:'./icon-192.png',tag:'cma-daily'});
+      n.onclick=()=>{window.focus();navTo(v.link);n.close();};
+    }
+  }catch(e){}
+  render();
+}
+function dismissEngagementCard(){STATE._engagementCard=null;render();}
+function tapEngagementCard(){const v=STATE._engagementCard;STATE._engagementCard=null;if(v)navTo(v.link);else render();}
+
+// Request permission flow, with iOS install coaching when needed.
+async function requestNotifPermission(){
+  setNotifPrefs({desired:true});
+  if(_isIOS() && !_isStandalone()){
+    setNotifPrefs({pendingIOSInstall:true});
+    showIOSInstallModal();
+    return;
+  }
+  try{
+    const perm=await Notification.requestPermission();
+    setNotifPrefs({permissionGranted:perm==='granted',pendingIOSInstall:false});
+    showToast(perm==='granted'?'Daily reminders on \u2705':'You can enable reminders later in your profile.',perm==='granted'?'success':'info',3000);
+  }catch(e){showToast('Notifications not supported on this browser.','info',3000);}
+  render();
+}
+function showIOSInstallModal(){
+  showModal({
+    icon:'\u{1F4F2}',
+    title:'One step for iPhone reminders',
+    body:'To get daily nudges on iPhone, add CMA Prep to your Home Screen first:\n\n1) Tap the Share button (the square with an arrow)\n2) Scroll down and tap \u201CAdd to Home Screen\u201D\n3) Open CMA Prep from your Home Screen \u2014 we\u2019ll ask again there.',
+    type:'info',confirmText:'Got it'
+  });
+}
+// On boot: if iOS user finished installing, complete the deferred permission ask.
+function maybeCompleteIOSNotif(){
+  const prefs=getNotifPrefs();
+  if(prefs.pendingIOSInstall && _isStandalone() && 'Notification' in window){
+    Notification.requestPermission().then(perm=>{
+      setNotifPrefs({permissionGranted:perm==='granted',pendingIOSInstall:false});
+      if(perm==='granted')showToast('Daily reminders on \u2705','success',3000);
+    }).catch(()=>{});
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// BATCH 4 — boot orchestration. Called once after auth + student load.
+// ═══════════════════════════════════════════════════════════════════════════
+function runRetentionBoot(){
+  try{
+    // Streak: evaluate today, react to the result.
+    const st=loadStreak();STATE._streakWas=Math.max(STATE._streakWas||0,st.count||0);
+    const r=updateStreak();
+    if(r==='froze'){showToast('\u2744\uFE0F Used a Streak Freeze to protect your streak','success',4000);}
+    else if(r==='grace-needed'){setTimeout(()=>{showGraceModal();},600);}
+    // Analytics: initial sync (forced, ignores debounce).
+    syncStudentAnalytics(true);
+    recordStudyMinutes(0); // ensure history key exists
+    // Notifications: iOS completion + engagement card.
+    maybeCompleteIOSNotif();
+    maybeShowEngagementCard();
+    // Email digest: weekly check.
+    maybeSendDigest();
+  }catch(e){console.warn('retention boot error',e);}
 }
 
 
@@ -721,7 +1076,10 @@ const STATE={tab:'loading',searchQ:'',dictQ:'',dictData:[],dictLoaded:false,lead
     //   showing stale data during a group switch — see loadDashScopedData).
     // dashAttendanceByLecture: on-demand per-lecture attendance cache
     //   ({lectureId: [records]}). Cleared on group switch.
-    dashSelectedGroup:'',dashLoadedForGroup:null,dashAttendanceByLecture:{}};
+    dashSelectedGroup:'',dashLoadedForGroup:null,dashAttendanceByLecture:{},
+    // ── Batch 4: retention state ──
+    dashAtRisk:[],dashAtRiskLoadedFor:null,dashAtRiskLoading:false,
+    _engagementCard:null,_graceActive:false,_streakWas:0};
 
 // ─── ARABIC TERM TOOLTIPS ──────────────────────────────────────────────────
 const TERM_DICT={
@@ -1728,7 +2086,10 @@ function nextQuizModeQuestion(){
   const qm=STATE.quizMode;
   const q=qm.questions[qm.idx];
   const qmt=qm.qTimerElapsed||0;qm.questionTimes=[...(qm.questionTimes||[]),qmt];qm.answers.push({selected:qm.selected,correct:qm.selected===q.a});
-  if(qm.idx+1>=qm.questions.length){qm.done=true;qm.selected=null;qm.quizEndTime=Date.now();render();return;}
+  if(qm.idx+1>=qm.questions.length){qm.done=true;qm.selected=null;qm.quizEndTime=Date.now();
+    // Batch 4: a completed Grace review preserves the streak.
+    if(qm.isGrace){try{grantStreakGrace();STATE._graceActive=false;showToast('\u{1F525} Streak saved \u2014 nice recovery!','success',3500);}catch(e){}}
+    render();return;}
   qm.idx++;qm.selected=null;qm.qTimerStart=Date.now();qm.qTimerElapsed=null;render();
 }
 
@@ -3997,9 +4358,10 @@ function renderDashboard(){
     {id:'groups',      icon:'\u{1F465}', label:'Groups'},
     {id:'lectures',    icon:'\u{1F3AC}', label:'Lectures'},
     {id:'exams',       icon:'\u{1F4DD}', label:'Exams'},
-    {id:'teaching-log',icon:'\u{1F4D3}', label:'Actual Teaching'}
+    {id:'teaching-log',icon:'\u{1F4D3}', label:'Actual Teaching'},
+    {id:'at-risk',     icon:'\u{1F6A8}', label:'At Risk'}
   ];
-  const tab=['teaching-log','lectures','groups','exams'].includes(STATE.dashTab)?STATE.dashTab:'groups';
+  const tab=['teaching-log','lectures','groups','exams','at-risk'].includes(STATE.dashTab)?STATE.dashTab:'groups';
   const subnav=`<div class="sub-nav">${SUB_DASH.map(it=>
     `<button class="sub-nav-btn${tab===it.id?' active':''}" onclick="STATE.dashTab='${it.id}';render()">${it.icon} ${it.label}</button>`
   ).join('')}</div>`;
@@ -4008,7 +4370,7 @@ function renderDashboard(){
   const chipStrip=STATE.dashGroupsLoaded?renderGroupChipStrip():'';
 
   // ── Body dispatch ──
-  const scopedTabs={lectures:'Lectures',exams:'Exams','teaching-log':'Actual Teaching'};
+  const scopedTabs={lectures:'Lectures',exams:'Exams','teaching-log':'Actual Teaching','at-risk':'At-Risk students'};
   let body;
   if(STATE.dashError){
     body=`<div style="text-align:center;padding:50px 20px"><div style="font-size:34px;margin-bottom:10px">\u26A0\uFE0F</div><div style="font-size:14px;color:#555;margin-bottom:14px">Couldn't load dashboard data.</div><button onclick="STATE.dashError=false;STATE.dashGroupsLoaded=false;STATE.dashLoaded=false;loadDashboardP1()" style="padding:9px 18px;border-radius:8px;border:.5px solid #d0d0d0;background:#fff;font-size:13px;cursor:pointer;font-family:inherit">Retry</button></div>`;
@@ -4027,6 +4389,8 @@ function renderDashboard(){
     body=renderDashLectures();
   }else if(tab==='exams'){
     body=renderDashExams();
+  }else if(tab==='at-risk'){
+    body=renderDashAtRisk();
   }else{
     body=renderDashGroups();
   }
@@ -4037,6 +4401,74 @@ function renderDashboard(){
 function getNavTabs(){
   return isInstructor() ? [...TABS,{id:'dashboard',label:'Dashboard',icon:'\u{1F6E1}\uFE0F'}] : TABS;
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// BATCH 4 — PILLAR 4: At Risk instructor view
+// ═══════════════════════════════════════════════════════════════════════════
+async function loadDashAtRisk(groupCode){
+  if(!isInstructor()||!db||!groupCode)return;
+  STATE.dashAtRiskLoading=true;
+  try{
+    const snap=await db.collection('student-analytics').where('groupCode','==',groupCode.toUpperCase()).get();
+    const rows=snap.docs.map(d=>d.data());
+    STATE.dashAtRisk=rows;
+    STATE.dashAtRiskLoadedFor=groupCode;
+  }catch(e){
+    console.warn('at-risk load failed',e);STATE.dashAtRisk=[];STATE.dashAtRiskLoadedFor=groupCode;
+  }
+  STATE.dashAtRiskLoading=false;render();
+}
+function _atRiskReason(r){
+  if((r.daysSinceActive||0)>=7)return{tag:'Silent '+r.daysSinceActive+' days',sev:'high'};
+  const last7=r.last7DaysMinutes||0,prev7=r.previous7DaysMinutes||0;
+  if(prev7>=60 && last7<prev7*0.5)return{tag:'Study time down '+Math.round((1-last7/prev7)*100)+'%',sev:'med'};
+  if((r.streakCount||0)===0 && (r.streakWas||0)>=7)return{tag:'Streak broke ('+r.streakWas+'\u2192 0)',sev:'med'};
+  return null;
+}
+function waLink(r){
+  const phone=(r.phoneNumber||'').replace(/[^0-9]/g,'');
+  if(!phone)return '';
+  const ar=(r.language||'ar')==='ar';
+  const days=r.daysSinceActive||0;
+  const msg=ar
+    ? `\u0623\u0647\u0644\u064B\u0627 ${r.displayName||''}\u060C\n\u0634\u0641\u062A \u0625\u0646\u0643 \u0645\u0634 \u062F\u0627\u062E\u0644 \u0639\u0644\u0649 \u062A\u0637\u0628\u064A\u0642 CMA \u0645\u0646 ${days} \u0623\u064A\u0627\u0645.\n\u0643\u0644\u0647 \u062A\u0645\u0627\u0645\u061F \u0644\u0648 \u0645\u062D\u062A\u0627\u062C \u0645\u0633\u0627\u0639\u062F\u0629 \u0641\u064A \u0623\u064A \u0645\u0648\u0636\u0648\u0639\u060C \u0642\u0648\u0644\u0651\u064A.\n\n\u2014 \u062F. \u0645\u062D\u0645\u062F`
+    : `Hey ${r.displayName||''},\nNoticed you haven't been active on the CMA app for ${days} days.\nEverything okay? If you need help with any topic, let me know.\n\n\u2014 Dr. Mohamed`;
+  return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+}
+function renderDashAtRisk(){
+  const g=STATE.dashSelectedGroup;
+  if(STATE.dashAtRiskLoadedFor!==g && !STATE.dashAtRiskLoading){loadDashAtRisk(g);}
+  if(STATE.dashAtRiskLoading||STATE.dashAtRiskLoadedFor!==g){return renderDashSkeleton();}
+  const rows=(STATE.dashAtRisk||[]).map(r=>({r,reason:_atRiskReason(r)})).filter(x=>x.reason);
+  rows.sort((a,b)=>(b.r.daysSinceActive||0)-(a.r.daysSinceActive||0));
+  if(!rows.length){
+    return `<div style="text-align:center;padding:48px 20px">
+      <div style="font-size:40px;margin-bottom:12px">\u{1F389}</div>
+      <div style="font-size:15px;font-weight:600;color:#333;margin-bottom:6px">No one at risk right now</div>
+      <div style="font-size:13px;color:#888;line-height:1.5;max-width:280px;margin:0 auto">Everyone in <b>${esc(g)}</b> has been active recently. Check back after a few days of new data.</div>
+    </div>`;
+  }
+  const sevColor={high:'#E24B4A',med:'#EF9F27'};
+  const cards=rows.map(({r,reason})=>{
+    const wa=waLink(r);
+    const initial=(r.displayName||'?').charAt(0).toUpperCase();
+    const noPhone=!(r.phoneNumber||'').replace(/[^0-9]/g,'');
+    return `<div style="background:#fff;border:.5px solid #eee;border-left:3px solid ${sevColor[reason.sev]||'#EF9F27'};border-radius:10px;padding:13px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px">
+      <div style="width:40px;height:40px;border-radius:50%;background:#E6F1FB;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:#0C447C;flex-shrink:0">${initial}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:14px;font-weight:600;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(r.displayName||'Unknown')}</div>
+        <div style="font-size:12px;color:${sevColor[reason.sev]||'#888'};margin-top:2px">${esc(reason.tag)}</div>
+        ${noPhone?'<div style="font-size:11px;color:#c00;margin-top:2px">\u26A0\uFE0F no phone on file</div>':''}
+      </div>
+      ${wa?`<a href="${wa}" target="_blank" rel="noopener" style="flex-shrink:0;width:40px;height:40px;border-radius:10px;background:#25D366;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:20px" title="Message on WhatsApp">\u{1F4AC}</a>`:''}
+    </div>`;
+  }).join('');
+  return `<div style="padding-top:4px">
+    <div style="font-size:12px;color:#888;margin-bottom:12px">${rows.length} student${rows.length>1?'s':''} in <b>${esc(g)}</b> may need a nudge \u00B7 sorted by days silent</div>
+    ${cards}
+  </div>`;
+}
+
 
 
 // ==== PORTED STUDENT-LAYER FEATURES (from FMAA) ====
@@ -5322,6 +5754,16 @@ function render(){
   }
   content.innerHTML=html;
 
+  // Batch 4: engagement card — floats above content on normal student screens.
+  if(STATE._engagementCard && !['loading','login','onboarding','quiz-session','exam','cbq','mock-exam'].includes(STATE.tab)){
+    const v=STATE._engagementCard;
+    const card=document.createElement('div');
+    card.style.cssText='margin:10px 12px 0;background:linear-gradient(135deg,#0C447C,#378ADD);border-radius:12px;padding:12px 14px;color:#fff;display:flex;align-items:center;gap:11px;box-shadow:0 3px 12px rgba(12,68,124,.25);cursor:pointer;flex-shrink:0';
+    card.innerHTML='<span style="font-size:20px;flex-shrink:0">\u{1F514}</span><span style="flex:1;font-size:13px;line-height:1.4">'+esc(v.body)+'</span><span data-x="1" style="flex-shrink:0;font-size:18px;opacity:.7;padding:0 4px">\u00D7</span>';
+    card.onclick=(e)=>{ if(e.target&&e.target.getAttribute('data-x')){dismissEngagementCard();} else {tapEngagementCard();} };
+    content.insertBefore(card,content.firstChild);
+  }
+
   // Restore scroll if we're re-rendering the same tab (not navigating to a new screen)
   if(STATE.tab===_prevTab&&_savedScroll>0){
     const newScrollArea=content.querySelector('.scroll-area');
@@ -5364,6 +5806,34 @@ function saveStudent(d){
 function loadFeedback(){try{const d=localStorage.getItem('cma-feedback-v1');return d?JSON.parse(d):{rating:0,comments:'',improvements:''};}catch{return{rating:0,comments:'',improvements:''};}}
 function saveFeedback(d){try{localStorage.setItem('cma-feedback-v1',JSON.stringify(d));}catch{}}
 
+// Batch 4 — notification + email digest opt-in card (used in Profile/onboarding).
+function renderNotifOptInCard(){
+  const prefs=getNotifPrefs();
+  const on=!!prefs.desired;
+  const time=prefs.dailyTime||'19:00';
+  const emailOn=!!prefs.emailDigestOptedIn;
+  const granted=prefs.permissionGranted;
+  return `
+  <div class="info-title" style="font-size:14px;margin-bottom:10px">\u{1F514} Study Reminders <span style="font-size:11px;color:#888;font-weight:400">\u00B7 optional</span></div>
+  <div class="card" style="margin-bottom:14px">
+    <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:14px">
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:2px">Daily study nudge</div>
+        <div style="font-size:12px;color:#888;line-height:1.5">A friendly reminder to keep your streak alive.${granted?' <span style=\"color:#639922\">\u2713 enabled</span>':''}</div>
+      </div>
+      <button onclick="requestNotifPermission()" style="padding:8px 14px;border-radius:8px;border:.5px solid #185FA5;background:${on?'#E6F1FB':'#fff'};color:#0C447C;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;flex-shrink:0">${on?'On':'Enable'}</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <label style="font-size:12px;color:#666;flex-shrink:0">Reminder time</label>
+      <input type="time" value="${time}" onchange="setNotifPrefs({dailyTime:this.value});showToast('Reminder time saved','success',1800)" style="padding:8px 10px;border-radius:8px;border:.5px solid #d0d0d8;font-size:13px;font-family:inherit;background:#fff">
+    </div>
+    <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding-top:12px;border-top:.5px solid #eee">
+      <input type="checkbox" ${emailOn?'checked':''} onchange="setNotifPrefs({emailDigestOptedIn:this.checked});showToast(this.checked?'Weekly email on':'Weekly email off','info',1800)" style="width:18px;height:18px;flex-shrink:0;accent-color:#0C447C">
+      <span style="font-size:13px;color:#333;line-height:1.4">Send me a weekly progress email on Sundays</span>
+    </label>
+  </div>`;
+}
+
 function renderRegister(){
   const st=loadStudent();
   const COUNTRIES=['Egypt','Saudi Arabia','UAE','Kuwait','Qatar','Bahrain','Oman','Jordan','Lebanon','Iraq','Syria','Palestine','Yemen','Libya','Tunisia','Algeria','Morocco','Sudan','Somalia','Djibouti','Comoros','Mauritania'];
@@ -5397,6 +5867,8 @@ function renderRegister(){
   <div class="scroll-area pad" style="padding-top:14px">
     ${warningBanner}
     ${profileSection}
+
+    ${renderNotifOptInCard()}
 
     <div class="info-title" style="font-size:14px;margin-bottom:10px">👤 Personal Information <span style="font-size:11px;color:#A32D2D;font-weight:400">· name &amp; mobile required</span></div>
     <div class="card" style="margin-bottom:14px">
@@ -5615,6 +6087,13 @@ async function navTo(tab){
 // ── PWA: Register Service Worker + Auto-Update ────────────────────────────────
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
+
+    // Batch 4: handle deep-link intents posted by the SW notificationclick.
+    navigator.serviceWorker.addEventListener('message', ev=>{
+      if(ev.data && ev.data.type==='DEEP_LINK' && ev.data.target){
+        try{navTo(ev.data.target);}catch(e){}
+      }
+    });
 
     navigator.serviceWorker.register('./sw.js',{scope:'./'})
       .then(reg=>{
@@ -6431,6 +6910,8 @@ auth.onAuthStateChanged(async(user)=>{
     const st=loadStudent();
     try{applyFontSize();}catch(e){}try{ensureQotd();}catch(e){}STATE.tab=st && st.name ? 'study' : 'register';
     STATE.showProfileWarning=false;
+    // Batch 4: fire retention loops once student data is loaded (guarded internally).
+    try{runRetentionBoot();}catch(e){console.warn('retention boot failed',e);}
   } else {
     STATE.user=null;STATE.tab=localStorage.getItem('cma-visited')?'login':'onboarding';STATE.authLoading=false;
   }
