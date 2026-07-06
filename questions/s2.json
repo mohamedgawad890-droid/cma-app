@@ -5676,7 +5676,7 @@
       "id": "ICMA 10Q.1.014",
       "source": "ICMA",
       "topic": "Preparing the Budget",
-      "q": "Holland Company is in the process of projecting its cash position at the end of the second quarter. Shown below is pertinent information from Holland’s records. From the data above, determine Holland’s projected cash balance at the end of the second quarter.",
+      "q": "Holland Company is in the process of projecting its cash position at the end of the second quarter. Shown below is pertinent information from Holland’s records. From the data below, determine Holland’s projected cash balance at the end of the second quarter.",
       "o": [
         "$25,000",
         "Zero",
@@ -5684,16 +5684,16 @@
         "$60,000"
       ],
       "a": 2,
-      "e": "The forecasted cash balance at the end of the second quarter is $ Beginning cash balance 36,000 Plus: Cash collections 2nd Quarter 1,300,000 Plus: Cash received from sale of asset ($35,000 + 40,000 $5,000) Less: Cash paid for accounts payable: Beginning accounts payable $ 100,000 Plus: Costs and expenses excluding depreciation* 1,140,000 Less: Ending accounts payable 75,000 Cash paid for accounts payable 1,165,000 Less: Cash purchase of equipment 50,000 Less: Repayment of notes payable 66,000 Ending cash balance $ 95,000 *$1,200,000 − $60,000",
+      "e": "Ending cash balance = Beginning cash + Cash inflows − Cash outflows\n\nBeginning cash balance: $36,000\n+ Cash collections from customers (Q2): $1,300,000\n+ Cash from sale of asset ($35,000 NBV + $5,000 gain): $40,000\n− Cash paid for accounts payable: $1,165,000\n− Cash purchase of equipment: $50,000\n− Repayment of notes payable: $66,000\n= Ending cash balance: $95,000\n\nCash paid for accounts payable:\nBeginning A/P: $100,000\n+ Costs and expenses excluding depreciation ($1,200,000 − $60,000): $1,140,000\n− Ending A/P: $75,000\n= Cash paid for A/P: $1,165,000\n\nNote: Depreciation is a non-cash expense, so it is excluded from cash costs. The gain on the asset sale is already included in the total cash received ($35,000 book value + $5,000 gain = $40,000).",
       "wrongWhy": [
         "This answer results from three errors: 1. Using the gain on the asset sale as the cash inflow from the sale instead of using the cash received from the sale 2. Using the second quarter costs and expenses on the accrual basis as the expenses accrued in accounts payable without deducting depreciation 3. Not including the decrease in accounts payable in calculating the cash outflow for accounts payable Please see the correct answer explanation for more information.",
         "This answer results from two errors: 1. Using the gain on the asset sale as the cash inflow from the sale instead of using the cash received from the sale 2. Using the second quarter costs and expenses on the accrual basis as the expenses accrued in accounts payable without deducting depreciation Please see the correct answer explanation for more information.",
         null,
-        "This answer could result from not treating the decrease in A/P or depreciation correctly. It could also result from using the gain on the asset sale as the cash inflow from the sale instead of using the cash received from the sale. Please see the correct answer explanation for more information. 9."
+        "This answer could result from not treating the decrease in A/P or depreciation correctly. It could also result from using the gain on the asset sale as the cash inflow from the sale instead of using the cash received from the sale. Please see the correct answer explanation for more information."
       ],
       "data": [
         [
-          "Cash balance at end of 1st quarter                                              $",
+          "Cash balance at end of 1st quarter",
           "36,000"
         ],
         [
