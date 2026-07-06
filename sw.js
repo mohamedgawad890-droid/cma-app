@@ -1,4 +1,4 @@
-// CMA Prep — Service Worker v15  (redeploy nudge)
+// CMA Prep — Service Worker v15 (Batch 4.1 hotfix)
 // Strategy: Network-first with cache fallback
 // Auto-update: listens for SKIP_WAITING from the page → triggers instant reload
 //
@@ -10,6 +10,10 @@
 // a further SW change. In the meantime, in-app engagement cards (client-
 // side) and best-effort browser notifications (setTimeout while the app is
 // open) handle daily nudges.
+//
+// v15 (Batch 4.1): SW file bytes change (default deep-link fix below),
+// so browsers re-register this SW. CACHE_NAME stays 'cma-prep-v15' — the
+// cache manifest (OFFLINE_URLS) did not change, so nothing to invalidate.
 
 const CACHE_NAME = 'cma-prep-v15';
 const OFFLINE_URLS = [
@@ -119,7 +123,8 @@ self.addEventListener('push', event => {
     renotify: false,
     dir: 'auto',             // auto-detect RTL for Arabic content
     data: {
-      deepLink: data.deepLink || 'qod',
+      // Batch 4.1: default lands on 'intro' — the app has no 'qod' tab.
+      deepLink: data.deepLink || 'intro',
       timestamp: Date.now()
     }
   };
@@ -131,7 +136,8 @@ self.addEventListener('push', event => {
 
 self.addEventListener('notificationclick', event => {
   event.notification.close();
-  const deepLink = (event.notification.data && event.notification.data.deepLink) || 'qod';
+  // Batch 4.1: default lands on 'intro' — the app has no 'qod' tab.
+  const deepLink = (event.notification.data && event.notification.data.deepLink) || 'intro';
 
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clients => {
