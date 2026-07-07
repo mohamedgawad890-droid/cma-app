@@ -1,65 +1,55 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    Batch 6 · Design Tokens (Item A)
-   Single source of truth for colors. Replaces ~40 hardcoded hex occurrences
-   in this file and lets `app.js` inline styles reference the same palette via
-   `var(--token)`. Adding dark mode or a white-label theme becomes a matter of
-   overriding these variables inside a matching media query or class.
+   Single source of truth for colors. Referenced from app.js inline styles via
+   var(--token) so palette changes touch one place.
    ═══════════════════════════════════════════════════════════════════════════ */
 :root{
-  /* Brand */
-  --brand:var(--brand);
-  --brand-2:var(--brand-2);
-  --brand-3:var(--brand-3);
-  --brand-tint:var(--brand-tint);
-  --brand-tint-2:var(--brand-tint-2);
-  --gold:var(--gold);
+  --brand:#0C447C;
+  --brand-2:#185FA5;
+  --brand-3:#378ADD;
+  --brand-tint:#E6F1FB;
+  --brand-tint-2:#eef7ff;
+  --gold:#c9a227;
 
-  /* Surfaces */
-  --bg:var(--bg);
-  --bg-desktop:var(--bg-desktop);
+  --bg:#f0f0eb;
+  --bg-desktop:#dde3ea;
   --card:#ffffff;
-  --surface:var(--surface);
-  --surface-2:var(--surface-2);
-  --surface-3:var(--surface-3);
-  --surface-4:var(--surface-4);
+  --surface:#fafaf8;
+  --surface-2:#f8f8f6;
+  --surface-3:#f5f5f0;
+  --surface-4:#ebebea;
 
-  /* Text */
-  --ink:var(--ink);
-  --ink-2:#333;
-  --muted:#666;
-  --muted-2:#888;
-  --muted-3:#aaa;
+  --ink:#1a1a1a;
+  --ink-2:#333333;
+  --muted:#666666;
+  --muted-2:#888888;
+  --muted-3:#aaaaaa;
 
-  /* Borders */
-  --border:var(--border);
-  --border-2:var(--border-2);
-  --border-3:var(--border-3);
-  --border-4:var(--border-4);
+  --border:#e0e0d8;
+  --border-2:#e5e5e0;
+  --border-3:#d0d0d8;
+  --border-4:#d0d0d0;
 
-  /* Semantic — Success */
-  --ok:var(--ok);
-  --ok-2:var(--ok-2);
-  --ok-strong:var(--ok-strong);
-  --ok-strong-2:var(--ok-strong-2);
-  --ok-tint:var(--ok-tint);
-  --ok-tint-2:var(--ok-tint-2);
+  --ok:#639922;
+  --ok-2:#186A3B;
+  --ok-strong:#27500A;
+  --ok-strong-2:#3B6D11;
+  --ok-tint:#EAF3DE;
+  --ok-tint-2:#D5F5E3;
 
-  /* Semantic — Warn */
-  --warn:var(--warn);
-  --warn-strong:var(--warn-strong);
-  --warn-tint:var(--warn-tint);
-  --warn-tint-2:var(--warn-tint-2);
+  --warn:#EF9F27;
+  --warn-strong:#854F0B;
+  --warn-tint:#FAEEDA;
+  --warn-tint-2:#FEF9E7;
 
-  /* Semantic — Error */
-  --err:var(--err);
-  --err-2:var(--err-2);
-  --err-strong:var(--err-strong);
-  --err-tint:var(--err-tint);
+  --err:#E24B4A;
+  --err-2:#A32D2D;
+  --err-strong:#791F1F;
+  --err-tint:#FCEBEB;
 
-  /* Accents (used sparingly for tags/status) */
-  --accent-purple:var(--accent-purple);
-  --accent-purple-tint:var(--accent-purple-tint);
-  --accent-purple-strong:var(--accent-purple-strong);
+  --accent-purple:#7B3FA0;
+  --accent-purple-tint:#F4ECF7;
+  --accent-purple-strong:#5B2C6F;
 }
 
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
