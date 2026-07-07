@@ -5,6 +5,11 @@
       "v": "What Is Cost Behavior?"
     },
     {
+      "t": "def",
+      "term": "Cost Behavior",
+      "v": "How costs change (or don't change) as activity levels change. Understanding cost behavior is the foundation of budgeting, decision-making, and performance evaluation."
+    },
+    {
       "t": "p",
       "v": "Cost behavior describes how costs change as activity levels change. Understanding cost behavior is essential for budgeting, decision-making, and performance evaluation."
     },
@@ -255,6 +260,22 @@
       "v": "Relevant Range: The activity range where cost behavior assumptions are VALID. Outside this range, fixed costs may change and variable rates may differ."
     },
     {
+      "t": "case",
+      "co": "Delta Manufacturing",
+      "facts": [
+        "Variable cost per unit: $8",
+        "Total fixed costs: $30,000/month",
+        "Current production: 10,000 units"
+      ],
+      "q": "What is the total cost if production increases to 15,000 units next month?",
+      "sol": [
+        "Variable cost = 15,000 × $8 = $120,000",
+        "Fixed cost = $30,000 (unchanged within relevant range)",
+        "Total cost = $120,000 + $30,000 = $150,000"
+      ],
+      "insight": "Fixed costs stay CONSTANT IN TOTAL as activity changes — but per-unit fixed cost drops from $3.00 to $2.00. Variable costs stay CONSTANT PER UNIT — but total variable cost scales linearly."
+    },
+    {
       "t": "tip",
       "v": "Exam Tips: Sunk costs = ALWAYS irrelevant. Opportunity costs = ALWAYS relevant (even if not recorded). Explicit = cash paid and recorded. Implicit = no cash payment. Cost driver CAUSES costs. Allocation base IS the cost driver used to allocate indirect costs. Relevant range = where Y = a + bX holds true."
     }
@@ -263,6 +284,11 @@
     {
       "t": "h",
       "v": "Why Do We Need Costing Methods?"
+    },
+    {
+      "t": "def",
+      "term": "Costing Method",
+      "v": "A systematic process of accumulating and assigning costs to products, services, or activities to determine their total cost for pricing, reporting, and decision-making."
     },
     {
       "t": "p",
@@ -436,6 +462,11 @@
       "v": "The Manufacturing Cost Flow"
     },
     {
+      "t": "def",
+      "term": "Manufacturing Cost Flow",
+      "v": "The movement of costs from Raw Materials → Work-in-Process → Finished Goods → Cost of Goods Sold as products are produced and sold."
+    },
+    {
       "t": "p",
       "v": "Understanding how costs flow through a manufacturing company is fundamental to cost accounting. Costs flow through three inventory accounts before becoming an expense on the income statement."
     },
@@ -559,6 +590,11 @@
     {
       "t": "h",
       "v": "What Are Joint Products?"
+    },
+    {
+      "t": "def",
+      "term": "Joint Products",
+      "v": "Two or more products of SIGNIFICANT sales value produced simultaneously from a common process, before the split-off point where they become identifiable."
     },
     {
       "t": "p",
@@ -714,6 +750,11 @@
       "v": "What Are By-Products?"
     },
     {
+      "t": "def",
+      "term": "By-Product",
+      "v": "A secondary product of LOW relative sales value produced incidentally alongside the main product from the same manufacturing process."
+    },
+    {
       "t": "p",
       "v": "By-products are LOW-VALUE outputs that arise naturally from producing the main product. They emerge from the same joint production process but have relatively minor economic significance compared to the main product."
     },
@@ -835,6 +876,11 @@
       ]
     },
     {
+      "t": "ex",
+      "l": "By-Product Accounting — NRV Method",
+      "v": "Sawmill Inc. produces LUMBER (main) and SAWDUST (by-product). Monthly: 10,000 board-feet lumber @ $8, joint cost $50,000. Sawdust: 2,000 kg @ $3/kg, additional processing $1,000.\nNRV of by-product = (2,000 × $3) − $1,000 = $5,000\nAdjusted lumber cost = $50,000 − $5,000 = $45,000\nCost per board-foot = $45,000 ÷ 10,000 = $4.50\nUnder Sales Method (no adjustment): Cost/bf = $5.00; sawdust revenue recorded as Other Income when sold."
+    },
+    {
       "t": "tip",
       "v": "Exam Tips: By-products = LOW relative value. NRV = Sales Price - Additional Processing Costs. Production Method: Dr. By-Product Inventory / Cr. WIP (reduces main product cost). Sales Method: no entry until sold, then Other Income. Main difference: WHEN recognized."
     }
@@ -843,6 +889,11 @@
     {
       "t": "h",
       "v": "What Is Process Costing?"
+    },
+    {
+      "t": "def",
+      "term": "Process Costing",
+      "v": "A costing method used when identical units are mass-produced continuously through a series of processes (e.g., chemicals, beverages, cement). Costs are averaged per equivalent unit."
     },
     {
       "t": "p",
@@ -1013,6 +1064,25 @@
       ]
     },
     {
+      "t": "case",
+      "co": "Riverside Beverages",
+      "facts": [
+        "Completed and transferred: 4,000 units",
+        "Ending WIP: 1,000 units (40% conversion complete)",
+        "Direct materials added at start (100%)",
+        "Total DM cost: $50,000 · Total Conversion cost: $22,000"
+      ],
+      "q": "Calculate cost per equivalent unit and total cost of ending WIP using weighted-average.",
+      "sol": [
+        "EUP (DM) = 4,000 + (1,000 × 100%) = 5,000",
+        "EUP (Conversion) = 4,000 + (1,000 × 40%) = 4,400",
+        "Cost/EUP (DM) = $50,000 ÷ 5,000 = $10.00",
+        "Cost/EUP (Conv) = $22,000 ÷ 4,400 = $5.00",
+        "Ending WIP = (1,000 × $10.00) + (400 × $5.00) = $10,000 + $2,000 = $12,000"
+      ],
+      "insight": "Materials at start = 100% complete for ALL units in WIP. Conversion accumulates gradually — so completion % differs by cost pool."
+    },
+    {
       "t": "tip",
       "v": "Exam Tips: Weighted Average = simpler, mixes periods. FIFO = more accurate, separates periods. Normal spoilage = product cost (in good units). Abnormal spoilage = period cost (loss on income statement). Both Weighted Average and FIFO EUP calculations ARE testable — master both methods and the 5-step procedure."
     }
@@ -1021,6 +1091,11 @@
     {
       "t": "h",
       "v": "What Is CVP Analysis?"
+    },
+    {
+      "t": "def",
+      "term": "CVP Analysis",
+      "v": "The study of how changes in Cost, Volume, and Selling Price affect operating profit — used to determine break-even points, target profits, and margins of safety."
     },
     {
       "t": "p",
@@ -1162,6 +1237,24 @@
       ]
     },
     {
+      "t": "case",
+      "co": "BluePeak Coffee",
+      "facts": [
+        "Selling price per cup: $5",
+        "Variable cost per cup: $2",
+        "Monthly fixed costs: $18,000",
+        "Target monthly profit: $12,000"
+      ],
+      "q": "Calculate: (a) Contribution margin per cup, (b) Break-even units, (c) Units needed to hit target profit.",
+      "sol": [
+        "CM per cup = $5 − $2 = $3",
+        "CM ratio = $3 ÷ $5 = 60%",
+        "Break-even units = $18,000 ÷ $3 = 6,000 cups",
+        "Target units = ($18,000 + $12,000) ÷ $3 = 10,000 cups"
+      ],
+      "insight": "Every cup above break-even contributes $3 straight to operating profit. Fixed costs are fully covered at 6,000 cups; every additional cup is pure CM."
+    },
+    {
       "t": "tip",
       "v": "Exam Tips: CM = Revenue − Variable Costs (NOT gross profit). CMR = CM/Revenue. BEP units = FC/CM per unit. BEP dollars = FC/CMR. Target profit: add target to numerator. MOS = actual − BEP. DOL = CM/NOI. High DOL = more volatile earnings. Multi-product: use weighted average CMR. CVP assumes constant selling price, constant VC/unit, constant FC total within relevant range."
     }
@@ -1170,6 +1263,11 @@
     {
       "t": "h",
       "v": "What Is Job Order Costing?"
+    },
+    {
+      "t": "def",
+      "term": "Job Order Costing",
+      "v": "A costing method that accumulates costs by individual job, batch, or unit — used for unique or custom production (e.g., construction, custom furniture, specialty printing)."
     },
     {
       "t": "p",
@@ -1396,6 +1494,24 @@
       ]
     },
     {
+      "t": "case",
+      "co": "Elite Custom Furniture",
+      "facts": [
+        "Job #427: Custom dining table for a hotel",
+        "Direct materials: $2,400",
+        "Direct labor: 60 hours × $25/hr",
+        "POHR: $18 per direct labor hour"
+      ],
+      "q": "Calculate the total cost of Job #427.",
+      "sol": [
+        "Direct materials = $2,400",
+        "Direct labor = 60 × $25 = $1,500",
+        "Applied overhead = 60 × $18 = $1,080",
+        "Total job cost = $2,400 + $1,500 + $1,080 = $4,980"
+      ],
+      "insight": "Job costing tracks THREE cost pools per job: DM (from materials requisitions), DL (from time tickets), OH (applied via POHR × actual activity)."
+    },
+    {
       "t": "tip",
       "v": "Exam Tips: Life-cycle costing includes ALL phases including pre-production and disposal. 80-90% of costs locked in at DESIGN — cheapest time to reduce costs. Customer LCC = buyer's total ownership cost. Target Cost = Price - Profit. Value engineering bridges gap between estimated and target cost."
     }
@@ -1404,6 +1520,11 @@
     {
       "t": "h",
       "v": "What Is Manufacturing Overhead?"
+    },
+    {
+      "t": "def",
+      "term": "Manufacturing Overhead",
+      "v": "ALL manufacturing costs that cannot be directly traced to specific units — indirect materials, indirect labor, factory rent, depreciation, utilities, and other factory expenses."
     },
     {
       "t": "p",
@@ -1565,6 +1686,11 @@
       "v": "Accounting for Overhead — Complete Flow"
     },
     {
+      "t": "def",
+      "term": "Predetermined Overhead Rate (POHR)",
+      "v": "A rate calculated at the start of the period to apply overhead to production: POHR = Budgeted Overhead ÷ Budgeted Activity Level."
+    },
+    {
       "t": "p",
       "v": "Factory overhead includes ALL manufacturing costs that cannot be directly traced to specific units. The accounting flow involves two accounts: Manufacturing Overhead Control (actual) and Manufacturing Overhead Applied (applied)."
     },
@@ -1669,6 +1795,24 @@
       ]
     },
     {
+      "t": "case",
+      "co": "Northern Steel Works",
+      "facts": [
+        "Budgeted overhead: $600,000",
+        "Budgeted DLH: 30,000 hours",
+        "Actual overhead incurred: $625,000",
+        "Actual DLH worked: 32,000 hours"
+      ],
+      "q": "Calculate POHR, applied overhead, and under/over-applied variance.",
+      "sol": [
+        "POHR = $600,000 ÷ 30,000 = $20/DLH",
+        "Applied overhead = 32,000 × $20 = $640,000",
+        "Variance = $640,000 − $625,000 = $15,000 OVER-applied",
+        "Over-applied → credit balance in MOH → close by debiting MOH, crediting COGS"
+      ],
+      "insight": "Over-applied OH means costs were OVERSTATED in products — adjust COGS DOWN. Small variances close entirely to COGS; large variances get prorated across WIP, FG, and COGS."
+    },
+    {
       "t": "tip",
       "v": "Exam Tips: MOH Control = actual (debit). MOH Applied = applied (credit). Under-applied = debit balance. Over-applied = credit balance. Immaterial → close to COGS. Material → prorate to WIP/FG/COGS. Fixed OH Volume Variance = production more/less than budgeted capacity."
     }
@@ -1677,6 +1821,11 @@
     {
       "t": "h",
       "v": "Why ABC? The Problem with Traditional Costing"
+    },
+    {
+      "t": "def",
+      "term": "Activity-Based Costing (ABC)",
+      "v": "A costing method that assigns overhead to products based on the ACTIVITIES they consume — providing more accurate product costs than a single plant-wide overhead rate."
     },
     {
       "t": "p",
@@ -1907,6 +2056,11 @@
       "v": "Variable Costing vs Absorption Costing"
     },
     {
+      "t": "def",
+      "term": "Variable vs Absorption Costing",
+      "v": "Variable Costing treats FIXED manufacturing overhead as a period expense. Absorption Costing includes it in product cost. The difference affects reported net income when inventory changes."
+    },
+    {
       "t": "p",
       "v": "Two methods exist for treating Fixed Manufacturing Overhead (Fixed MOH) in product costing. The difference affects inventory valuation and operating income when production differs from sales."
     },
@@ -2121,6 +2275,28 @@
       "v": "Throughput = Sales Revenue - Direct Materials | Used in Theory of Constraints (TOC)"
     },
     {
+      "t": "case",
+      "co": "Alpha Corp",
+      "facts": [
+        "Produced: 10,000 units · Sold: 8,000 units",
+        "Variable manufacturing cost: $30/unit",
+        "Fixed manufacturing overhead: $50,000 total ($5/unit at production level)",
+        "Selling price: $60 · Variable S&A: $4/unit · Fixed S&A: $20,000"
+      ],
+      "q": "Compute net income under Variable vs Absorption costing. Explain the $10,000 gap.",
+      "sol": [
+        "VARIABLE: Sales = 8,000 × $60 = $480,000",
+        "  Less variable costs = 8,000 × ($30+$4) = $272,000",
+        "  CM = $208,000 · Less fixed ($50k+$20k) = $138,000",
+        "ABSORPTION: Sales = $480,000",
+        "  COGS = 8,000 × ($30+$5) = $280,000 · GM = $200,000",
+        "  Less S&A = 8,000×$4 + $20,000 = $52,000",
+        "  Net income = $148,000",
+        "DIFFERENCE = $10,000 = 2,000 unsold units × $5 fixed OH per unit"
+      ],
+      "insight": "When production > sales, Absorption income > Variable income by (units in ending inventory × fixed OH per unit). Fixed OH gets 'stored' in inventory under absorption."
+    },
+    {
       "t": "tip",
       "v": "Exam Tips: 3 methods ranked by inventory: Absorption > Variable > Throughput. Throughput = DM only as product cost. Absorption manipulation: produce MORE than you sell → defer fixed costs → higher income. Variable costing eliminates this manipulation since all fixed OH is expensed immediately."
     }
@@ -2129,6 +2305,11 @@
     {
       "t": "h",
       "v": "What Are Shared Service Departments?"
+    },
+    {
+      "t": "def",
+      "term": "Service Department Cost Allocation",
+      "v": "The distribution of costs from support departments (that don't directly produce output) to operating departments that consume their services — using Direct, Step-Down, or Reciprocal methods."
     },
     {
       "t": "p",
@@ -2288,6 +2469,11 @@
     {
       "t": "h",
       "v": "What Are Standard Costs?"
+    },
+    {
+      "t": "def",
+      "term": "Standard Costs",
+      "v": "Predetermined benchmark costs for materials, labor, and overhead — used as a control tool to measure actual performance and compute variances."
     },
     {
       "t": "p",
@@ -2463,6 +2649,24 @@
       "v": "FAVORABLE variance = actual cost < standard cost = good news. UNFAVORABLE variance = actual cost > standard cost = bad news. BUT: a favorable price variance from buying cheap materials can CAUSE an unfavorable quantity variance if the cheap materials have more waste."
     },
     {
+      "t": "case",
+      "co": "PrecisionParts Inc.",
+      "facts": [
+        "Standard: 3 kg per unit @ $6/kg",
+        "Standard: 2 DLH per unit @ $20/hr",
+        "Actual production: 5,000 units",
+        "Actual material used: 16,000 kg @ $5.80/kg · Actual DL: 9,500 hrs @ $21/hr"
+      ],
+      "q": "Calculate DM Price, DM Quantity, DL Rate, and DL Efficiency variances.",
+      "sol": [
+        "DM Price = (AP − SP) × AQ = ($5.80 − $6.00) × 16,000 = $3,200 F",
+        "DM Qty = (AQ − SQ) × SP = (16,000 − 15,000) × $6 = $6,000 U",
+        "DL Rate = (AR − SR) × AH = ($21 − $20) × 9,500 = $9,500 U",
+        "DL Efficiency = (AH − SH) × SR = (9,500 − 10,000) × $20 = $10,000 F"
+      ],
+      "insight": "Price variances belong to PURCHASING. Quantity/Efficiency variances belong to PRODUCTION. A favorable price + unfavorable quantity often signals cheap-but-defective materials."
+    },
+    {
       "t": "tip",
       "v": "Exam Tips: Price/Rate variances = calculated at the ACTUAL quantity (purchased for DM, worked for DL). Qty/Efficiency variances = compared at STANDARD price/rate. Standard Qty/Hours Allowed = standard per unit × ACTUAL units produced (not budgeted). Favorable = actual < standard. Unfavorable = actual > standard. Overhead Volume Variance = only exists under ABSORPTION costing — measures production vs planned capacity."
     }
@@ -2471,6 +2675,11 @@
     {
       "t": "h",
       "v": "Why Cost Estimation?"
+    },
+    {
+      "t": "def",
+      "term": "Cost Estimation",
+      "v": "The process of predicting future costs based on past cost behavior and expected activity levels — using methods like High-Low, Regression, or Account Analysis."
     },
     {
       "t": "p",
@@ -2633,6 +2842,11 @@
     {
       "t": "h",
       "v": "What Is Supply Chain Management?"
+    },
+    {
+      "t": "def",
+      "term": "Supply Chain Management (SCM)",
+      "v": "The coordinated management of the flow of materials, information, and finances across suppliers, manufacturers, distributors, and customers to deliver value at the lowest total cost."
     },
     {
       "t": "p",
@@ -2906,6 +3120,24 @@
       ]
     },
     {
+      "t": "case",
+      "co": "Delta Auto Parts",
+      "facts": [
+        "Current inventory: 45 days of supply",
+        "Storage & handling cost: $180,000/year",
+        "Considering JIT: reduce to 3 days of supply",
+        "Setup cost reduction program: $40,000 savings/year"
+      ],
+      "q": "What are the main benefits and the single biggest risk of moving to JIT?",
+      "sol": [
+        "Storage/handling savings: ~93% × $180,000 = $167,400/year",
+        "Setup savings: $40,000/year",
+        "Total annual benefit: ~$207,400",
+        "BIGGEST RISK: A supplier delay of even ONE day halts production entirely — no buffer stock exists to absorb disruption."
+      ],
+      "insight": "JIT trades inventory-carrying cost for supply-chain risk. Only viable with reliable suppliers, stable demand, and short lead times. Kanban signals authorize production only when needed."
+    },
+    {
       "t": "tip",
       "v": "Exam Tips: Lean 5 Principles: Value → Value Stream → Flow → Pull → Perfection. SMED = setup time under 10 minutes. Internal = machine stopped. External = machine running. Poka-yoke = PREVENTS errors. Backflush costing = used with JIT, records costs at completion/sale not each stage. JIT is PULL; Traditional MRP is PUSH."
     }
@@ -2914,6 +3146,11 @@
     {
       "t": "h",
       "v": "Enterprise Resource Planning (ERP)"
+    },
+    {
+      "t": "def",
+      "term": "Enterprise Resource Planning (ERP)",
+      "v": "An integrated software system that unifies ALL business functions — finance, HR, manufacturing, sales, procurement, inventory — into ONE real-time database."
     },
     {
       "t": "p",
@@ -3028,6 +3265,11 @@
     {
       "t": "h",
       "v": "Types of Capacity"
+    },
+    {
+      "t": "def",
+      "term": "Capacity",
+      "v": "The maximum output a facility can produce. Four measures: THEORETICAL (perfect), PRACTICAL (allows for normal downtime), NORMAL (long-run average demand), EXPECTED (next period's forecast)."
     },
     {
       "t": "tbl",
@@ -3155,6 +3397,11 @@
       "v": "Rank products by: CM per unit of scarce resource = CM per unit / Resource units required per unit"
     },
     {
+      "t": "ex",
+      "l": "Capacity Comparison — TechCore Manufacturing",
+      "v": "Fixed overhead: $600,000/year\nTheoretical capacity: 60,000 units → $10.00/unit\nPractical capacity: 50,000 units (allows for maintenance) → $12.00/unit\nNormal capacity: 40,000 units (long-run average demand) → $15.00/unit\nExpected capacity: 35,000 units (next year's forecast) → $17.14/unit\nChoosing a LOWER denominator (normal/expected) inflates product cost — used defensively. Choosing THEORETICAL understates cost — rarely used for reporting."
+    },
+    {
       "t": "tip",
       "v": "Exam Tips: Relevant costs = future + differential. Sunk costs NEVER relevant. Opportunity costs ALWAYS relevant. Special order: accept if price > variable cost AND excess capacity exists. Make or Buy: compare outside price to AVOIDABLE costs only. Keep or Drop: allocated fixed costs are IRRELEVANT. Constraint decision: rank by CM per unit of constraint, not CM per unit."
     }
@@ -3163,6 +3410,11 @@
     {
       "t": "h",
       "v": "Outsourcing Decisions"
+    },
+    {
+      "t": "def",
+      "term": "Outsourcing",
+      "v": "The strategic decision to have an EXTERNAL supplier perform an activity previously done internally — driven by cost, quality, focus on core competency, or capacity constraints."
     },
     {
       "t": "p",
@@ -3398,6 +3650,26 @@
       "v": "Exam Tips: Accounting process redesign = applying BPR/lean thinking to the ACCOUNTING FUNCTION itself. Traditional standard costing can conflict with lean by rewarding overproduction. Backflush costing supports JIT/lean. The goal: accounting should add value and support operational decisions — eliminate reports and transactions nobody uses."
     },
     {
+      "t": "case",
+      "co": "TechGear Manufacturing",
+      "facts": [
+        "Currently produces 20,000 circuit boards internally at $18/unit",
+        "  Variable cost: $12 · Avoidable fixed: $3 · Allocated fixed (unavoidable): $3",
+        "External supplier quote: $16/unit for the same board",
+        "Freed capacity could rent to another division for $30,000/year"
+      ],
+      "q": "Should TechGear outsource? Show the analysis.",
+      "sol": [
+        "AVOIDABLE cost to make = $12 + $3 = $15/unit (NOT $18 — allocated fixed continues)",
+        "Cost to make 20,000 units = 20,000 × $15 = $300,000",
+        "Cost to buy = 20,000 × $16 = $320,000",
+        "Add opportunity benefit if outsourced: $30,000 rental income",
+        "Net cost to buy = $320,000 − $30,000 = $290,000",
+        "DECISION: OUTSOURCE — saves $10,000/year"
+      ],
+      "insight": "Only AVOIDABLE costs are relevant. Allocated fixed costs that continue whether we make or buy are IRRELEVANT. Opportunity cost of freed capacity is ALWAYS relevant."
+    },
+    {
       "t": "tip",
       "v": "Exam Tips: Outsource if outside cost < avoidable internal cost. Allocated fixed costs IRRELEVANT. Don't outsource CORE COMPETENCIES. Cost leadership = minimize costs. Differentiation = invest to maintain uniqueness. Customer profitability = CM - cost to serve. BSC = 4 perspectives (Financial, Customer, Process, Learning). Strategy drives cost management decisions."
     }
@@ -3406,6 +3678,11 @@
     {
       "t": "h",
       "v": "What Is Process Analysis?"
+    },
+    {
+      "t": "def",
+      "term": "Process Analysis",
+      "v": "The systematic examination of a business process to identify inefficiencies, waste, and improvement opportunities — using tools like flowcharts, value-stream maps, and cycle-time analysis."
     },
     {
       "t": "p",
@@ -3610,6 +3887,11 @@
     {
       "t": "h",
       "v": "What Are Quality Costs?"
+    },
+    {
+      "t": "def",
+      "term": "Cost of Quality",
+      "v": "The TOTAL cost of achieving (or failing to achieve) quality — grouped into four categories: Prevention, Appraisal, Internal Failure, and External Failure."
     },
     {
       "t": "p",
@@ -3835,6 +4117,26 @@
         "Key principles: Customer focus, leadership, process approach, continual improvement",
         "Benefits: International recognition, customer confidence, competitive advantage"
       ]
+    },
+    {
+      "t": "case",
+      "co": "QualityFirst Manufacturing",
+      "facts": [
+        "Employee training on quality: $80,000",
+        "Inspection of finished goods: $45,000",
+        "Rework of defective units caught internally: $30,000",
+        "Warranty claims from customers: $60,000",
+        "Lost sales from reputation damage: $50,000 (estimate)"
+      ],
+      "q": "Classify each cost into the four Quality Cost categories and calculate the total.",
+      "sol": [
+        "PREVENTION: Training = $80,000",
+        "APPRAISAL: Inspection = $45,000",
+        "INTERNAL FAILURE: Rework = $30,000",
+        "EXTERNAL FAILURE: Warranty + Lost sales = $110,000",
+        "TOTAL COST OF QUALITY = $265,000"
+      ],
+      "insight": "$1 invested in PREVENTION saves ~$10 in EXTERNAL FAILURE. External failure costs (warranty, lost reputation) are the most damaging — they're only visible AFTER the customer is hurt."
     },
     {
       "t": "tip",

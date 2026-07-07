@@ -5,6 +5,11 @@
       "v": "What Are Internal Controls?"
     },
     {
+      "t": "def",
+      "term": "Internal Controls",
+      "v": "Processes designed by an organization to provide REASONABLE (not absolute) assurance regarding the achievement of objectives in operations, reporting, and compliance."
+    },
+    {
       "t": "p",
       "v": "Internal controls are processes and procedures designed to provide REASONABLE ASSURANCE that an organization achieves its objectives in operations, financial reporting, and compliance. They protect assets, ensure accurate records, and promote operational efficiency."
     },
@@ -211,6 +216,24 @@
       ]
     },
     {
+      "t": "case",
+      "co": "TechCorp Inc.",
+      "facts": [
+        "500-person software company preparing for IPO",
+        "CFO discovers: no formal control environment, no risk assessment, ad-hoc reviews",
+        "Auditors flag lack of COSO framework as a material weakness"
+      ],
+      "q": "Which of the FIVE COSO components should TechCorp implement, and in what order?",
+      "sol": [
+        "1. CONTROL ENVIRONMENT — set tone at top, adopt code of conduct, define authority",
+        "2. RISK ASSESSMENT — identify risks to IPO objectives (financial, operational, compliance)",
+        "3. CONTROL ACTIVITIES — policies/procedures to address identified risks (segregation of duties, approvals)",
+        "4. INFORMATION & COMMUNICATION — reporting lines, whistleblower channel, financial close process",
+        "5. MONITORING — internal audit function, quarterly reviews, control self-assessments"
+      ],
+      "insight": "COSO components are INTERDEPENDENT — a weak control environment undermines even strong control activities. Order matters: environment and risk assessment come FIRST because they define what controls to build."
+    },
+    {
       "t": "tip",
       "v": "Exam Tips: COSO has 5 components and 17 principles — Control Environment is the FOUNDATION (Principles 1–5). Segregation of Duties = most important preventive control. Preventive > Detective (better to prevent than detect). Reasonable assurance, NOT absolute assurance. Collusion and management override can bypass most controls. Fraud Triangle: Pressure + Opportunity + Rationalization. All 17 principles must be present and functioning for ICFR to be effective — the absence of any one principle is a deficiency."
     }
@@ -219,6 +242,11 @@
     {
       "t": "h",
       "v": "What Is Risk Assessment?"
+    },
+    {
+      "t": "def",
+      "term": "Risk Assessment",
+      "v": "The systematic process of IDENTIFYING, ANALYZING, and PRIORITIZING risks that may prevent an organization from achieving its objectives — the second COSO component."
     },
     {
       "t": "p",
@@ -323,6 +351,11 @@
     {
       "t": "h",
       "v": "Control Activities — The Third COSO Component"
+    },
+    {
+      "t": "def",
+      "term": "Control Activities",
+      "v": "Policies and procedures that help ensure management directives are carried out and risks are mitigated — including authorizations, verifications, reconciliations, and segregation of duties."
     },
     {
       "t": "p",
@@ -431,6 +464,11 @@
     {
       "t": "h",
       "v": "IT Controls — Why They Matter"
+    },
+    {
+      "t": "def",
+      "term": "IT Controls",
+      "v": "Controls specifically designed to safeguard information systems, data integrity, and technology operations — split into GENERAL controls (infrastructure-wide) and APPLICATION controls (specific to individual programs)."
     },
     {
       "t": "p",
@@ -603,6 +641,11 @@
       "v": "Why SOX Was Enacted"
     },
     {
+      "t": "def",
+      "term": "Sarbanes-Oxley (SOX)",
+      "v": "US federal law enacted in 2002 (post-Enron/WorldCom) requiring management CERTIFICATION of internal controls over financial reporting and independent auditor ATTESTATION of that assessment."
+    },
+    {
       "t": "p",
       "v": "The Sarbanes-Oxley Act (SOX) was enacted in 2002 following major corporate scandals (Enron, WorldCom, Tyco). It was designed to restore investor confidence by strengthening corporate governance, financial reporting integrity, and accountability of management."
     },
@@ -680,6 +723,25 @@
       ]
     },
     {
+      "t": "case",
+      "co": "OmniCorp (SOX-registrant)",
+      "facts": [
+        "Newly public company preparing first 10-K filing",
+        "CEO must certify quarterly and annual financial statements (Section 302)",
+        "Management must document and test ICFR (Section 404)",
+        "Auditor must attest to management's ICFR assessment (Section 404)"
+      ],
+      "q": "What are OmniCorp's key SOX obligations, and what are the personal risks to the CEO/CFO?",
+      "sol": [
+        "SECTION 302: CEO/CFO personally certify each 10-K and 10-Q — false certification = criminal liability",
+        "SECTION 404: Document key controls, test operating effectiveness, disclose material weaknesses",
+        "SECTION 906: Willful false certification = up to $5M fine + 20 years prison for executives",
+        "SECTION 802: Destruction of financial records = up to 20 years prison",
+        "AUDIT COMMITTEE must be fully independent — no exceptions"
+      ],
+      "insight": "SOX shifted internal control from an accounting concern to a PERSONAL LEGAL RISK for the CEO/CFO. This is why SOX drove massive investment in ICFR documentation and testing."
+    },
+    {
       "t": "tip",
       "v": "Exam Tips: SOX Section 302 = CEO/CFO certify. Section 404 = management assesses ICFR, auditor attests. Section 409 = rapid disclosure. Section 906 = criminal penalties. Audit committee = ALL independent, at least one financial expert. External auditors CANNOT do internal audit outsourcing. Lead partner rotates every 5 YEARS. SOX applies to PUBLIC companies (SEC registrants)."
     }
@@ -688,6 +750,11 @@
     {
       "t": "h",
       "v": "What Is Internal Audit?"
+    },
+    {
+      "t": "def",
+      "term": "Internal Audit",
+      "v": "An INDEPENDENT, OBJECTIVE assurance and consulting function that evaluates the effectiveness of internal controls, risk management, and governance processes — reports to the Audit Committee."
     },
     {
       "t": "p",
@@ -790,6 +857,11 @@
       "v": "Types of Fraud"
     },
     {
+      "t": "def",
+      "term": "Fraud",
+      "v": "An INTENTIONAL act of deception or misrepresentation for personal or organizational gain, typically causing loss to another party. Three elements (Fraud Triangle): PRESSURE, OPPORTUNITY, RATIONALIZATION."
+    },
+    {
       "t": "tbl",
       "h": [
         "Fraud Type",
@@ -881,6 +953,25 @@
       "v": "In naturally occurring datasets, the FIRST DIGIT follows a predictable pattern: '1' appears ~30% of the time, '2' ~18%, and higher digits less frequently. Fraudsters often use round numbers or numbers just below approval thresholds — these show unusual digit frequencies that Benford's Law can detect."
     },
     {
+      "t": "case",
+      "co": "RetailCo",
+      "facts": [
+        "Store manager Sarah has personal debt from medical bills (PRESSURE)",
+        "Sarah controls both cash receipts AND bank deposits (OPPORTUNITY — no segregation of duties)",
+        "Sarah believes: 'I'll pay it back when I get my bonus — it's just borrowing' (RATIONALIZATION)",
+        "Over 8 months, Sarah misappropriates $45,000"
+      ],
+      "q": "Which element of the Fraud Triangle is EASIEST for management to control, and how would you eliminate it?",
+      "sol": [
+        "PRESSURE = employee's personal circumstances — largely outside employer control",
+        "RATIONALIZATION = employee's mindset — influenced by tone at top and ethics program",
+        "OPPORTUNITY = the ONE element management directly controls via internal controls",
+        "FIX: SEGREGATION OF DUTIES — someone else deposits cash and reconciles bank statements",
+        "ADD: mandatory vacations, job rotation, surprise audits, whistleblower hotline"
+      ],
+      "insight": "Fraud requires ALL THREE Fraud Triangle elements simultaneously. Remove any ONE → fraud is prevented. Since employers can only control OPPORTUNITY, segregation of duties is the single most important anti-fraud control."
+    },
+    {
       "t": "tip",
       "v": "Exam Tips: Asset misappropriation = MOST COMMON fraud (89%). Financial statement fraud = MOST COSTLY per case. Fraud Triangle: Pressure + Opportunity + Rationalization. Fraud Diamond adds CAPABILITY. Whistleblower hotlines detect the MOST frauds. Benford's Law: first digit '1' = ~30%. Skimming = theft BEFORE recording. Larceny = theft AFTER recording. Surprise audits are very effective deterrents."
     }
@@ -889,6 +980,11 @@
     {
       "t": "h",
       "v": "What Is Corporate Governance?"
+    },
+    {
+      "t": "def",
+      "term": "Corporate Governance",
+      "v": "The system of rules, practices, and processes by which a company is directed and controlled — balancing the interests of shareholders, management, customers, suppliers, financiers, government, and community."
     },
     {
       "t": "p",
@@ -1000,6 +1096,11 @@
       "v": "Ethics in Organizations"
     },
     {
+      "t": "def",
+      "term": "Ethics Program",
+      "v": "A structured framework of standards, training, communication, and monitoring designed to promote ethical behavior throughout an organization — includes a code of conduct and a whistleblower channel."
+    },
+    {
       "t": "p",
       "v": "Ethics refers to moral principles governing behavior. Strong organizational ethics is a KEY component of the COSO Control Environment — without it, all other controls are undermined. The IMA (Institute of Management Accountants) governs management accountants' conduct through its Statement of Ethical Professional Practice (also informally known as the IMA Code of Ethics)."
     },
@@ -1095,6 +1196,11 @@
     {
       "t": "h",
       "v": "Monitoring — The Fifth COSO Component"
+    },
+    {
+      "t": "def",
+      "term": "Monitoring",
+      "v": "Ongoing and separate evaluations to determine whether internal controls are PRESENT and FUNCTIONING as intended — the fifth COSO component. Deficiencies are reported to senior management and the board."
     },
     {
       "t": "p",
@@ -1207,6 +1313,11 @@
     {
       "t": "h",
       "v": "Why Business Continuity Planning?"
+    },
+    {
+      "t": "def",
+      "term": "Business Continuity Planning (BCP)",
+      "v": "A proactive process for creating systems of prevention and recovery to deal with potential threats to an organization's operations — includes Disaster Recovery Plans (DRP) for IT systems and RTO/RPO targets."
     },
     {
       "t": "p",
