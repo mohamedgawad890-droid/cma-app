@@ -287,17 +287,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
    ══════════════════════════════════════════════════════════════════════════ */
 
 /* ── Migrated from index.html <style id="batch-overrides"> ──────────────── */
-/* Batch 6 change: replaced non-standard `zoom:1.12` with a proper transform
-   scale on a wrapper. transform:scale keeps layout math intact when combined
-   with transform-origin:top left, and works consistently across browsers. */
+/* Batch 6 hotfix: reverted to zoom:1.12 (the transform:scale + width
+   compensation broke sidebar positioning and clipped lesson cards on the
+   right). `zoom` is non-standard but supported in Chromium, Safari, and
+   Firefox 126+, which covers the full target audience. */
 @media(min-width:900px){
   #app{max-width:1700px}
-  .content{
-    transform:scale(1.10);
-    transform-origin:top left;
-    width:calc(100% / 1.10);
-    height:calc(100% / 1.10);
-  }
+  .content{zoom:1.12}
 }
 @media(min-width:1200px){
   #app{max-width:1700px}
