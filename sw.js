@@ -22,19 +22,19 @@
 // SW installs, cache.add() will fail gracefully (per-URL try/catch below)
 // and the network-first fetch handler will cache it on first request.
 
-const CACHE_NAME = 'cma-prep-v16';
+const CACHE_NAME = 'cma-prep-v17';
 const OFFLINE_URLS = [
   './',
   './index.html',
   './app.js',
   './app.css',
   './cbq-data.js',
-  './s1.json',
-  './s2.json',
-  './s3.json',
-  './s4.json',
-  './s5.json',
-  './s6.json'
+  './lessons/lesson-s1.json',
+  './lessons/lesson-s2.json',
+  './lessons/lesson-s3.json',
+  './lessons/lesson-s4.json',
+  './lessons/lesson-s5.json',
+  './lessons/lesson-s6.json'
 ];
 
 // ── Page sends SKIP_WAITING after detecting a new SW is waiting ───────────────
