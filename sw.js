@@ -22,7 +22,7 @@
 // SW installs, cache.add() will fail gracefully (per-URL try/catch below)
 // and the network-first fetch handler will cache it on first request.
 
-const CACHE_NAME = 'cma-prep-v18';
+const CACHE_NAME = 'cma-prep-v19';
 const OFFLINE_URLS = [
   './',
   './index.html',
