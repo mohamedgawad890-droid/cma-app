@@ -918,7 +918,7 @@ const STATE={tab:'loading',searchQ:'',dictQ:'',dictData:[],dictLoaded:false,lead
     dashExams:[],dashExamsLoaded:false,
     dashExamDraft:{title:'',groupCode:'',sectionId:'',unitIds:[],count:20,durationMinutes:30,opensAt:'',closesAt:''},
     studentExams:[],studentExamsLoaded:false,studentExamResults:{},examSession:null,
-    dashExamResults:{},dashExamViewingId:null,dashResultsSort:'score-desc',
+    dashExamResults:{},dashExamViewingId:null,dashResultsSort:'score-desc',dashExamPreviewId:null,
     // ── Batch 2: group-scoped dashboard state ──────────────────────────
     // dashSelectedGroup: which group's data is currently displayed on
     //   Lectures / Exams / Actual-Teaching tabs. Groups tab ignores it.
@@ -1133,6 +1133,22 @@ function renderBlock(block,sec){
       const vid=block.v;
       const lbl=block.l?`<div class="formula-lbl" style="color:${tx};margin-bottom:8px">${esc(block.l)}</div>`:'';
       return`<div style="margin:14px 0">${lbl}<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;background:#000"><iframe src="https://www.youtube.com/embed/${vid}?rel=0&modestbranding=1" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" allowfullscreen loading="lazy" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"></iframe></div></div>`;
+    }
+    // ── Batch 6: pedagogical block types ─────────────────────────────────
+    case'def':{
+      const term=block.term||block.l||'';
+      return`<div class="def-block"><div class="def-lbl" style="color:${tx}">DEFINITION</div><div class="def-term" style="color:${st}">${esc(term)}</div><div class="def-body">${highlightTerms(block.v||'')}</div></div>`;
+    }
+    case'case':{
+      const co=esc(block.co||'Company');
+      const facts=(block.facts||[]).map(f=>`<li><span style="color:${tx};font-weight:500;flex-shrink:0">•</span><span>${highlightTerms(f)}</span></li>`).join('');
+      const sol=(block.sol||[]).map((s,i)=>`<li><span class="snum" style="background:${bg};color:${st};border:1px solid ${tx}40">${i+1}</span><span>${highlightTerms(s)}</span></li>`).join('');
+      const insight=block.insight?`<div class="case-insight"><b>💡 Insight:</b> ${highlightTerms(block.insight)}</div>`:'';
+      return`<div class="case-block"><div class="case-lbl">📋 CASE STUDY</div><div class="case-co">${co}</div><div class="case-section-lbl">Facts</div><ul class="blist" style="margin-bottom:6px">${facts}</ul><div class="case-section-lbl">Question</div><div class="case-question" style="border-left-color:${tx}">${esc(block.q||'')}</div><div class="case-section-lbl">Solution</div><ol class="slist">${sol}</ol>${insight}</div>`;
+    }
+    case'ex':{
+      const lbl=block.l?`<div class="ex-lbl">✏️ QUICK EXAMPLE</div><div class="ex-title">${esc(block.l)}</div>`:'';
+      return`<div class="ex-block">${lbl}<div class="ex-body">${highlightTerms(block.v||'')}</div></div>`;
     }
     default:return'';
   }
@@ -4012,6 +4028,8 @@ function selectDashGroup(code){
   STATE.dashLoadedForGroup=null;    // invalidate cache
   STATE.dashLoaded=false;
   STATE.dashExamViewingId=null;     // close any open exam-results drill-down
+  STATE.dashExamPreviewId=null;     // Batch 6: close any open exam preview
+  STATE.dashStudentAttendanceUid=null; // Batch 6: close any open attendance history
   loadDashScopedData(code);
 }
 
@@ -4194,7 +4212,80 @@ function renderDashLectures(){
 }
 
 // ─── RENDER DASHBOARD: EXAMS ─────────────────────────────────────────
+// ══ Batch 6: Exam Preview — instructor read-only view of frozen questions ══
+// Uses the existing frozen questions snapshot on each exam doc (Batch 1).
+// Rules: instructor-only access via existing signed-in read on /exams.
+
+function openExamPreview(examId){
+  STATE.dashExamPreviewId=examId;
+  render();
+}
+function closeExamPreview(){
+  STATE.dashExamPreviewId=null;
+  render();
+}
+
+function renderDashExamPreview(){
+  const examId=STATE.dashExamPreviewId;
+  const ex=(STATE.dashExams||[]).find(e=>e.id===examId);
+  if(!ex){STATE.dashExamPreviewId=null;return renderDashExams();}
+  const qs=ex.questions||[];
+  const sec=sect(ex.sectionId);
+  const letters=['A','B','C','D','E'];
+
+  const questionsHTML=qs.length?qs.map((q,i)=>{
+    const opts=(q.options||q.opts||[]);
+    const correctIdx=(typeof q.correct==='number'?q.correct:(typeof q.ans==='number'?q.ans:0));
+    const unit=q.unit||q.unitId||'';
+    const src=q.source||q.src||'';
+    const wrongWhy=q.wrongWhy||q.wrong_why||'';
+    const optsHTML=opts.map((o,j)=>{
+      const isCorrect=j===correctIdx;
+      return `<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 12px;margin-bottom:5px;border-radius:8px;background:${isCorrect?'#D5F5E3':'#fafaf8'};border:1px solid ${isCorrect?'#1E8449':'#e0e0d8'}">
+        <div style="width:22px;height:22px;border-radius:50%;background:${isCorrect?'#1E8449':'#fff'};color:${isCorrect?'#fff':'#666'};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;border:1px solid ${isCorrect?'#1E8449':'#d0d0d0'}">${letters[j]||(j+1)}</div>
+        <div style="font-size:13px;color:#1a1a1a;line-height:1.5;flex:1">${esc(o||'')}${isCorrect?' <span style="color:#186A3B;font-weight:600;font-size:11px">✓ correct</span>':''}</div>
+      </div>`;
+    }).join('');
+    const expl=q.explanation||q.exp||'';
+    const explHTML=expl?`<div style="background:#eef7ff;border-left:3px solid #185FA5;border-radius:6px;padding:8px 10px;margin-top:8px;font-size:12px;color:#0C447C;line-height:1.5"><b>Explanation:</b> ${esc(expl)}</div>`:'';
+    const wrongHTML=wrongWhy?`<div style="background:#FCEBEB;border-left:3px solid #E24B4A;border-radius:6px;padding:8px 10px;margin-top:8px;font-size:12px;color:#7d1f1f;line-height:1.5"><b>Why wrong options fail:</b> ${esc(wrongWhy)}</div>`:'';
+    const meta=[unit?'Unit '+esc(unit):'',src?'Source: '+esc(src):''].filter(Boolean).join(' · ');
+    return `<div style="background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:12px;page-break-inside:avoid">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px">
+        <div style="font-size:12px;font-weight:600;color:#0C447C;letter-spacing:.5px">Q ${i+1} of ${qs.length}</div>
+        ${meta?`<div style="font-size:10px;color:#888">${meta}</div>`:''}
+      </div>
+      <div style="font-size:14px;color:#1a1a1a;line-height:1.55;margin-bottom:12px;font-weight:500">${esc(q.text||q.q||q.question||'(no text)')}</div>
+      ${optsHTML}
+      ${explHTML}
+      ${wrongHTML}
+    </div>`;
+  }).join(''):`<div style="text-align:center;padding:40px 20px;color:#888">
+    <div style="font-size:36px;margin-bottom:10px">📄</div>
+    <div style="font-size:14px;margin-bottom:6px">No questions snapshot on this exam yet.</div>
+    <div style="font-size:12px;color:#aaa;line-height:1.5">Questions are frozen when the exam opens. Try again after it's created.</div>
+  </div>`;
+
+  return `<div style="padding:14px" id="exam-preview-root">
+    <button onclick="closeExamPreview()" style="background:none;border:none;color:#0C447C;font-size:14px;cursor:pointer;font-family:inherit;padding:0 0 12px;font-weight:500">‹ Back to exams</button>
+    <div style="background:linear-gradient(135deg,#0C447C,#185FA5);border-radius:14px;padding:18px;color:#fff;margin-bottom:14px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:1px;opacity:.85;margin-bottom:4px">EXAM PREVIEW · INSTRUCTOR VIEW</div>
+      <div style="font-size:17px;font-weight:600;line-height:1.35;margin-bottom:8px">${esc(ex.title||'Untitled exam')}</div>
+      <div style="font-size:12px;opacity:.85;line-height:1.6">Section ${ex.sectionId}${sec?' — '+esc(sec.title):''}<br><b>${qs.length}</b> question${qs.length===1?'':'s'} · <b>${ex.durationMinutes||0}</b> min · Group <b>${esc(ex.groupCode||'—')}</b></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <button onclick="window.print()" style="flex:1;padding:10px;border-radius:10px;border:.5px solid #d0d0d0;background:#f5f5f0;color:#333;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">🖨️ Print / Save as PDF</button>
+    </div>
+    <div style="background:#FEF9E7;border:1px solid #F5CBA7;border-radius:10px;padding:10px 12px;margin-bottom:14px;font-size:12px;color:#7D6608;line-height:1.5">
+      ⚠️ This is the <b>frozen snapshot</b> shown to students. Correct answers are highlighted for your review — do not share this view with students.
+    </div>
+    ${questionsHTML}
+    <div style="height:40px"></div>
+  </div>`;
+}
+
 function renderDashExams(){
+  if(STATE.dashExamPreviewId)return renderDashExamPreview();
   if(STATE.dashExamViewingId)return renderDashExamResults();
   const d=STATE.dashExamDraft;
   const selectedGroup=STATE.dashSelectedGroup;
@@ -4293,6 +4384,7 @@ function renderDashExams(){
         Opens <b>${fmtDT(x.opensAt)}</b> · Closes <b>${fmtDT(x.closesAt)}</b>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button onclick="openExamPreview('${x.id}')" style="flex:1 1 28%;padding:7px 10px;border-radius:8px;border:.5px solid #1E844940;background:#D5F5E3;color:#186A3B;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">👁️ Preview</button>
         <button onclick="openExamResults('${x.id}')" style="flex:1 1 28%;padding:7px 10px;border-radius:8px;border:.5px solid #185FA540;background:#E6F1FB;color:#0C447C;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">📊 Results</button>
         ${status==='scheduled'?`<button onclick="reshuffleExam('${x.id}')" style="flex:1 1 28%;padding:7px 10px;border-radius:8px;border:.5px solid #7D3C9840;background:#F4ECF7;color:#5B2C6F;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">🔄 Re-shuffle</button>`:''}
         ${canClose?`<button onclick="closeExamNow('${x.id}')" style="flex:1 1 28%;padding:7px 10px;border-radius:8px;border:.5px solid #D2691E40;background:#FEF5E7;color:#7D6608;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">🛑 Close</button>`:''}
@@ -5414,6 +5506,9 @@ async function reshuffleExam(examId){
 STATE.dashStudentsFilter='';        // '' = All groups
 STATE.dashStudentsSearch='';
 STATE.dashStudentDetailUid=null;    // when set, opens profile view
+STATE.dashStudentAttendanceUid=null;   // Batch 6: opens attendance history
+STATE.dashStudentAttendanceRows=null;  // Batch 6: cached attendance rows
+STATE.dashStudentAttendanceLoading=false;
 
 function renderDashStudents(){
   if(STATE.dashStudentDetailUid)return renderDashStudentDetail();
@@ -5468,6 +5563,8 @@ function renderDashStudents(){
 }
 
 function renderDashStudentDetail(){
+  // Batch 6: intercept for attendance history sub-view
+  if(STATE.dashStudentAttendanceUid)return renderDashStudentAttendanceHistory();
   const uid=STATE.dashStudentDetailUid;
   const s=(STATE.dashStudents||[]).find(x=>x.uid===uid);
   if(!s){STATE.dashStudentDetailUid=null;return renderDashStudents();}
@@ -5503,7 +5600,104 @@ function renderDashStudentDetail(){
       ${field('CMA Goal',s.goal)}
       ${field('Target Exam Date',examdate)}
     </div>
+    <button onclick="openStudentAttendanceHistory('${esc(s.uid)}')" style="width:100%;padding:12px;border-radius:10px;border:.5px solid #185FA540;background:#E6F1FB;color:#0C447C;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:12px">📅 View attendance history</button>
     <div style="height:30px"></div>
+  </div>`;
+}
+
+// ══ Batch 6: Student attendance history — chronological per-student timeline ══
+// Query: attendance where userId==X. Cross-references STATE.dashLectures to
+// determine present/absent for each lecture in the student's group.
+// No composite index needed — single-field query.
+
+function openStudentAttendanceHistory(uid){
+  STATE.dashStudentAttendanceUid=uid;
+  STATE.dashStudentAttendanceLoading=true;
+  STATE.dashStudentAttendanceRows=null;
+  render();
+  loadStudentAttendanceHistory(uid).then(rows=>{
+    STATE.dashStudentAttendanceRows=rows;
+    STATE.dashStudentAttendanceLoading=false;
+    if(STATE.tab==='dashboard'&&STATE.dashStudentAttendanceUid===uid)render();
+  }).catch(e=>{
+    console.warn('[AttendanceHistory] load failed',e);
+    STATE.dashStudentAttendanceRows=[];
+    STATE.dashStudentAttendanceLoading=false;
+    if(STATE.tab==='dashboard'&&STATE.dashStudentAttendanceUid===uid)render();
+  });
+}
+function closeStudentAttendanceHistory(){
+  STATE.dashStudentAttendanceUid=null;
+  STATE.dashStudentAttendanceRows=null;
+  STATE.dashStudentAttendanceLoading=false;
+  render();
+}
+async function loadStudentAttendanceHistory(uid){
+  const snap=await db.collection('attendance').where('userId','==',uid).get();
+  return snap.docs.map(d=>({id:d.id,...d.data()}));
+}
+
+function renderDashStudentAttendanceHistory(){
+  const uid=STATE.dashStudentAttendanceUid;
+  const s=(STATE.dashStudents||[]).find(x=>x.uid===uid);
+  if(!s){STATE.dashStudentAttendanceUid=null;return renderDashStudents();}
+  const loading=STATE.dashStudentAttendanceLoading;
+  const rows=STATE.dashStudentAttendanceRows||[];
+  const groupLectures=(STATE.dashLectures||[]).filter(l=>(l.groupCode||'').toUpperCase()===(s.groupCode||'').toUpperCase());
+  const lecturesSorted=groupLectures.slice().sort((a,b)=>{
+    const da=a.date||a.createdAt||'';
+    const db2=b.date||b.createdAt||'';
+    return db2.localeCompare(da);
+  });
+  const attMap={};
+  rows.forEach(r=>{if(r.lectureId)attMap[r.lectureId]=r;});
+  const present=Object.keys(attMap).filter(lid=>groupLectures.find(l=>l.id===lid)).length;
+  const total=groupLectures.length;
+  const attRate=total?Math.round((present/total)*100):0;
+  const rateColor=attRate>=80?'#186A3B':(attRate>=50?'#EF9F27':'#A32D2D');
+
+  const fmtDate=(iso)=>{
+    if(!iso)return '—';
+    try{
+      return new Date(iso).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+    }catch{return iso;}
+  };
+
+  const rowsHTML=lecturesSorted.length?lecturesSorted.map(l=>{
+    const att=attMap[l.id];
+    const isPresent=!!att;
+    const mode=att?(att.mode||'—'):'';
+    const modeIcon=mode==='online'?'🌐':(mode==='offline'?'🏫':'');
+    return `<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:#fff;border:.5px solid #e0e0d8;border-radius:10px;margin-bottom:6px">
+      <div style="width:38px;height:38px;border-radius:50%;background:${isPresent?'#D5F5E3':'#FCEBEB'};display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">${isPresent?'✅':'❌'}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:600;color:#1a1a1a;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(l.title||'(untitled)')}</div>
+        <div style="font-size:11px;color:#888;margin-top:2px">${fmtDate(l.date||l.createdAt)}${mode?' · '+modeIcon+' '+esc(mode):''}</div>
+      </div>
+      <div style="font-size:11px;font-weight:600;color:${isPresent?'#186A3B':'#A32D2D'};flex-shrink:0">${isPresent?'Present':'Absent'}</div>
+    </div>`;
+  }).join(''):`<div style="text-align:center;padding:32px 20px;color:#888">
+    <div style="font-size:36px;margin-bottom:10px">📅</div>
+    <div style="font-size:13px">No lectures found for this group yet.</div>
+  </div>`;
+
+  const loadingHTML=loading?`<div style="text-align:center;padding:20px;color:#888"><div style="font-size:24px;margin-bottom:6px">⏳</div><div style="font-size:12px">Loading attendance history…</div></div>`:'';
+
+  return `<div style="padding:14px">
+    <button onclick="closeStudentAttendanceHistory()" style="background:none;border:none;color:#0C447C;font-size:14px;cursor:pointer;font-family:inherit;padding:0 0 12px;font-weight:500">‹ Back to student</button>
+    <div style="background:linear-gradient(135deg,#0C447C,#185FA5);border-radius:14px;padding:18px;color:#fff;margin-bottom:14px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:1px;opacity:.85;margin-bottom:4px">ATTENDANCE HISTORY</div>
+      <div style="font-size:17px;font-weight:600;line-height:1.35;margin-bottom:2px">${esc(s.name||'Unnamed')}</div>
+      <div style="font-size:12px;opacity:.85">${esc(s.groupCode||'—')} · ${total} lecture${total===1?'':'s'} in this group</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">
+      <div style="background:#fff;border:.5px solid #e0e0d8;border-radius:10px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:700;color:#186A3B">${present}</div><div style="font-size:10px;color:#888;margin-top:2px">PRESENT</div></div>
+      <div style="background:#fff;border:.5px solid #e0e0d8;border-radius:10px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:700;color:#A32D2D">${total-present}</div><div style="font-size:10px;color:#888;margin-top:2px">ABSENT</div></div>
+      <div style="background:#fff;border:.5px solid #e0e0d8;border-radius:10px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:700;color:${rateColor}">${attRate}%</div><div style="font-size:10px;color:#888;margin-top:2px">RATE</div></div>
+    </div>
+    ${loadingHTML}
+    ${rowsHTML}
+    <div style="height:40px"></div>
   </div>`;
 }
 
@@ -6613,10 +6807,18 @@ function renderRegister(){
   const fval=(k)=>st?esc(st[k]||''):'';
   const fsel=(k,v)=>st&&st[k]===v?'selected':'';
 
+  // Batch 6: profile completeness progress bar (LinkedIn-style)
+  const _progFields=['name','mobile','email','country','city','university','title','company','level','goal','examdate','timezone','preferredLang','attemptType'];
+  const _progFilled=_progFields.filter(k=>st&&String(st[k]||'').trim()).length;
+  const _progPct=Math.round((_progFilled/_progFields.length)*100);
+  const _progColor=_progPct>=80?'#186A3B':(_progPct>=50?'#0C447C':'#EF9F27');
+  const progressBar=`<div class="profile-progress" style="background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px 16px;margin-bottom:14px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><div style="font-size:13px;font-weight:600;color:#1a1a1a">Profile completeness</div><div style="font-size:13px;font-weight:700;color:${_progColor}">${_progPct}%</div></div><div style="height:8px;background:#ebebea;border-radius:4px;overflow:hidden"><div style="height:100%;width:${_progPct}%;background:${_progColor};border-radius:4px;transition:width .4s ease"></div></div><div style="font-size:11px;color:#888;margin-top:6px">${_progFilled} of ${_progFields.length} fields filled${_progPct<100?' · the more we know, the better we can personalize your prep':' · nicely done!'}</div></div>`;
+
   return`${renderSubNav(SUB_ME,'register')}<div class="sh"><h2>Student Profile</h2><p>${isComplete?'Your profile is complete — welcome! Tap any field to update.':'Complete your profile to get started'}</p></div>
   <div class="scroll-area pad" style="padding-top:14px">
     ${warningBanner}
     ${profileSection}
+    ${progressBar}
 
     ${renderNotifOptInCard()}
 
@@ -6718,6 +6920,52 @@ function renderRegister(){
       </div>
     </div>
 
+    <div class="info-title" style="font-size:14px;margin-bottom:10px">🌍 Location & Preferences <span style="font-size:11px;color:#aaa;font-weight:400">· optional</span></div>
+    <div class="card" style="margin-bottom:14px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+        <div>
+          <label style="font-size:12px;color:#888;display:block;margin-bottom:5px">City</label>
+          <input id="f-city" type="text" value="${fval('city')}" placeholder="e.g. Cairo, Dubai" style="width:100%;padding:10px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:14px;font-family:inherit;outline:none;color:#1a1a1a;background:#fafaf8">
+        </div>
+        <div>
+          <label style="font-size:12px;color:#888;display:block;margin-bottom:5px">Timezone</label>
+          <select id="f-timezone" style="width:100%;padding:10px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:14px;font-family:inherit;outline:none;color:#1a1a1a;background:#fafaf8">
+            <option value="">Auto-detect</option>
+            <option value="Africa/Cairo" ${fsel('timezone','Africa/Cairo')}>Cairo (GMT+2)</option>
+            <option value="Asia/Riyadh" ${fsel('timezone','Asia/Riyadh')}>Riyadh (GMT+3)</option>
+            <option value="Asia/Dubai" ${fsel('timezone','Asia/Dubai')}>Dubai (GMT+4)</option>
+            <option value="Asia/Kuwait" ${fsel('timezone','Asia/Kuwait')}>Kuwait (GMT+3)</option>
+            <option value="Asia/Qatar" ${fsel('timezone','Asia/Qatar')}>Qatar (GMT+3)</option>
+            <option value="Asia/Bahrain" ${fsel('timezone','Asia/Bahrain')}>Bahrain (GMT+3)</option>
+            <option value="Asia/Muscat" ${fsel('timezone','Asia/Muscat')}>Muscat (GMT+4)</option>
+            <option value="Africa/Casablanca" ${fsel('timezone','Africa/Casablanca')}>Casablanca (GMT+1)</option>
+            <option value="Africa/Tunis" ${fsel('timezone','Africa/Tunis')}>Tunis (GMT+1)</option>
+            <option value="Europe/London" ${fsel('timezone','Europe/London')}>London (GMT+0)</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <label style="font-size:12px;color:#888;display:block;margin-bottom:5px">Preferred Language</label>
+          <select id="f-preferredLang" style="width:100%;padding:10px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:14px;font-family:inherit;outline:none;color:#1a1a1a;background:#fafaf8">
+            <option value="">Auto (browser)</option>
+            <option value="ar" ${fsel('preferredLang','ar')}>العربية · Arabic</option>
+            <option value="en" ${fsel('preferredLang','en')}>English</option>
+            <option value="mixed" ${fsel('preferredLang','mixed')}>Mixed (AR+EN)</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:12px;color:#888;display:block;margin-bottom:5px">Exam Attempt</label>
+          <select id="f-attemptType" style="width:100%;padding:10px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:14px;font-family:inherit;outline:none;color:#1a1a1a;background:#fafaf8">
+            <option value="">Select...</option>
+            <option value="first" ${fsel('attemptType','first')}>First attempt</option>
+            <option value="retake" ${fsel('attemptType','retake')}>Retake</option>
+            <option value="review" ${fsel('attemptType','review')}>Review / Refresher</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
     <div class="info-title" style="font-size:14px;margin-bottom:10px">⚙️ App Preferences</div><div class="card" style="margin-bottom:14px"><div style="margin-bottom:12px"><label style="font-size:12px;color:#888;display:block;margin-bottom:5px">Font size</label><div style="display:flex;gap:6px">${['sm','md','lg'].map(v=>{const on=STATE.fontSize===v;const lbl={sm:'Small',md:'Medium',lg:'Large'}[v];return `<button onclick="saveFontSize('${v}');render()" style="flex:1;padding:10px;border-radius:8px;border:.5px solid ${on?'#0C447C':'#d0d0d0'};background:${on?'#E6F1FB':'#fafaf8'};color:${on?'#0C447C':'#555'};font-size:${v==='sm'?'12px':v==='md'?'13px':'15px'};font-weight:${on?'600':'400'};cursor:pointer;font-family:inherit">${lbl}</button>`;}).join('')}</div><div style="font-size:11px;color:#888;margin-top:4px">Applied instantly across the app.</div></div><div><label style="font-size:12px;color:#888;display:block;margin-bottom:5px">Daily study goal (minutes)</label><div style="display:flex;gap:8px;align-items:center"><input id="f-dailygoal" type="number" min="5" max="240" step="5" value="${STATE.dailyGoalMinutes||30}" style="flex:1;padding:10px 12px;border-radius:8px;border:.5px solid #d0d0d0;font-size:14px;font-family:inherit;outline:none;color:#1a1a1a;background:#fafaf8"><button onclick="saveDailyGoal(document.getElementById('f-dailygoal').value);showToast('Goal saved ✓','success',1500)" style="padding:10px 16px;border-radius:8px;border:none;background:#0C447C;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Save</button></div><div style="font-size:11px;color:#888;margin-top:4px">Tracked on the Home screen goal ring.</div></div></div><div style="background:#f5f5f0;border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:12px;color:#888;text-align:center;line-height:1.5">
       Fields marked * are required. Job Title, Company, Experience, Level, and Goal are optional.
     </div>
@@ -6779,6 +7027,11 @@ async function submitProfile(){
   const title=get('f-title'),company=get('f-company'),experience=get('f-experience');
   const level=get('f-level'),goal=get('f-goal'),examdate=get('f-examdate');
   const groupCode=(get('f-groupcode')||'').toUpperCase();
+  // Batch 6: new profile fields
+  const city=get('f-city');
+  const timezone=get('f-timezone');
+  const preferredLang=get('f-preferredLang');
+  const attemptType=get('f-attemptType');
   const missing=[];
   if(!name)missing.push('Full Name');if(!mobile)missing.push('Mobile (WhatsApp)');
   const existingPhoto=loadStudent()?.photo||'';
@@ -6796,15 +7049,16 @@ async function submitProfile(){
     }catch(err){photoUrl=pendingB64;}
     window._pendingPhoto=null;
   }
-  saveStudent({name,mobile,email,country,university,faculty,gradyear,title,company,experience,level,goal,examdate,groupCode,photo:photoUrl,registeredAt:loadStudent()?.registeredAt||new Date().toISOString()});
+  saveStudent({name,mobile,email,country,city,university,faculty,gradyear,title,company,experience,level,goal,examdate,groupCode,timezone,preferredLang,attemptType,photo:photoUrl,registeredAt:loadStudent()?.registeredAt||new Date().toISOString()});
   STATE.showProfileWarning=false;
   try{STATE.qotdState={dateKey:'',question:null,selected:null,answered:false,taughtUnitCount:0};ensureQotd();}catch(e){}
 
   // Send to Google Sheets
   const fb2=loadFeedback();
   sendToSheet({
-    name,mobile,email,country,university,faculty,gradyear,
+    name,mobile,email,country,city,university,faculty,gradyear,
     title,company,experience,level,goal,examdate,
+    timezone,preferredLang,attemptType,
     photo:photoUrl||'No Photo'
   });
 
@@ -6902,7 +7156,7 @@ if('serviceWorker' in navigator){
 // Change 2: CBQ data moved to cbq-data.js — removes 412 lines from main file
 // cbq-data.js must be loaded BEFORE this script tag
 
-const CBQ_SEC_KEYS = ['C','D','A','B','E','F'];
+const CBQ_SEC_KEYS = ['A','B','C','D','E','F']; // Batch 6: alphabetical
 const CBQ_SEC_META = {
   C:{title:'Performance Management',color:'#7B3FA0'},
   D:{title:'Cost Management',color:'#854F0B'},
