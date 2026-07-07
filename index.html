@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
 <script>
 // Capture install prompt as early as possible
@@ -13,6 +13,26 @@ window.addEventListener('beforeinstallprompt', e => {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CMA Prep — Mohamed Abdelgawad</title>
+<!-- Batch 6: SEO + social sharing metadata -->
+<meta name="description" content="Free bilingual (Arabic/English) CMA Part 1 exam prep with Mohamed Abdelgawad. Interactive lessons, quizzes, CBQ practice, mock exams, and personalized progress tracking.">
+<meta name="author" content="Mohamed Abdelgawad">
+<meta name="keywords" content="CMA, CMA Part 1, CMA prep, IMA CMA, تحضير CMA, دورة CMA, Mohamed Abdelgawad, financial planning, cost management, internal controls">
+<!-- Open Graph (Facebook / WhatsApp / LinkedIn) -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="CMA Prep — with Mohamed Abdelgawad">
+<meta property="og:description" content="Free bilingual (Arabic/English) CMA Part 1 exam prep. Lessons, quizzes, CBQ practice, mock exams, and personalized progress tracking.">
+<meta property="og:image" content="./icon-192.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="192">
+<meta property="og:image:height" content="192">
+<meta property="og:locale" content="ar_EG">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:site_name" content="CMA Prep">
+<!-- Twitter card -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CMA Prep — with Mohamed Abdelgawad">
+<meta name="twitter:description" content="Free bilingual (Arabic/English) CMA Part 1 exam prep.">
+<meta name="twitter:image" content="./icon-192.png">
 <!-- PWA -->
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#0C447C">
@@ -24,93 +44,12 @@ window.addEventListener('beforeinstallprompt', e => {
 <meta name="msapplication-TileColor" content="#0C447C">
 <meta name="msapplication-TileImage" content="./icon-192.png">
 <link rel="stylesheet" href="./app.css">
-<!-- Change 1: CSS extracted to app.css — reduces HTML parse cost by ~15KB -->
-<style id="batch-overrides">
-/* Desktop: use more of the screen width + enlarge content uniformly (desktop only) */
-@media(min-width:900px){
-  #app{max-width:1700px}
-  .content{zoom:1.12}
-}
-@media(min-width:1200px){
-  #app{max-width:1700px}
-}
-/* Mobile brand strip (avatar + title). Desktop already shows brand in the sidebar. */
-.mobile-brand{display:flex;align-items:center;gap:10px;padding:8px 14px;background:#fff;border-bottom:.5px solid #e0e0d8;flex-shrink:0}
-.mobile-brand-img{width:30px;height:30px;border-radius:50%;object-fit:cover;border:2px solid #E6F1FB;flex-shrink:0}
-.mobile-brand-title{font-size:14px;font-weight:600;color:#0C447C;letter-spacing:.3px}
-@media(min-width:900px){.mobile-brand{display:none!important}}
-</style>
+<!-- Batch 6: inline style blocks moved to app.css (batch-overrides, ported-features, dashboard-p1) -->
 <!-- CBQ data file — must load before main script -->
 <script src="./cbq-data.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<style id="ported-features">
-.qod-card{background:linear-gradient(135deg,#7D3C98,#5B2C6F);border-radius:14px;padding:14px 16px;margin-bottom:14px;color:#fff}
-.qod-lbl{font-size:10px;font-weight:700;letter-spacing:1px;opacity:.75;margin-bottom:4px}
-.qod-title{font-size:15px;font-weight:600;margin-bottom:8px;line-height:1.4}
-.qod-meta{font-size:11px;color:rgba(255,255,255,.75);margin-bottom:10px}
-.qod-opt{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:9px;padding:9px 12px;margin-bottom:6px;cursor:pointer;font-size:13px;display:flex;align-items:flex-start;gap:8px;transition:background .15s}
-.qod-opt:hover{background:rgba(255,255,255,.18)}
-.qod-opt.correct{background:rgba(46,204,113,.35);border-color:#2ECC71}
-.qod-opt.wrong{background:rgba(231,76,60,.35);border-color:#E74C3C}
-.qod-opt-letter{background:rgba(255,255,255,.2);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
-.qod-exp{background:rgba(255,255,255,.15);border-radius:8px;padding:9px 12px;margin-top:8px;font-size:12px;line-height:1.5}
-/* ── Flashcards ────────────────────────────────────────────────── */
-.flash-card{background:#fff;border:.5px solid #e0e0d8;border-radius:16px;padding:22px 20px;min-height:280px;display:flex;flex-direction:column;justify-content:center;align-items:center;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.06);transition:transform .2s}
-.flash-card:active{transform:scale(.98)}
-.flash-front{font-size:20px;font-weight:600;color:#0C447C;text-align:center;line-height:1.4}
-.flash-back{font-size:14px;color:#1a1a1a;line-height:1.7;text-align:left;width:100%;white-space:pre-wrap}
-.flash-type-badge{font-size:9px;font-weight:700;letter-spacing:.8px;padding:3px 9px;border-radius:9px;margin-bottom:14px}
-.flash-nav{display:flex;gap:8px;margin-top:14px}
-.flash-btn{flex:1;padding:12px;border-radius:10px;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
-.flash-btn-review{background:#FCEBEB;color:#A32D2D;border:1px solid #E24B4A40}
-.flash-btn-know{background:#D5F5E3;color:#186A3B;border:1px solid #1E844940}
-.flash-btn-skip{background:#f5f5f0;color:#555;border:1px solid #d0d0d0}
-/* ── Notes tab ─────────────────────────────────────────────────── */
-.notes-item{background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:10px}
-.notes-item-title{font-size:13px;font-weight:600;color:#0C447C;margin-bottom:4px}
-.notes-item-sec{font-size:10px;font-weight:600;letter-spacing:.5px;color:#888;margin-bottom:8px;text-transform:uppercase}
-.notes-item-body{font-size:13px;color:#333;line-height:1.6;white-space:pre-wrap;background:#fafaf8;border-radius:8px;padding:10px 12px}
-/* ── Daily goal ring ───────────────────────────────────────────── */
-.goal-ring-wrap{display:flex;align-items:center;gap:14px;background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:14px}
-.goal-ring{position:relative;width:64px;height:64px;flex-shrink:0}
-.goal-ring svg{transform:rotate(-90deg)}
-.goal-ring-val{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#0C447C}
-/* ── Prev/next lesson footer ───────────────────────────────────── */
-.lesson-nav-footer{display:flex;gap:8px;margin-top:20px;padding-top:16px;border-top:.5px solid #e0e0d8}
-.lesson-nav-btn{flex:1;padding:11px 8px;border-radius:10px;border:.5px solid #d0d0d0;background:#f5f5f0;color:#555;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;gap:2px;text-align:left}
-</style>
-<style id="dashboard-p1">
-.teach-entry{background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:10px}
-.teach-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
-.teach-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
-/* ── Batch 2: group-selector chip strip ─────────────────────────────── */
-.gs-strip{display:flex;gap:8px;padding:10px 12px;overflow-x:auto;-webkit-overflow-scrolling:touch;background:#fff;border-bottom:.5px solid #e0e0d8;scroll-snap-type:x proximity;scrollbar-width:none}
-.gs-strip::-webkit-scrollbar{display:none}
-.gs-chip{flex-shrink:0;scroll-snap-align:start;padding:8px 14px;border-radius:22px;border:1px solid #d0d8e2;background:#fff;color:#0C447C;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;transition:background .12s,border-color .12s,color .12s}
-.gs-chip:hover{background:#F4F6F7}
-.gs-chip.active{background:#0C447C;color:#fff;border-color:#0C447C;box-shadow:0 1px 4px rgba(12,68,124,.25)}
-.gs-chip-count{font-size:10px;font-weight:500;opacity:.75;font-family:'Courier New',monospace}
-.gs-chip.active .gs-chip-count{opacity:.9}
-.gs-chip-new{border-style:dashed;border-color:#b6c0d0;color:#4a6180;background:#fafaf8}
-.gs-chip-new:hover{background:#f0f2f5;border-color:#8a9ab0}
-@media(min-width:900px){.gs-strip{flex-wrap:wrap;overflow-x:visible}}
-/* ── Skeleton (Decision 2A — instant swap with placeholder cards) ────── */
-@keyframes gs-shimmer{0%{background-position:-200px 0}100%{background-position:calc(200px + 100%) 0}}
-.gs-skeleton-card{background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:10px}
-.gs-skeleton-line{height:12px;border-radius:6px;background:linear-gradient(90deg,#f0f0eb 0px,#f7f7f2 40px,#f0f0eb 80px);background-size:200px 100%;animation:gs-shimmer 1.2s ease-in-out infinite;margin-bottom:8px}
-.gs-skeleton-line.short{width:38%}
-.gs-skeleton-line.medium{width:64%}
-.gs-skeleton-line.long{width:88%}
-/* ── Empty states (Decision 3B — friendly + CTA) ────────────────────── */
-.gs-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px;text-align:center;background:#fff;border:.5px dashed #d0d8e2;border-radius:14px;margin:14px}
-.gs-empty-icon{font-size:44px;margin-bottom:12px;opacity:.75}
-.gs-empty-title{font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:6px;line-height:1.35}
-.gs-empty-body{font-size:13px;color:#666;line-height:1.55;margin-bottom:18px;max-width:320px}
-.gs-empty-cta{padding:10px 20px;border-radius:10px;border:none;background:#0C447C;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:.3px}
-.gs-empty-cta:hover{background:#0a3c6b}
-</style>
 </head>
 <body>
 <div id="app">
