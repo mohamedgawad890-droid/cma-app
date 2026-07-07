@@ -933,8 +933,12 @@ const STATE={tab:'loading',searchQ:'',dictQ:'',dictData:[],dictLoaded:false,lead
     _engagementCard:null,_feedbackPromptFor:null,_graceActive:false,_streakWas:0};
 
 // ─── ARABIC TERM TOOLTIPS ──────────────────────────────────────────────────
+// Batch 7: Dictionary entry may be either:
+//   'Term': 'الترجمة'                              — legacy shape (string)
+//   'Term': { ar: '…', en?: '…', lessonId?: '…' }  — enriched shape
+// highlightTerms() and _termData() handle both shapes transparently.
 const TERM_DICT={
-  // Section A — Financial Accounting & Reporting
+  // ── Section A — Financial Accounting & Reporting ────────────────────
   'Other Comprehensive Income':'الدخل الشامل الآخر',
   'Comprehensive Income':'الدخل الشامل',
   'Net Realizable Value':'صافي القيمة القابلة للتحقق',
@@ -986,7 +990,35 @@ const TERM_DICT={
   'Impairment':'انخفاض القيمة',
   'Timeliness':'التوقيت المناسب',
   'Relevance':'الملاءمة',
-  // Section B — Planning & Budgeting
+  'Balance Sheet':'قائمة المركز المالي',
+  'Income Statement':'قائمة الدخل',
+  'Statement of Cash Flows':'قائمة التدفقات النقدية',
+  'Statement of Owners Equity':'قائمة حقوق الملكية',
+  'Equity Method':'طريقة حقوق الملكية',
+  'Cost Method':'طريقة التكلفة',
+  'Held-to-Maturity':'مقتناة لتاريخ الاستحقاق',
+  'Available-for-Sale':'متاحة للبيع',
+  'Trading Securities':'أوراق مالية للمتاجرة',
+  'Consolidation':'التوحيد',
+  'Business Combination':'اندماج الأعمال',
+  'Non-controlling Interest':'حصة غير مسيطرة',
+  'FIFO':'الوارد أولاً صادر أولاً',
+  'LIFO':'الوارد أخيراً صادر أولاً',
+  'IFRS':'المعايير الدولية للتقارير المالية',
+  'GAAP':'مبادئ المحاسبة المقبولة عمومًا',
+  'FASB':'مجلس معايير المحاسبة المالية',
+  'IASB':'مجلس معايير المحاسبة الدولية',
+  'SEC':'هيئة الأوراق المالية والبورصات',
+  'PCAOB':'مجلس الإشراف على محاسبة الشركات العامة',
+  'EPS':'ربحية السهم',
+  'OCI':'الدخل الشامل الآخر',
+  'AFS':'متاحة للبيع',
+  'HTM':'مقتناة لتاريخ الاستحقاق',
+  'NOL':'خسارة تشغيلية صافية',
+  'DTA':'أصل ضريبي مؤجل',
+  'DTL':'التزام ضريبي مؤجل',
+
+  // ── Section B — Planning, Budgeting & Forecasting ───────────────────
   'Net Present Value':'صافي القيمة الحالية',
   'Internal Rate of Return':'معدل العائد الداخلي',
   'Time Value of Money':'القيمة الزمنية للنقود',
@@ -1007,26 +1039,79 @@ const TERM_DICT={
   'Working Capital':'رأس المال العامل',
   'Discount Rate':'معدل الخصم',
   'Sunk Cost':'التكلفة الغارقة',
-  // Section C — Performance Management
+  'Zero-Based Budgeting':'الموازنة الصفرية',
+  'Incremental Budgeting':'الموازنة التزايدية',
+  'Continuous Budget':'الموازنة المستمرة',
+  'Rolling Budget':'الموازنة المتحركة',
+  'Regression Analysis':'تحليل الانحدار',
+  'Learning Curve':'منحنى التعلم',
+  'Sensitivity Analysis':'تحليل الحساسية',
+  'Scenario Analysis':'تحليل السيناريو',
+  'SWOT Analysis':'تحليل نقاط القوة والضعف',
+  'PESTLE Analysis':'تحليل بيستل',
+  'Porters Five Forces':'قوى بورتر الخمس',
+  'Value Chain':'سلسلة القيمة',
+  'Strategic Planning':'التخطيط الاستراتيجي',
+  'NPV':'صافي القيمة الحالية',
+  'IRR':'معدل العائد الداخلي',
+  'DCF':'التدفقات النقدية المخصومة',
+  'WACC':'المتوسط المرجح لتكلفة رأس المال',
+  'CAPM':'نموذج تسعير الأصول الرأسمالية',
+  'FCF':'التدفق النقدي الحر',
+
+  // ── Section C — Performance Management ──────────────────────────────
   'Key Performance Indicator':'مؤشر الأداء الرئيسي',
   'Economic Value Added':'القيمة الاقتصادية المضافة',
   'Return on Investment':'العائد على الاستثمار',
+  'Return on Equity':'العائد على حقوق الملكية',
+  'Return on Assets':'العائد على الأصول',
   'Balanced Scorecard':'بطاقة الأداء المتوازن',
   'Responsibility Center':'مركز المسؤولية',
   'Investment Center':'مركز الاستثمار',
   'Residual Income':'الدخل المتبقي',
   'Transfer Price':'سعر التحويل',
+  'Transfer Pricing':'تسعير التحويلات',
   'Benchmarking':'المقارنة المرجعية',
   'Cost Center':'مركز التكلفة',
   'Profit Center':'مركز الربح',
-  // Section D — Cost Management
+  'Revenue Center':'مركز الإيرادات',
+  'DuPont Analysis':'تحليل ديبونت',
+  'Asset Turnover':'معدل دوران الأصول',
+  'Profit Margin':'هامش الربح',
+  'Contribution Income Statement':'قائمة الدخل بهامش المساهمة',
+  'Market Variance':'انحراف السوق',
+  'Sales Volume Variance':'انحراف حجم المبيعات',
+  'Sales Price Variance':'انحراف سعر البيع',
+  'Sales Mix Variance':'انحراف مزيج المبيعات',
+  'Financial Statement Analysis':'تحليل القوائم المالية',
+  'ROI':'العائد على الاستثمار',
+  'ROE':'العائد على حقوق الملكية',
+  'ROA':'العائد على الأصول',
+  'ROIC':'العائد على رأس المال المستثمر',
+  'EVA':'القيمة الاقتصادية المضافة',
+  'RI':'الدخل المتبقي',
+  'BSC':'بطاقة الأداء المتوازن',
+  'KPI':'مؤشر الأداء الرئيسي',
+  'NOPAT':'صافي الربح التشغيلي بعد الضريبة',
+  'EBIT':'الأرباح قبل الفوائد والضرائب',
+  'EBITDA':'الأرباح قبل الفوائد والضرائب والاستهلاك والإطفاء',
+  'DSO':'متوسط فترة تحصيل الذمم',
+  'DPO':'متوسط فترة سداد الموردين',
+  'CCC':'دورة التحويل النقدي',
+
+  // ── Section D — Cost Management ─────────────────────────────────────
   'Activity-Based Costing':'محاسبة التكاليف على أساس الأنشطة',
   'Absorption Costing':'التكاليف الكاملة (الاستيعابية)',
   'Variable Costing':'التكاليف المتغيرة',
+  'Full Costing':'التكاليف الكاملة',
   'Job Order Costing':'محاسبة تكاليف الأوامر',
   'Process Costing':'محاسبة تكاليف المراحل',
   'Standard Cost':'التكلفة المعيارية',
+  'Standard Costing':'المحاسبة على أساس التكلفة المعيارية',
+  'Actual Costing':'المحاسبة على أساس التكلفة الفعلية',
+  'Normal Costing':'المحاسبة على أساس التكلفة العادية',
   'Contribution Margin':'هامش المساهمة',
+  'Contribution Margin Ratio':'نسبة هامش المساهمة',
   'Equivalent Units':'الوحدات المكافئة',
   'Break-Even Point':'نقطة التعادل',
   'Weighted Average':'المتوسط المرجح',
@@ -1036,8 +1121,55 @@ const TERM_DICT={
   'Fixed Cost':'التكلفة الثابتة',
   'Mixed Cost':'التكلفة المختلطة',
   'Joint Cost':'التكاليف المشتركة',
+  'Byproduct':'المنتج العرضي',
   'Overhead':'التكاليف غير المباشرة',
-  // Section E — Internal Controls
+  'Manufacturing Overhead':'التكاليف الصناعية غير المباشرة',
+  'Fixed Manufacturing Overhead':'التكاليف الصناعية الثابتة',
+  'Variable Manufacturing Overhead':'التكاليف الصناعية المتغيرة',
+  'Fixed MOH':'التكاليف الصناعية الثابتة',
+  'Variable MOH':'التكاليف الصناعية المتغيرة',
+  'Cost of Goods Sold':'تكلفة البضاعة المباعة',
+  'Cost of Goods Manufactured':'تكلفة البضاعة المصنعة',
+  'CVP Analysis':'تحليل التكلفة-الحجم-الربح',
+  'Cost-Volume-Profit':'التكلفة-الحجم-الربح',
+  'Margin of Safety':'هامش الأمان',
+  'Operating Leverage':'الرافعة التشغيلية',
+  'DM Variance':'انحراف المواد المباشرة',
+  'DL Variance':'انحراف العمالة المباشرة',
+  'Overhead Variance':'انحراف التكاليف غير المباشرة',
+  'Price Variance':'انحراف السعر',
+  'Quantity Variance':'انحراف الكمية',
+  'Rate Variance':'انحراف المعدل',
+  'Efficiency Variance':'انحراف الكفاءة',
+  'Spending Variance':'انحراف الإنفاق',
+  'Volume Variance':'انحراف الحجم',
+  'Just-In-Time':'الإنتاج في الوقت المحدد',
+  'Lean Manufacturing':'التصنيع الرشيق',
+  'Kaizen':'كايزن (التحسين المستمر)',
+  'Six Sigma':'ستة سيجما',
+  'Kanban':'كانبان',
+  'Total Quality Management':'إدارة الجودة الشاملة',
+  'Supply Chain':'سلسلة التوريد',
+  'Value-Added':'ذو قيمة مضافة',
+  'Non-Value-Added':'بدون قيمة مضافة',
+  'Life-Cycle Costing':'محاسبة تكاليف دورة الحياة',
+  'Target Costing':'المحاسبة على التكلفة المستهدفة',
+  'ABC':'محاسبة التكاليف على أساس الأنشطة',
+  'COGS':'تكلفة البضاعة المباعة',
+  'COGM':'تكلفة البضاعة المصنعة',
+  'CVP':'التكلفة-الحجم-الربح',
+  'MOH':'التكاليف الصناعية غير المباشرة',
+  'DM':'المواد المباشرة',
+  'DL':'العمالة المباشرة',
+  'OH':'التكاليف غير المباشرة',
+  'JIT':'الإنتاج في الوقت المحدد',
+  'MRP':'تخطيط احتياجات المواد',
+  'ERP':'تخطيط موارد المؤسسة',
+  'TQM':'إدارة الجودة الشاملة',
+  'EOQ':'الكمية الاقتصادية للطلب',
+  'VOH':'التكاليف الصناعية المتغيرة',
+
+  // ── Section E — Internal Controls ───────────────────────────────────
   'Segregation of Duties':'الفصل بين المهام',
   'Control Environment':'بيئة الرقابة',
   'Internal Control':'الرقابة الداخلية',
@@ -1049,33 +1181,187 @@ const TERM_DICT={
   'Control Risk':'مخاطر الرقابة',
   'Fraud':'الاحتيال',
   'Audit':'التدقيق',
-  // Section F — Technology & Analytics
+  'Sarbanes-Oxley':'قانون ساربينز-أوكسلي',
+  'Corporate Governance':'حوكمة الشركات',
+  'Enterprise Risk Management':'إدارة مخاطر المؤسسة',
+  'Preventive Control':'الرقابة الوقائية',
+  'Detective Control':'الرقابة الكاشفة',
+  'Corrective Control':'الرقابة التصحيحية',
+  'Compliance':'الالتزام',
+  'Business Continuity':'استمرارية الأعمال',
+  'Disaster Recovery':'التعافي من الكوارث',
+  'COSO':'إطار كوسو للرقابة الداخلية',
+  'SOX':'قانون ساربينز-أوكسلي',
+  'ERM':'إدارة مخاطر المؤسسة',
+  'ICFR':'الرقابة الداخلية على التقارير المالية',
+
+  // ── Section F — Technology & Analytics ──────────────────────────────
   'Artificial Intelligence':'الذكاء الاصطناعي',
   'Business Intelligence':'ذكاء الأعمال',
   'Machine Learning':'التعلم الآلي',
   'Cloud Computing':'الحوسبة السحابية',
   'Data Analytics':'تحليل البيانات',
   'Data Mining':'استخراج البيانات',
+  'Data Governance':'حوكمة البيانات',
+  'Data Quality':'جودة البيانات',
+  'Data Warehouse':'مستودع البيانات',
+  'Data Lake':'بحيرة البيانات',
   'Cybersecurity':'الأمن السيبراني',
   'Blockchain':'سلسلة الكتل',
   'Big Data':'البيانات الضخمة',
+  'Robotic Process Automation':'الأتمتة الآلية للعمليات',
+  'Enterprise Resource Planning':'تخطيط موارد المؤسسة',
+  'System Development Life Cycle':'دورة حياة تطوير النظم',
+  'Distributed Ledger':'السجل الموزع',
+  'Encryption':'التشفير',
+  'Data Privacy':'خصوصية البيانات',
+  'Descriptive Analytics':'التحليلات الوصفية',
+  'Diagnostic Analytics':'التحليلات التشخيصية',
+  'Predictive Analytics':'التحليلات التنبؤية',
+  'Prescriptive Analytics':'التحليلات الإرشادية',
+  'AI':'الذكاء الاصطناعي',
+  'ML':'التعلم الآلي',
+  'BI':'ذكاء الأعمال',
+  'RPA':'الأتمتة الآلية للعمليات',
+  'SDLC':'دورة حياة تطوير النظم',
+  'IoT':'إنترنت الأشياء',
+  'ETL':'الاستخراج والتحويل والتحميل',
+  'SQL':'لغة الاستعلام المهيكلة',
+  'API':'واجهة برمجة التطبيقات',
 };
+
+// ── Case-normalization for lookup (Batch 7) ──────────────────────────
+// Terms are matched case-insensitively but a case-preserving display is kept.
+// _termIndex maps lowercased term → canonical key for O(1) lookup.
+const _termIndex=(function(){
+  const m=Object.create(null);
+  Object.keys(TERM_DICT).forEach(k=>{ m[k.toLowerCase()]=k; });
+  return m;
+})();
+
+// Fetch normalized data for a term. Returns {ar, en?, lessonId?} or null.
+function _termData(termKey){
+  const val=TERM_DICT[termKey];
+  if(!val)return null;
+  if(typeof val==='string')return {ar:val};
+  return {ar:val.ar||'', en:val.en||'', lessonId:val.lessonId||''};
+}
+
 function escRx(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
+// Sorted term keys — cached because it's called on every render pass.
+let _sortedTerms=null;
+function _getSortedTerms(){
+  if(_sortedTerms)return _sortedTerms;
+  _sortedTerms=Object.keys(TERM_DICT).sort((a,b)=>b.length-a.length);
+  return _sortedTerms;
+}
 function highlightTerms(text){
   let out=esc(text);
-  const terms=Object.keys(TERM_DICT).sort((a,b)=>b.length-a.length);
+  const terms=_getSortedTerms();
   for(const term of terms){
-    const ar=TERM_DICT[term];
-    const re=new RegExp('\\b'+escRx(term)+'(?![^<]*>)','g');
-    out=out.replace(re,`<span class="ar-term" onclick="toggleTip(this)">${term}<span class="ar-tip">${ar}</span></span>`);
+    // Case-insensitive match; case-preserving replacement (keeps original text).
+    // Boundary: alphanumeric-safe (?<![A-Za-z0-9_]) ... (?![A-Za-z0-9_]) so
+    // abbreviations like MOH inside "Fixed MOH" match, but "MOHawk" does not.
+    // Fallback for engines without lookbehind (older Safari): use \b.
+    let re;
+    try{
+      re=new RegExp('(?<![A-Za-z0-9_])('+escRx(term)+')(?![A-Za-z0-9_])(?![^<]*>)','gi');
+    }catch{
+      re=new RegExp('\\b('+escRx(term)+')\\b(?![^<]*>)','gi');
+    }
+    out=out.replace(re,(match)=>`<span class="ar-term" data-term="${esc(term)}" onclick="toggleTip(event,this)">${match}</span>`);
   }
   return out;
 }
-function toggleTip(el){
-  const tip=el.querySelector('.ar-tip');if(!tip)return;
-  const wasOpen=tip.classList.contains('show');
-  document.querySelectorAll('.ar-tip.show').forEach(t=>t.classList.remove('show'));
-  if(!wasOpen)tip.classList.add('show');
+
+// ── Floating popover for term tooltips (Batch 7) ─────────────────────
+// Replaces the old inline-pill design. One popover element is reused —
+// created lazily on first click, positioned relative to the clicked term,
+// dismissed on click-outside / ESC / scroll.
+let _tipEl=null;
+let _tipAnchor=null;
+function _ensureTipEl(){
+  if(_tipEl)return _tipEl;
+  _tipEl=document.createElement('div');
+  _tipEl.className='ar-tip-pop';
+  _tipEl.setAttribute('role','tooltip');
+  _tipEl.style.display='none';
+  document.body.appendChild(_tipEl);
+  // Global dismiss handlers — attached once.
+  document.addEventListener('click',(e)=>{
+    if(!_tipEl||_tipEl.style.display==='none')return;
+    if(_tipEl.contains(e.target))return;
+    if(e.target.closest && e.target.closest('.ar-term'))return;
+    _hideTip();
+  },true);
+  document.addEventListener('keydown',(e)=>{ if(e.key==='Escape')_hideTip(); });
+  window.addEventListener('resize',_hideTip);
+  window.addEventListener('scroll',_hideTip,true);
+  return _tipEl;
+}
+function _hideTip(){
+  if(!_tipEl)return;
+  _tipEl.style.display='none';
+  _tipEl.classList.remove('show');
+  _tipAnchor=null;
+}
+function _positionTip(anchor){
+  const tip=_tipEl;if(!tip||!anchor)return;
+  // Make visible off-screen first to measure natural size
+  tip.style.left='-9999px';
+  tip.style.top='0px';
+  tip.style.display='block';
+  const anchorRect=anchor.getBoundingClientRect();
+  const tipRect=tip.getBoundingClientRect();
+  const vw=window.innerWidth, vh=window.innerHeight;
+  const margin=8;
+  // Prefer above; fall back to below if not enough room
+  let top=anchorRect.top - tipRect.height - 10;
+  let arrow='bottom'; // arrow points down (tip above anchor)
+  if(top < margin){
+    top=anchorRect.bottom + 10;
+    arrow='top';
+  }
+  // Center horizontally over anchor, clamp to viewport
+  let left=anchorRect.left + (anchorRect.width/2) - (tipRect.width/2);
+  if(left < margin) left=margin;
+  if(left + tipRect.width > vw - margin) left=vw - margin - tipRect.width;
+  tip.style.top=(top + window.scrollY)+'px';
+  tip.style.left=(left + window.scrollX)+'px';
+  tip.setAttribute('data-arrow',arrow);
+  tip.classList.add('show');
+}
+function toggleTip(ev,el){
+  if(ev){ ev.stopPropagation(); }
+  const anchor=el||(ev&&ev.currentTarget);
+  if(!anchor)return;
+  const termKey=anchor.getAttribute('data-term');
+  const data=_termData(termKey);
+  if(!data){ _hideTip(); return; }
+  const tip=_ensureTipEl();
+  // If clicking the same anchor already shown, dismiss (toggle behavior)
+  if(_tipAnchor===anchor && tip.style.display!=='none'){
+    _hideTip();
+    return;
+  }
+  _tipAnchor=anchor;
+  // Build content — Arabic primary, optional English secondary, optional lesson link
+  const enBlock=data.en?`<div class="ar-tip-en">${esc(data.en)}</div>`:'';
+  const linkBlock=data.lessonId?`<a class="ar-tip-link" href="javascript:void(0)" onclick="_hideTip();navTo('study');studyGo(null,'${esc(data.lessonId)}')">See lesson →</a>`:'';
+  tip.innerHTML=
+    `<div class="ar-tip-arrow"></div>`+
+    `<div class="ar-tip-term">${esc(termKey)}</div>`+
+    `<div class="ar-tip-ar">${esc(data.ar)}</div>`+
+    enBlock+linkBlock;
+  try{ _positionTip(anchor); }
+  catch(err){
+    console.warn('[tooltip] positioning failed, falling back:',err);
+    // Graceful fallback — show inline near anchor
+    tip.style.position='absolute';
+    tip.style.top=(anchor.offsetTop+anchor.offsetHeight+6)+'px';
+    tip.style.left=anchor.offsetLeft+'px';
+    tip.classList.add('show');
+  }
 }
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 function sect(id){return S.find(s=>s.id===id);}
@@ -1137,7 +1423,9 @@ function renderBlock(block,sec){
     // ── Batch 6: pedagogical block types ─────────────────────────────────
     case'def':{
       const term=block.term||block.l||'';
-      return`<div class="def-block"><div class="def-lbl" style="color:${tx}">DEFINITION</div><div class="def-term" style="color:${st}">${esc(term)}</div><div class="def-body">${highlightTerms(block.v||'')}</div></div>`;
+      // Batch 7: apply highlightTerms to the title as well, so titles like
+      // "Absorption Costing" are tappable, not just body mentions.
+      return`<div class="def-block"><div class="def-lbl" style="color:${tx}">DEFINITION</div><div class="def-term" style="color:${st}">${highlightTerms(term)}</div><div class="def-body">${highlightTerms(block.v||'')}</div></div>`;
     }
     case'case':{
       const co=esc(block.co||'Company');
@@ -3054,12 +3342,14 @@ function renderQuizResults(){
   const gradeEmoji=pctQ>=80?'🏆':pctQ>=60?'👍':'📚';const gradeLabel=pctQ>=80?'Excellent!':pctQ>=60?'Good work!':'Keep studying!';
   const breakdown=qs.questions.map((q,i)=>`<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;padding-bottom:${i<qs.questions.length-1?'10px':'0'};border-bottom:${i<qs.questions.length-1?'.5px solid var(--border)':'none'}"><span style="font-size:15px;flex-shrink:0">${qs.answers[i]?.correct?'✅':'❌'}</span><div><div style="font-size:13px;color:#333;line-height:1.4">Q${i+1}: ${esc(q.q)}</div>${!qs.answers[i]?.correct?`<div style="font-size:12px;color:var(--ok-strong-2);margin-top:3px">Correct: ${esc(q.o[q.a])}</div>`:''}</div></div>`).join('');
   const timeHTML=totalTimeHTML(qs.quizStartTime,qs.quizEndTime,qs.questionTimes);
+  // Batch 7: Review Answers button — paginated review of every question
+  const reviewBtn=`<button class="btn" onclick="startQuizReview()" style="background:var(--brand);color:#fff;margin-bottom:10px">📖 Review Answers</button>`;
   const actionBtns=qs.isRetry
-    ?`<div style="display:flex;gap:10px;margin-bottom:12px">
+    ?`${reviewBtn}<div style="display:flex;gap:10px;margin-bottom:12px">
         <button class="btn btn-outline" onclick="STATE.tab='wrong-answers';STATE.quizState=null;render()">← Wrong Answers</button>
         <button class="btn" onclick="startWrongAnswersRetry()" style="background:var(--err);color:#fff">↺ Retry Again</button>
       </div>`
-    :`<div style="display:flex;gap:10px;margin-bottom:12px">
+    :`${reviewBtn}<div style="display:flex;gap:10px;margin-bottom:12px">
         <button class="btn btn-outline" onclick="STATE.tab='study';STATE.quizState=null;render()">Back to Study</button>
         <button class="btn" onclick="startQuiz('${qs.lessonId}')" style="background:${sec.bar};color:#fff">Retake Quiz</button>
       </div>
@@ -3077,6 +3367,143 @@ function renderQuizResults(){
   </div>`;
 }
 
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  BATCH 7 — QUIZ REVIEW MODE
+// ═══════════════════════════════════════════════════════════════════════════
+// Paginated per-question review after a lesson quiz. Same visual pattern as
+// exam review: verdict bar → question → color-coded options → explanation.
+// Uses STATE.quizState (already populated by the quiz session).
+function startQuizReview(){
+  const qs=STATE.quizState;
+  if(!qs||!qs.questions||!qs.questions.length){showToast('No quiz data to review.','warning',2000);return;}
+  qs.reviewIdx=0;
+  qs.reviewNavOpen=false;
+  STATE.tab='quiz-review';
+  render();
+}
+function quizReviewGoTo(idx){
+  const qs=STATE.quizState;if(!qs||!qs.questions)return;
+  qs.reviewIdx=Math.max(0,Math.min(qs.questions.length-1,idx));
+  qs.reviewNavOpen=false;
+  render();
+}
+function quizReviewNavToggle(){
+  const qs=STATE.quizState;if(!qs)return;
+  qs.reviewNavOpen=!qs.reviewNavOpen;
+  render();
+}
+function exitQuizReview(){
+  STATE.tab='quiz-results';
+  render();
+}
+function renderQuizReview(){
+  const qs=STATE.quizState;
+  if(!qs||!Array.isArray(qs.questions)||!qs.questions.length){STATE.tab='study';return renderStudy();}
+  const idx=qs.reviewIdx||0;
+  const q=qs.questions[idx];
+  const total=qs.questions.length;
+  const ansObj=qs.answers[idx]||{};
+  // Normalize picked index — quizState.answers is [{correct, chosen, ...}] or similar
+  const picked=(typeof ansObj.chosen==='number')?ansObj.chosen:(typeof ansObj.selected==='number'?ansObj.selected:null);
+  const correct=picked===q.a;
+  const skipped=picked==null;
+  const correctCount=qs.answers.filter(a=>a&&a.correct).length;
+  const sec=sect(qs.sId)||{bar:'var(--brand)',text:'var(--brand)',strong:'var(--brand)'};
+  const lessonTitle=qs.isRetry?'Wrong Answer Retry':S.flatMap(s=>s.lessons).find(l=>l.id===qs.lessonId)?.title||'';
+
+  // Options: correct = green, student's wrong pick = red, others = neutral
+  const opts=q.o.map((opt,i)=>{
+    let bg='var(--surface-3)',border='.5px solid var(--border)',textC='var(--ink)',circBg='var(--border-2)',circC='#666',circTxt=String.fromCharCode(65+i);
+    if(i===q.a){bg='var(--ok-tint)';border='1px solid var(--ok)';textC='var(--ok-strong)';circBg='#c0dd97';circC='var(--ok-strong)';circTxt='\u2713';}
+    else if(i===picked){bg='var(--err-tint)';border='1px solid var(--err)';textC='var(--err-strong)';circBg='#f7c1c1';circC='var(--err-strong)';circTxt='\u2717';}
+    else{textC='#888';}
+    return '<div class="q-opt" style="background:'+bg+';border:'+border+';cursor:default">'
+      +'<div class="q-circle" style="background:'+circBg+';color:'+circC+';border:.5px solid #bbb">'+circTxt+'</div>'
+      +'<div class="q-text" style="color:'+textC+'">'+esc(normalizeCase(opt))+'</div>'
+      +'</div>';
+  }).join('');
+
+  const verdictBar=skipped
+    ?'<div style="background:var(--accent-purple-tint);border:1px solid #D2B4DE;color:#6C3483;padding:9px 12px;border-radius:8px;font-size:12px;font-weight:600;margin-bottom:12px">\u25CB Not answered</div>'
+    :correct
+      ?'<div style="background:var(--ok-tint);border:1px solid var(--ok);color:var(--ok-strong);padding:9px 12px;border-radius:8px;font-size:12px;font-weight:600;margin-bottom:12px">\u2705 Correct</div>'
+      :'<div style="background:var(--err-tint);border:1px solid var(--err);color:var(--err-2);padding:9px 12px;border-radius:8px;font-size:12px;font-weight:600;margin-bottom:12px">\u274C Incorrect</div>';
+
+  // Explanation: use expFor() so wrong picks get the specific wrongWhy[i]
+  let explanationText='';
+  if(!correct&&!skipped&&typeof expFor==='function'){
+    try{explanationText=expFor(q,picked)||q.e||'';}catch{explanationText=q.e||'';}
+  }else{
+    explanationText=q.e||'';
+  }
+  const explanation=explanationText
+    ?'<div style="margin-top:14px;padding:13px 14px;border-radius:10px;background:var(--surface);border:.5px solid var(--border)">'
+     +'<div style="font-size:11px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">Explanation</div>'
+     +'<div style="font-size:13px;color:#333;line-height:1.6">'+esc(explanationText)+'</div>'
+     +'</div>'
+    :'';
+
+  const navGrid=qs.reviewNavOpen
+    ?'<div style="position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200" onclick="quizReviewNavToggle()">'
+     +'<div onclick="event.stopPropagation()" style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:16px 16px 0 0;padding:16px;max-height:75vh;overflow-y:auto">'
+     +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'
+     +'<div style="font-size:14px;font-weight:600">Review Questions</div>'
+     +'<button onclick="quizReviewNavToggle()" style="background:none;border:none;font-size:22px;cursor:pointer;color:#888">\u00D7</button>'
+     +'</div>'
+     +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:8px">'
+     +qs.questions.map((q2,i)=>{
+        const a=qs.answers[i]||{};
+        const p=(typeof a.chosen==='number')?a.chosen:(typeof a.selected==='number'?a.selected:null);
+        const c=p===q2.a;
+        const sk=p==null;
+        const bg=sk?'var(--accent-purple-tint)':c?'var(--ok-tint)':'var(--err-tint)';
+        const col=sk?'#6C3483':c?'var(--ok-strong)':'var(--err-2)';
+        const cur=i===idx;
+        return '<button onclick="quizReviewGoTo('+i+')" style="padding:9px 0;border-radius:8px;border:'+(cur?'2px solid var(--brand)':'.5px solid var(--border-4)')+';background:'+bg+';color:'+col+';font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">'+(i+1)+'</button>';
+      }).join('')
+     +'</div>'
+     +'<div style="display:flex;gap:10px;margin-top:14px;font-size:11px;color:#888">'
+     +'<div><span style="display:inline-block;width:10px;height:10px;background:var(--ok-tint);border-radius:2px;vertical-align:middle;margin-right:4px"></span>Correct</div>'
+     +'<div><span style="display:inline-block;width:10px;height:10px;background:var(--err-tint);border-radius:2px;vertical-align:middle;margin-right:4px"></span>Wrong</div>'
+     +'<div><span style="display:inline-block;width:10px;height:10px;background:var(--accent-purple-tint);border-radius:2px;vertical-align:middle;margin-right:4px"></span>Skipped</div>'
+     +'</div>'
+     +'</div></div>'
+    :'';
+
+  const prevBtn=idx>0
+    ?'<button onclick="quizReviewGoTo('+(idx-1)+')" style="flex:0 0 auto;padding:11px 16px;border-radius:10px;border:.5px solid var(--border-4);background:#fff;color:#333;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit">\u2039 Prev</button>'
+    :'<div style="flex:0 0 auto;width:1px"></div>';
+  const isLast=idx>=total-1;
+  const nextBtn=isLast
+    ?'<button onclick="exitQuizReview()" style="flex:1;padding:11px;border-radius:10px;border:none;background:var(--brand);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Back to Results \u2713</button>'
+    :'<button onclick="quizReviewGoTo('+(idx+1)+')" style="flex:1;padding:11px;border-radius:10px;border:none;background:var(--brand);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Next \u203A</button>';
+  const barW=Math.round((idx+1)/total*100);
+
+  return '<div style="display:flex;flex-direction:column;height:100%">'
+    +'<div style="background:#fff;border-bottom:.5px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0">'
+    +'<button onclick="exitQuizReview()" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--brand);padding:0 6px" title="Back">\u2039</button>'
+    +'<div style="flex:1;min-width:0">'
+    +'<div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.4px">Review \u00B7 '+esc(lessonTitle)+'</div>'
+    +'<div style="font-size:13px;font-weight:600;color:var(--ink)">Q'+(idx+1)+' of '+total+' \u00B7 <span style="color:var(--ok-strong-2)">'+correctCount+' correct</span></div>'
+    +'</div>'
+    +'<button onclick="quizReviewNavToggle()" style="padding:6px 10px;border-radius:8px;border:.5px solid var(--border-4);background:var(--surface);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u2630 Nav</button>'
+    +'</div>'
+    +'<div style="height:4px;background:var(--surface-4);flex-shrink:0"><div style="height:100%;width:'+barW+'%;background:var(--brand);transition:width .3s"></div></div>'
+    +'<div class="scroll-area pad" style="padding-top:14px">'
+    +verdictBar
+    +'<div class="card" style="margin-bottom:12px">'
+    +'<p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:16px">'+esc(q.q)+'</p>'
+    +(typeof dataTableHTML==='function'?dataTableHTML(q):'')
+    +opts
+    +explanation
+    +'</div>'
+    +'<div style="display:flex;gap:8px;margin-bottom:14px">'+prevBtn+nextBtn+'</div>'
+    +'<div style="height:20px"></div>'
+    +'</div>'
+    +navGrid
+    +'</div>';
+}
 
 function renderFormulaBank(){
   const cats=[
@@ -5837,6 +6264,12 @@ function setAttendanceView(v){
   try{ localStorage.setItem('cma-attendance-view', v); }catch{}
   render();
 }
+// Batch 7: prime attendance view from localStorage on dashboard boot.
+function _primeAttendanceView(){
+  if(STATE.dashAttendanceView) return;
+  try{ STATE.dashAttendanceView = localStorage.getItem('cma-attendance-view') || 'list'; }
+  catch{ STATE.dashAttendanceView = 'list'; }
+}
 
 function renderDashAttendanceMatrix(groupCode, lectures, students){
   const lecturesSorted=lectures.slice().sort((a,b)=>{
@@ -5991,8 +6424,29 @@ function renderDashAttendance(){
   const lectures=(STATE.dashLectures||[]).slice();
   const students=(STATE.dashStudents||[]).filter(s=>(s.groupCode||'').toUpperCase()===g.toUpperCase());
   const total=students.length;
+  // Batch 7: ensure view mode is primed (may be null on first dashboard open)
+  _primeAttendanceView();
+  const activeView=STATE.dashAttendanceView||'list';
+  // Batch 7: segmented toggle — List vs Matrix
+  const viewToggle=`<div class="att-view-toggle">
+    <button class="att-view-btn${activeView==='list'?' active':''}" onclick="setAttendanceView('list')">\u{1F4CB} List View</button>
+    <button class="att-view-btn${activeView==='matrix'?' active':''}" onclick="setAttendanceView('matrix')">\u{1F4CA} Matrix View</button>
+  </div>`;
   if(!lectures.length){
-    return `<div style="padding:14px">${renderDashTabEmpty('Attendance',g,{icon:'\u2705',body:'No lectures yet for this group. Create a lecture first, then attendance summaries will appear here.'})}</div>`;
+    return `<div style="padding:14px">${viewToggle}${renderDashTabEmpty('Attendance',g,{icon:'\u2705',body:'No lectures yet for this group. Create a lecture first, then attendance summaries will appear here.'})}</div>`;
+  }
+  // Batch 7: Matrix view — render heatmap + CSV export button
+  if(activeView==='matrix'){
+    const csvBtn=`<div style="display:flex;justify-content:flex-end;margin-bottom:10px">
+      <button onclick="exportAttendanceMatrixCSV('${g}')" style="padding:8px 14px;border-radius:8px;border:.5px solid var(--brand-2)40;background:var(--brand-tint);color:var(--brand);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u2B07 Export CSV</button>
+    </div>`;
+    return `<div style="padding:14px">
+      ${viewToggle}
+      <div style="font-size:12px;color:var(--muted-2);margin-bottom:12px">Group has <b>${total}</b> student${total===1?'':'s'} \u00B7 ${lectures.length} lecture${lectures.length===1?'':'s'}</div>
+      ${csvBtn}
+      ${renderDashAttendanceMatrix(g,lectures,students)}
+      <div style="height:30px"></div>
+    </div>`;
   }
   const rows=lectures.map(l=>{
     const cached=STATE.dashAttendanceByLecture[l.id];
@@ -6033,6 +6487,7 @@ function renderDashAttendance(){
     <div style="height:30px"></div>
   </div>`;
 }
+// Batch 7: end renderDashAttendance
 
 // Feedback open/close toggle button per lecture (in Attendance tab)
 function _lectureFeedbackToggleBtn(lec){
@@ -6897,7 +7352,7 @@ const TABS=[
 // Maps every screen → its primary nav tab
 function activeNavTab(){
   const t=STATE.tab;
-  if(t==='study'||t==='quiz-session'||t==='quiz-results'||t==='lessons')return'study';
+  if(t==='study'||t==='quiz-session'||t==='quiz-results'||t==='quiz-review'||t==='lessons')return'study';
   if(t==='quiz-mode-select'||t==='quiz-mode'||t==='cbq'||t==='mock-exam'||t==='flashcards'||t==='wrong-answers')return'quiz-mode-select';
   if(t==='progress'||t==='tracker'||t==='leaderboard')return'progress';
   if(t==='formula-bank'||t==='dictionary'||t==='my-notes')return'formula-bank';
@@ -6954,7 +7409,7 @@ function render(){
   // yields a graceful recovery card instead of a blank screen.
   try{
     switch(STATE.tab){
-      case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'wrong-answers':html=renderWrongAnswers();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;case'formula-bank':html=renderFormulaBank();break;case'dictionary':html=renderDictionary();break;case'flashcards':html=renderFlashcards();break;case'my-notes':html=renderNotes();break;case'dashboard':html=renderDashboard();break;case'cbq':html=renderCBQ();break;case'mock-exam':html=renderMockExamScreen();break;case'exam':html=renderExam();break;default:html=renderIntro();
+      case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'wrong-answers':html=renderWrongAnswers();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'quiz-review':html=renderQuizReview();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;case'formula-bank':html=renderFormulaBank();break;case'dictionary':html=renderDictionary();break;case'flashcards':html=renderFlashcards();break;case'my-notes':html=renderNotes();break;case'dashboard':html=renderDashboard();break;case'cbq':html=renderCBQ();break;case'mock-exam':html=renderMockExamScreen();break;case'exam':html=renderExam();break;default:html=renderIntro();
     }
   }catch(err){
     console.error('[render] Renderer threw for tab='+STATE.tab, err);
@@ -7207,8 +7662,11 @@ function renderRegister(){
         </select>
       </div>
       <div>
-        <label style="font-size:12px;color:#888;display:block;margin-bottom:5px">Target exam date (approximate)</label>
-        <input id="f-examdate" type="month" min="2026-01" max="2028-12" value="${fval('examdate')}" style="width:100%;padding:10px 12px;border-radius:8px;border:.5px solid var(--border-4);font-size:14px;font-family:inherit;outline:none;color:var(--ink);background:var(--surface)">
+        <label style="font-size:12px;color:#888;display:block;margin-bottom:5px">Target exam window</label>
+        <select id="f-examdate" style="width:100%;padding:10px 12px;border-radius:8px;border:.5px solid var(--border-4);font-size:14px;font-family:inherit;outline:none;color:var(--ink);background:var(--surface)">
+          ${(()=>{const current=fval('examdate');const normalized=_normalizeExamWindow(current);const windows=_getExamWindows();return '<option value="">— Select target window —</option>'+windows.map(w=>`<option value="${w.value}" ${normalized===w.value?'selected':''}>${w.label}</option>`).join('');})()}
+        </select>
+        <div style="font-size:11px;color:#888;margin-top:6px;line-height:1.5">CMA testing windows: <b>Jan/Feb</b>, <b>May/Jun</b>, <b>Sep/Oct</b>. Pick the window that matches your planned test date.</div>
       </div>
     </div>
 
@@ -7259,7 +7717,7 @@ function renderRegister(){
     </div>
 
     <div class="info-title" style="font-size:14px;margin-bottom:10px">⚙️ App Preferences</div><div class="card" style="margin-bottom:14px"><div style="margin-bottom:12px"><label style="font-size:12px;color:#888;display:block;margin-bottom:5px">Font size</label><div style="display:flex;gap:6px">${['sm','md','lg'].map(v=>{const on=STATE.fontSize===v;const lbl={sm:'Small',md:'Medium',lg:'Large'}[v];return `<button onclick="saveFontSize('${v}');render()" style="flex:1;padding:10px;border-radius:8px;border:.5px solid ${on?'var(--brand)':'var(--border-4)'};background:${on?'var(--brand-tint)':'var(--surface)'};color:${on?'var(--brand)':'#555'};font-size:${v==='sm'?'12px':v==='md'?'13px':'15px'};font-weight:${on?'600':'400'};cursor:pointer;font-family:inherit">${lbl}</button>`;}).join('')}</div><div style="font-size:11px;color:#888;margin-top:4px">Applied instantly across the app.</div></div><div><label style="font-size:12px;color:#888;display:block;margin-bottom:5px">Daily study goal (minutes)</label><div style="display:flex;gap:8px;align-items:center"><input id="f-dailygoal" type="number" min="5" max="240" step="5" value="${STATE.dailyGoalMinutes||30}" style="flex:1;padding:10px 12px;border-radius:8px;border:.5px solid var(--border-4);font-size:14px;font-family:inherit;outline:none;color:var(--ink);background:var(--surface)"><button onclick="saveDailyGoal(document.getElementById('f-dailygoal').value);showToast('Goal saved ✓','success',1500)" style="padding:10px 16px;border-radius:8px;border:none;background:var(--brand);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Save</button></div><div style="font-size:11px;color:#888;margin-top:4px">Tracked on the Home screen goal ring.</div></div></div><div style="background:var(--surface-3);border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:12px;color:#888;text-align:center;line-height:1.5">
-      Fields marked * are required. Job Title, Company, Experience, Level, and Goal are optional.
+      Only <b>Name</b> and <b>Mobile</b> are required. All other fields are optional — but the more you fill in, the more we can personalize your experience.
     </div>
     <button onclick="submitProfile()" class="btn submit-profile-btn" style="background:var(--brand);color:#fff;font-size:15px;margin-bottom:8px">
       ${isComplete?'Update My Profile ✓':'Complete Profile & Unlock the App →'}
@@ -7311,13 +7769,51 @@ async function sendToSheet(data){
   }catch(e){console.log('Sheet sync error:',e);}
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+//  BATCH 7 — CMA Exam Window Helpers
+// ═══════════════════════════════════════════════════════════════════════════
+// The IMA offers only three CMA testing windows per year: Jan/Feb, May/Jun,
+// Sep/Oct. Storage stays 'YYYY-MM' (last month of window: -02, -06, -10) so
+// existing countdown code (renderIntro, renderStudy) works unchanged.
+function _getExamWindows(){
+  const years=[2026,2027,2028];
+  const out=[];
+  years.forEach(y=>{
+    out.push({value:`${y}-02`, label:`Jan/Feb ${y}`});
+    out.push({value:`${y}-06`, label:`May/Jun ${y}`});
+    out.push({value:`${y}-10`, label:`Sep/Oct ${y}`});
+  });
+  return out;
+}
+// Migrate legacy invalid months → snap forward to next valid window.
+// Accepts 'YYYY-MM'. Returns valid 'YYYY-MM' or '' if input empty/invalid shape.
+function _normalizeExamWindow(v){
+  if(!v||typeof v!=='string')return '';
+  const m=v.match(/^(\d{4})-(\d{2})$/);
+  if(!m)return '';
+  const year=parseInt(m[1],10);
+  const month=parseInt(m[2],10);
+  // Valid target months: 2 (Jan/Feb), 6 (May/Jun), 10 (Sep/Oct)
+  if(month===2||month===6||month===10)return v;
+  // Snap forward to next valid window in the same year, else next year
+  let ny=year, nm;
+  if(month===1)nm=2;
+  else if(month>=3&&month<=5)nm=6;
+  else if(month>=7&&month<=9)nm=10;
+  else if(month===11||month===12){ ny=year+1; nm=2; }
+  else return '';
+  return `${ny}-${String(nm).padStart(2,'0')}`;
+}
+
 async function submitProfile(){
   const get=(id)=>document.getElementById(id)?.value?.trim()||'';
   const name=get('f-name'),mobile=get('f-mobile'),country=get('f-country');
   const email=get('f-email')||(STATE.user&&STATE.user.email)||'';
   const university=get('f-university'),faculty=get('f-faculty'),gradyear=get('f-gradyear');
   const title=get('f-title'),company=get('f-company'),experience=get('f-experience');
-  const level=get('f-level'),goal=get('f-goal'),examdate=get('f-examdate');
+  const level=get('f-level'),goal=get('f-goal');
+  // Batch 7: normalize exam date to valid CMA testing window
+  const examdate=_normalizeExamWindow(get('f-examdate'));
   const groupCode=(get('f-groupcode')||'').toUpperCase();
   // Batch 6: new profile fields
   const city=get('f-city');
@@ -7330,6 +7826,30 @@ async function submitProfile(){
   const pendingB64=window._pendingPhoto||'';
   if(missing.length>0){
     showModal({icon:'📋',title:'Missing Required Fields',body:'Please complete the following to continue:',list:missing,type:'warning',confirmText:'OK'});return;
+  }
+  // ── Batch 7: Group code validation ──────────────────────────────────
+  // If student entered a group code, verify it exists before saving.
+  // Prevents silent failures downstream (QoD, live check-ins, attendance,
+  // exams all fail silently on invalid codes). Empty code = self-study OK.
+  // Offline behavior: on network failure, accept the save and log a warning
+  // rather than block the user (auth is offline-tolerant, so should be this).
+  if(groupCode){
+    try{
+      const snap=await db.collection('groups').where('code','==',groupCode).limit(1).get();
+      if(snap.empty){
+        showModal({
+          icon:'⚠️',
+          title:'Group Code Not Found',
+          body:`The group code "${groupCode}" doesn't match any active group. Please check with your instructor for the correct code, or leave it blank if you're studying on your own.`,
+          type:'warning',
+          confirmText:'OK'
+        });
+        return;
+      }
+    }catch(err){
+      // Network / permission failure — don't block save. Log for diagnosis.
+      console.warn('[submitProfile] group code validation skipped (network error):', err);
+    }
   }
   let photoUrl=existingPhoto;
   if(pendingB64&&pendingB64.startsWith('data:')){
