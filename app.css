@@ -281,3 +281,208 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   padding: 0; margin: -1px; overflow: hidden;
   clip: rect(0,0,0,0); white-space: nowrap; border: 0;
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ══════════════════ Batch 6 additions - keep at file end ═════════════════
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Migrated from index.html <style id="batch-overrides"> ──────────────── */
+/* Batch 6 change: replaced non-standard `zoom:1.12` with a proper transform
+   scale on a wrapper. transform:scale keeps layout math intact when combined
+   with transform-origin:top left, and works consistently across browsers. */
+@media(min-width:900px){
+  #app{max-width:1700px}
+  .content{
+    transform:scale(1.10);
+    transform-origin:top left;
+    width:calc(100% / 1.10);
+    height:calc(100% / 1.10);
+  }
+}
+@media(min-width:1200px){
+  #app{max-width:1700px}
+}
+
+/* ── Mobile brand strip (avatar + title) ─────────────────────────────────── */
+.mobile-brand{display:flex;align-items:center;gap:10px;padding:8px 14px;background:#fff;border-bottom:.5px solid #e0e0d8;flex-shrink:0}
+.mobile-brand-img{width:30px;height:30px;border-radius:50%;object-fit:cover;border:2px solid #E6F1FB;flex-shrink:0}
+.mobile-brand-title{font-size:14px;font-weight:600;color:#0C447C;letter-spacing:.3px}
+@media(min-width:900px){.mobile-brand{display:none!important}}
+
+/* ── Migrated from index.html <style id="ported-features"> ──────────────── */
+.qod-card{background:linear-gradient(135deg,#7D3C98,#5B2C6F);border-radius:14px;padding:14px 16px;margin-bottom:14px;color:#fff}
+.qod-lbl{font-size:10px;font-weight:700;letter-spacing:1px;opacity:.75;margin-bottom:4px}
+.qod-title{font-size:15px;font-weight:600;margin-bottom:8px;line-height:1.4}
+.qod-meta{font-size:11px;color:rgba(255,255,255,.75);margin-bottom:10px}
+.qod-opt{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:9px;padding:9px 12px;margin-bottom:6px;cursor:pointer;font-size:13px;display:flex;align-items:flex-start;gap:8px;transition:background .15s}
+.qod-opt:hover{background:rgba(255,255,255,.18)}
+.qod-opt.correct{background:rgba(46,204,113,.35);border-color:#2ECC71}
+.qod-opt.wrong{background:rgba(231,76,60,.35);border-color:#E74C3C}
+.qod-opt-letter{background:rgba(255,255,255,.2);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.qod-exp{background:rgba(255,255,255,.15);border-radius:8px;padding:9px 12px;margin-top:8px;font-size:12px;line-height:1.5}
+
+/* Flashcards */
+.flash-card{background:#fff;border:.5px solid #e0e0d8;border-radius:16px;padding:22px 20px;min-height:280px;display:flex;flex-direction:column;justify-content:center;align-items:center;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.06);transition:transform .2s}
+.flash-card:active{transform:scale(.98)}
+.flash-front{font-size:20px;font-weight:600;color:#0C447C;text-align:center;line-height:1.4}
+.flash-back{font-size:14px;color:#1a1a1a;line-height:1.7;text-align:left;width:100%;white-space:pre-wrap}
+.flash-type-badge{font-size:9px;font-weight:700;letter-spacing:.8px;padding:3px 9px;border-radius:9px;margin-bottom:14px}
+.flash-nav{display:flex;gap:8px;margin-top:14px}
+.flash-btn{flex:1;padding:12px;border-radius:10px;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.flash-btn-review{background:#FCEBEB;color:#A32D2D;border:1px solid #E24B4A40}
+.flash-btn-know{background:#D5F5E3;color:#186A3B;border:1px solid #1E844940}
+.flash-btn-skip{background:#f5f5f0;color:#555;border:1px solid #d0d0d0}
+
+/* Notes */
+.notes-item{background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:10px}
+.notes-item-title{font-size:13px;font-weight:600;color:#0C447C;margin-bottom:4px}
+.notes-item-sec{font-size:10px;font-weight:600;letter-spacing:.5px;color:#888;margin-bottom:8px;text-transform:uppercase}
+.notes-item-body{font-size:13px;color:#333;line-height:1.6;white-space:pre-wrap;background:#fafaf8;border-radius:8px;padding:10px 12px}
+
+/* Daily goal ring */
+.goal-ring-wrap{display:flex;align-items:center;gap:14px;background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:14px}
+.goal-ring{position:relative;width:64px;height:64px;flex-shrink:0}
+.goal-ring svg{transform:rotate(-90deg)}
+.goal-ring-val{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#0C447C}
+
+/* Prev/next lesson footer */
+.lesson-nav-footer{display:flex;gap:8px;margin-top:20px;padding-top:16px;border-top:.5px solid #e0e0d8}
+.lesson-nav-btn{flex:1;padding:11px 8px;border-radius:10px;border:.5px solid #d0d0d0;background:#f5f5f0;color:#555;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;gap:2px;text-align:left}
+
+/* ── Migrated from index.html <style id="dashboard-p1"> ─────────────────── */
+.teach-entry{background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:10px}
+.teach-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.teach-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
+
+/* Batch 2 - group-selector chip strip */
+.gs-strip{display:flex;gap:8px;padding:10px 12px;overflow-x:auto;-webkit-overflow-scrolling:touch;background:#fff;border-bottom:.5px solid #e0e0d8;scroll-snap-type:x proximity;scrollbar-width:none}
+.gs-strip::-webkit-scrollbar{display:none}
+.gs-chip{flex-shrink:0;scroll-snap-align:start;padding:8px 14px;border-radius:22px;border:1px solid #d0d8e2;background:#fff;color:#0C447C;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;transition:background .12s,border-color .12s,color .12s}
+.gs-chip:hover{background:#F4F6F7}
+.gs-chip.active{background:#0C447C;color:#fff;border-color:#0C447C;box-shadow:0 1px 4px rgba(12,68,124,.25)}
+.gs-chip-count{font-size:10px;font-weight:500;opacity:.75;font-family:'Courier New',monospace}
+.gs-chip.active .gs-chip-count{opacity:.9}
+.gs-chip-new{border-style:dashed;border-color:#b6c0d0;color:#4a6180;background:#fafaf8}
+.gs-chip-new:hover{background:#f0f2f5;border-color:#8a9ab0}
+@media(min-width:900px){.gs-strip{flex-wrap:wrap;overflow-x:visible}}
+
+/* Skeleton */
+@keyframes gs-shimmer{0%{background-position:-200px 0}100%{background-position:calc(200px + 100%) 0}}
+.gs-skeleton-card{background:#fff;border:.5px solid #e0e0d8;border-radius:12px;padding:14px;margin-bottom:10px}
+.gs-skeleton-line{height:12px;border-radius:6px;background:linear-gradient(90deg,#f0f0eb 0px,#f7f7f2 40px,#f0f0eb 80px);background-size:200px 100%;animation:gs-shimmer 1.2s ease-in-out infinite;margin-bottom:8px}
+.gs-skeleton-line.short{width:38%}
+.gs-skeleton-line.medium{width:64%}
+.gs-skeleton-line.long{width:88%}
+
+/* Empty states */
+.gs-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px;text-align:center;background:#fff;border:.5px dashed #d0d8e2;border-radius:14px;margin:14px}
+.gs-empty-icon{font-size:44px;margin-bottom:12px;opacity:.75}
+.gs-empty-title{font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:6px;line-height:1.35}
+.gs-empty-body{font-size:13px;color:#666;line-height:1.55;margin-bottom:18px;max-width:320px}
+.gs-empty-cta{padding:10px 20px;border-radius:10px;border:none;background:#0C447C;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:.3px}
+.gs-empty-cta:hover{background:#0a3c6b}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Batch 6 - New pedagogical block types
+   ═════════════════════════════════════════════════════════════════════════ */
+
+/* Definition block */
+.def-block{
+  border-left:4px solid;
+  border-radius:10px;
+  padding:12px 14px;
+  margin:12px 0;
+  background:#fafcff;
+}
+.def-lbl{
+  font-size:10px;font-weight:700;letter-spacing:1px;margin-bottom:4px;
+}
+.def-term{
+  font-size:14px;font-weight:600;margin-bottom:6px;line-height:1.35;
+}
+.def-body{
+  font-size:13px;color:#333;line-height:1.6;
+}
+
+/* Case study block */
+.case-block{
+  background:#fffdf8;
+  border:1px solid #e8dfc4;
+  border-radius:12px;
+  padding:14px;
+  margin:16px 0;
+}
+.case-lbl{
+  font-size:10px;font-weight:700;letter-spacing:1px;color:#a37a1f;margin-bottom:6px;
+}
+.case-co{
+  font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:10px;
+}
+.case-section-lbl{
+  font-size:11px;font-weight:600;color:#666;margin:10px 0 4px;
+  text-transform:uppercase;letter-spacing:.5px;
+}
+.case-question{
+  font-size:13px;color:#333;line-height:1.6;font-style:italic;
+  padding:8px 12px;background:#fff;border-radius:8px;
+  border-left:3px solid;margin-bottom:2px;
+}
+.case-insight{
+  background:#eef7ff;border-left:3px solid #185FA5;border-radius:8px;
+  padding:10px 12px;margin-top:10px;font-size:12px;color:#0C447C;line-height:1.6;
+}
+
+/* Quick example block */
+.ex-block{
+  background:#f5faf0;
+  border:1px solid #cfe7c4;
+  border-radius:10px;
+  padding:12px 14px;
+  margin:12px 0;
+}
+.ex-lbl{
+  font-size:10px;font-weight:700;letter-spacing:1px;color:#186A3B;margin-bottom:6px;
+}
+.ex-title{
+  font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:6px;
+}
+.ex-body{
+  font-size:13px;color:#1a1a1a;line-height:1.7;white-space:pre-wrap;
+}
+
+/* Profile completeness bar - focus state for progress fill */
+.profile-progress{transition:box-shadow .2s}
+.profile-progress:hover{box-shadow:0 2px 12px rgba(12,68,124,.08)}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Batch 6 - Print styles for exam preview
+   ═════════════════════════════════════════════════════════════════════════ */
+@media print{
+  /* Hide chrome: nav, banners, back button */
+  #bottom-nav,.mobile-brand,.sh,.bh,
+  .install-banner,.install-modal-overlay,
+  #exam-preview-root > button:first-of-type,
+  #exam-preview-root > div:nth-of-type(2){
+    display:none !important;
+  }
+  #app{
+    box-shadow:none !important;
+    max-width:100% !important;
+    height:auto !important;
+    border-radius:0 !important;
+    margin:0 !important;
+  }
+  .content{
+    overflow:visible !important;
+    transform:none !important;
+    width:100% !important;
+    height:auto !important;
+  }
+  body{background:#fff !important}
+  .case-block,.def-block,.ex-block{page-break-inside:avoid}
+}
+
+/* ── RTL adjustments for Arabic-first users ─────────────────────────────── */
+html[dir="rtl"] .def-block{border-left:none;border-right:4px solid}
+html[dir="rtl"] .case-question{border-left:none;border-right:3px solid}
+html[dir="rtl"] .case-insight{border-left:none;border-right:3px solid #185FA5}
