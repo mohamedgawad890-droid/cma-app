@@ -18,6 +18,16 @@
       "v": "1. Variable Costs"
     },
     {
+      "t": "def",
+      "term": "Variable Cost",
+      "v": "A cost that changes IN TOTAL in direct proportion to activity, but stays CONSTANT PER UNIT within the relevant range. Examples include direct materials, sales commissions, and packaging. Doubling output doubles total variable cost but leaves the per-unit rate unchanged."
+    },
+    {
+      "t": "ex",
+      "l": "Variable Cost — Numeric Example",
+      "v": "A furniture maker uses $12 of wood per chair. Producing 500 chairs → total DM = 500 × $12 = $6,000. Producing 1,200 chairs → total DM = 1,200 × $12 = $14,400. Per-unit cost stays $12 in both cases; total scales linearly with volume."
+    },
+    {
       "t": "p",
       "v": "Variable costs change proportionally with activity. They are CONSTANT PER UNIT but change in TOTAL."
     },
@@ -56,6 +66,16 @@
     {
       "t": "h",
       "v": "2. Fixed Costs"
+    },
+    {
+      "t": "def",
+      "term": "Fixed Cost",
+      "v": "A cost that stays CONSTANT IN TOTAL as activity changes within the relevant range, but DECREASES PER UNIT as volume rises. Examples include factory rent, salaried supervisors, and straight-line depreciation. Fixed costs create operating leverage."
+    },
+    {
+      "t": "ex",
+      "l": "Fixed Cost — Numeric Example",
+      "v": "Factory rent = $60,000/month regardless of output. At 10,000 units → per-unit fixed = $6.00. At 20,000 units → per-unit fixed = $3.00. Total stays $60,000; per-unit halves. This is why high-volume producers can price more competitively."
     },
     {
       "t": "p",
@@ -98,6 +118,16 @@
       "v": "3. Mixed Costs (Semi-Variable)"
     },
     {
+      "t": "def",
+      "term": "Mixed Cost",
+      "v": "A cost with both fixed and variable components: Y = a + bX. Typical examples are utility bills (base charge + usage), equipment leases (flat fee + per-hour rate), and delivery costs (fixed truck cost + fuel per mile). Must be separated before CVP or budgeting."
+    },
+    {
+      "t": "ex",
+      "l": "Mixed Cost — Numeric Example",
+      "v": "Electricity bill = $500 flat + $0.15 per kWh. At 4,000 kWh → Total = $500 + (4,000 × $0.15) = $500 + $600 = $1,100. At 8,000 kWh → $500 + $1,200 = $1,700. Fixed portion never changes; variable portion tracks usage."
+    },
+    {
       "t": "p",
       "v": "Mixed costs contain BOTH a fixed AND variable component. They must be separated using analytical methods."
     },
@@ -113,6 +143,16 @@
     {
       "t": "h",
       "v": "High-Low Method"
+    },
+    {
+      "t": "def",
+      "term": "High-Low Method",
+      "v": "A quick technique for splitting a mixed cost into fixed and variable components using only the highest-activity and lowest-activity observations. Simple but imprecise — it ignores all intermediate data. Regression analysis is more accurate but more complex."
+    },
+    {
+      "t": "ex",
+      "l": "High-Low Method — Numeric Example",
+      "v": "Maintenance cost data: Jan 2,000 hrs → $9,500; Jul 5,000 hrs → $18,500.\nStep 1: Variable Rate = ($18,500 − $9,500) ÷ (5,000 − 2,000) = $9,000 ÷ 3,000 = $3.00/hr\nStep 2: Fixed = $18,500 − ($3.00 × 5,000) = $18,500 − $15,000 = $3,500\nStep 3: Cost Function → Y = $3,500 + $3.00X"
     },
     {
       "t": "s",
@@ -218,6 +258,26 @@
       "v": "Cost Object, Cost Pool, Allocation Base & Cost Driver"
     },
     {
+      "t": "def",
+      "term": "Cost Object",
+      "v": "Anything for which a separate cost measurement is desired — a product, department, project, customer, or activity. Every cost is either directly traced to a cost object or allocated to it via a cost driver."
+    },
+    {
+      "t": "def",
+      "term": "Cost Pool",
+      "v": "A group of individual costs assembled together because they share a common cost driver. Example: all factory utility costs pooled to be allocated by machine hours. Simplifies allocation when tracing each cost individually is impractical."
+    },
+    {
+      "t": "def",
+      "term": "Allocation Base / Cost Driver",
+      "v": "The activity measure used to assign pooled indirect costs to cost objects (e.g., machine hours, labor hours, units produced). The best driver has a strong cause-and-effect link to the cost incurred — a weak driver distorts product costs."
+    },
+    {
+      "t": "ex",
+      "l": "Cost Driver — Numeric Example",
+      "v": "Factory overhead pool = $200,000. Chosen driver = machine hours (total 25,000). Rate = $200,000 ÷ 25,000 = $8/MH. Product A uses 3 MH/unit → $24 OH per unit. Product B uses 5 MH/unit → $40 OH per unit. Pick a weaker driver (like DL hours) and the same OH gets allocated differently — product costs shift."
+    },
+    {
       "t": "tbl",
       "h": [
         "Term",
@@ -250,6 +310,21 @@
     {
       "t": "h",
       "v": "Step Costs & Relevant Range"
+    },
+    {
+      "t": "def",
+      "term": "Step Cost",
+      "v": "A cost that stays flat over a narrow activity range, then jumps to a new flat level once a threshold is crossed. Example: one supervisor per 20 workers — hiring the 21st worker forces adding a second supervisor. Behaves like fixed within each step, but the steps themselves are activity-driven."
+    },
+    {
+      "t": "def",
+      "term": "Relevant Range",
+      "v": "The activity band within which cost behavior assumptions hold — variable costs stay linear and fixed costs stay flat. Outside this range, new capacity is needed (new facility, more supervisors) and cost patterns shift. All CVP and budgeting assumptions live inside the relevant range."
+    },
+    {
+      "t": "ex",
+      "l": "Step Cost — Numeric Example",
+      "v": "Quality inspector salary = $4,000/month; each inspector covers up to 5,000 units.\n• 0–5,000 units → 1 inspector = $4,000\n• 5,001–10,000 units → 2 inspectors = $8,000\n• 10,001–15,000 units → 3 inspectors = $12,000\nWithin each band the cost is fixed; crossing a band forces a step-up."
     },
     {
       "t": "p",
@@ -299,6 +374,16 @@
       "v": "Two Key Decisions in Costing"
     },
     {
+      "t": "def",
+      "term": "Cost Accumulation Decision",
+      "v": "The choice of HOW costs are collected — by job (job-order costing) or by process (process costing). Depends on whether output is heterogeneous (custom projects) or homogeneous (mass-produced identical units)."
+    },
+    {
+      "t": "def",
+      "term": "Cost Measurement Decision",
+      "v": "The choice of WHICH costs to include in product cost — actual, normal, or standard costing. Actual uses real amounts; normal blends actual DM/DL with a predetermined OH rate; standard uses pre-set amounts for all three, exposing variances."
+    },
+    {
       "t": "b",
       "v": [
         "Decision 1 — Cost Accumulation: How are costs collected? Job Order Costing (by job) OR Process Costing (by department/process)",
@@ -308,6 +393,21 @@
     {
       "t": "h",
       "v": "Cost Accumulation Systems"
+    },
+    {
+      "t": "def",
+      "term": "Job-Order Costing",
+      "v": "Costs are accumulated by individual job, batch, or custom order. Used when products are distinguishable (construction, custom furniture, consulting engagements). Each job has its own cost sheet."
+    },
+    {
+      "t": "def",
+      "term": "Process Costing",
+      "v": "Costs are accumulated by process or department over a period, then averaged over equivalent units of output. Used for continuous, homogeneous production (chemicals, oil refining, cement). Cost per unit = total department cost ÷ equivalent units."
+    },
+    {
+      "t": "ex",
+      "l": "Accumulation Choice — Numeric Example",
+      "v": "A custom yacht builder finishes 4 yachts in Q1 with distinct specs. Total cost is tracked per yacht → Job Order Costing.\nA soft-drink plant fills 2,000,000 identical bottles in Q1. Total plant cost = $600,000 → Cost per bottle = $600,000 ÷ 2,000,000 = $0.30 → Process Costing."
     },
     {
       "t": "tbl",
@@ -343,6 +443,26 @@
       "v": "Cost Measurement Methods"
     },
     {
+      "t": "def",
+      "term": "Actual Costing",
+      "v": "Records DM, DL, and OH at their actual amounts as incurred. Most accurate historically but delayed — OH cannot be assigned to products until year-end when total OH is known."
+    },
+    {
+      "t": "def",
+      "term": "Normal Costing",
+      "v": "Uses actual DM and DL but applies OH via a Predetermined Overhead Rate (POHR) set at the start of the year. Enables timely job costing throughout the period; any over/under-applied OH is reconciled at year-end."
+    },
+    {
+      "t": "def",
+      "term": "Standard Costing",
+      "v": "Uses pre-set standard amounts for DM, DL, and OH regardless of actuals. Actual results are compared to standards, generating variances that highlight where operations deviated from plan."
+    },
+    {
+      "t": "ex",
+      "l": "Costing Methods — Numeric Example",
+      "v": "Job #204 uses 100 lbs of steel.\n• Actual: 100 lbs × actual price $5.20 = $520\n• Normal: DM at actual $520 + OH via POHR $8/DLH × 10 DLH = $600\n• Standard: 100 lbs × standard $5.00 = $500 (any difference = Materials Price/Qty variance)"
+    },
+    {
       "t": "tbl",
       "h": [
         "Method",
@@ -376,6 +496,16 @@
       "v": "Product Costs vs Period Costs — Quick Review"
     },
     {
+      "t": "def",
+      "term": "Product Cost",
+      "v": "All costs incurred to manufacture inventory — DM, DL, and Manufacturing OH. Capitalized as inventory on the balance sheet until sold, then expensed as COGS. Also called inventoriable costs."
+    },
+    {
+      "t": "def",
+      "term": "Period Cost",
+      "v": "Non-manufacturing costs (selling, general, administrative) expensed in the period incurred. Never touch inventory. Includes marketing, executive salaries, and office rent."
+    },
+    {
       "t": "tbl",
       "h": [
         "Cost Type",
@@ -403,6 +533,16 @@
       "v": "The Cost of Quality Framework — Integration"
     },
     {
+      "t": "def",
+      "term": "Cost of Quality (CoQ)",
+      "v": "Total cost of achieving product quality plus the cost of failing to achieve it. Split into four categories: Prevention, Appraisal, Internal Failure, and External Failure. Investing in prevention typically reduces total CoQ."
+    },
+    {
+      "t": "ex",
+      "l": "CoQ — Numeric Example",
+      "v": "Company spends $50K on training (Prevention) and $30K on inspection (Appraisal). Internal failures (rework) cost $80K; external failures (warranty/returns) cost $200K. Total CoQ = $360K. Doubling prevention to $100K cuts internal to $40K and external to $80K → new CoQ = $250K. Net saving: $110K."
+    },
+    {
       "t": "p",
       "v": "All costing methods must consider quality costs. Whether using job order, process, or ABC costing, prevention and appraisal costs are product costs while failure costs are typically period costs (unless internal failures occur during production)."
     },
@@ -413,6 +553,16 @@
     {
       "t": "h",
       "v": "Setting Standards — Ideal vs Practical"
+    },
+    {
+      "t": "def",
+      "term": "Ideal Standard",
+      "v": "A perfection benchmark assuming no waste, downtime, or inefficiency. Motivates continuous improvement but is unrealistic — usually produces unfavorable variances that demoralize staff."
+    },
+    {
+      "t": "def",
+      "term": "Practical (Currently Attainable) Standard",
+      "v": "A rigorous but achievable benchmark that assumes normal levels of downtime and reasonable inefficiency. Most widely used because variances become meaningful signals of controllable problems."
     },
     {
       "t": "tbl",
@@ -448,12 +598,34 @@
       "v": "How the Three Costing Methods Converge"
     },
     {
+      "t": "def",
+      "term": "Costing Method Convergence",
+      "v": "Job-order and process costing describe HOW costs are grouped; actual/normal/standard describe HOW costs are valued. A firm picks one from each dimension — e.g., 'normal job-order costing' or 'standard process costing' — producing six possible combinations."
+    },
+    {
       "t": "p",
       "v": "All three methods (Actual, Normal, Standard) end at the same place — COGS on the income statement. They differ only in TIMING and HOW overhead is assigned. At year-end, over/under-applied overhead adjustments bring all methods to the same actual cost."
     },
     {
       "t": "tip",
       "v": "Exam Tips: Job Order = unique products. Process Costing = identical products. Operation Costing = hybrid (both). Normal Costing uses POHR — most common in practice. Standard Costing = budgeted costs used for variance analysis. Product costs = DM + DL + MOH only. Period costs = everything else. Practical standards most commonly used. Ideal standards = aspirational benchmark."
+    },
+    {
+      "t": "case",
+      "co": "Nexus Industries",
+      "facts": [
+        "Manufactures two lines: custom industrial pumps (distinct client specs) and mass-produced valve seals (identical, 500K units/month)",
+        "Wants timely product costs during the year, not just year-end",
+        "Has reliable historical data on materials and labor usage"
+      ],
+      "q": "Which costing decisions should Nexus make for each product line?",
+      "sol": [
+        "Pumps: Job-Order Costing — each pump has unique specs, worth tracking separately",
+        "Seals: Process Costing — identical high-volume units, average cost per unit is meaningful",
+        "For both: Normal Costing — POHR gives timely product cost without waiting for year-end actual OH",
+        "Later, if standards become reliable → migrate seals to Standard Process Costing for variance analysis"
+      ],
+      "insight": "Costing method is not one-size-fits-all. The accumulation dimension (job vs process) is dictated by product heterogeneity; the measurement dimension (actual/normal/standard) is a management choice about timeliness and control."
     }
   ],
   "4-3": [
@@ -480,6 +652,16 @@
       "v": "The Cost of Goods Manufactured (COGM) Statement"
     },
     {
+      "t": "def",
+      "term": "Cost of Goods Manufactured (COGM)",
+      "v": "Total production cost of units COMPLETED during the period, whether sold or still in Finished Goods. Formula: Beg WIP + Total Manufacturing Costs (DM used + DL + MOH) − End WIP. It is the bridge from cost inputs to finished inventory."
+    },
+    {
+      "t": "ex",
+      "l": "COGM — Numeric Example",
+      "v": "Beg WIP = $12,000. DM used = $80,000. DL = $50,000. MOH applied = $40,000. End WIP = $15,000.\nCOGM = $12,000 + ($80,000 + $50,000 + $40,000) − $15,000 = $12,000 + $170,000 − $15,000 = $167,000."
+    },
+    {
       "t": "s",
       "v": [
         "Start: Beginning WIP Inventory",
@@ -497,6 +679,16 @@
       "v": "Cost of Goods Sold (COGS) Calculation"
     },
     {
+      "t": "def",
+      "term": "Cost of Goods Sold (COGS)",
+      "v": "The cost of finished units actually SOLD during the period. Formula: Beg Finished Goods + COGM − End Finished Goods. Sits on the income statement as the largest expense for most manufacturers."
+    },
+    {
+      "t": "ex",
+      "l": "COGS — Numeric Example",
+      "v": "Beg FG = $25,000. COGM (from above) = $167,000. End FG = $30,000.\nCOGS = $25,000 + $167,000 − $30,000 = $162,000. If sales = $250,000 → Gross Profit = $250,000 − $162,000 = $88,000."
+    },
+    {
       "t": "f",
       "l": "COGS Formula",
       "v": "COGS = Beginning Finished Goods + COGM - Ending Finished Goods"
@@ -504,6 +696,11 @@
     {
       "t": "h",
       "v": "Full Example"
+    },
+    {
+      "t": "def",
+      "term": "Direct Materials Used",
+      "v": "Raw materials actually consumed in production during the period. Formula: Beg Raw Materials + Purchases − End Raw Materials. Feeds directly into the COGM calculation."
     },
     {
       "t": "p",
@@ -521,6 +718,21 @@
     {
       "t": "h",
       "v": "Prime Cost vs Conversion Cost"
+    },
+    {
+      "t": "def",
+      "term": "Prime Cost",
+      "v": "Direct Materials + Direct Labor. Represents the cost of directly-traceable production inputs — everything that touches the product from the shop floor's perspective."
+    },
+    {
+      "t": "def",
+      "term": "Conversion Cost",
+      "v": "Direct Labor + Manufacturing Overhead. Represents the cost of converting raw materials into finished goods. Note: DL appears in both prime and conversion — it's the overlap between input tracing and value-adding transformation."
+    },
+    {
+      "t": "ex",
+      "l": "Prime vs Conversion — Numeric Example",
+      "v": "DM = $80,000; DL = $50,000; MOH = $40,000.\n• Prime Cost = $80,000 + $50,000 = $130,000\n• Conversion Cost = $50,000 + $40,000 = $90,000\n• Total Manufacturing Cost = $170,000 (not prime + conversion — that double-counts DL)"
     },
     {
       "t": "tbl",
@@ -556,6 +768,11 @@
       "v": "Customer Life-Cycle Costing"
     },
     {
+      "t": "def",
+      "term": "Life-Cycle Costing",
+      "v": "Tracks all costs from a product's design and R&D phase through production, marketing, distribution, and post-sale support. Reveals that decisions made early (design) lock in 80%+ of total lifecycle cost — even though most spending happens later."
+    },
+    {
       "t": "p",
       "v": "Looks at total cost of ownership from the CUSTOMER'S perspective — all costs the buyer incurs during the entire time they own and use the product."
     },
@@ -584,6 +801,26 @@
     {
       "t": "tip",
       "v": "Exam Tips: Customer LCC = buyer's perspective (purchase + operating + maintenance + disposal). Company LCC = seller's perspective (R&D + design + manufacturing + marketing + support). Neither is required by GAAP — both are internal management tools."
+    },
+    {
+      "t": "case",
+      "co": "Meridian Furniture",
+      "facts": [
+        "Beg Raw Materials = $8,000; Purchases = $52,000; End Raw Materials = $10,000",
+        "Direct Labor = $35,000; MOH applied = $28,000",
+        "Beg WIP = $6,000; End WIP = $9,000",
+        "Beg Finished Goods = $14,000; End Finished Goods = $11,000",
+        "Sales = $180,000"
+      ],
+      "q": "Calculate DM Used, COGM, COGS, and Gross Profit.",
+      "sol": [
+        "DM Used = $8,000 + $52,000 − $10,000 = $50,000",
+        "Total Manufacturing Cost = $50,000 + $35,000 + $28,000 = $113,000",
+        "COGM = $6,000 + $113,000 − $9,000 = $110,000",
+        "COGS = $14,000 + $110,000 − $11,000 = $113,000",
+        "Gross Profit = $180,000 − $113,000 = $67,000"
+      ],
+      "insight": "The cost flow moves left-to-right: Raw Materials → WIP → Finished Goods → COGS. Each inventory account acts like a bucket — beginning balance in, ending balance out. Master this flow and any cost-of-goods question becomes bookkeeping."
     }
   ],
   "4-4": [
@@ -608,6 +845,26 @@
     {
       "t": "h",
       "v": "Methods of Allocating Joint Costs"
+    },
+    {
+      "t": "def",
+      "term": "Physical Units Method",
+      "v": "Allocates joint costs based on the physical measure of output (kg, liters, gallons). Simple but ignores economic value — a high-value product and a low-value byproduct get costed equally per unit of weight/volume."
+    },
+    {
+      "t": "def",
+      "term": "Sales Value at Split-off Method",
+      "v": "Allocates joint costs based on each product's sales value at the split-off point (before further processing). Best matches costs to revenue-generating ability. Most widely used in practice."
+    },
+    {
+      "t": "def",
+      "term": "Net Realizable Value (NRV) Method",
+      "v": "Allocates joint costs based on final sales value MINUS separable processing costs after split-off. Used when products cannot be sold at split-off — necessary further processing must be netted out."
+    },
+    {
+      "t": "def",
+      "term": "Constant Gross Margin % Method",
+      "v": "Allocates joint costs so that each product ends up with the same gross margin percentage. Requires working backwards from the overall margin, then adjusting each product's cost allocation to hit that target."
     },
     {
       "t": "tbl",
@@ -649,6 +906,11 @@
       "v": "Sales Value at Split-off Example"
     },
     {
+      "t": "ex",
+      "l": "Sales Value at Split-off — Numeric Example",
+      "v": "Joint cost = $120,000. At split-off: Product A = 5,000 units × $30 = $150,000; Product B = 8,000 units × $12.50 = $100,000. Total sales value = $250,000.\n• A's share = $120,000 × ($150,000 ÷ $250,000) = $72,000\n• B's share = $120,000 × ($100,000 ÷ $250,000) = $48,000"
+    },
+    {
       "t": "p",
       "v": "Joint costs $90,000. Product A: 1,000 units at $60/unit = $60,000. Product B: 1,000 units at $40/unit = $40,000. Total = $100,000."
     },
@@ -664,6 +926,16 @@
       "v": "Should We Process Further? — Sell or Process Decision"
     },
     {
+      "t": "def",
+      "term": "Sell-or-Process-Further Decision",
+      "v": "Whether to sell a joint product at split-off or invest in additional processing. Rule: process further ONLY if incremental revenue exceeds incremental separable cost. Joint costs already incurred are SUNK and irrelevant to this decision."
+    },
+    {
+      "t": "ex",
+      "l": "Sell-or-Process — Numeric Example",
+      "v": "Product A at split-off = $30/unit (5,000 units → $150,000). Process further at $8/unit added cost → final price $42/unit → $210,000.\nIncremental Revenue = $210,000 − $150,000 = $60,000\nIncremental Cost = 5,000 × $8 = $40,000\nBenefit = $20,000 → Process further. Ignore the $72,000 joint cost — sunk."
+    },
+    {
       "t": "f",
       "l": "Process Further Rule",
       "v": "Process further ONLY if: Incremental Revenue > Incremental Separable Costs | Joint costs are IRRELEVANT (sunk costs)"
@@ -675,6 +947,11 @@
     {
       "t": "h",
       "v": "By-Products"
+    },
+    {
+      "t": "def",
+      "term": "By-Product",
+      "v": "A secondary product with relatively low sales value produced incidentally alongside a main product. Treated differently from a joint product because its economic significance is minor — often accounted for by reducing main product cost rather than getting its own allocation."
     },
     {
       "t": "b",
@@ -692,6 +969,11 @@
     {
       "t": "h",
       "v": "Constant Gross Margin % Method"
+    },
+    {
+      "t": "ex",
+      "l": "Constant Gross Margin % — Numeric Example",
+      "v": "Two products. Joint cost = $80,000; separable A = $10,000; separable B = $20,000; final sales A = $90,000, B = $60,000. Total revenue = $150,000; total cost = $110,000; overall GM = ($150,000 − $110,000) ÷ $150,000 = 26.67%.\n• A target cost = $90,000 × (1 − 26.67%) = $66,000 → allocated joint = $66,000 − $10,000 = $56,000\n• B target cost = $60,000 × (1 − 26.67%) = $44,000 → allocated joint = $44,000 − $20,000 = $24,000\n• Check: $56,000 + $24,000 = $80,000 ✓"
     },
     {
       "t": "p",
@@ -713,6 +995,16 @@
     {
       "t": "h",
       "v": "By-Product Journal Entries — Production vs Sales Method"
+    },
+    {
+      "t": "def",
+      "term": "Production Method (By-Product)",
+      "v": "Recognizes by-product value AT the time of production. Reduces main product's cost by the by-product's NRV. Result: main product carries a lower unit cost; by-product sits in inventory."
+    },
+    {
+      "t": "def",
+      "term": "Sales Method (By-Product)",
+      "v": "Ignores by-product until it is actually sold. When sold, records revenue as Other Income (or as a reduction to main product COGS). Simpler, but delays recognition."
     },
     {
       "t": "tbl",
@@ -742,6 +1034,25 @@
     {
       "t": "tip",
       "v": "Exam Tips: Constant GM% = all products get same gross margin %. Production Method = by-product NRV reduces main product cost at production. Sales Method = recognized as income when sold. By-product NRV = Sales Price - Additional Processing Costs."
+    },
+    {
+      "t": "case",
+      "co": "AgroChem Refining",
+      "facts": [
+        "Joint process yields Chemical X (main, 4,000 kg) and Chemical Y (main, 6,000 kg)",
+        "Joint cost = $200,000",
+        "At split-off: X sells for $40/kg; Y sells for $10/kg",
+        "Option: process Y further at $3/kg to become Premium-Y selling at $16/kg"
+      ],
+      "q": "(a) Allocate joint cost by sales value at split-off. (b) Should AgroChem process Y further?",
+      "sol": [
+        "X sales value = 4,000 × $40 = $160,000; Y sales value = 6,000 × $10 = $60,000; Total = $220,000",
+        "X joint cost = $200,000 × ($160,000 ÷ $220,000) = $145,455",
+        "Y joint cost = $200,000 × ($60,000 ÷ $220,000) = $54,545",
+        "Process-further: Incremental Rev = 6,000 × ($16 − $10) = $36,000; Incremental Cost = 6,000 × $3 = $18,000",
+        "Net benefit = $18,000 → Yes, process further. Joint cost is SUNK — irrelevant to this decision."
+      ],
+      "insight": "Two exam traps: (1) never use joint cost in a sell-or-process decision — it's sunk. (2) Sales Value at Split-off is the default allocation method unless the question says products cannot be sold at split-off — then switch to NRV."
     }
   ],
   "4-5": [
@@ -771,6 +1082,16 @@
       "v": "Net Realizable Value (NRV) of By-Product"
     },
     {
+      "t": "def",
+      "term": "NRV (By-Product Context)",
+      "v": "By-product NRV = expected sales value − any separable costs to complete and sell it. This net amount is credited against the main product's cost under the Production Method, reducing main product unit cost."
+    },
+    {
+      "t": "ex",
+      "l": "By-Product NRV — Numeric Example",
+      "v": "A sawmill's sawdust by-product: 2,500 kg × $2.80/kg = $7,000 gross. Additional processing (bagging, transport) = $1,200. NRV = $7,000 − $1,200 = $5,800. This $5,800 reduces the main lumber product's total cost under the Production Method."
+    },
+    {
       "t": "f",
       "l": "NRV Formula",
       "v": "NRV = Estimated Sales Price - Additional Processing Costs after Split-off"
@@ -778,6 +1099,16 @@
     {
       "t": "h",
       "v": "Method 1: Production Method (Recognized at Production)"
+    },
+    {
+      "t": "def",
+      "term": "Production Method (Detailed)",
+      "v": "By-product's NRV is recorded as a REDUCTION to main product cost the moment production occurs. By-product goes into inventory at NRV. When sold later, no income statement impact — it clears from inventory at cost. Preferred when by-product value is material."
+    },
+    {
+      "t": "ex",
+      "l": "Production Method — Numeric Example",
+      "v": "Joint cost = $60,000; main product = 5,000 units; by-product NRV = $4,000.\n• Adjusted main cost = $60,000 − $4,000 = $56,000\n• Main cost per unit = $56,000 ÷ 5,000 = $11.20\n• By-product enters inventory at $4,000; sale later just clears inventory at cost."
     },
     {
       "t": "p",
@@ -813,6 +1144,16 @@
       "v": "Method 2: Sales Method (Recognized at Sale)"
     },
     {
+      "t": "def",
+      "term": "Sales Method (Detailed)",
+      "v": "By-product is ignored until sold. When sold, the proceeds are recorded as Other Income (or as a reduction to main product COGS). Simpler, but conservative — main product cost stays higher until by-product actually sells."
+    },
+    {
+      "t": "ex",
+      "l": "Sales Method — Numeric Example",
+      "v": "Same data: joint cost = $60,000; main = 5,000 units; by-product eventually sells for $4,000.\n• Main cost = $60,000 (no reduction)\n• Main cost per unit = $60,000 ÷ 5,000 = $12.00\n• When by-product sells → Cash $4,000 / Other Income $4,000 (no COGS impact)"
+    },
+    {
       "t": "p",
       "v": "No entry is made for by-product until it is SOLD. Joint costs remain fully assigned to the main product."
     },
@@ -844,6 +1185,11 @@
     {
       "t": "h",
       "v": "Production Method vs Sales Method — Key Differences"
+    },
+    {
+      "t": "def",
+      "term": "Method Comparison Rule",
+      "v": "Choose Production Method when by-product value is MATERIAL (recognize early, reduce main cost). Choose Sales Method when by-product value is IMMATERIAL or uncertain (defer recognition until cash arrives). US GAAP allows either — disclosure required."
     },
     {
       "t": "tbl",
@@ -883,6 +1229,25 @@
     {
       "t": "tip",
       "v": "Exam Tips: By-products = LOW relative value. NRV = Sales Price - Additional Processing Costs. Production Method: Dr. By-Product Inventory / Cr. WIP (reduces main product cost). Sales Method: no entry until sold, then Other Income. Main difference: WHEN recognized."
+    },
+    {
+      "t": "case",
+      "co": "Cypress Timber Co.",
+      "facts": [
+        "Joint process: Lumber (main) + Wood Chips (by-product)",
+        "Joint cost = $85,000",
+        "Lumber output: 20,000 board-feet, sells at $6.00/bf",
+        "Wood Chips output: 8,000 kg; expected sale $2.50/kg; bagging cost $0.30/kg",
+        "By-product represents ~3% of total revenue — considered material"
+      ],
+      "q": "Compute lumber cost per board-foot under the Production Method, and compare to the Sales Method.",
+      "sol": [
+        "By-product NRV = 8,000 × ($2.50 − $0.30) = 8,000 × $2.20 = $17,600",
+        "Production Method: adjusted lumber cost = $85,000 − $17,600 = $67,400 → $67,400 ÷ 20,000 = $3.37/bf",
+        "Sales Method: lumber cost = $85,000 → $85,000 ÷ 20,000 = $4.25/bf",
+        "Difference per bf = $0.88; on 20,000 bf that's $17,600 — the by-product's full NRV"
+      ],
+      "insight": "When by-product value is material (like this ~3% of revenue), Production Method gives more accurate margins because it matches by-product value to the period it was created. Sales Method understates current-period profitability of the main product."
     }
   ],
   "4-6": [
@@ -902,6 +1267,11 @@
     {
       "t": "h",
       "v": "Key Difference from Job Costing"
+    },
+    {
+      "t": "def",
+      "term": "Process vs Job — Core Distinction",
+      "v": "Job costing tracks cost by INDIVIDUAL JOB (custom, heterogeneous output). Process costing tracks cost by DEPARTMENT over a period, then averages over equivalent units (mass-produced, homogeneous output). Job costing answers 'what did this specific job cost?'; process costing answers 'what's the cost per unit this period?'"
     },
     {
       "t": "tbl",
@@ -938,6 +1308,16 @@
       "v": "Equivalent Units of Production (EUP)"
     },
     {
+      "t": "def",
+      "term": "Equivalent Units of Production (EUP)",
+      "v": "The number of complete units that could have been produced with the effort spent. Partially-complete units get converted into whole-unit equivalents by multiplying by their % completion. Enables per-unit costing when WIP is in various stages of completion."
+    },
+    {
+      "t": "ex",
+      "l": "EUP — Numeric Example",
+      "v": "Ending WIP = 4,000 units, 60% complete for conversion. EUP for conversion = 4,000 × 60% = 2,400 units. If 20,000 units were completed and transferred out, total EUP for conversion = 20,000 + 2,400 = 22,400 units. Divide period conversion cost by 22,400 → cost per equivalent unit."
+    },
+    {
       "t": "p",
       "v": "Since some units are partially complete at period-end (Work-in-Process), we convert them to EQUIVALENT UNITS — the number of complete units that could have been produced with the same effort."
     },
@@ -955,6 +1335,16 @@
       "v": "Weighted Average Method vs FIFO"
     },
     {
+      "t": "def",
+      "term": "Weighted Average Method",
+      "v": "Combines beginning WIP costs with current period costs and averages over ALL equivalent units (both completed and ending WIP). Simpler. Blends prior and current-period costs — hides period-over-period cost changes."
+    },
+    {
+      "t": "def",
+      "term": "FIFO Method (Process Costing)",
+      "v": "Keeps beginning WIP costs separate from current period costs. Cost per EUP reflects ONLY the current period's costs. More accurate for performance measurement and cost trends but computationally heavier."
+    },
+    {
       "t": "b",
       "v": [
         "Weighted Average: Combines beginning WIP costs with current period costs. Simpler. EUP = units completed + ending WIP x %complete.",
@@ -964,6 +1354,11 @@
     {
       "t": "h",
       "v": "5-Step Process Costing Procedure"
+    },
+    {
+      "t": "def",
+      "term": "5-Step Process Costing",
+      "v": "Standard workflow: (1) Summarize physical flow of units; (2) Compute EUP for materials and conversion separately; (3) Compute cost per EUP; (4) Assign costs to completed units and ending WIP; (5) Reconcile — total costs assigned must equal total costs to account for."
     },
     {
       "t": "s",
@@ -978,6 +1373,11 @@
     {
       "t": "h",
       "v": "Example (Weighted Average)"
+    },
+    {
+      "t": "ex",
+      "l": "Weighted Average — Numeric Example",
+      "v": "Beginning WIP = 2,000 units (100% DM, 40% conversion) with $8,000 DM + $3,000 conv costs. Started = 18,000. Completed = 17,000. End WIP = 3,000 units (100% DM, 60% conversion). Current-period costs: DM = $46,000, Conv = $52,000.\nEUP DM = 17,000 + 3,000 = 20,000; EUP Conv = 17,000 + (3,000 × 60%) = 18,800\nCost/EUP DM = ($8,000 + $46,000) ÷ 20,000 = $2.70\nCost/EUP Conv = ($3,000 + $52,000) ÷ 18,800 = $2.926\nCompleted cost = 17,000 × ($2.70 + $2.926) = 17,000 × $5.626 = $95,642"
     },
     {
       "t": "p",
@@ -1000,6 +1400,11 @@
     {
       "t": "h",
       "v": "Weighted Average vs FIFO Method"
+    },
+    {
+      "t": "def",
+      "term": "Method Choice Rule",
+      "v": "Choose Weighted Average when input prices are stable and simplicity matters. Choose FIFO when prices change significantly period-to-period and management needs a clean read on CURRENT-period efficiency. FIFO isolates current-period performance from prior-period cost carryover."
     },
     {
       "t": "tbl",
@@ -1039,6 +1444,21 @@
     {
       "t": "h",
       "v": "Normal vs Abnormal Spoilage — Detailed"
+    },
+    {
+      "t": "def",
+      "term": "Normal Spoilage",
+      "v": "Expected, unavoidable spoilage inherent to the production process. Cost is absorbed into the cost of good units produced — treated as a product cost."
+    },
+    {
+      "t": "def",
+      "term": "Abnormal Spoilage",
+      "v": "Spoilage above the expected/normal level, arising from avoidable events (machine breakdown, worker error). Cost is expensed separately as Loss from Abnormal Spoilage — NOT included in product cost. Highlights a controllable problem."
+    },
+    {
+      "t": "ex",
+      "l": "Spoilage — Numeric Example",
+      "v": "Started 10,000 units. Good units = 9,300. Normal spoilage allowance = 5% of good output = 465 units. Actual spoilage = 700 units.\n• Normal spoilage = 465 units → cost absorbed into 9,300 good units\n• Abnormal spoilage = 700 − 465 = 235 units → cost booked to Loss from Abnormal Spoilage account"
     },
     {
       "t": "tbl",
@@ -1106,6 +1526,26 @@
       "v": "Key CVP Formulas"
     },
     {
+      "t": "def",
+      "term": "Contribution Margin (CM)",
+      "v": "Sales − Variable Costs. The dollar amount available to cover fixed costs and generate profit. Per-unit CM = Selling Price − Variable Cost per Unit. Central to every CVP calculation."
+    },
+    {
+      "t": "def",
+      "term": "Contribution Margin Ratio (CM%)",
+      "v": "CM ÷ Sales. Tells you what portion of every sales dollar contributes to fixed costs and profit. Higher CM% means each incremental dollar of sales delivers more to the bottom line."
+    },
+    {
+      "t": "def",
+      "term": "Break-Even Point (BEP)",
+      "v": "The sales level where total revenue equals total costs — profit is zero. BEP in units = Fixed Costs ÷ CM per unit. BEP in dollars = Fixed Costs ÷ CM%."
+    },
+    {
+      "t": "def",
+      "term": "Target Profit Formula",
+      "v": "To achieve a specific target profit: Units required = (Fixed Costs + Target Profit) ÷ CM per unit. For after-tax targets, gross up: Pre-tax target = After-tax target ÷ (1 − tax rate)."
+    },
+    {
       "t": "f",
       "l": "Contribution Margin (CM)",
       "v": "CM = Sales Revenue − Variable Costs | CM per unit = Selling Price − Variable Cost per unit"
@@ -1140,6 +1580,11 @@
       "v": "Worked Example"
     },
     {
+      "t": "ex",
+      "l": "CVP Formulas — Numeric Example",
+      "v": "Selling price = $50, Variable cost = $30, Fixed costs = $80,000.\n• CM per unit = $50 − $30 = $20; CM% = $20 ÷ $50 = 40%\n• BEP units = $80,000 ÷ $20 = 4,000 units\n• BEP sales = $80,000 ÷ 40% = $200,000\n• To earn $30,000 profit: ($80,000 + $30,000) ÷ $20 = 5,500 units\n• After-tax target $30,000 at 25% tax: pre-tax = $30,000 ÷ 0.75 = $40,000; units = $120,000 ÷ $20 = 6,000 units"
+    },
+    {
       "t": "p",
       "v": "Selling price $50/unit. Variable cost $30/unit. Fixed costs $80,000. Target profit $20,000."
     },
@@ -1157,6 +1602,16 @@
     {
       "t": "h",
       "v": "Margin of Safety"
+    },
+    {
+      "t": "def",
+      "term": "Margin of Safety (MoS)",
+      "v": "The amount by which actual (or budgeted) sales exceed the break-even point. MoS $ = Sales − BEP Sales. MoS % = MoS $ ÷ Sales. Measures how much sales can drop before the company hits losses — a risk cushion."
+    },
+    {
+      "t": "ex",
+      "l": "Margin of Safety — Numeric Example",
+      "v": "Actual sales = $300,000; BEP sales = $200,000.\n• MoS $ = $300,000 − $200,000 = $100,000\n• MoS % = $100,000 ÷ $300,000 = 33.3%\nInterpretation: sales can drop by 33% before the company starts losing money. A higher MoS% signals lower business risk."
     },
     {
       "t": "f",
@@ -1177,6 +1632,16 @@
       "v": "Operating Leverage"
     },
     {
+      "t": "def",
+      "term": "Degree of Operating Leverage (DOL)",
+      "v": "CM ÷ Operating Income. Measures how sensitive operating income is to sales changes. A DOL of 4 means a 10% sales increase produces a 40% profit increase — and a 10% sales drop produces a 40% profit collapse. High fixed cost structures produce high DOL — high reward, high risk."
+    },
+    {
+      "t": "ex",
+      "l": "Operating Leverage — Numeric Example",
+      "v": "CM = $120,000; Fixed costs = $90,000; Operating Income = $30,000.\nDOL = $120,000 ÷ $30,000 = 4.0\nIf sales rise 15%: profit rises 15% × 4.0 = 60% → new profit = $30,000 × 1.60 = $48,000.\nIf sales drop 15%: profit drops 60% → new profit = $12,000. Leverage cuts both ways."
+    },
+    {
       "t": "f",
       "l": "Degree of Operating Leverage (DOL)",
       "v": "DOL = Contribution Margin / Net Operating Income"
@@ -1188,6 +1653,11 @@
     {
       "t": "h",
       "v": "CVP Assumptions"
+    },
+    {
+      "t": "def",
+      "term": "CVP Assumptions",
+      "v": "CVP analysis holds only when: (1) selling price and variable cost per unit are constant; (2) fixed costs are truly fixed within the relevant range; (3) production equals sales (no inventory build); (4) sales mix is constant for multi-product firms; (5) all costs cleanly split into fixed and variable. Break any of these and CVP outputs drift from reality."
     },
     {
       "t": "b",
@@ -1203,6 +1673,16 @@
     {
       "t": "h",
       "v": "Multi-Product Break-Even"
+    },
+    {
+      "t": "def",
+      "term": "Weighted Average CM",
+      "v": "For firms selling multiple products in a stable mix: Weighted Avg CM = Σ(product CM × mix %). Divide fixed costs by this weighted average to find total break-even units, then apply the mix % to split units by product."
+    },
+    {
+      "t": "ex",
+      "l": "Multi-Product BEP — Numeric Example",
+      "v": "Mix: 60% Product A (CM $15), 40% Product B (CM $25). Fixed costs = $180,000.\nWeighted Avg CM = (0.60 × $15) + (0.40 × $25) = $9 + $10 = $19\nTotal BEP units = $180,000 ÷ $19 = 9,474 units\nA break-even units = 9,474 × 60% = 5,684; B break-even units = 9,474 × 40% = 3,790"
     },
     {
       "t": "p",
@@ -1225,6 +1705,11 @@
     {
       "t": "h",
       "v": "CVP Graph"
+    },
+    {
+      "t": "def",
+      "term": "CVP Graph",
+      "v": "Visualizes total revenue line (slope = SP/unit) and total cost line (intercept = fixed costs, slope = VC/unit). The intersection is the break-even point. The vertical distance above BEP shows profit; below shows loss. Excellent tool for communicating operating risk to non-financial stakeholders."
     },
     {
       "t": "b",
