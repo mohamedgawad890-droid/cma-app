@@ -912,7 +912,7 @@ const STATE={tab:'loading',searchQ:'',dictQ:'',dictData:[],dictLoaded:false,lead
     dailyGoalMinutes:30,fontSize:'md',
     dashTab:'groups',dashGroups:[],dashGroupsLoaded:false,dashStudents:[],
     dashTeachingLog:[],dashTeachingLogLoaded:false,
-    dashTeachingDraft:{groupCode:'',lectureNumber:'',date:'',unitIds:[],notes:''},
+    dashTeachingDraft:{groupCode:'',lectureNumber:'',date:'',unitIds:[],notes:'',lectureId:'',lectureTitle:''},
     dashLoaded:false,dashLoading:false,dashError:false,
     dashLectures:[],dashLive:{},dashLectureDraft:{title:'',groupCode:'',date:''},dashAttendance:[],
     dashExams:[],dashExamsLoaded:false,
@@ -1365,6 +1365,27 @@ function toggleTip(ev,el){
 }
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 function sect(id){return S.find(s=>s.id===id);}
+
+// Batch 8 (shared): map a section's selected unit (lesson) IDs to display
+// titles. Used by exam cards, exam preview header, and the student weekly-plan
+// banner so all three show unit names instead of just a count. Titles are read
+// synchronously from S (section metadata is always loaded). Returns '' when
+// nothing resolves; the caller decides the "All units"/"Full section" fallback.
+function unitTitles(sectionId, unitIds, opts){
+  opts = opts || {};
+  var max = opts.max || 3;
+  var sec = sect(Number(sectionId));
+  if(!sec || !Array.isArray(sec.lessons)) return '';
+  var ids = (unitIds||[]).map(String);
+  if(!ids.length) return '';
+  var titles = [];
+  sec.lessons.forEach(function(l){
+    if(ids.indexOf(String(l.id)) >= 0) titles.push(l.id + '. ' + l.title);
+  });
+  if(!titles.length) return '';
+  if(titles.length <= max) return titles.join(' \u00B7 ');
+  return titles.slice(0, max).join(' \u00B7 ') + ' +' + (titles.length - max) + ' more';
+}
 
 // ─── PER-QUESTION LIVE TIMER ──────────────────────────────────────────────────
 window._qTimerInterval=null;
@@ -4062,7 +4083,7 @@ function showFeedbackModal(p,groupCode){
       submitBtn.style.cursor='pointer';
     };
   });
-  document.getElementById('fb-cancel').onclick=()=>{ov.remove();};
+  document.getElementById('fb-cancel').onclick=()=>{markFeedbackDismissed(p&&p.lectureId);ov.remove();};
   submitBtn.onclick=()=>{
     if(!_r){showToast('Pick a rating first.','warning');return;}
     const comment=(document.getElementById('fb-comment').value||'').trim().slice(0,500);
@@ -4096,6 +4117,12 @@ async function submitLectureFeedback(lectureId,groupCode,title,rating,comment){
 // Poller-adjacent: whenever we see a live pointer with feedbackOpen=true and
 // the student has already checked in and not yet submitted feedback, surface a
 // floating card that opens the feedback modal.
+// Batch 8 (feedback-popup): lecture IDs the student dismissed via "Later" this
+// session. In-memory only, so the popup re-appears next app open if feedback is
+// still open and the student still hasn't submitted.
+var _feedbackDismissedSession = {};
+function markFeedbackDismissed(lectureId){ if(lectureId) _feedbackDismissedSession[lectureId] = 1; }
+
 function maybeShowFeedbackPrompt(){
   if(!STATE.user)return;
   const groups=Object.keys(STATE.dashLive||{});
@@ -4105,6 +4132,7 @@ function maybeShowFeedbackPrompt(){
     if(!p.feedbackOpen)continue;
     if(!hasCheckedIn(p.lectureId))continue;      // only prompt those who attended
     if(hasSubmittedFeedback(p.lectureId))continue; // already done
+    if(_feedbackDismissedSession[p.lectureId])continue; // Batch 8: dismissed this session
     if(document.getElementById('feedback-overlay'))continue;
     STATE._feedbackPromptFor={lectureId:p.lectureId,title:p.title,groupCode:g};
     return;
@@ -4290,6 +4318,22 @@ async function deleteExam(id){
 // Legacy shim — teaching-log is now scoped by group in loadDashScopedData.
 async function loadTeachingLog(){await refreshDashScoped();}
 function toggleTeachingUnit(uid){const u=STATE.dashTeachingDraft.unitIds;const i=u.indexOf(uid);if(i>=0)u.splice(i,1);else u.push(uid);render();}
+
+// Batch 8 (teaching-log-lecture-picker): link an Actual-Teaching entry to a
+// lecture already created in the Lectures tab. Selecting one auto-fills the
+// date and links lectureId/lectureTitle; units stay a manual pick because
+// lectures don't carry units. Clearing the select unlinks (leaves other fields).
+function onTeachingLecturePick(id){
+  const d=STATE.dashTeachingDraft;
+  if(!id){ d.lectureId=''; d.lectureTitle=''; render(); return; }
+  const lec=(STATE.dashLectures||[]).find(l=>l.id===id);
+  if(!lec){ render(); return; }
+  d.lectureId=lec.id;
+  d.lectureTitle=lec.title||'';
+  if(lec.date) d.date=lec.date;
+  if(!d.lectureNumber){ d.lectureNumber=String(((STATE.dashTeachingLog||[]).length)+1); }
+  render();
+}
 async function saveTeachingEntry(){
   const d=STATE.dashTeachingDraft;
   // Batch 2: draft group is auto-prefilled from dashSelectedGroup, but we
@@ -4297,10 +4341,10 @@ async function saveTeachingEntry(){
   if(!d.groupCode)d.groupCode=STATE.dashSelectedGroup;
   if(!d.groupCode||!d.lectureNumber||!d.date||!d.unitIds.length){showToast('Fill lecture #, date, and select at least one unit.','warning');return;}
   try{
-    await db.collection('teaching-log').add({groupCode:d.groupCode.trim().toUpperCase(),lectureNumber:Number(d.lectureNumber),date:d.date,unitIds:d.unitIds.slice(),notes:d.notes.trim(),createdAt:new Date().toISOString(),createdBy:STATE.user.uid});
+    await db.collection('teaching-log').add({groupCode:d.groupCode.trim().toUpperCase(),lectureNumber:Number(d.lectureNumber),date:d.date,unitIds:d.unitIds.slice(),notes:d.notes.trim(),lectureId:d.lectureId||'',lectureTitle:d.lectureTitle||'',createdAt:new Date().toISOString(),createdBy:STATE.user.uid});
     showToast('Teaching entry saved \u2705','success');
     // Reset draft but preserve group prefill for the next entry
-    STATE.dashTeachingDraft={groupCode:STATE.dashSelectedGroup,lectureNumber:'',date:'',unitIds:[],notes:''};
+    STATE.dashTeachingDraft={groupCode:STATE.dashSelectedGroup,lectureNumber:'',date:'',unitIds:[],notes:'',lectureId:'',lectureTitle:''};
     await refreshDashScoped();
   }catch(e){showToast('Error: '+e.message,'error');}
 }
@@ -4724,14 +4768,15 @@ function renderDashExamPreview(){
     }
   }
   const sec=sect(ex.sectionId);
+  const previewUnits=unitTitles(ex.sectionId,ex.unitIds,{max:6}); // Batch 8
   const letters=['A','B','C','D','E'];
 
   const questionsHTML=qs.length?qs.map((q,i)=>{
-    const opts=(q.options||q.opts||[]);
-    const correctIdx=(typeof q.correct==='number'?q.correct:(typeof q.ans==='number'?q.ans:0));
-    const unit=q.unit||q.unitId||'';
+    const opts=(q.o||q.options||q.opts||[]);
+    const correctIdx=(typeof q.a==='number'?q.a:(typeof q.correct==='number'?q.correct:(typeof q.ans==='number'?q.ans:0)));
+    const unit=q.unit||q.unitId||q._lid||'';
     const src=q.source||q.src||'';
-    const wrongWhy=q.wrongWhy||q.wrong_why||'';
+    const wrongWhy=(q.wrongWhy!=null?q.wrongWhy:(q.wrong_why!=null?q.wrong_why:''));
     const optsHTML=opts.map((o,j)=>{
       const isCorrect=j===correctIdx;
       return `<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 12px;margin-bottom:5px;border-radius:8px;background:${isCorrect?'var(--ok-tint-2)':'var(--surface)'};border:1px solid ${isCorrect?'#1E8449':'var(--border)'}">
@@ -4739,9 +4784,17 @@ function renderDashExamPreview(){
         <div style="font-size:13px;color:var(--ink);line-height:1.5;flex:1">${esc(o||'')}${isCorrect?' <span style="color:var(--ok-2);font-weight:600;font-size:11px">✓ correct</span>':''}</div>
       </div>`;
     }).join('');
-    const expl=q.explanation||q.exp||'';
+    const expl=q.e||q.explanation||q.exp||'';
     const explHTML=expl?`<div style="background:var(--brand-tint-2);border-left:3px solid var(--brand-2);border-radius:6px;padding:8px 10px;margin-top:8px;font-size:12px;color:var(--brand);line-height:1.5"><b>Explanation:</b> ${esc(expl)}</div>`:'';
-    const wrongHTML=wrongWhy?`<div style="background:var(--err-tint);border-left:3px solid var(--err);border-radius:6px;padding:8px 10px;margin-top:8px;font-size:12px;color:#7d1f1f;line-height:1.5"><b>Why wrong options fail:</b> ${esc(wrongWhy)}</div>`:'';
+    // Batch 8: wrongWhy is a per-option array in the canonical quiz shape. Render
+    // one line per wrong option; fall back to a single string for legacy data.
+    let wrongHTML='';
+    if(Array.isArray(wrongWhy)){
+      const _wl=wrongWhy.map((w,j)=>(w&&j!==correctIdx)?`<div style="margin-top:3px"><b>${letters[j]||(j+1)}.</b> ${esc(w)}</div>`:'').filter(Boolean).join('');
+      if(_wl)wrongHTML=`<div style="background:var(--err-tint);border-left:3px solid var(--err);border-radius:6px;padding:8px 10px;margin-top:8px;font-size:12px;color:#7d1f1f;line-height:1.5"><b>Why wrong options fail:</b>${_wl}</div>`;
+    }else if(wrongWhy){
+      wrongHTML=`<div style="background:var(--err-tint);border-left:3px solid var(--err);border-radius:6px;padding:8px 10px;margin-top:8px;font-size:12px;color:#7d1f1f;line-height:1.5"><b>Why wrong options fail:</b> ${esc(wrongWhy)}</div>`;
+    }
     const meta=[unit?'Unit '+esc(unit):'',src?'Source: '+esc(src):''].filter(Boolean).join(' · ');
     return `<div style="background:#fff;border:.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;page-break-inside:avoid">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px">
@@ -4764,7 +4817,7 @@ function renderDashExamPreview(){
     <div style="background:linear-gradient(135deg,var(--brand),var(--brand-2));border-radius:14px;padding:18px;color:#fff;margin-bottom:14px">
       <div style="font-size:10px;font-weight:700;letter-spacing:1px;opacity:.85;margin-bottom:4px">EXAM PREVIEW · INSTRUCTOR VIEW</div>
       <div style="font-size:17px;font-weight:600;line-height:1.35;margin-bottom:8px">${esc(ex.title||'Untitled exam')}</div>
-      <div style="font-size:12px;opacity:.85;line-height:1.6">Section ${ex.sectionId}${sec?' — '+esc(sec.title):''}<br><b>${(ex.questionIds&&ex.questionIds.length)||qs.length||ex.count||0}</b> question${((ex.questionIds&&ex.questionIds.length)||qs.length||ex.count||0)===1?'':'s'} · <b>${ex.durationMinutes||0}</b> min · Group <b>${esc(ex.groupCode||'—')}</b></div>
+      <div style="font-size:12px;opacity:.85;line-height:1.6">Section ${ex.sectionId}${sec?' — '+esc(sec.title):''}${previewUnits?' \u00B7 Units: '+esc(previewUnits):' \u00B7 Full section'}<br><b>${(ex.questionIds&&ex.questionIds.length)||qs.length||ex.count||0}</b> question${((ex.questionIds&&ex.questionIds.length)||qs.length||ex.count||0)===1?'':'s'} · <b>${ex.durationMinutes||0}</b> min · Group <b>${esc(ex.groupCode||'—')}</b></div>
     </div>
     <div style="display:flex;gap:8px;margin-bottom:14px">
       <button onclick="window.print()" style="flex:1;padding:10px;border-radius:10px;border:.5px solid var(--border-4);background:var(--surface-3);color:#333;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">🖨️ Print / Save as PDF</button>
@@ -4865,6 +4918,7 @@ function renderDashExams(){
   const examCard=(x)=>{
     const status=examWindowStatus(x);
     const sec=sect(x.sectionId);
+    const units=unitTitles(x.sectionId,x.unitIds,{max:3}); // Batch 8
     const canClose=status!=='closed';
     return `<div style="background:#fff;border:.5px solid ${status==='active'?'#1E844940':'var(--border)'};border-radius:12px;padding:13px 14px;margin-bottom:10px">
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">
@@ -4872,7 +4926,7 @@ function renderDashExams(){
       </div>
       <div style="font-size:14px;font-weight:600;color:var(--ink);line-height:1.35;margin-bottom:6px">${esc(x.title)}</div>
       <div style="font-size:11px;color:#666;line-height:1.7;margin-bottom:10px">
-        Section ${x.sectionId}${sec?' — '+esc(sec.title):''}<br>
+        Section ${x.sectionId}${sec?' — '+esc(sec.title):''}${units?'<br><span style="color:#555">Units: '+esc(units)+'</span>':''}<br>
         <b>${x.count}</b> questions · <b>${x.durationMinutes}</b> min<br>
         Opens <b>${fmtDT(x.opensAt)}</b> · Closes <b>${fmtDT(x.closesAt)}</b>
       </div>
@@ -5311,11 +5365,15 @@ async function startExam(examId){
 
   const resumeMode=existing&&!existing.submitted&&existing.startedAt;
   const modalTitle=resumeMode?'Resume '+exam.title+'?':'Start '+exam.title+'?';
+  // Batch 8: the modal body is set via textContent, so inline <b>/<br> HTML
+  // showed up as literal text. Move the structured details into the list param
+  // (which renders as bullets) and keep body as a single plain line.
   const modalBody=resumeMode
     ?'⏱️ Time remaining is calculated from when you first started. Any answers you saved earlier are restored.'
-    :'⏱️ Duration: <b>'+exam.durationMinutes+' minutes</b><br>📊 Questions: <b>'+exam.count+'</b><br>⚠️ Timer starts immediately. The exam auto-submits at the deadline.';
+    :'⚠️ Timer starts immediately. The exam auto-submits at the deadline.';
+  const modalList=resumeMode?null:['⏱️ Duration: '+exam.durationMinutes+' minutes','📊 Questions: '+exam.count];
   const ok=await showModal({
-    icon:'\u{1F4DD}',title:modalTitle,body:modalBody,
+    icon:'\u{1F4DD}',title:modalTitle,body:modalBody,list:modalList,
     type:'primary',confirmText:resumeMode?'Resume':'Start Now',cancelText:'Not Yet'
   });
   if(!ok)return;
@@ -6604,6 +6662,7 @@ function renderResultsCard(exam){
           <div style="min-width:0;flex:1"><div style="font-size:13px;font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r.studentName||'Student')}</div>
           <div style="font-size:11px;color:#888;margin-top:2px">${submittedFlag} \u00B7 ${r.score||0}/${r.total||0}</div></div>
           <div style="background:${bg};color:${color};padding:5px 12px;border-radius:14px;font-size:13px;font-weight:700;flex-shrink:0">${pct}%</div>
+          ${r.submitted?'<div style="flex-shrink:0;font-size:11px;font-weight:600;color:var(--brand);white-space:nowrap;padding-left:2px">Review \u203A</div>':''}
         </div>`;
       }).join('');
     }
@@ -6920,7 +6979,8 @@ function renderStudentActivePlanBanner(){
   const p=STATE.studentActivePlan;
   if(!p)return '';
   const sec=S.find(s=>s.id===Number(p.sectionId));
-  const units=(p.unitIds||[]).length?(p.unitIds.length+' unit'+(p.unitIds.length===1?'':'s')):'All units';
+  const _ut=unitTitles(p.sectionId,p.unitIds,{max:2}); // Batch 8
+  const units=(p.unitIds||[]).length?(_ut?esc(_ut):(p.unitIds.length+' unit'+(p.unitIds.length===1?'':'s'))):'All units';
   return `<div style="background:linear-gradient(135deg,#7D3C98,var(--accent-purple-strong));border-radius:14px;padding:14px 16px;margin:0 0 14px;color:#fff">
     <div style="font-size:10px;font-weight:700;letter-spacing:1px;opacity:.85;margin-bottom:4px">\u{1F5D3}\uFE0F WEEKLY PLAN</div>
     <div style="font-size:15px;font-weight:600;margin-bottom:4px;line-height:1.3">${esc(p.weekLabel||'This Week')}</div>
@@ -7206,6 +7266,14 @@ function renderDashActualTeaching(){
   const createForm=`<div style="padding:14px">
     <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:10px">\u2795 Log a Lecture for <span style="font-family:'Courier New',monospace;color:var(--brand)">${esc(selectedGroup)}</span></div>
     <div style="background:#fff;border:.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px">
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Link a created lecture (optional)</label>
+        <select onchange="onTeachingLecturePick(this.value)" style="width:100%;padding:8px;border-radius:8px;border:.5px solid var(--border-4);font-size:12px;font-family:inherit;background:#fff;color:var(--ink);box-sizing:border-box">
+          <option value="">— none: enter manually below —</option>
+          ${(STATE.dashLectures||[]).map(l=>`<option value="${esc(l.id)}" ${d.lectureId===l.id?'selected':''}>${esc(l.title||'Untitled')}${l.date?' \u00B7 '+esc(l.date):''}</option>`).join('')}
+        </select>
+        ${d.lectureTitle?`<div style="font-size:10px;color:var(--brand);margin-top:4px">\u{1F517} Linked: ${esc(d.lectureTitle)} — date auto-filled; pick the units taught below.</div>`:''}
+      </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
         <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Lecture # *</label><input type="number" min="1" value="${esc(String(d.lectureNumber||''))}" oninput="STATE.dashTeachingDraft.lectureNumber=this.value" placeholder="1" style="width:100%;padding:8px;border-radius:8px;border:.5px solid var(--border-4);font-size:12px;font-family:inherit;outline:none;background:#fff;color:var(--ink);box-sizing:border-box"></div>
         <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Date *</label><input type="date" value="${esc(d.date||'')}" oninput="STATE.dashTeachingDraft.date=this.value" style="width:100%;padding:8px;border-radius:8px;border:.5px solid var(--border-4);font-size:12px;font-family:inherit;outline:none;background:#fff;color:var(--ink);box-sizing:border-box"></div>
@@ -7217,7 +7285,7 @@ function renderDashActualTeaching(){
   if(entries.length===0){
     return `${createForm}${renderDashTabEmpty('Teaching entries',selectedGroup,{icon:'\u{1F4D3}',body:'No teaching entries yet for this group. Log your first lecture using the form above.'})}</div>`;
   }
-  const rows=entries.map(e=>{const dt=e.date?new Date(e.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';const titles=(e.unitIds||[]).map(uid=>{const found=allLessons.find(x=>x.lesson.id===uid);return found?`${uid}. ${found.lesson.title}`:uid;});return `<div class="teach-entry"><div class="teach-badges"><span class="teach-badge" style="background:#D6EAF8;color:var(--brand)">Lecture ${e.lectureNumber}</span><span class="teach-badge" style="background:var(--surface-3);color:#555">${dt}</span></div><div style="font-size:11px;color:#888;margin-bottom:8px">${titles.length} unit${titles.length===1?'':'s'} taught</div><div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px">${titles.map(t=>`<span style="font-size:10px;background:#EBF5FB;color:var(--brand);padding:2px 7px;border-radius:8px">${esc(t)}</span>`).join('')}</div>${e.notes?`<div style="font-size:12px;color:#444;background:var(--surface);border-radius:8px;padding:8px 10px;margin-bottom:8px;line-height:1.5">${esc(e.notes)}</div>`:''}<button onclick="deleteTeachingEntry('${e.id}')" style="padding:5px 10px;border-radius:6px;border:.5px solid var(--err)40;background:var(--err-tint);color:var(--err-2);font-size:11px;cursor:pointer;font-family:inherit">\u{1F5D1}\uFE0F Delete</button></div>`;}).join('');
+  const rows=entries.map(e=>{const dt=e.date?new Date(e.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';const titles=(e.unitIds||[]).map(uid=>{const found=allLessons.find(x=>x.lesson.id===uid);return found?`${uid}. ${found.lesson.title}`:uid;});return `<div class="teach-entry"><div class="teach-badges"><span class="teach-badge" style="background:#D6EAF8;color:var(--brand)">Lecture ${e.lectureNumber}</span><span class="teach-badge" style="background:var(--surface-3);color:#555">${dt}</span>${e.lectureTitle?'<span class="teach-badge" style="background:#EBF5FB;color:var(--brand)">\u{1F517} '+esc(e.lectureTitle)+'</span>':''}</div><div style="font-size:11px;color:#888;margin-bottom:8px">${titles.length} unit${titles.length===1?'':'s'} taught</div><div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px">${titles.map(t=>`<span style="font-size:10px;background:#EBF5FB;color:var(--brand);padding:2px 7px;border-radius:8px">${esc(t)}</span>`).join('')}</div>${e.notes?`<div style="font-size:12px;color:#444;background:var(--surface);border-radius:8px;padding:8px 10px;margin-bottom:8px;line-height:1.5">${esc(e.notes)}</div>`:''}<button onclick="deleteTeachingEntry('${e.id}')" style="padding:5px 10px;border-radius:6px;border:.5px solid var(--err)40;background:var(--err-tint);color:var(--err-2);font-size:11px;cursor:pointer;font-family:inherit">\u{1F5D1}\uFE0F Delete</button></div>`;}).join('');
   return `${createForm}
     <div style="font-size:12px;font-weight:500;color:#888;letter-spacing:.5px;margin-bottom:8px">RECENT ENTRIES (${entries.length})</div>
     ${rows}
@@ -7450,13 +7518,25 @@ function render(){
   // Batch 5: lecture feedback prompt — appears when instructor opens feedback
   // AND student attended AND hasn't submitted yet. Non-blocking floating card.
   try{ maybeShowFeedbackPrompt(); }catch(e){}
+  // Batch 8 (feedback-popup): auto-open the rating modal instead of a passive
+  // banner. "Later" suppresses it for the session (see markFeedbackDismissed);
+  // it re-appears next app open. Deferred slightly so it lands after the screen
+  // settles, matching the login-style popup feel. Guards prevent duplicate opens.
   if(STATE._feedbackPromptFor && !['loading','login','onboarding','quiz-session','exam','cbq','mock-exam'].includes(STATE.tab)){
     const fp=STATE._feedbackPromptFor;
-    const fpCard=document.createElement('div');
-    fpCard.style.cssText='margin:10px 12px 0;background:linear-gradient(135deg,#7D3C98,var(--accent-purple-strong));border-radius:12px;padding:12px 14px;color:#fff;display:flex;align-items:center;gap:11px;box-shadow:0 3px 12px rgba(125,60,152,.25);cursor:pointer;flex-shrink:0';
-    fpCard.innerHTML='<span style="font-size:20px;flex-shrink:0">\u2B50</span><span style="flex:1;font-size:13px;line-height:1.4">Rate today\u2019s lecture: <b>'+esc(fp.title||'Lecture')+'</b> \u2014 takes 30 seconds</span>';
-    fpCard.onclick=()=>{try{showFeedbackModal({lectureId:fp.lectureId,title:fp.title},fp.groupCode);}catch(e){}};
-    content.insertBefore(fpCard,content.firstChild);
+    if(fp && fp.lectureId && !_feedbackDismissedSession[fp.lectureId] && !document.getElementById('feedback-overlay')){
+      setTimeout(()=>{
+        try{
+          const cur=STATE._feedbackPromptFor;
+          if(cur && cur.lectureId===fp.lectureId
+             && !_feedbackDismissedSession[fp.lectureId]
+             && !document.getElementById('feedback-overlay')
+             && !['loading','login','onboarding','quiz-session','exam','cbq','mock-exam'].includes(STATE.tab)){
+            showFeedbackModal({lectureId:fp.lectureId,title:fp.title},fp.groupCode);
+          }
+        }catch(e){}
+      }, 350);
+    }
   }
 
   // Batch 4: engagement card — floats above content on normal student screens.
