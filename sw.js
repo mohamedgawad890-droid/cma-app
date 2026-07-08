@@ -22,7 +22,7 @@
 // SW installs, cache.add() will fail gracefully (per-URL try/catch below)
 // and the network-first fetch handler will cache it on first request.
 
-const CACHE_NAME = 'cma-prep-v19';
+const CACHE_NAME = 'cma-prep-v20';
 const OFFLINE_URLS = [
   './',
   './index.html',
@@ -34,7 +34,17 @@ const OFFLINE_URLS = [
   './lessons/lesson-s3.json',
   './lessons/lesson-s4.json',
   './lessons/lesson-s5.json',
-  './lessons/lesson-s6.json'
+  './lessons/lesson-s6.json',
+  // Batch 7 (B7-03): quiz + dictionary now pre-cached for full offline use.
+  // Paths verified against the app's lazy loaders (fetch('./questions/s'+id+'.json'),
+  // fetch('./dictionary/terms.json')). Cache version bumped v19->v20 to pick these up.
+  './questions/s1.json',
+  './questions/s2.json',
+  './questions/s3.json',
+  './questions/s4.json',
+  './questions/s5.json',
+  './questions/s6.json',
+  './dictionary/terms.json'
 ];
 
 // ── Page sends SKIP_WAITING after detecting a new SW is waiting ───────────────
