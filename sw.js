@@ -1,178 +1,133 @@
-// CMA Prep — Service Worker v15 (Batch 4.1 hotfix)
-// Strategy: Network-first with cache fallback
-// Auto-update: listens for SKIP_WAITING from the page → triggers instant reload
-//
-// v15 (Batch 4): version bump forces browsers to drop the v14 cache and
-// register the new `push` and `notificationclick` handlers below. These
-// handlers ship inert in Batch 4 — they wire up the plumbing so that when
-// Batch 3-A adds server-scheduled push via Cloud Functions, notifications
-// route through the SW and deep-link into the correct app screen without
-// a further SW change. In the meantime, in-app engagement cards (client-
-// side) and best-effort browser notifications (setTimeout while the app is
-// open) handle daily nudges.
-//
-// v15 (Batch 4.1): SW file bytes change (default deep-link fix below),
-// so browsers re-register this SW. CACHE_NAME stays 'cma-prep-v15' — the
-// cache manifest (OFFLINE_URLS) did not change, so nothing to invalidate.
-//
-// v16 (Batch 4.5): OFFLINE_URLS now includes './app.js' — the main app
-// script has been extracted from index.html into a separate file. Cache
-// version MUST bump so the new manifest is picked up and app.js is
-// pre-cached for offline use. If './app.js' isn't yet deployed when this
-// SW installs, cache.add() will fail gracefully (per-URL try/catch below)
-// and the network-first fetch handler will cache it on first request.
+// FMAA Prep — Service Worker
+// Caches the app shell for offline use and handles auto-updates.
 
-const CACHE_NAME = 'cma-prep-v20';
-const OFFLINE_URLS = [
+const CACHE_NAME = 'fmaa-prep-v5';
+
+// Files to cache on install (app shell)
+const PRECACHE_URLS = [
   './',
   './index.html',
-  './app.js',
-  './app.css',
-  './cbq-data.js',
-  './lessons/lesson-s1.json',
-  './lessons/lesson-s2.json',
-  './lessons/lesson-s3.json',
-  './lessons/lesson-s4.json',
-  './lessons/lesson-s5.json',
-  './lessons/lesson-s6.json',
-  // Batch 7 (B7-03): quiz + dictionary now pre-cached for full offline use.
-  // Paths verified against the app's lazy loaders (fetch('./questions/s'+id+'.json'),
-  // fetch('./dictionary/terms.json')). Cache version bumped v19->v20 to pick these up.
-  './questions/s1.json',
-  './questions/s2.json',
-  './questions/s3.json',
-  './questions/s4.json',
-  './questions/s5.json',
-  './questions/s6.json',
-  './dictionary/terms.json'
+  './manifest.json',
+  './dictionary.json',
+  './icon-192.png',
+  './icon-512.png',
+  './gawad-avatar.webp',
+  'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js',
+  'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js',
+  'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js'
 ];
 
-// ── Page sends SKIP_WAITING after detecting a new SW is waiting ───────────────
-self.addEventListener('message', event => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
-});
-
+// ── Install: pre-cache the app shell ─────────────────────────────────────────
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
-      // Cache files individually so one missing file can't fail the whole install
-      return Promise.all(
-        OFFLINE_URLS.map(url =>
-          cache.add(url).catch(err => console.warn('[SW] skip cache:', url, err))
-        )
-      );
+      return cache.addAll(PRECACHE_URLS).catch(err => {
+        console.warn('[SW] Pre-cache partial failure (non-fatal):', err);
+      });
     })
-    // No skipWaiting() here — the page controls timing so reload is clean
   );
+  // Don't self.skipWaiting() here — let the main thread trigger it
+  // via postMessage({type:'SKIP_WAITING'}) so updates are controlled.
 });
 
+// ── Activate: clean up old caches ────────────────────────────────────────────
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
       Promise.all(
-        keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
+        keys
+          .filter(key => key !== CACHE_NAME)
+          .map(key => caches.delete(key))
       )
     ).then(() => self.clients.claim())
   );
 });
 
+// ── Fetch ────────────────────────────────────────────────────────────────────
+// Strategy:
+//   • Firebase / Cloudinary / Google / gstatic → always network (no intercept)
+//   • HTML document (navigation) → NETWORK-FIRST, bypassing the HTTP cache,
+//     so your edits to index.html appear on the next online open with no
+//     Ctrl+Shift+R. Falls back to the cached copy only when offline.
+//   • lesson/quiz JSON → network-first, fall back to cache
+//   • everything else (icons, avatar, manifest, Firebase SDK) → cache-first
 self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET') return;
+  const req = event.request;
+  const url = new URL(req.url);
 
-  const url = event.request.url;
+  // Never intercept Firebase, Cloudinary, or Google APIs — always go to network
   if (
-    url.includes('firestore.googleapis.com') ||
-    url.includes('firebase.googleapis.com') ||
-    url.includes('identitytoolkit.googleapis.com') ||
-    url.includes('cloudinary.com') ||
-    url.includes('googleapis.com') ||
-    url.includes('script.google.com') ||
-    url.includes('youtube.com')
+    url.hostname.includes('firestore.googleapis.com') ||
+    url.hostname.includes('firebase') ||
+    url.hostname.includes('googleapis.com') ||
+    url.hostname.includes('cloudinary.com') ||
+    url.hostname.includes('script.google.com') ||
+    url.hostname.includes('gstatic.com')
   ) {
+    return; // fall through to browser default (network)
+  }
+
+  // ── HTML document / navigation → NETWORK-FIRST (always pull the latest) ──────
+  const isDocument =
+    req.mode === 'navigate' ||
+    req.destination === 'document' ||
+    url.pathname.endsWith('/') ||
+    url.pathname.endsWith('/index.html');
+
+  if (isDocument) {
+    event.respondWith(
+      // { cache: 'reload' } bypasses the browser's own HTTP cache so GitHub
+      // Pages' cache headers can't hand back a stale page.
+      fetch(req, { cache: 'reload' })
+        .then(response => {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put('./index.html', clone));
+          return response;
+        })
+        .catch(() =>
+          caches.match(req).then(cached => cached || caches.match('./index.html'))
+        )
+    );
     return;
   }
 
-  event.respondWith(
-    fetch(event.request)
-      .then(networkResponse => {
-        if (networkResponse && networkResponse.status === 200) {
-          const responseClone = networkResponse.clone();
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put(event.request, responseClone);
-          });
-        }
-        return networkResponse;
-      })
-      .catch(() => {
-        return caches.match(event.request).then(cachedResponse => {
-          if (cachedResponse) return cachedResponse;
-          return caches.match('./');
-        });
-      })
-  );
-});
-
-// ═══════════════════════════════════════════════════════════════════════════
-//  BATCH 4 — PUSH NOTIFICATION HANDLERS
-// ═══════════════════════════════════════════════════════════════════════════
-// These handlers ship in v15 but are inert until Batch 3-A adds a Cloud
-// Function that pushes payloads. Wiring them now means the future switch
-// is a pure server-side change — no client refresh required.
-
-self.addEventListener('push', event => {
-  // Expected payload shape from future Cloud Function:
-  //   { title, body, deepLink }  (deepLink one of: qod, wrong-answers, community, dashboard)
-  let data = {};
-  try {
-    data = event.data ? event.data.json() : {};
-  } catch (err) {
-    // Malformed payload — fall through to defaults
-    data = { title: 'CMA Prep', body: 'Time for today\'s session' };
+  // ── Lesson and quiz JSON → network-first, fall back to cache ─────────────────
+  if (url.pathname.includes('/lessons/') || url.pathname.includes('/questions/') || url.pathname.endsWith('/dictionary.json')) {
+    event.respondWith(
+      fetch(req)
+        .then(response => {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(req, clone));
+          return response;
+        })
+        .catch(() => caches.match(req))
+    );
+    return;
   }
 
-  const title = data.title || 'CMA Prep';
-  const options = {
-    body: data.body || 'Time for today\'s session',
-    icon: './icon-192.png',
-    badge: './icon-192.png',
-    tag: 'cma-daily',        // one active daily notification at a time
-    renotify: false,
-    dir: 'auto',             // auto-detect RTL for Arabic content
-    data: {
-      // Batch 4.1: default lands on 'intro' — the app has no 'qod' tab.
-      deepLink: data.deepLink || 'intro',
-      timestamp: Date.now()
-    }
-  };
-
-  event.waitUntil(
-    self.registration.showNotification(title, options)
+  // ── Everything else (app shell assets) → cache-first, fall back to network ──
+  event.respondWith(
+    caches.match(req).then(cached => {
+      if (cached) return cached;
+      return fetch(req).then(response => {
+        // Only cache successful same-origin responses
+        if (
+          response &&
+          response.status === 200 &&
+          response.type === 'basic'
+        ) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(req, clone));
+        }
+        return response;
+      });
+    })
   );
 });
 
-self.addEventListener('notificationclick', event => {
-  event.notification.close();
-  // Batch 4.1: default lands on 'intro' — the app has no 'qod' tab.
-  const deepLink = (event.notification.data && event.notification.data.deepLink) || 'intro';
-
-  event.waitUntil(
-    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clients => {
-      // Prefer focusing an existing tab and posting the deep-link intent to it
-      for (const client of clients) {
-        if (client.url.includes(self.location.origin) && 'focus' in client) {
-          client.focus();
-          try {
-            client.postMessage({ type: 'DEEP_LINK', target: deepLink });
-          } catch {}
-          return;
-        }
-      }
-      // No open tab → open a fresh one with the deep link as a hash fragment
-      if (self.clients.openWindow) {
-        return self.clients.openWindow('./#' + encodeURIComponent(deepLink));
-      }
-    })
-  );
+// ── Message: handle SKIP_WAITING from the main thread ────────────────────────
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
