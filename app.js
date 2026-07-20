@@ -1387,6 +1387,19 @@ function unitTitles(sectionId, unitIds, opts){
   return titles.slice(0, max).join(' \u00B7 ') + ' +' + (titles.length - max) + ' more';
 }
 
+// ─── QUIZ BREADCRUMB (item 1) ────────────────────────────────────────────────
+// Builds the "Section N: Title \u00B7 Unit M \u00B7 Topic" line shown atop each
+// question. Unit number is the part after '-' in a lessonId (e.g. '4-1' -> 1).
+// Any missing piece is silently dropped; returns '' if nothing resolvable.
+function quizBreadcrumb(sectionId, lessonId, topic){
+  var bits=[];
+  var sec=sect(Number(sectionId));
+  if(sec) bits.push('Section '+sec.id+': '+sec.title);
+  if(lessonId){ var u=String(lessonId).split('-')[1]; if(u) bits.push('Unit '+u); }
+  if(topic) bits.push(topic);
+  return bits.join(' \u00B7 ');
+}
+
 // ─── PER-QUESTION LIVE TIMER ──────────────────────────────────────────────────
 window._qTimerInterval=null;
 function startQTimer(getStartFn){
@@ -2243,7 +2256,7 @@ function buildQuizModeQuestions(sectionId){
   const sections=sectionId?S.filter(s=>s.id===sectionId):S;
   sections.forEach(sec=>{
     sec.lessons.forEach(l=>{
-      l.quizzes.forEach(q=>{allQ.push({...q,lessonTitle:l.title,sectionTitle:sec.title,secEmoji:sec.emoji,secBar:sec.bar,secBg:sec.bg,secText:sec.text,secStrong:sec.strong});});
+      l.quizzes.forEach(q=>{allQ.push({...q,lessonId:l.id,sectionId:sec.id,lessonTitle:l.title,sectionTitle:sec.title,secEmoji:sec.emoji,secBar:sec.bar,secBg:sec.bg,secText:sec.text,secStrong:sec.strong});});
     });
   });
   // Shuffle
@@ -2349,7 +2362,7 @@ function renderQuizMode(){
   const qmTimerBadge=timerBadgeHTML(qm.qTimerElapsed,sel!==null);
   return`<div class="bh"><button class="bh-back" onclick="STATE.tab='quiz-mode-select';render()">‹</button>
     <div style="flex:1">
-      <div style="font-size:11px;font-weight:500;color:var(--brand-2)">${esc(q.secEmoji+' '+q.lessonTitle)}</div>
+      <div style="font-size:11px;font-weight:500;color:var(--brand-2)">${esc(quizBreadcrumb(q.sectionId,q.lessonId,q.topic)||(q.secEmoji+' '+q.lessonTitle))}</div>
       <div style="font-size:14px;font-weight:500">Question ${qm.idx+1} of ${qm.questions.length}</div>
     </div>
     ${qmTimerBadge}
@@ -3365,7 +3378,8 @@ function renderQuizSession(){
   const timerBadge=timerBadgeHTML(qs.qTimerElapsed,sel!==null);
   const headerTitle=qs.isRetry?'Wrong Answer Retry':lessonTitle;
   const headerSub=qs.isRetry?`Question ${qs.idx+1} of ${qs.questions.length} · Mixed sections`:`Question ${qs.idx+1} of ${qs.questions.length}`;
-  return`<div class="bh"><button class="bh-back" onclick="STATE.tab=${qs.isRetry?`'wrong-answers'`:`'study'`};STATE.quizState=null;render()">‹</button><div style="flex:1"><div style="font-size:11px;font-weight:500;color:${sec.text}">${esc(headerTitle)}</div><div style="font-size:14px;font-weight:500">${headerSub}</div></div>${timerBadge}</div>
+  const _crumb=quizBreadcrumb(qs.isRetry?q._secId:qs.sId, qs.isRetry?q._lessonId:qs.lessonId, q.topic);
+  return`<div class="bh"><button class="bh-back" onclick="STATE.tab=${qs.isRetry?`'wrong-answers'`:`'study'`};STATE.quizState=null;render()">‹</button><div style="flex:1"><div style="font-size:11px;font-weight:500;color:${sec.text}">${esc(_crumb||headerTitle)}</div><div style="font-size:14px;font-weight:500">${headerSub}</div></div>${timerBadge}</div>
   <div style="height:5px;background:var(--surface-4);flex-shrink:0"><div style="height:100%;width:${barW}%;background:${qs.isRetry?'var(--err)':sec.bar};transition:width .4s;border-radius:0 3px 3px 0"></div></div>
   <div class="scroll-area pad" style="padding-top:16px"><div class="card" id="qs-question-card"><p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${esc(q.q)}</p>${dataTableHTML(q)}${opts}${explanation}</div><div style="margin-top:12px" id="qs-next-wrap">${nextBtn}</div><div style="height:20px"></div></div>`;
 }
@@ -6400,7 +6414,7 @@ function renderDashAttendanceMatrix(groupCode, lectures, students){
     return `<th style="min-width:56px;max-width:56px;padding:6px 4px;background:var(--surface-3);border:1px solid var(--border);font-weight:600;font-size:10px;color:var(--ink-2);line-height:1.2;position:sticky;top:0;z-index:2" title="${esc(l.title||'')} - ${esc(dt)}">${esc(dt)}</th>`;
   }).join('');
   const headerRow=`<thead><tr>
-    <th style="min-width:150px;max-width:150px;padding:8px 10px;background:var(--surface-3);border:1px solid var(--border);font-weight:600;font-size:11px;color:var(--ink-2);text-align:left;position:sticky;left:0;top:0;z-index:3">Student</th>
+    <th style="min-width:150px;max-width:170px;padding:8px 10px;background:var(--surface-3);border:1px solid var(--border);font-weight:600;font-size:11px;color:var(--ink-2);text-align:left;position:sticky;left:0;top:0;z-index:3">Student</th>
     ${headerCells}
     <th style="min-width:70px;max-width:70px;padding:6px 4px;background:var(--surface-3);border:1px solid var(--border);font-weight:600;font-size:10px;color:var(--ink-2);position:sticky;top:0;z-index:2">Rate</th>
   </tr></thead>`;
@@ -6411,7 +6425,7 @@ function renderDashAttendanceMatrix(groupCode, lectures, students){
     const sum=rowSummary[s.uid];
     const rateColor=sum.pct>=80?'var(--ok-2)':(sum.pct>=50?'var(--warn-strong)':'var(--err-2)');
     return `<tr>
-      <td onclick="STATE.dashStudentDetailUid='${esc(s.uid)}';render()" style="min-width:150px;max-width:150px;padding:8px 10px;background:var(--card);border:1px solid var(--border);font-size:12px;color:var(--ink);text-align:left;position:sticky;left:0;z-index:1;cursor:pointer;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(s.name||'')}">${esc(s.name||'Unnamed')}</td>
+      <td onclick="STATE.dashStudentDetailUid='${esc(s.uid)}';render()" style="min-width:150px;max-width:170px;padding:8px 10px;background:var(--card);border:1px solid var(--border);font-size:12px;color:var(--ink);text-align:left;position:sticky;left:0;z-index:1;cursor:pointer;font-weight:500;white-space:normal;word-break:break-word;line-height:1.3" title="${esc(s.name||'')}">${esc(s.name||'Unnamed')}</td>
       ${cells}
       <td style="min-width:70px;max-width:70px;padding:4px;border:1px solid var(--border);background:var(--card);text-align:center"><div style="font-size:12px;font-weight:700;color:${rateColor}">${sum.pct}%</div><div style="font-size:9px;color:var(--muted-2);margin-top:1px">${sum.attended}/${sum.total}</div></td>
     </tr>`;
@@ -6422,7 +6436,7 @@ function renderDashAttendanceMatrix(groupCode, lectures, students){
     return `<td style="min-width:56px;max-width:56px;padding:4px;border:1px solid var(--border);background:var(--surface-3);text-align:center"><div style="font-size:11px;font-weight:700;color:${col}">${c.pct}%</div><div style="font-size:9px;color:var(--muted-2);margin-top:1px">${c.attended}/${studentsSorted.length}</div></td>`;
   }).join('');
   const footerRow=`<tfoot><tr>
-    <td style="min-width:150px;max-width:150px;padding:8px 10px;background:var(--surface-3);border:1px solid var(--border);font-size:11px;font-weight:600;color:var(--ink-2);text-align:left;position:sticky;left:0;z-index:1">Lecture rate</td>
+    <td style="min-width:150px;max-width:170px;padding:8px 10px;background:var(--surface-3);border:1px solid var(--border);font-size:11px;font-weight:600;color:var(--ink-2);text-align:left;position:sticky;left:0;z-index:1">Lecture rate</td>
     ${footerCells}
     <td style="background:var(--surface-3);border:1px solid var(--border)"></td>
   </tr></tfoot>`;
