@@ -22,7 +22,12 @@
 // SW installs, cache.add() will fail gracefully (per-URL try/catch below)
 // and the network-first fetch handler will cache it on first request.
 
-const CACHE_NAME = 'cma-prep-v20';
+//
+// v21 (S4 batch, items 1+3): questions/s4.json content changed (164 topics
+// filled + 2 normalized) and it is precached in OFFLINE_URLS, so CACHE_NAME
+// bumps v20->v21 to invalidate the stale copy. app.js/app.css are network-
+// first, but the bump also gives the clean SKIP_WAITING auto-reload on deploy.
+const CACHE_NAME = 'cma-prep-v21';
 const OFFLINE_URLS = [
   './',
   './index.html',
