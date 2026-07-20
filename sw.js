@@ -39,7 +39,12 @@
 // (ex label now reads .l OR .title, restoring 31 titleless S4 examples).
 // Both files are precached, so CACHE_NAME bumps v22->v23 to invalidate the
 // stale copies and trigger the clean SKIP_WAITING auto-reload on deploy.
-const CACHE_NAME = 'cma-prep-v23';
+//
+// v24 (concept-breadcrumb batch): app.js changed — quizBreadcrumb now
+// renders an optional per-question `concept` tag (falls back to the unit-name
+// topic when untagged). app.js is a precached shell file, so CACHE_NAME bumps
+// v23->v24 to refresh the precache and trigger the clean SKIP_WAITING auto-reload.
+const CACHE_NAME = 'cma-prep-v24';
 const OFFLINE_URLS = [
   './',
   './index.html',
