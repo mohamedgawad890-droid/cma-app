@@ -1391,12 +1391,14 @@ function unitTitles(sectionId, unitIds, opts){
 // Builds the "Section N: Title \u00B7 Unit M \u00B7 Topic" line shown atop each
 // question. Unit number is the part after '-' in a lessonId (e.g. '4-1' -> 1).
 // Any missing piece is silently dropped; returns '' if nothing resolvable.
-function quizBreadcrumb(sectionId, lessonId, topic){
+function quizBreadcrumb(sectionId, lessonId, topic, concept){
   var bits=[];
   var sec=sect(Number(sectionId));
   if(sec) bits.push('Section '+sec.id+': '+sec.title);
   if(lessonId){ var u=String(lessonId).split('-')[1]; if(u) bits.push('Unit '+u); }
-  if(topic) bits.push(topic);
+  // concept (per-question) wins; unit-name topic is the fallback when untagged
+  var label=concept||topic;
+  if(label) bits.push(label);
   return bits.join(' \u00B7 ');
 }
 
@@ -2399,7 +2401,7 @@ function renderQuizMode(){
   const qmTimerBadge=timerBadgeHTML(qm.qTimerElapsed,sel!==null);
   return`<div class="bh"><button class="bh-back" onclick="STATE.tab='quiz-mode-select';render()">‹</button>
     <div style="flex:1">
-      <div style="font-size:11px;font-weight:500;color:var(--brand-2)">${esc(quizBreadcrumb(q.sectionId,q.lessonId,q.topic)||(q.secEmoji+' '+q.lessonTitle))}</div>
+      <div style="font-size:11px;font-weight:500;color:var(--brand-2)">${esc(quizBreadcrumb(q.sectionId,q.lessonId,q.topic,q.concept)||(q.secEmoji+' '+q.lessonTitle))}</div>
       <div style="font-size:14px;font-weight:500">Question ${qm.idx+1} of ${qm.questions.length}</div>
     </div>
     ${qmTimerBadge}
@@ -3426,7 +3428,7 @@ function renderQuizSession(){
   const timerBadge=timerBadgeHTML(qs.qTimerElapsed,sel!==null);
   const headerTitle=qs.isRetry?'Wrong Answer Retry':lessonTitle;
   const headerSub=qs.isRetry?`Question ${qs.idx+1} of ${qs.questions.length} · Mixed sections`:`Question ${qs.idx+1} of ${qs.questions.length}`;
-  const _crumb=quizBreadcrumb(qs.isRetry?q._secId:qs.sId, qs.isRetry?q._lessonId:qs.lessonId, q.topic);
+  const _crumb=quizBreadcrumb(qs.isRetry?q._secId:qs.sId, qs.isRetry?q._lessonId:qs.lessonId, q.topic, q.concept);
   return`<div class="bh"><button class="bh-back" onclick="STATE.tab=${qs.isRetry?`'wrong-answers'`:`'study'`};STATE.quizState=null;render()">‹</button><div style="flex:1"><div style="font-size:11px;font-weight:500;color:${sec.text}">${esc(_crumb||headerTitle)}</div><div style="font-size:14px;font-weight:500">${headerSub}</div></div>${timerBadge}</div>
   <div style="height:5px;background:var(--surface-4);flex-shrink:0"><div style="height:100%;width:${barW}%;background:${qs.isRetry?'var(--err)':sec.bar};transition:width .4s;border-radius:0 3px 3px 0"></div></div>
   ${quizDots}<div class="scroll-area pad" style="padding-top:16px"><div class="card" id="qs-question-card"><p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${esc(q.q)}</p>${dataTableHTML(q)}${opts}${explanation}</div><div style="margin-top:12px" id="qs-next-wrap">${navRow}</div><div style="height:20px"></div></div>`;
