@@ -255,6 +255,135 @@
     },
     {
       "t": "h",
+      "v": "Manufacturing Cost Classifications (DM · DL · MOH)"
+    },
+    {
+      "t": "p",
+      "v": "Every manufacturing cost is one of three elements: Direct Materials (DM), Direct Labor (DL), and Manufacturing Overhead (MOH). These are combined two ways to give the classifications the exam tests most: prime cost and conversion cost."
+    },
+    {
+      "t": "def",
+      "term": "Prime Cost",
+      "v": "The direct, traceable cost of making a product. Prime Cost = Direct Materials + Direct Labor. These costs can be traced directly to each unit."
+    },
+    {
+      "t": "def",
+      "term": "Conversion Cost",
+      "v": "The cost of converting raw materials into finished goods. Conversion Cost = Direct Labor + Manufacturing Overhead. Direct labor is the overlap — it belongs to BOTH prime and conversion cost."
+    },
+    {
+      "t": "f",
+      "l": "Prime & Conversion Cost",
+      "v": "Prime Cost = DM + DL\nConversion Cost = DL + MOH\nDirect Labor is counted in both."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Cost Element",
+        "Prime Cost",
+        "Conversion Cost"
+      ],
+      "r": [
+        [
+          "Direct Materials",
+          "✔",
+          ""
+        ],
+        [
+          "Direct Labor",
+          "✔",
+          "✔"
+        ],
+        [
+          "Manufacturing Overhead",
+          "",
+          "✔"
+        ]
+      ]
+    },
+    {
+      "t": "tip",
+      "v": "Trap: Direct Labor is in BOTH prime and conversion cost, so Prime + Conversion double-counts DL. Never add them for total cost. Total Manufacturing Cost = DM + DL + MOH = Prime + MOH = Conversion + DM."
+    },
+    {
+      "t": "h",
+      "v": "Product Costs vs Period Costs"
+    },
+    {
+      "t": "def",
+      "term": "Product Cost (Inventoriable Cost)",
+      "v": "Costs attached to the product and held in inventory until the unit is sold, then expensed as Cost of Goods Sold. Under ABSORPTION (full) costing — required for external reporting — product cost = Direct Materials + Direct Labor + ALL Manufacturing Overhead, both variable AND fixed."
+    },
+    {
+      "t": "def",
+      "term": "Period Cost",
+      "v": "Costs NOT attached to the product. They are expensed in the period incurred, regardless of production or sales. Period costs = all selling, general and administrative (SG&A) expenses, e.g. sales commissions, advertising, and office salaries."
+    },
+    {
+      "t": "tbl",
+      "h": [
+        "Cost",
+        "Product or Period?",
+        "Under Absorption Costing"
+      ],
+      "r": [
+        [
+          "Direct Materials",
+          "Product",
+          "Inventoriable"
+        ],
+        [
+          "Direct Labor",
+          "Product",
+          "Inventoriable"
+        ],
+        [
+          "Variable MOH",
+          "Product",
+          "Inventoriable"
+        ],
+        [
+          "Fixed MOH",
+          "Product",
+          "Inventoriable"
+        ],
+        [
+          "Variable selling",
+          "Period",
+          "Expensed now"
+        ],
+        [
+          "Fixed selling & admin",
+          "Period",
+          "Expensed now"
+        ]
+      ]
+    },
+    {
+      "t": "ex",
+      "l": "Unit Product Cost Under Absorption Costing",
+      "v": "Per-unit costs: Direct materials $32, Direct labor $20, Variable MOH $15, Fixed MOH $6, Variable selling $3, Fixed selling $4. Product cost per unit (absorption) = DM + DL + Var MOH + Fixed MOH = 32 + 20 + 15 + 6 = $73. The $3 variable selling and $4 fixed selling are PERIOD costs — excluded from product cost."
+    },
+    {
+      "t": "h",
+      "v": "Costs for Decision-Making: Relevant & Differential Costs"
+    },
+    {
+      "t": "def",
+      "term": "Relevant Cost",
+      "v": "A FUTURE cost that DIFFERS between alternatives. A cost is relevant only if it (1) will occur in the future AND (2) changes with the option chosen. Sunk costs (already incurred) are never relevant."
+    },
+    {
+      "t": "def",
+      "term": "Differential (Incremental) Cost",
+      "v": "The difference in total cost between two alternatives — called incremental cost when the difference is an increase. Differential analysis compares only the costs and revenues that change between options, i.e. the relevant costs."
+    },
+    {
+      "t": "tip",
+      "v": "Decision-cost hierarchy: Relevant = future AND differs between options. Sunk = past = always irrelevant. Opportunity cost = benefit of the next-best option given up = always relevant. Differential cost = the change in cost between two choices."
+    },
+    {
+      "t": "h",
       "v": "Cost Object, Cost Pool, Allocation Base & Cost Driver"
     },
     {
@@ -1456,6 +1585,20 @@
       "v": "Spoilage above the expected/normal level, arising from avoidable events (machine breakdown, worker error). Cost is expensed separately as Loss from Abnormal Spoilage — NOT included in product cost. Highlights a controllable problem."
     },
     {
+      "t": "h",
+      "v": "Rework & Scrap"
+    },
+    {
+      "t": "def",
+      "term": "Rework",
+      "v": "Defective units that are repaired and then sold as good units. Rework cost on NORMAL (expected) defects is charged to manufacturing overhead; rework caused by a specific job or an abnormal event is charged to that job or to a loss account."
+    },
+    {
+      "t": "def",
+      "term": "Scrap",
+      "v": "Residual material left over from production with little or no value (metal shavings, trimmings). Scrap sold for a small amount is credited to manufacturing overhead (if common to all jobs) or to the specific job that produced it. Scrap is a material residue; spoilage is a unit that fails inspection."
+    },
+    {
       "t": "ex",
       "l": "Spoilage — Numeric Example",
       "v": "Started 10,000 units. Good units = 9,300. Normal spoilage allowance = 5% of good output = 465 units. Actual spoilage = 700 units.\n• Normal spoilage = 465 units → cost absorbed into 9,300 good units\n• Abnormal spoilage = 700 − 465 = 235 units → cost booked to Loss from Abnormal Spoilage account"
@@ -2082,6 +2225,30 @@
         "Cannot be traced directly to a product — must be allocated",
         "Includes BOTH fixed and variable components"
       ]
+    },
+    {
+      "t": "h",
+      "v": "Cost Pools & the Predetermined Overhead Rate"
+    },
+    {
+      "t": "def",
+      "term": "Cost Pool",
+      "v": "A grouping of individual overhead cost items allocated together using a single allocation base (e.g. all indirect factory costs pooled and applied on machine hours). Overhead is accumulated into cost pools, then applied to products."
+    },
+    {
+      "t": "def",
+      "term": "Predetermined Overhead Rate (POHR)",
+      "v": "An overhead rate computed BEFORE the period begins, using estimates, so overhead can be applied to production all year without waiting for actual costs. POHR = Estimated total overhead ÷ Estimated total allocation base."
+    },
+    {
+      "t": "f",
+      "l": "Predetermined Overhead Rate",
+      "v": "POHR = Estimated Total Manufacturing Overhead ÷ Estimated Total Allocation Base\nApplied Overhead = POHR × Actual Allocation Base used"
+    },
+    {
+      "t": "ex",
+      "l": "Applying Overhead with a POHR",
+      "v": "Estimated annual overhead = $600,000; estimated machine hours = 150,000. POHR = 600,000 ÷ 150,000 = $4.00 per machine hour. A job using 200 machine hours is applied 200 × $4.00 = $800 of overhead."
     },
     {
       "t": "h",
@@ -3227,6 +3394,19 @@
     },
     {
       "t": "h",
+      "v": "Standard Costs & the Flexible Budget"
+    },
+    {
+      "t": "def",
+      "term": "Flexible Budget",
+      "v": "A budget adjusted (flexed) to the ACTUAL level of activity achieved, using standard prices and rates. It answers: 'what SHOULD costs have been for the output we actually produced?' Variances compare actual results to this flexible budget — not to the original static (master) budget."
+    },
+    {
+      "t": "p",
+      "v": "Standard costs feed the flexible budget: flexible-budget cost = standard cost per unit × actual units produced. The gap between actual cost and the flexible-budget amount is the total variance, then split into price/rate and quantity/efficiency components."
+    },
+    {
+      "t": "h",
       "v": "Direct Materials Variances"
     },
     {
@@ -3533,6 +3713,11 @@
       "t": "def",
       "term": "Regression Analysis",
       "v": "Statistical method using ALL data points to fit a cost line: Y = a + bX. More accurate than High-Low; also produces R², t-stats, and standard errors that reveal how reliable the estimate is."
+    },
+    {
+      "t": "def",
+      "term": "Least-Squares (Regression) Method",
+      "v": "Regression is a least squares method: it fits the cost line y = a + bx by minimizing the sum of the SQUARED vertical distances between each data point and the line. This least-squares fit gives the most accurate estimate of fixed cost (a, the intercept) and variable cost per unit (b, the slope) because it uses ALL data points — unlike high-low, which uses only two."
     },
     {
       "t": "def",
