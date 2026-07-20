@@ -640,3 +640,13 @@ html[dir="rtl"] .case-insight{border-left:none;border-right:3px solid var(--bran
 #modal-list{display:none;background:#f5f5f0;border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:#444;line-height:1.85;text-align:left}
 #modal-btns{display:flex;gap:9px}
 #toast-container{position:fixed;bottom:72px;left:50%;transform:translateX(-50%);z-index:10001;display:flex;flex-direction:column;gap:8px;pointer-events:none;width:calc(100% - 32px);max-width:380px;align-items:center}
+
+/* ── S4 BATCH ─────────────────────────────────────────────────────────── */
+/* S4-C: monospace, horizontally-scrollable data block for question tables.
+   Preserves source column padding; wide tables scroll instead of wrapping. */
+.q-data{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Courier New",monospace;font-size:12px;line-height:1.55;white-space:pre;overflow-x:auto;-webkit-overflow-scrolling:touch;background:#faf9f5;border:.5px solid var(--border);border-radius:8px;padding:10px 12px;margin:0 0 16px;color:#333}
+/* S4-D: one sentence per line in question stems (plain line breaks). */
+.stem-line{display:block}
+.stem-line+.stem-line{margin-top:5px}
+/* S4-E: transient highlight on an empty required field in the teaching form. */
+.field-error{border-color:var(--err)!important;box-shadow:0 0 0 2px var(--err-tint,rgba(220,53,69,.18))!important;outline:none}
