@@ -32,7 +32,14 @@
 // answers, Back/Skip, dot strip, finish flow across quiz-session + quiz-mode).
 // app.js is a precached shell file, so CACHE_NAME bumps v21->v22 to refresh the
 // precache and trigger the clean SKIP_WAITING auto-reload on deploy.
-const CACHE_NAME = 'cma-prep-v22';
+//
+// v23 (S4 enrichment batch): lesson-s4.json gained 28 blocks (cost
+// classifications in 4-1, rework/scrap 4-6, cost pool + POHR 4-9, flexible
+// budget 4-14, least-squares 4-15) AND app.js got a one-line renderBlock fix
+// (ex label now reads .l OR .title, restoring 31 titleless S4 examples).
+// Both files are precached, so CACHE_NAME bumps v22->v23 to invalidate the
+// stale copies and trigger the clean SKIP_WAITING auto-reload on deploy.
+const CACHE_NAME = 'cma-prep-v23';
 const OFFLINE_URLS = [
   './',
   './index.html',
