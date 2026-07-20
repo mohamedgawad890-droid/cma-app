@@ -1500,7 +1500,7 @@ function renderBlock(block,sec){
       return`<div class="case-block"><div class="case-lbl">📋 CASE STUDY</div><div class="case-co">${co}</div><div class="case-section-lbl">Facts</div><ul class="blist" style="margin-bottom:6px">${facts}</ul><div class="case-section-lbl">Question</div><div class="case-question" style="border-left-color:${tx}">${esc(block.q||'')}</div><div class="case-section-lbl">Solution</div><ol class="slist">${sol}</ol>${insight}</div>`;
     }
     case'ex':{
-      const lbl=block.l?`<div class="ex-lbl">✏️ QUICK EXAMPLE</div><div class="ex-title">${esc(block.l)}</div>`:'';
+      const _exTitle=block.l||block.title;const lbl=_exTitle?`<div class="ex-lbl">✏️ QUICK EXAMPLE</div><div class="ex-title">${esc(_exTitle)}</div>`:'';
       return`<div class="ex-block">${lbl}<div class="ex-body">${highlightTerms(block.v||'')}</div></div>`;
     }
     default:return'';
