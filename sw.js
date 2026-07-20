@@ -27,7 +27,12 @@
 // filled + 2 normalized) and it is precached in OFFLINE_URLS, so CACHE_NAME
 // bumps v20->v21 to invalidate the stale copy. app.js/app.css are network-
 // first, but the bump also gives the clean SKIP_WAITING auto-reload on deploy.
-const CACHE_NAME = 'cma-prep-v21';
+//
+// v22 (S4 batch, item 2): app.js changed (quiz navigation refactor — index-keyed
+// answers, Back/Skip, dot strip, finish flow across quiz-session + quiz-mode).
+// app.js is a precached shell file, so CACHE_NAME bumps v21->v22 to refresh the
+// precache and trigger the clean SKIP_WAITING auto-reload on deploy.
+const CACHE_NAME = 'cma-prep-v22';
 const OFFLINE_URLS = [
   './',
   './index.html',
