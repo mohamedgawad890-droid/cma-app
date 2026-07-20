@@ -1463,7 +1463,54 @@ function expInner(q,chosen){
 }
 // Enriched quiz support — renders a 2-column data table for calculation questions.
 // Returns '' when the question has no .data, so existing questions are unaffected.
-function dataTableHTML(q){if(!q.data||!q.data.length)return'';const rows=q.data.map(r=>`<tr><td style="padding:6px 10px;border-bottom:.5px solid #ececec;color:#333">${esc(r[0])}</td><td style="padding:6px 10px;border-bottom:.5px solid #ececec;text-align:right;font-variant-numeric:tabular-nums;font-weight:500">${esc(r[1])}</td></tr>`).join('');return`<table style="width:100%;border-collapse:collapse;margin:0 0 16px;background:#faf9f5;border:.5px solid var(--border);border-radius:8px;overflow:hidden;font-size:13px">${rows}</table>`;}
+function dataTableHTML(q){
+  if(!q.data||!q.data.length)return'';
+  // S4-C: the extractor fused row label + middle columns into cell 0 with
+  // padding spaces, leaving only the last column in cell 1. Rendering as a
+  // rigid 2-col HTML table crushed that. Instead we lay the rows out in a
+  // monospace block that preserves the source padding and left-pads every
+  // non-final column to a common width, so columns line up and wide tables
+  // scroll horizontally instead of wrapping. Legacy 2-value rows still work.
+  const rows=q.data.map(r=>Array.isArray(r)?r.map(c=>String(c==null?'':c)):[String(r==null?'':r)]);
+  const nCols=Math.max(1,...rows.map(r=>r.length));
+  const widths=[];
+  for(let c=0;c<nCols-1;c++){
+    widths[c]=Math.max(0,...rows.map(r=>(r[c]||'').replace(/\s+$/,'').length));
+  }
+  const lines=rows.map(r=>{
+    let out='';
+    for(let c=0;c<nCols;c++){
+      const cell=(r[c]||'').replace(/\s+$/,'');
+      out+=(c<nCols-1)?cell.padEnd(widths[c]+2):cell;
+    }
+    return esc(out);
+  }).join('\n');
+  return`<pre class="q-data">${lines}</pre>`;
+}
+
+// S4-D: render a question stem one sentence per line for readability on
+// data-heavy stems. Escapes, then splits on sentence-final punctuation
+// followed by whitespace + a capital/number/$, skipping known abbreviations
+// so 'Farber Co. has…' / 'at $12/hr.' / 'No. 5' don't mis-split. Returns the
+// plain escaped string unchanged when there is only one sentence (no-op for
+// conceptual one-liners). Used on full-stem reading surfaces only.
+var _STEM_ABBR=/^(?:Co|Corp|Inc|Ltd|Bros|Mr|Mrs|Ms|Dr|St|No|Nos|vs|etc|approx|est|avg|dept|mfg|Fig|Eq|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec|hr|hrs|yr|yrs|min|sec)$/i;
+function stemHTML(text){
+  const raw=String(text==null?'':text);
+  const parts=[]; let start=0; const re=/[.?!]\s+(?=[A-Z0-9$])/g; let m;
+  while((m=re.exec(raw))){
+    const end=m.index+1;
+    const chunk=raw.slice(start,end);
+    const lw=(chunk.match(/([A-Za-z]+)\.$/)||[])[1]||'';
+    if(_STEM_ABBR.test(lw)) continue; // abbreviation → keep sentence going
+    parts.push(chunk.trim());
+    start=re.lastIndex;
+  }
+  parts.push(raw.slice(start).trim());
+  const clean=parts.filter(Boolean);
+  if(clean.length<=1) return esc(raw);
+  return clean.map(s=>`<span class="stem-line">${esc(s)}</span>`).join('');
+}
 function safePhotoURL(u){
   if(typeof u!=='string') return '';
   return (/^https:\/\/res\.cloudinary\.com\//.test(u) || /^data:image\//.test(u)) ? u : '';
@@ -1495,10 +1542,19 @@ function renderBlock(block,sec){
       return`<div class="def-block"><div class="def-lbl" style="color:${tx}">DEFINITION</div><div class="def-term" style="color:${st}">${highlightTerms(term)}</div><div class="def-body">${highlightTerms(block.v||'')}</div></div>`;
     }
     case'case':{
+      const insight=block.insight?`<div class="case-insight"><b>💡 Insight:</b> ${highlightTerms(block.insight)}</div>`:'';
+      // S4-A: scenario variant {company, scenario, question, insight} — no facts/solution.
+      // Detected by presence of `scenario`/`company`; the classic worked-case shape
+      // (co/facts/sol) still renders through the branch below unchanged.
+      if(block.scenario||block.company){
+        const co2=esc(block.company||block.co||'Company');
+        const scen=highlightTerms(block.scenario||'');
+        const qn=esc(block.question||block.q||'');
+        return`<div class="case-block"><div class="case-lbl">📋 CASE STUDY</div><div class="case-co">${co2}</div><div class="case-section-lbl">Scenario</div><div style="font-size:13px;line-height:1.6;color:var(--ink);margin-bottom:4px">${scen}</div>${qn?`<div class="case-section-lbl">Question</div><div class="case-question" style="border-left-color:${tx}">${qn}</div>`:''}${insight}</div>`;
+      }
       const co=esc(block.co||'Company');
       const facts=(block.facts||[]).map(f=>`<li><span style="color:${tx};font-weight:500;flex-shrink:0">•</span><span>${highlightTerms(f)}</span></li>`).join('');
       const sol=(block.sol||[]).map((s,i)=>`<li><span class="snum" style="background:${bg};color:${st};border:1px solid ${tx}40">${i+1}</span><span>${highlightTerms(s)}</span></li>`).join('');
-      const insight=block.insight?`<div class="case-insight"><b>💡 Insight:</b> ${highlightTerms(block.insight)}</div>`:'';
       return`<div class="case-block"><div class="case-lbl">📋 CASE STUDY</div><div class="case-co">${co}</div><div class="case-section-lbl">Facts</div><ul class="blist" style="margin-bottom:6px">${facts}</ul><div class="case-section-lbl">Question</div><div class="case-question" style="border-left-color:${tx}">${esc(block.q||'')}</div><div class="case-section-lbl">Solution</div><ol class="slist">${sol}</ol>${insight}</div>`;
     }
     case'ex':{
@@ -2409,7 +2465,7 @@ function renderQuizMode(){
   <div style="height:5px;background:var(--surface-4);flex-shrink:0"><div style="height:100%;width:${barW}%;background:var(--brand);transition:width .4s;border-radius:0 3px 3px 0"></div></div>
   ${qmDots}
   <div class="scroll-area pad" style="padding-top:16px">
-    <div class="card" id="qm-question-card"><p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${esc(q.q)}</p>${dataTableHTML(q)}${opts}${explanation}</div>
+    <div class="card" id="qm-question-card"><p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${stemHTML(q.q)}</p>${dataTableHTML(q)}${opts}${explanation}</div>
     <div style="margin-top:12px" id="qm-next-wrap">${qmNavRow}</div>
     <div style="height:20px"></div>
   </div>`;
@@ -2963,7 +3019,7 @@ function renderIntro(){
       <!-- DAILY GOAL RING (ported) -->
     ${(()=>{const todayMins=todayStudyMinutes();const goal=STATE.dailyGoalMinutes||30;const pctGoal=Math.min(100,Math.round(todayMins/goal*100));const circ=2*Math.PI*26;const off=circ-(pctGoal/100)*circ;const col=pctGoal>=100?'#1E8449':pctGoal>=60?'var(--warn)':'#1A5276';return `<div class="goal-ring-wrap"><div class="goal-ring"><svg width="64" height="64"><circle cx="32" cy="32" r="26" stroke="var(--bg)" stroke-width="7" fill="none"/><circle cx="32" cy="32" r="26" stroke="${col}" stroke-width="7" fill="none" stroke-dasharray="${circ}" stroke-dashoffset="${off}" stroke-linecap="round" style="transition:stroke-dashoffset .5s"/></svg><div class="goal-ring-val">${pctGoal}%</div></div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--ink)">Today's study goal</div><div style="font-size:12px;color:#888;margin-top:2px">${todayMins} / ${goal} min · ${pctGoal>=100?'Goal reached! 🎉':(goal-todayMins)+' min to go'}</div></div></div>`;})()}
       <!-- QUESTION OF THE DAY (ported; no-ops until instructor logs a lecture) -->
-      ${(()=>{const qs=STATE.qotdState;if(!qs||!qs.question)return '';const q=qs.question;const sel=qs.selected;const answered=qs.answered;const labels=['A','B','C','D'];const optsHTML=q.o.map((opt,i)=>{let cls='qod-opt';if(answered){if(i===q.a)cls+=' correct';else if(i===sel)cls+=' wrong';}return `<div class="${cls}" ${answered?'':`onclick="qotdAnswer(${i})"`}><div class="qod-opt-letter">${labels[i]}</div><div style="flex:1">${esc(opt)}</div></div>`;}).join('');const explanation=answered?`<div class="qod-exp"><strong>${sel===q.a?'✅ Correct!':'❌ Correct answer: '+labels[q.a]}</strong><div style="margin-top:4px">${expInner(q,sel)}</div></div>`:'';return `<div class="qod-card"><div class="qod-lbl">🎯 QUESTION OF THE DAY</div><div class="qod-meta">${esc(q.secTitle||'')} · ${esc(q.lessonTitle||'')}</div><div class="qod-title">${esc(q.q)}</div>${optsHTML}${explanation}</div>`;})()}
+      ${(()=>{const qs=STATE.qotdState;if(!qs||!qs.question)return '';const q=qs.question;const sel=qs.selected;const answered=qs.answered;const labels=['A','B','C','D'];const optsHTML=q.o.map((opt,i)=>{let cls='qod-opt';if(answered){if(i===q.a)cls+=' correct';else if(i===sel)cls+=' wrong';}return `<div class="${cls}" ${answered?'':`onclick="qotdAnswer(${i})"`}><div class="qod-opt-letter">${labels[i]}</div><div style="flex:1">${esc(opt)}</div></div>`;}).join('');const explanation=answered?`<div class="qod-exp"><strong>${sel===q.a?'✅ Correct!':'❌ Correct answer: '+labels[q.a]}</strong><div style="margin-top:4px">${expInner(q,sel)}</div></div>`:'';return `<div class="qod-card"><div class="qod-lbl">🎯 QUESTION OF THE DAY</div><div class="qod-meta">${esc(q.secTitle||'')} · ${esc(q.lessonTitle||'')}</div><div class="qod-title">${stemHTML(q.q)}</div>${optsHTML}${explanation}</div>`;})()}
 
       <!-- WHAT IS IMA -->
       <div class="info-section">
@@ -3431,7 +3487,7 @@ function renderQuizSession(){
   const _crumb=quizBreadcrumb(qs.isRetry?q._secId:qs.sId, qs.isRetry?q._lessonId:qs.lessonId, q.topic, q.concept);
   return`<div class="bh"><button class="bh-back" onclick="STATE.tab=${qs.isRetry?`'wrong-answers'`:`'study'`};STATE.quizState=null;render()">‹</button><div style="flex:1"><div style="font-size:11px;font-weight:500;color:${sec.text}">${esc(_crumb||headerTitle)}</div><div style="font-size:14px;font-weight:500">${headerSub}</div></div>${timerBadge}</div>
   <div style="height:5px;background:var(--surface-4);flex-shrink:0"><div style="height:100%;width:${barW}%;background:${qs.isRetry?'var(--err)':sec.bar};transition:width .4s;border-radius:0 3px 3px 0"></div></div>
-  ${quizDots}<div class="scroll-area pad" style="padding-top:16px"><div class="card" id="qs-question-card"><p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${esc(q.q)}</p>${dataTableHTML(q)}${opts}${explanation}</div><div style="margin-top:12px" id="qs-next-wrap">${navRow}</div><div style="height:20px"></div></div>`;
+  ${quizDots}<div class="scroll-area pad" style="padding-top:16px"><div class="card" id="qs-question-card"><p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${stemHTML(q.q)}</p>${dataTableHTML(q)}${opts}${explanation}</div><div style="margin-top:12px" id="qs-next-wrap">${navRow}</div><div style="height:20px"></div></div>`;
 }
 
 // ─── QUIZ RESULTS ─────────────────────────────────────────────────────────────
@@ -3593,7 +3649,7 @@ function renderQuizReview(){
     +'<div class="scroll-area pad" style="padding-top:14px">'
     +verdictBar
     +'<div class="card" style="margin-bottom:12px">'
-    +'<p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:16px">'+esc(q.q)+'</p>'
+    +'<p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:16px">'+stemHTML(q.q)+'</p>'
     +(typeof dataTableHTML==='function'?dataTableHTML(q):'')
     +opts
     +explanation
@@ -4414,12 +4470,24 @@ function onTeachingLecturePick(id){
   if(!d.lectureNumber){ d.lectureNumber=String(((STATE.dashTeachingLog||[]).length)+1); }
   render();
 }
+function _tlFlagField(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+  el.classList.add('field-error');
+  setTimeout(()=>{el.classList.remove('field-error');},2500);
+}
 async function saveTeachingEntry(){
   const d=STATE.dashTeachingDraft;
   // Batch 2: draft group is auto-prefilled from dashSelectedGroup, but we
   // still validate defensively in case someone tabs directly to this action.
   if(!d.groupCode)d.groupCode=STATE.dashSelectedGroup;
-  if(!d.groupCode||!d.lectureNumber||!d.date||!d.unitIds.length){showToast('Fill lecture #, date, and select at least one unit.','warning');return;}
+  // S4-E: check required fields in order; on the first empty one show a
+  // specific message and scroll+highlight that field instead of a generic toast.
+  if(!d.groupCode){showToast('No group selected.','warning');return;}
+  if(!d.lectureNumber){showToast('Enter a lecture #.','warning');_tlFlagField('tl-lecno');return;}
+  if(!d.date){showToast('Pick a date.','warning');_tlFlagField('tl-date');return;}
+  if(!d.unitIds.length){showToast('Select at least one unit.','warning');_tlFlagField('tl-units');return;}
   try{
     await db.collection('teaching-log').add({groupCode:d.groupCode.trim().toUpperCase(),lectureNumber:Number(d.lectureNumber),date:d.date,unitIds:d.unitIds.slice(),notes:d.notes.trim(),lectureId:d.lectureId||'',lectureTitle:d.lectureTitle||'',createdAt:new Date().toISOString(),createdBy:STATE.user.uid});
     showToast('Teaching entry saved \u2705','success');
@@ -5740,7 +5808,7 @@ function renderExamRunner(){
     +'<div style="height:4px;background:var(--surface-4);flex-shrink:0"><div style="height:100%;width:'+barW+'%;background:var(--brand);transition:width .3s"></div></div>'
     +'<div class="scroll-area pad" style="padding-top:16px">'
     +'<div class="card" style="margin-bottom:12px">'
-    +'<p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">'+esc(q.q)+'</p>'
+    +'<p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">'+stemHTML(q.q)+'</p>'
     +dataTableHTML(q)
     +opts
     +'</div>'
@@ -5974,7 +6042,7 @@ function renderExamReview(){
     +'<div class="scroll-area pad" style="padding-top:14px">'
     +verdictBar
     +'<div class="card" style="margin-bottom:12px">'
-    +'<p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:16px">'+esc(q.q)+'</p>'
+    +'<p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:16px">'+stemHTML(q.q)+'</p>'
     +(typeof dataTableHTML==='function'?dataTableHTML(q):'')
     +opts
     +explanation
@@ -7355,10 +7423,10 @@ function renderDashActualTeaching(){
         ${d.lectureTitle?`<div style="font-size:10px;color:var(--brand);margin-top:4px">\u{1F517} Linked: ${esc(d.lectureTitle)} — date auto-filled; pick the units taught below.</div>`:''}
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-        <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Lecture # *</label><input type="number" min="1" value="${esc(String(d.lectureNumber||''))}" oninput="STATE.dashTeachingDraft.lectureNumber=this.value" placeholder="1" style="width:100%;padding:8px;border-radius:8px;border:.5px solid var(--border-4);font-size:12px;font-family:inherit;outline:none;background:#fff;color:var(--ink);box-sizing:border-box"></div>
-        <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Date *</label><input type="date" value="${esc(d.date||'')}" oninput="STATE.dashTeachingDraft.date=this.value" style="width:100%;padding:8px;border-radius:8px;border:.5px solid var(--border-4);font-size:12px;font-family:inherit;outline:none;background:#fff;color:var(--ink);box-sizing:border-box"></div>
+        <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Lecture # *</label><input id="tl-lecno" type="number" min="1" value="${esc(String(d.lectureNumber||''))}" oninput="STATE.dashTeachingDraft.lectureNumber=this.value;this.classList.remove('field-error')" placeholder="1" style="width:100%;padding:8px;border-radius:8px;border:.5px solid var(--border-4);font-size:12px;font-family:inherit;outline:none;background:#fff;color:var(--ink);box-sizing:border-box"></div>
+        <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Date *</label><input id="tl-date" type="date" value="${esc(d.date||'')}" oninput="STATE.dashTeachingDraft.date=this.value;this.classList.remove('field-error')" style="width:100%;padding:8px;border-radius:8px;border:.5px solid var(--border-4);font-size:12px;font-family:inherit;outline:none;background:#fff;color:var(--ink);box-sizing:border-box"></div>
       </div>
-      <div style="margin-bottom:10px"><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Units taught * (${d.unitIds.length} selected)</label><div style="border:.5px solid var(--border);border-radius:8px;padding:10px;max-height:280px;overflow-y:auto;background:var(--surface)">${lessonPicker}</div></div>
+      <div style="margin-bottom:10px"><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Units taught * (${d.unitIds.length} selected)</label><div id="tl-units" style="border:.5px solid var(--border);border-radius:8px;padding:10px;max-height:280px;overflow-y:auto;background:var(--surface)">${lessonPicker}</div></div>
       <div style="margin-bottom:10px"><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Notes (optional)</label><textarea oninput="STATE.dashTeachingDraft.notes=this.value" placeholder="What did you cover in this lecture? Any highlights or student questions?" style="width:100%;padding:8px;border-radius:8px;border:.5px solid var(--border-4);font-size:12px;font-family:inherit;outline:none;background:#fff;color:var(--ink);box-sizing:border-box;resize:vertical;min-height:60px">${esc(d.notes||'')}</textarea></div>
       <button onclick="saveTeachingEntry()" style="width:100%;padding:11px;border-radius:10px;border:none;background:var(--brand);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">\u{1F4BE} Save Entry</button>
     </div>`;
@@ -8537,7 +8605,7 @@ function renderMockMCQContent(){
       <span style="font-size:12px;font-weight:600;color:${q.sbar};background:${q.sbar}18;padding:3px 10px;border-radius:10px">${q.stitle}</span>
       <button id="mock-flag-btn" onclick="mockFlagQ(${mcqCurr})" style="border:none;background:none;cursor:pointer;font-size:13px;font-weight:600;color:${flagged?'var(--warn)':'#888'};font-family:inherit;padding:4px 8px;border-radius:8px;border:.5px solid ${flagged?'var(--warn)':'var(--border-3)'}">${flagged?'🚩 Flagged':'⚑ Flag'}</button>
     </div>
-    <div style="font-size:15px;font-weight:500;color:var(--ink);line-height:1.6;margin-bottom:18px">${q.q}</div>
+    <div style="font-size:15px;font-weight:500;color:var(--ink);line-height:1.6;margin-bottom:18px">${stemHTML(q.q)}</div>
     <div style="display:flex;flex-direction:column;gap:9px" id="mock-opts">
       ${q.o.map((opt,i)=>{
         const sel=answered===i;
