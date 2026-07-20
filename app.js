@@ -1400,6 +1400,22 @@ function quizBreadcrumb(sectionId, lessonId, topic){
   return bits.join(' \u00B7 ');
 }
 
+// ─── QUIZ DOT STRIP (item 2) ─────────────────────────────────────────────────
+// Tappable progress dots above the question. Colour encodes per-question state:
+// green=right, red=wrong, grey=skipped/unseen, brand ring=current. Bounded to a
+// scrollable band so 50-100 dots (quiz-mode) never dominate the screen.
+function dotStripHTML(questions, curIdx, answers, jumpFn){
+  var dots=questions.map(function(q,i){
+    var a=answers[i];
+    var bg='var(--surface-2)',bd='.5px solid var(--border)',col='var(--muted-2)';
+    if(a){ if(a.correct){bg='var(--ok-tint)';bd='.5px solid var(--ok)';col='var(--ok-strong)';}
+           else {bg='var(--err-tint)';bd='.5px solid var(--err)';col='var(--err-2)';} }
+    var ring=(i===curIdx)?'box-shadow:0 0 0 2px var(--brand);':'';
+    return '<button onclick="'+jumpFn+'('+i+')" title="Question '+(i+1)+'" style="'+ring+'width:26px;height:26px;flex:0 0 auto;border-radius:50%;border:'+bd+';background:'+bg+';color:'+col+';font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;padding:0">'+(i+1)+'</button>';
+  }).join('');
+  return '<div style="display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px;max-height:76px;overflow-y:auto;background:var(--surface-3);border-bottom:1px solid var(--border);flex-shrink:0">'+dots+'</div>';
+}
+
 // ─── PER-QUESTION LIVE TIMER ──────────────────────────────────────────────────
 window._qTimerInterval=null;
 function startQTimer(getStartFn){
@@ -2275,38 +2291,50 @@ async function startQuizMode(sectionId){
 }
 
 function selectQuizModeAnswer(i){
-  if(STATE.quizMode.selected!==null)return;
+  const qm=STATE.quizMode; if(!qm) return;
+  if(qm.answers[qm.idx]) return;              // already answered -> read-only
   stopQTimer();
-  STATE.quizMode.qTimerElapsed=Date.now()-STATE.quizMode.qTimerStart;
-  STATE.quizMode.selected=i;
-  // #7: Targeted DOM update — only rebuild question card, not full screen
-  const qCard=document.getElementById('qm-question-card');
-  if(qCard){
-    const q=STATE.quizMode.questions[STATE.quizMode.idx];
-    const sel=i;
-    const opts=q.o.map((opt,j)=>{
-      let bg='var(--surface-3)',border='.5px solid var(--border)',textC='var(--ink)',circBg='var(--border-2)',circC='#666',circBorder='.5px solid #bbb',circTxt=String.fromCharCode(65+j);
-      if(j===q.a){bg='var(--ok-tint)';border='1px solid var(--ok)';textC='var(--ok-strong)';circBg='#c0dd97';circC='var(--ok-strong)';circBorder='1px solid var(--ok)';circTxt='✓';}
-      else if(j===sel&&sel!==q.a){bg='var(--err-tint)';border='1px solid var(--err)';textC='var(--err-strong)';circBg='#f7c1c1';circC='var(--err-strong)';circBorder='1px solid var(--err)';circTxt='✗';}
-      else{textC='#888';}
-      return`<div class="q-opt" style="background:${bg};border:${border};cursor:default"><div class="q-circle" style="background:${circBg};color:${circC};border:${circBorder}">${circTxt}</div><div class="q-text" style="color:${textC}">${esc(normalizeCase(opt))}</div></div>`;
-    }).join('');
-    const exp=`<div style="margin-top:14px;padding:13px 14px;border-radius:10px;background:${sel===q.a?'var(--ok-tint)':'var(--err-tint)'};border:1px solid ${sel===q.a?'var(--ok)':'var(--err)'}"><div style="font-size:12px;font-weight:500;color:${sel===q.a?'var(--ok-strong)':'var(--err-strong)'};margin-bottom:5px">${sel===q.a?'Correct! Well done.':'Not quite — here is why:'}</div><div style="font-size:13px;color:${sel===q.a?'var(--ok-strong-2)':'var(--err-2)'};line-height:1.55">${expInner(q,sel)}</div></div>`;
-    qCard.innerHTML=`<p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${esc(q.q)}</p>${dataTableHTML(q)}${opts}${exp}`;
-    const nextWrap=document.getElementById('qm-next-wrap');
-    if(nextWrap)nextWrap.innerHTML=`<button class="btn btn-primary" onclick="nextQuizModeQuestion()" style="background:var(--brand)">${STATE.quizMode.idx+1>=STATE.quizMode.questions.length?'See Results ✓':'Next →'}</button>`;
-  } else {render();}
+  const elapsed=Date.now()-qm.qTimerStart;
+  qm.questionTimes[qm.idx]=elapsed; qm.qTimerElapsed=elapsed;
+  const q=qm.questions[qm.idx];
+  qm.answers[qm.idx]={selected:i,correct:i===q.a};
+  qm.selected=i;
+  render();
 }
 
-function nextQuizModeQuestion(){
-  const qm=STATE.quizMode;
-  const q=qm.questions[qm.idx];
-  const qmt=qm.qTimerElapsed||0;qm.questionTimes=[...(qm.questionTimes||[]),qmt];qm.answers.push({selected:qm.selected,correct:qm.selected===q.a});
-  if(qm.idx+1>=qm.questions.length){qm.done=true;qm.selected=null;qm.quizEndTime=Date.now();
-    // Batch 4: a completed Grace review preserves the streak.
-    if(qm.isGrace){try{grantStreakGrace();STATE._graceActive=false;showToast('\u{1F525} Streak saved \u2014 nice recovery!','success',3500);}catch(e){}}
-    render();return;}
-  qm.idx++;qm.selected=null;qm.qTimerStart=Date.now();qm.qTimerElapsed=null;render();
+function quizModeGoto(i){
+  const qm=STATE.quizMode; if(!qm) return;
+  const n=qm.questions.length; if(i<0)i=0; if(i>=n)i=n-1;
+  qm.idx=i;
+  const a=qm.answers[i];
+  qm.selected=a?a.selected:null;
+  if(a){ qm.qTimerElapsed=qm.questionTimes[i]||0; } else { qm.qTimerStart=Date.now(); qm.qTimerElapsed=null; }
+  render();
+}
+function quizModeNav(dir){ const qm=STATE.quizMode; if(qm) quizModeGoto(qm.idx+dir); }
+function quizModeJump(i){ quizModeGoto(i); }
+function nextQuizModeQuestion(){ quizModeNav(1); }   // back-compat alias
+
+async function finishQuizMode(){
+  const qm=STATE.quizMode; if(!qm) return;
+  const n=qm.questions.length;
+  let unanswered=0; for(let i=0;i<n;i++) if(!qm.answers[i]) unanswered++;
+  if(unanswered>0){
+    const ok=await showModal({icon:'\u23ED\uFE0F',type:'warning',
+      title:unanswered+' question'+(unanswered>1?'s':'')+' unanswered',
+      body:"They'll be marked incorrect. Finish anyway, or go back and answer them?",
+      confirmText:'Finish anyway', cancelText:'Keep going'});
+    if(!ok){ let f=-1; for(let i=0;i<n;i++){ if(!qm.answers[i]){f=i;break;} } if(f>=0) quizModeGoto(f); return; }
+  }
+  const finalAnswers=[], finalTimes=[];
+  for(let i=0;i<n;i++){
+    finalAnswers[i]=qm.answers[i]?qm.answers[i]:{selected:null,correct:false,skipped:true};
+    finalTimes[i]=qm.questionTimes[i]||0;
+  }
+  qm.answers=finalAnswers; qm.questionTimes=finalTimes;
+  qm.done=true; qm.selected=null; qm.quizEndTime=Date.now();
+  if(qm.isGrace){try{grantStreakGrace();STATE._graceActive=false;showToast('\u{1F525} Streak saved \u2014 nice recovery!','success',3500);}catch(e){}}
+  render();
 }
 
 function renderQuizMode(){
@@ -2320,7 +2348,7 @@ function renderQuizMode(){
     const label=pct>=80?'Excellent!':pct>=60?'Good work!':'Keep studying!';
     const breakdown=qm.questions.map((q,i)=>`
       <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;padding-bottom:10px;border-bottom:.5px solid var(--bg)">
-        <span style="font-size:15px;flex-shrink:0">${qm.answers[i]?.correct?'✅':'❌'}</span>
+        <span style="font-size:15px;flex-shrink:0">${qm.answers[i]?.skipped?'⏭️':(qm.answers[i]?.correct?'✅':'❌')}</span>
         <div>
           <div style="font-size:12px;color:#666;margin-bottom:2px">${esc(q.secEmoji+' '+q.sectionTitle+' — '+q.lessonTitle)}</div>
           <div style="font-size:13px;color:#333;line-height:1.4">${esc(q.q)}</div>
@@ -2358,7 +2386,16 @@ function renderQuizMode(){
     return`<div class="q-opt" onclick="selectQuizModeAnswer(${i})" style="background:${bg};border:${border};${sel===null?'cursor:pointer':'cursor:default'}"><div class="q-circle" style="background:${circBg};color:${circC};border:${circBorder}">${circTxt}</div><div class="q-text" style="color:${textC}">${esc(normalizeCase(opt))}</div></div>`;
   }).join('');
   const explanation=sel!==null?`<div style="margin-top:14px;padding:13px 14px;border-radius:10px;background:${sel===q.a?'var(--ok-tint)':'var(--err-tint)'};border:1px solid ${sel===q.a?'var(--ok)':'var(--err)'}"><div style="font-size:12px;font-weight:500;color:${sel===q.a?'var(--ok-strong)':'var(--err-strong)'};margin-bottom:5px">${sel===q.a?'Correct! Well done.':'Not quite — here is why:'}</div><div style="font-size:13px;color:${sel===q.a?'var(--ok-strong-2)':'var(--err-2)'};line-height:1.55">${expInner(q,sel)}</div></div>`:''  ;
-  const nextBtn=sel!==null?`<button class="btn btn-primary" onclick="nextQuizModeQuestion()" style="background:var(--brand)">${qm.idx+1>=qm.questions.length?'See Results':'Next →'}</button>`:`<button class="btn" style="background:var(--bg);color:#bbb;cursor:not-allowed">Select an answer to continue</button>`;
+  const _qmAnswered=sel!==null;
+  const _qmLast=qm.idx+1>=qm.questions.length;
+  const _qmBack=`<button class="btn btn-outline" onclick="quizModeNav(-1)" style="flex:0 0 auto;min-width:92px;${qm.idx===0?'opacity:.4;pointer-events:none':''}">← Back</button>`;
+  const _qmRight=_qmLast
+    ?`<button class="btn btn-primary" onclick="finishQuizMode()" style="flex:1;background:var(--brand)">Finish ✓</button>`
+    :(_qmAnswered
+      ?`<button class="btn btn-primary" onclick="quizModeNav(1)" style="flex:1;background:var(--brand)">Next →</button>`
+      :`<button class="btn btn-outline" onclick="quizModeNav(1)" style="flex:1">Skip →</button>`);
+  const qmNavRow=`<div style="display:flex;gap:10px">${_qmBack}${_qmRight}</div>`;
+  const qmDots=dotStripHTML(qm.questions, qm.idx, qm.answers, 'quizModeJump');
   const qmTimerBadge=timerBadgeHTML(qm.qTimerElapsed,sel!==null);
   return`<div class="bh"><button class="bh-back" onclick="STATE.tab='quiz-mode-select';render()">‹</button>
     <div style="flex:1">
@@ -2368,9 +2405,10 @@ function renderQuizMode(){
     ${qmTimerBadge}
   </div>
   <div style="height:5px;background:var(--surface-4);flex-shrink:0"><div style="height:100%;width:${barW}%;background:var(--brand);transition:width .4s;border-radius:0 3px 3px 0"></div></div>
+  ${qmDots}
   <div class="scroll-area pad" style="padding-top:16px">
     <div class="card" id="qm-question-card"><p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${esc(q.q)}</p>${dataTableHTML(q)}${opts}${explanation}</div>
-    <div style="margin-top:12px" id="qm-next-wrap">${nextBtn}</div>
+    <div style="margin-top:12px" id="qm-next-wrap">${qmNavRow}</div>
     <div style="height:20px"></div>
   </div>`;
 }
@@ -3374,14 +3412,24 @@ function renderQuizSession(){
     return`<div class="q-opt" onclick="selectAnswer(${i})" style="background:${bg};border:${border};${cursor}"><div class="q-circle" style="background:${circBg};color:${circC};border:${circBorder}">${circTxt}</div><div class="q-text" style="color:${textC}">${esc(normalizeCase(opt))}</div></div>`;
   }).join('');
   const explanation=sel!==null?`<div style="margin-top:14px;padding:13px 14px;border-radius:10px;background:${sel===q.a?'var(--ok-tint)':'var(--err-tint)'};border:1px solid ${sel===q.a?'var(--ok)':'var(--err)'}"><div style="font-size:12px;font-weight:500;color:${sel===q.a?'var(--ok-strong)':'var(--err-strong)'};margin-bottom:5px">${sel===q.a?'Correct! Well done.':'Not quite — here is why:'}</div><div style="font-size:13px;color:${sel===q.a?'var(--ok-strong-2)':'var(--err-2)'};line-height:1.55">${expInner(q,sel)}</div></div>`:'';
-  const nextBtn=sel!==null?`<button class="btn btn-primary" onclick="nextQuestion()" style="background:${sec.bar}">${qs.idx+1>=qs.questions.length?'See My Results':'Next Question →'}</button>`:`<button class="btn" style="background:var(--bg);color:#bbb;cursor:not-allowed">Select an answer to continue</button>`;
+  const _answered=sel!==null;
+  const _isLast=qs.idx+1>=qs.questions.length;
+  const _accent=qs.isRetry?'var(--err)':sec.bar;
+  const _backBtn=`<button class="btn btn-outline" onclick="quizNav(-1)" style="flex:0 0 auto;min-width:92px;${qs.idx===0?'opacity:.4;pointer-events:none':''}">← Back</button>`;
+  const _rightBtn=_isLast
+    ?`<button class="btn btn-primary" onclick="finishQuiz()" style="flex:1;background:${_accent}">Finish ✓</button>`
+    :(_answered
+      ?`<button class="btn btn-primary" onclick="quizNav(1)" style="flex:1;background:${_accent}">Next →</button>`
+      :`<button class="btn btn-outline" onclick="quizNav(1)" style="flex:1">Skip →</button>`);
+  const navRow=`<div style="display:flex;gap:10px">${_backBtn}${_rightBtn}</div>`;
+  const quizDots=dotStripHTML(qs.questions, qs.idx, qs.answers, 'quizJump');
   const timerBadge=timerBadgeHTML(qs.qTimerElapsed,sel!==null);
   const headerTitle=qs.isRetry?'Wrong Answer Retry':lessonTitle;
   const headerSub=qs.isRetry?`Question ${qs.idx+1} of ${qs.questions.length} · Mixed sections`:`Question ${qs.idx+1} of ${qs.questions.length}`;
   const _crumb=quizBreadcrumb(qs.isRetry?q._secId:qs.sId, qs.isRetry?q._lessonId:qs.lessonId, q.topic);
   return`<div class="bh"><button class="bh-back" onclick="STATE.tab=${qs.isRetry?`'wrong-answers'`:`'study'`};STATE.quizState=null;render()">‹</button><div style="flex:1"><div style="font-size:11px;font-weight:500;color:${sec.text}">${esc(_crumb||headerTitle)}</div><div style="font-size:14px;font-weight:500">${headerSub}</div></div>${timerBadge}</div>
   <div style="height:5px;background:var(--surface-4);flex-shrink:0"><div style="height:100%;width:${barW}%;background:${qs.isRetry?'var(--err)':sec.bar};transition:width .4s;border-radius:0 3px 3px 0"></div></div>
-  <div class="scroll-area pad" style="padding-top:16px"><div class="card" id="qs-question-card"><p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${esc(q.q)}</p>${dataTableHTML(q)}${opts}${explanation}</div><div style="margin-top:12px" id="qs-next-wrap">${nextBtn}</div><div style="height:20px"></div></div>`;
+  ${quizDots}<div class="scroll-area pad" style="padding-top:16px"><div class="card" id="qs-question-card"><p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${esc(q.q)}</p>${dataTableHTML(q)}${opts}${explanation}</div><div style="margin-top:12px" id="qs-next-wrap">${navRow}</div><div style="height:20px"></div></div>`;
 }
 
 // ─── QUIZ RESULTS ─────────────────────────────────────────────────────────────
@@ -3390,7 +3438,7 @@ function renderQuizResults(){
   const sec=sect(qs.sId);const correct=qs.answers.filter(a=>a.correct).length;const pctQ=Math.round(correct/qs.questions.length*100);
   const lessonTitle=qs.isRetry?'Wrong Answer Retry':S.flatMap(s=>s.lessons).find(l=>l.id===qs.lessonId)?.title||'';
   const gradeEmoji=pctQ>=80?'🏆':pctQ>=60?'👍':'📚';const gradeLabel=pctQ>=80?'Excellent!':pctQ>=60?'Good work!':'Keep studying!';
-  const breakdown=qs.questions.map((q,i)=>`<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;padding-bottom:${i<qs.questions.length-1?'10px':'0'};border-bottom:${i<qs.questions.length-1?'.5px solid var(--border)':'none'}"><span style="font-size:15px;flex-shrink:0">${qs.answers[i]?.correct?'✅':'❌'}</span><div><div style="font-size:13px;color:#333;line-height:1.4">Q${i+1}: ${esc(q.q)}</div>${!qs.answers[i]?.correct?`<div style="font-size:12px;color:var(--ok-strong-2);margin-top:3px">Correct: ${esc(q.o[q.a])}</div>`:''}</div></div>`).join('');
+  const breakdown=qs.questions.map((q,i)=>`<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;padding-bottom:${i<qs.questions.length-1?'10px':'0'};border-bottom:${i<qs.questions.length-1?'.5px solid var(--border)':'none'}"><span style="font-size:15px;flex-shrink:0">${qs.answers[i]?.skipped?'⏭️':(qs.answers[i]?.correct?'✅':'❌')}</span><div><div style="font-size:13px;color:#333;line-height:1.4">Q${i+1}: ${esc(q.q)}</div>${!qs.answers[i]?.correct?`<div style="font-size:12px;color:var(--ok-strong-2);margin-top:3px">Correct: ${esc(q.o[q.a])}</div>`:''}</div></div>`).join('');
   const timeHTML=totalTimeHTML(qs.quizStartTime,qs.quizEndTime,qs.questionTimes);
   // Batch 7: Review Answers button — paginated review of every question
   const reviewBtn=`<button class="btn" onclick="startQuizReview()" style="background:var(--brand);color:#fff;margin-bottom:10px">📖 Review Answers</button>`;
@@ -3837,64 +3885,80 @@ async function startQuiz(lessonId){
 // After: only the options list, explanation box, and Next button are updated in place.
 // Same pattern already used in selectQuizModeAnswer (quiz mode screen).
 function selectAnswer(i){
-  if(STATE.quizState.selected!==null)return;
+  const qs=STATE.quizState; if(!qs) return;
+  if(qs.answers[qs.idx]) return;              // already answered -> read-only
   stopQTimer();
-  STATE.quizState.qTimerElapsed=Date.now()-STATE.quizState.qTimerStart;
-  STATE.quizState.selected=i;
-  const qCard=document.getElementById('qs-question-card');
-  if(qCard){
-    const qs=STATE.quizState;
-    const q=qs.questions[qs.idx];
-    const sec=sect(qs.sId);
-    const opts=q.o.map((opt,j)=>{
-      let bg='var(--surface-3)',border='.5px solid var(--border)',textC='var(--ink)',circBg='var(--border-2)',circC='#666',circBorder='.5px solid #bbb',circTxt=String.fromCharCode(65+j);
-      if(j===q.a){bg='var(--ok-tint)';border='1px solid var(--ok)';textC='var(--ok-strong)';circBg='#c0dd97';circC='var(--ok-strong)';circBorder='1px solid var(--ok)';circTxt='✓';}
-      else if(j===i&&i!==q.a){bg='var(--err-tint)';border='1px solid var(--err)';textC='var(--err-strong)';circBg='#f7c1c1';circC='var(--err-strong)';circBorder='1px solid var(--err)';circTxt='✗';}
-      else{textC='#888';}
-      return`<div class="q-opt" style="background:${bg};border:${border};cursor:default"><div class="q-circle" style="background:${circBg};color:${circC};border:${circBorder}">${circTxt}</div><div class="q-text" style="color:${textC}">${esc(normalizeCase(opt))}</div></div>`;
-    }).join('');
-    const exp=`<div style="margin-top:14px;padding:13px 14px;border-radius:10px;background:${i===q.a?'var(--ok-tint)':'var(--err-tint)'};border:1px solid ${i===q.a?'var(--ok)':'var(--err)'}"><div style="font-size:12px;font-weight:500;color:${i===q.a?'var(--ok-strong)':'var(--err-strong)'};margin-bottom:5px">${i===q.a?'Correct! Well done.':'Not quite — here is why:'}</div><div style="font-size:13px;color:${i===q.a?'var(--ok-strong-2)':'var(--err-2)'};line-height:1.55">${expInner(q,i)}</div></div>`;
-    qCard.innerHTML=`<p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${esc(q.q)}</p>${dataTableHTML(q)}${opts}${exp}`;
-    const nextWrap=document.getElementById('qs-next-wrap');
-    if(nextWrap)nextWrap.innerHTML=`<button class="btn btn-primary" onclick="nextQuestion()" style="background:${qs.isRetry?'var(--err)':sec.bar}">${qs.idx+1>=qs.questions.length?'See My Results':'Next Question →'}</button>`;
-  } else {render();}
+  const elapsed=Date.now()-qs.qTimerStart;
+  qs.questionTimes[qs.idx]=elapsed;
+  qs.qTimerElapsed=elapsed;
+  const q=qs.questions[qs.idx];
+  qs.answers[qs.idx]={selected:i,correct:i===q.a};
+  qs.selected=i;
+  render();
 }
-function nextQuestion(){
-  const qs=STATE.quizState;const correct=qs.selected===qs.questions[qs.idx].a;const newAnswers=[...qs.answers,{selected:qs.selected,correct}];
-  if(qs.idx+1>=qs.questions.length){
-    const rightCount=newAnswers.filter(a=>a.correct).length;
-    const p=STATE.progress;
-    endStudyTimer(); // session ends when quiz completes
-    if(qs.isRetry){
-      // Retry mode: update aggregate stats AND clear correctly answered questions
-      // from lessonScores so they no longer appear in the wrong answers list.
-      const p=STATE.progress;
-      const ls={...(p.lessonScores||{})};
-      qs.questions.forEach((q,i)=>{
-        if(newAnswers[i]?.correct && q._lessonId!=null && q._ansIdx!=null){
-          const entry=ls[q._lessonId];
-          if(entry&&entry.answers){
-            const updatedAnswers=[...entry.answers];
-            updatedAnswers[q._ansIdx]=q.a; // mark as correct → removed from wrong list
-            const newCorrect=updatedAnswers.filter((a,idx)=>{
-              const qz=S.flatMap(s=>s.lessons).find(l=>l.id===q._lessonId)?.quizzes?.[idx];
-              return qz&&a===qz.a;
-            }).length;
-            ls[q._lessonId]={...entry,answers:updatedAnswers,correct:newCorrect};
-          }
-        }
-      });
-      saveProg({...p,lessonScores:ls,mcqTotal:p.mcqTotal+qs.questions.length,mcqRight:p.mcqRight+rightCount});
-    } else {
-      const ls=p.lessonScores||{};const ansArr=newAnswers.map(a=>a.selected);
-      saveProg({...p,lessonScores:{...ls,[qs.lessonId]:{correct:rightCount,total:qs.questions.length,answers:ansArr}},mcqTotal:p.mcqTotal+qs.questions.length,mcqRight:p.mcqRight+rightCount});
-    }
-    const qt2=[...(qs.questionTimes||[]),qs.qTimerElapsed||0];
-    STATE.quizState={...qs,answers:newAnswers,done:true,questionTimes:qt2,quizEndTime:Date.now()};
-    updateStreak();STATE.tab='quiz-results';render();
+
+function quizGoto(i){
+  const qs=STATE.quizState; if(!qs) return;
+  const n=qs.questions.length; if(i<0)i=0; if(i>=n)i=n-1;
+  qs.idx=i;
+  const a=qs.answers[i];
+  qs.selected=a?a.selected:null;
+  if(a){ qs.qTimerElapsed=qs.questionTimes[i]||0; } else { qs.qTimerStart=Date.now(); qs.qTimerElapsed=null; }
+  render();
+}
+function quizNav(dir){ const qs=STATE.quizState; if(qs) quizGoto(qs.idx+dir); }
+function quizJump(i){ quizGoto(i); }
+function nextQuestion(){ quizNav(1); }   // back-compat alias
+
+async function finishQuiz(){
+  const qs=STATE.quizState; if(!qs) return;
+  const n=qs.questions.length;
+  let unanswered=0; for(let i=0;i<n;i++) if(!qs.answers[i]) unanswered++;
+  if(unanswered>0){
+    const ok=await showModal({icon:'\u23ED\uFE0F',type:'warning',
+      title:unanswered+' question'+(unanswered>1?'s':'')+' unanswered',
+      body:"They'll be marked incorrect. Finish anyway, or go back and answer them?",
+      confirmText:'Finish anyway', cancelText:'Keep going'});
+    if(!ok){ let f=-1; for(let i=0;i<n;i++){ if(!qs.answers[i]){f=i;break;} } if(f>=0) quizGoto(f); return; }
   }
-  else{const qt=[...(qs.questionTimes||[]),qs.qTimerElapsed||0];STATE.quizState={...qs,idx:qs.idx+1,selected:null,answers:newAnswers,questionTimes:qt,qTimerStart:Date.now(),qTimerElapsed:null};render();}
+  _finalizeQuiz();
 }
+
+function _finalizeQuiz(){
+  const qs=STATE.quizState; const n=qs.questions.length;
+  const finalAnswers=[], finalTimes=[];
+  for(let i=0;i<n;i++){
+    finalAnswers[i]=qs.answers[i]?qs.answers[i]:{selected:null,correct:false,skipped:true};
+    finalTimes[i]=qs.questionTimes[i]||0;
+  }
+  const rightCount=finalAnswers.filter(a=>a.correct).length;
+  const p=STATE.progress;
+  endStudyTimer();
+  if(qs.isRetry){
+    const ls={...(p.lessonScores||{})};
+    qs.questions.forEach((q,i)=>{
+      if(finalAnswers[i]&&finalAnswers[i].correct && q._lessonId!=null && q._ansIdx!=null){
+        const entry=ls[q._lessonId];
+        if(entry&&entry.answers){
+          const updatedAnswers=[...entry.answers];
+          updatedAnswers[q._ansIdx]=q.a;
+          const newCorrect=updatedAnswers.filter((a,idx)=>{
+            const qz=S.flatMap(s=>s.lessons).find(l=>l.id===q._lessonId)?.quizzes?.[idx];
+            return qz&&a===qz.a;
+          }).length;
+          ls[q._lessonId]={...entry,answers:updatedAnswers,correct:newCorrect};
+        }
+      }
+    });
+    saveProg({...p,lessonScores:ls,mcqTotal:p.mcqTotal+n,mcqRight:p.mcqRight+rightCount});
+  } else {
+    const ls=p.lessonScores||{};const ansArr=finalAnswers.map(a=>a.selected);
+    saveProg({...p,lessonScores:{...ls,[qs.lessonId]:{correct:rightCount,total:n,answers:ansArr}},mcqTotal:p.mcqTotal+n,mcqRight:p.mcqRight+rightCount});
+  }
+  STATE.quizState={...qs,answers:finalAnswers,questionTimes:finalTimes,done:true,quizEndTime:Date.now()};
+  updateStreak();STATE.tab='quiz-results';render();
+}
+
 function resetAll(){saveProg({done:[],lessonScores:{},mcqTotal:0,mcqRight:0});STATE.showReset=false;render();}
 
 // ==== PHASE 2b — LIVE CHECK-IN (student poller + hard-lock modal + attendance) ====
