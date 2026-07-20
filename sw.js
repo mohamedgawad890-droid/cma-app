@@ -44,7 +44,13 @@
 // renders an optional per-question `concept` tag (falls back to the unit-name
 // topic when untagged). app.js is a precached shell file, so CACHE_NAME bumps
 // v23->v24 to refresh the precache and trigger the clean SKIP_WAITING auto-reload.
-const CACHE_NAME = 'cma-prep-v24';
+//
+// v25 (S4 batch): app.js changed (S4-A scenario case renderer, S4-C monospace
+// dataTableHTML, S4-D one-sentence-per-line stemHTML across quiz/exam/QOTD/review,
+// S4-E teaching-log validation) AND questions/s4.json changed (S4-B id+source
+// metadata backfill). Both are precached, so CACHE_NAME bumps v24->v25 to
+// invalidate the stale copies and trigger the clean SKIP_WAITING auto-reload.
+const CACHE_NAME = 'cma-prep-v25';
 const OFFLINE_URLS = [
   './',
   './index.html',
