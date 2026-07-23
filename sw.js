@@ -57,7 +57,15 @@
 // and app.js gained the outOfScope mock-exam filter. All five are precached,
 // so CACHE_NAME bumps v25->v26 to invalidate the stale copies and trigger the
 // clean SKIP_WAITING auto-reload on deploy.
-const CACHE_NAME = 'cma-prep-v26';
+//
+// v27 (Batch 9 Wave 2 — authored content): lesson-s4.json gained 64 blocks
+// (value-chain analysis steps, customer-response time, BPR/benchmarking,
+// variance reporting by costing method, joint-cost average cost method,
+// capacity-level income effects, cross-subsidization) and questions/s4.json
+// gained 93 authored MCQs closing every zero-coverage topic in Section D.
+// Both are precached, so CACHE_NAME bumps v26->v27. If Wave 1 (v26) was not
+// yet deployed, deploying v27 supersedes it — no need to ship v26 first.
+const CACHE_NAME = 'cma-prep-v27';
 const OFFLINE_URLS = [
   './',
   './index.html',
