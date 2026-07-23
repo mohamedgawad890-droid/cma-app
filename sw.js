@@ -50,7 +50,14 @@
 // S4-E teaching-log validation) AND questions/s4.json changed (S4-B id+source
 // metadata backfill). Both are precached, so CACHE_NAME bumps v24->v25 to
 // invalidate the stale copies and trigger the clean SKIP_WAITING auto-reload.
-const CACHE_NAME = 'cma-prep-v25';
+//
+// v26 (Batch 9 Wave 1 — S4 content alignment): lesson-s4.json, lesson-s3.json,
+// questions/s4.json and questions/s3.json all changed (unit relocations, the
+// 4-14 → section 3 question move, duplicate resolution, source/id backfill),
+// and app.js gained the outOfScope mock-exam filter. All five are precached,
+// so CACHE_NAME bumps v25->v26 to invalidate the stale copies and trigger the
+// clean SKIP_WAITING auto-reload on deploy.
+const CACHE_NAME = 'cma-prep-v26';
 const OFFLINE_URLS = [
   './',
   './index.html',

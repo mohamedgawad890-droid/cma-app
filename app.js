@@ -157,14 +157,14 @@ const S=[
       {id:"4-4",title:"Joint Product Costing",dur:"30 min",blocks:[],quizzes:[]},
       {id:"4-5",title:"Byproduct Costing",dur:"25 min",blocks:[],quizzes:[]},
       {id:"4-6",title:"Costing Systems: Process Costing",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"4-7",title:"Cost-Volume-Profit (CVP) Analysis",dur:"35 min",blocks:[],quizzes:[]},
+      {id:"4-7",title:"Cost-Volume-Profit (CVP) Analysis",dur:"35 min",blocks:[],quizzes:[],outOfScope:"part2"},
       {id:"4-8",title:"Job-Order and Life-Cycle Costing",dur:"30 min",blocks:[],quizzes:[]},
       {id:"4-9",title:"Overhead Costs and Allocation",dur:"30 min",blocks:[],quizzes:[]},
       {id:"4-10",title:"Accounting for Overhead",dur:"25 min",blocks:[],quizzes:[]},
       {id:"4-11",title:"Activity-Based Costing (ABC)",dur:"30 min",blocks:[],quizzes:[]},
       {id:"4-12",title:"Variable and Absorption Costing",dur:"30 min",blocks:[],quizzes:[]},
       {id:"4-13",title:"Shared Service Cost Allocation",dur:"35 min",blocks:[],quizzes:[]},
-      {id:"4-14",title:"Standard Cost Variances: DM, DL & Overhead",dur:"35 min",blocks:[],quizzes:[]},
+      {id:"4-14",title:"Standard Cost Variances: DM, DL & Overhead",dur:"35 min",blocks:[],quizzes:[],outOfScope:"section3"},
       {id:"4-15",title:"Estimating Fixed and Variable Costs",dur:"30 min",blocks:[],quizzes:[]},
       {id:"4-16",title:"Supply Chain & Lean Resource Management",dur:"30 min",blocks:[],quizzes:[]},
       {id:"4-17",title:"Just-In-Time Systems and MRP, MRPII, ERP",dur:"30 min",blocks:[],quizzes:[]},
@@ -8506,7 +8506,10 @@ function mockSelectMCQ(){
   const qs=[];
   S.forEach(sec=>{
     let pool=[];
-    sec.lessons.forEach(l=>{if(l.quizzes&&l.quizzes.length)l.quizzes.forEach(q=>pool.push({...q,sid:sec.id,stitle:sec.title,sbar:sec.bar,sweight:sec.weight}));});
+    // Batch 9 (D1/D2): units flagged outOfScope are not CMA Part 1 Section D
+    // material (4-7 CVP is Part 2; 4-14 variances belong to Section C / app
+    // section 3). They stay browsable but never enter the mock-exam pool.
+    sec.lessons.forEach(l=>{if(l.outOfScope)return;if(l.quizzes&&l.quizzes.length)l.quizzes.forEach(q=>pool.push({...q,sid:sec.id,stitle:sec.title,sbar:sec.bar,sweight:sec.weight}));});
     pool=mockShuffle(pool);
     qs.push(...pool.slice(0,sec.weight));
   });
