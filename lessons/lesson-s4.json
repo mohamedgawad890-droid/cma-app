@@ -14,6 +14,11 @@
    "v": "Cost behavior describes how costs change as activity levels change. Understanding cost behavior is essential for budgeting, decision-making, and performance evaluation."
   },
   {
+   "t": "def",
+   "term": "Cost vs. Expense",
+   "v": "A COST is a resource sacrificed to achieve an objective; it may sit on the balance sheet as an asset (inventory). An EXPENSE is a cost that has EXPIRED — consumed in generating revenue and therefore charged to the income statement. Product costs become expenses only when the units are sold; period costs are expensed as incurred."
+  },
+  {
    "t": "h",
    "v": "1. Variable Costs"
   },
@@ -755,6 +760,96 @@
     "Later, if standards become reliable → migrate seals to Standard Process Costing for variance analysis"
    ],
    "insight": "Costing method is not one-size-fits-all. The accumulation dimension (job vs process) is dictated by product heterogeneity; the measurement dimension (actual/normal/standard) is a management choice about timeliness and control."
+  },
+  {
+   "t": "h",
+   "v": "Effect of Each Method on Variance Reporting"
+  },
+  {
+   "t": "p",
+   "v": "Which variances can even EXIST depends on the cost measurement method in use. A variance requires a difference between cost applied and cost incurred — so where a method applies actual cost, that variance cannot arise."
+  },
+  {
+   "t": "tbl",
+   "h": [
+    "Variance",
+    "Standard costing",
+    "Normal costing",
+    "Actual costing"
+   ],
+   "r": [
+    [
+     "DM and DL variances",
+     "All calculated",
+     "NONE — DM/DL applied at actual rate × actual quantity",
+     "NONE"
+    ],
+    [
+     "Variable OH spending",
+     "Calculated",
+     "Calculated",
+     "NONE"
+    ],
+    [
+     "Variable OH efficiency",
+     "Calculated",
+     "NONE — OH applied on ACTUAL base used",
+     "NONE"
+    ],
+    [
+     "Fixed OH spending (flexible budget)",
+     "Calculated",
+     "SAME as standard costing",
+     "SAME as standard costing"
+    ],
+    [
+     "Fixed OH production-volume",
+     "Calculated",
+     "Calculated, but DIFFERENT — applied amount is based on the actual base used, not the standard base allowed",
+     "Differs"
+    ]
+   ]
+  },
+  {
+   "t": "p",
+   "v": "Why no DM/DL variance under normal costing: direct materials and direct labour are applied at their ACTUAL rates multiplied by the ACTUAL quantities used, after period end. Cost applied equals cost incurred, so no difference remains to report."
+  },
+  {
+   "t": "p",
+   "v": "Why the fixed OH spending variance is unaffected: it equals actual fixed OH incurred minus BUDGETED fixed OH. Neither term depends on how much fixed OH was applied, so the method makes no difference. The production-volume variance, by contrast, is budgeted fixed OH minus fixed OH APPLIED — and the applied figure does depend on the method."
+  },
+  {
+   "t": "h",
+   "v": "Benefits and Limitations of Each Method"
+  },
+  {
+   "t": "tbl",
+   "h": [
+    "Method",
+    "Benefits",
+    "Limitations"
+   ],
+   "r": [
+    [
+     "Standard",
+     "Enables full variance analysis and control; costs known before production; simplifies bookkeeping",
+     "Standards need regular maintenance; may be unrealistic; variances can invite gaming"
+    ],
+    [
+     "Normal",
+     "Smooths overhead across the year; avoids waiting for actual OH; product cost available promptly",
+     "No DM/DL variances, so less control; over/under-applied OH must still be disposed of"
+    ],
+    [
+     "Actual",
+     "Most accurate final figure; no estimates required",
+     "Cost unknown until period end; unit cost fluctuates with volume; almost no control information"
+    ]
+   ]
+  },
+  {
+   "t": "tip",
+   "v": "Exam Tips: Normal costing = actual DM + actual DL + APPLIED overhead. That is why it produces NO direct-input variances but still produces overhead variances. Actual costing produces no input or variable OH variances at all. The fixed OH SPENDING variance is identical under all three methods."
   }
  ],
  "4-3": [
@@ -1049,6 +1144,33 @@
     "Product A allocation = $90,000 x ($60,000/$100,000) = $54,000",
     "Product B allocation = $90,000 x ($40,000/$100,000) = $36,000"
    ]
+  },
+  {
+   "t": "h",
+   "v": "Average Cost (Physical Unit) Method"
+  },
+  {
+   "t": "def",
+   "term": "Average Cost Method",
+   "v": "Also called the Average Unit Cost or Physical Unit method. Total joint cost is divided by the TOTAL units of all joint products to give an average cost per unit; that rate is then multiplied by each product's unit count. Used when joint costs are allocated on the basis of physical units of output in COMPLETED form."
+  },
+  {
+   "t": "p",
+   "v": "It is essentially the Physical Measure method — the difference is that completed physical UNITS are the measure, rather than weight or volume, which is why it carries the 'average cost' name."
+  },
+  {
+   "t": "f",
+   "l": "Average Cost per Unit",
+   "v": "Average Cost per Unit = Total Joint Cost ÷ Total Units of ALL Joint Products.  Allocation to a product = Average Cost per Unit × that product's units."
+  },
+  {
+   "t": "ex",
+   "l": "Average Cost Method",
+   "v": "Joint cost $1,850,000 produces 4,000,000 identical 16-ounce cans across three flavours.\nAverage cost per can = $1,850,000 ÷ 4,000,000 = $0.4625.\nMild (800,000 cans) → 800,000 × $0.4625 = $370,000.\nOriginal (2,000,000 cans) → 2,000,000 × $0.4625 = $925,000.\nThe balance is allocated to the third flavour on the same rate."
+  },
+  {
+   "t": "tip",
+   "v": "Exam Tips: Average Cost = Physical Unit method, and it ignores selling prices entirely. Because every unit absorbs the same cost, a low-value product can end up allocated more cost than it can be sold for — that is the standard criticism of all physical-measure approaches."
   },
   {
    "t": "h",
@@ -1939,6 +2061,21 @@
   },
   {
    "t": "h",
+   "v": "Benefits and Limitations of Job-Order Costing"
+  },
+  {
+   "t": "b",
+   "v": [
+    "Benefit: cost is tracked to the individual job, so profitability can be measured job by job",
+    "Benefit: supports accurate quoting and bidding on custom work",
+    "Benefit: makes cost overruns visible while the job is still open",
+    "Limitation: record-keeping is heavy — every job needs its own cost sheet",
+    "Limitation: overhead is still applied by a predetermined rate, so job cost inherits any allocation distortion",
+    "Limitation: unsuitable where output is homogeneous and continuous — process costing fits that case"
+   ]
+  },
+  {
+   "t": "h",
    "v": "Predetermined Overhead Rate (POHR)"
   },
   {
@@ -2298,6 +2435,25 @@
    "v": "Overhead Allocation Bases"
   },
   {
+   "t": "h",
+   "v": "Traditional (Plant-wide) Allocation — Benefits and Limitations"
+  },
+  {
+   "t": "p",
+   "v": "The method covered in this unit is what the exam calls TRADITIONAL or plant-wide allocation: one or a few volume-based rates spread overhead across everything. Naming it matters, because questions contrast it explicitly with activity-based costing."
+  },
+  {
+   "t": "b",
+   "v": [
+    "Benefit: simple and cheap to operate — one rate, one base, minimal data collection",
+    "Benefit: adequate when overhead is small relative to direct cost, or when products consume resources in similar proportions",
+    "Limitation: uses volume-based drivers (labour hours, machine hours) for overhead that is NOT driven by volume — setups, inspections, and material handling are driven by batches, not units",
+    "Limitation: high-volume simple products are over-costed and low-volume complex products are under-costed",
+    "Limitation: distorted product costs lead to bad pricing and bad product-mix decisions",
+    "Limitation: gives no visibility into which ACTIVITIES consume resources, so it supports no cost-reduction programme"
+   ]
+  },
+  {
    "t": "b",
    "v": [
     "Direct Labor Hours (DLH): Most traditional — works when labor-intensive",
@@ -2647,6 +2803,27 @@
    "v": "ABC vs Traditional Costing"
   },
   {
+   "t": "h",
+   "v": "Cross-Subsidization of Products"
+  },
+  {
+   "t": "def",
+   "term": "Cross-Subsidization",
+   "v": "To 'subsidize' is to provide financial support. Cross-subsidization means one entity bears costs that should be borne by another. In product costing it occurs when a cost is allocated to a product OTHER than the product that caused it."
+  },
+  {
+   "t": "p",
+   "v": "Under traditional volume-based allocation, a high-volume product absorbs overhead caused by a low-volume product, because the allocation base tracks volume rather than cause. The high-volume product looks unprofitable and the low-volume product looks profitable — both wrong."
+  },
+  {
+   "t": "p",
+   "v": "ABC DECREASES the likelihood of cross-subsidization. Not because it is conceptually different in kind, but because more individual allocations are performed using drivers that match causation, producing more accurate product costs."
+  },
+  {
+   "t": "tip",
+   "v": "Exam Tips: Cross-subsidization is the single best one-line justification for ABC. If a question asks why ABC improves decisions, the answer is that it reduces cross-subsidization by using cause-and-effect drivers rather than volume."
+  },
+  {
    "t": "tbl",
    "h": [
     "Feature",
@@ -2976,6 +3153,34 @@
    "t": "def",
    "term": "Production vs Sales Rule",
    "v": "If units produced > units sold (inventory builds): Absorption income > Variable income (fixed MOH is deferred in inventory).\nIf units produced < units sold (inventory declines): Absorption income < Variable income (previously deferred fixed MOH is released to COGS).\nIf units produced = units sold: Both methods yield identical income."
+  },
+  {
+   "t": "h",
+   "v": "Benefits and Limitations of Each Method"
+  },
+  {
+   "t": "tbl",
+   "h": [
+    "",
+    "Benefits",
+    "Limitations"
+   ],
+   "r": [
+    [
+     "Absorption",
+     "Required by GAAP/IFRS for external reporting and by tax authorities; matches all production cost against revenue",
+     "Income can be manipulated by building inventory; fixed cost per unit varies with volume, which misleads short-run decisions"
+    ],
+    [
+     "Variable",
+     "Income moves with SALES, not production, so it cannot be inflated by overproducing; contribution margin supports breakeven and short-run decisions",
+     "NOT acceptable for external reporting or tax; ignores that fixed capacity cost is genuinely required to produce"
+    ]
+   ]
+  },
+  {
+   "t": "tip",
+   "v": "Exam Tips: Only ABSORPTION costing is GAAP-compliant. The strongest argument FOR variable costing is that it removes the incentive to overproduce; the strongest argument against is that it is internal-use only."
   },
   {
    "t": "h",
@@ -4073,38 +4278,32 @@
     [
      "Inventory",
      "Large safety stock",
-     "Minimal — near zero",
-     ""
+     "Minimal — near zero"
     ],
     [
      "Production trigger",
      "Push (produce to forecast)",
-     "Pull (produce on demand)",
-     ""
+     "Pull (produce on demand)"
     ],
     [
      "Defects",
      "Acceptable defect rate",
-     "Zero defects goal",
-     ""
+     "Zero defects goal"
     ],
     [
      "Supplier relationship",
      "Many suppliers, competitive",
-     "Few trusted suppliers, long-term",
-     ""
+     "Few trusted suppliers, long-term"
     ],
     [
      "Setup time",
      "Long",
-     "Minimized",
-     ""
+     "Minimized"
     ],
     [
      "Quality",
      "Inspect after production",
-     "Built-in quality (TQM)",
-     " "
+     "Built-in quality (TQM)"
     ]
    ]
   },
@@ -4461,6 +4660,47 @@
   },
   {
    "t": "h",
+   "v": "Capacity Level and its Effect on the Financial Statements"
+  },
+  {
+   "t": "p",
+   "v": "The denominator chosen for the fixed overhead rate changes the rate, which changes how much overhead is applied, which changes reported inventory and operating income. This is the heart of D.4 — capacity choice is an ACCOUNTING decision with financial-statement consequences."
+  },
+  {
+   "t": "p",
+   "v": "Overhead is UNDER-applied whenever actual overhead incurred exceeds overhead applied — typically when production comes in lower than anticipated. It is OVER-applied when production runs higher than anticipated."
+  },
+  {
+   "t": "tbl",
+   "h": [
+    "Disposition of the variance",
+    "Effect on reported operating income"
+   ],
+   "r": [
+    [
+     "Closed 100% to COGS (immaterial)",
+     "Income and inventory balances VARY with the activity level used to set the rate"
+    ],
+    [
+     "Prorated across WIP, FG and COGS",
+     "Income is the SAME regardless of the activity level used — proration plus the amount allocated reproduces the actual rate"
+    ],
+    [
+     "Restate everything at actual rates (rare)",
+     "Equivalent to actual costing"
+    ]
+   ]
+  },
+  {
+   "t": "p",
+   "v": "The practical consequence: if the variance is closed out entirely to COGS, using MASTER-BUDGET or NORMAL capacity produces HIGHER operating income than using theoretical or practical capacity — and that holds whether overhead ends up over- or under-applied. Larger denominators (theoretical, practical) give a lower rate, so less overhead is capitalised into inventory and more lands in expense."
+  },
+  {
+   "t": "tip",
+   "v": "Exam Tips: Proration should be based on the overhead ALLOCATED DURING THE CURRENT PERIOD, not on the period-end balances in the accounts. And remember the headline rule: prorate → activity level does not affect income; close to COGS → it does."
+  },
+  {
+   "t": "h",
    "v": "Relevant Costing for Short-term Decisions"
   },
   {
@@ -4658,6 +4898,94 @@
   },
   {
    "t": "h",
+   "v": "Value Chain Analysis — The Three Steps"
+  },
+  {
+   "t": "p",
+   "v": "Value chain analysis is the disciplined process of working through the chain to find where the company can create more value or spend less doing it. Hock sets it out as three sequential steps."
+  },
+  {
+   "t": "b",
+   "v": [
+    "STEP 1 — Identify the activities that add value to the finished product. Which activities these are depends on the industry and on what the company actually does (manufacturing, resale, or service).",
+    "STEP 2 — Identify the cost driver (or drivers) for each activity.",
+    "STEP 3 — Develop a competitive advantage, either by increasing the value delivered to the customer or by reducing the cost of the activity."
+   ]
+  },
+  {
+   "t": "def",
+   "term": "Value Chain Analysis",
+   "v": "A three-step examination of the firm's activities — identify value-adding activities, identify each activity's cost driver, then build competitive advantage by raising customer value or lowering activity cost. It answers WHERE in the chain the company should compete, not just what a product costs."
+  },
+  {
+   "t": "h",
+   "v": "How Each Link Creates Value"
+  },
+  {
+   "t": "tbl",
+   "h": [
+    "Activity",
+    "How it creates value"
+   ],
+   "r": [
+    [
+     "Research & Development",
+     "Improves established products as well as developing new ones."
+    ],
+    [
+     "Production",
+     "Efficient assembly yields high quality at lower cost, raising operating income."
+    ],
+    [
+     "Marketing",
+     "Informs customers (raising the utility they attribute to the product, supporting a higher price) and feeds customer needs back to R&D."
+    ],
+    [
+     "Inbound logistics",
+     "Controlling the flow of goods from suppliers eliminates the need to carry large inventories — lower inventory cost is value created."
+    ],
+    [
+     "Procurement",
+     "Efficient purchasing lowers manufacturing cost."
+    ],
+    [
+     "Information systems",
+     "Tracking inventory and sales lets the company stock the right mix and drop slow movers."
+    ],
+    [
+     "Customer service",
+     "Responsive after-sale service creates superior value and can support a price premium."
+    ]
+   ]
+  },
+  {
+   "t": "p",
+   "v": "Value chain analysis also works ACROSS companies. A complete value chain may span a parts manufacturer, an assembler, a wholesaler, and a retailer. Which part of that chain a company should occupy is decided by comparative advantage — where it can deliver the most value at the lowest cost."
+  },
+  {
+   "t": "tip",
+   "v": "Exam Tips: The three steps in order — (1) identify value-adding activities, (2) identify the cost driver for each, (3) build competitive advantage by adding value OR cutting cost. Step 2 is the one candidates forget. Note that value chain analysis can be applied INSIDE one firm or ACROSS a multi-company chain."
+  },
+  {
+   "t": "case",
+   "co": "Nile Textiles",
+   "facts": [
+    "Vertically integrated: spins yarn, weaves fabric, cuts and sews garments, and operates 12 retail stores",
+    "Spinning earns a 4% margin; weaving 6%; garment assembly 9%; retail 22%",
+    "Competitors buy yarn on the open market at prices at or below Nile's own spinning cost",
+    "Retail floor space is capacity-constrained and fully utilised"
+   ],
+   "q": "Apply value chain analysis. Where should Nile compete?",
+   "sol": [
+    "STEP 1 — Value-adding activities: spinning, weaving, assembly, retail.",
+    "STEP 2 — Cost drivers: spinning = kg of fibre; weaving = metres woven; assembly = labour hours; retail = square metres of floor space.",
+    "STEP 3 — Spinning adds the least value (4%) and confers no advantage: competitors buy equivalent yarn at or below Nile's cost, so Nile is not the low-cost producer of that link.",
+    "Exit or outsource spinning; redeploy the freed capital into retail, the highest-value constrained link."
+   ],
+   "insight": "Value chain analysis is a decision about WHICH LINKS to occupy. Owning more of the chain is not the same as creating more value — a link where you hold no comparative advantage destroys it."
+  },
+  {
+   "t": "h",
    "v": "Strategic Cost Management"
   },
   {
@@ -4721,6 +5049,71 @@
    "t": "def",
    "term": "Kaizen",
    "v": "Japanese for \"continuous improvement\". Small, incremental improvements made continuously by front-line workers — not big-bang re-engineering projects. Complements target costing: target costing sets the initial cost; kaizen drives cost down further during production."
+  },
+  {
+   "t": "h",
+   "v": "Business Process Reengineering (BPR)"
+  },
+  {
+   "t": "p",
+   "v": "'Reengineering' originally meant taking a product apart in order to redesign it. Applied to organisations, it means restructuring processes in response to rapidly changing technology and competition. Management starts with a CLEAN SHEET OF PAPER and redesigns the process to meet the objective. Obsolete operations are discarded — not automated."
+  },
+  {
+   "t": "def",
+   "term": "Business Process Reengineering",
+   "v": "Radical, fundamental redesign of a business process starting from a clean sheet, aimed at dramatic improvement. Set out by Michael Hammer and James Champy in Reengineering the Corporation."
+  },
+  {
+   "t": "p",
+   "v": "Hammer and Champy's argument: businesses are still run on the assembly-line model of the early 1900s. Division of labour produced huge productivity gains then, but it has left FRAGMENTED PROCESSES — one department does a piece and hands off to the next. Passing work around slows completion, adds cost without adding value, and blunts responsiveness to customers."
+  },
+  {
+   "t": "b",
+   "v": [
+    "The failure mode BPR targets: using computers to AUTOMATE an outdated process rather than changing the process itself",
+    "Scope: order fulfilment, purchasing, customer service — not only manufacturing",
+    "Character: radical and discontinuous — contrast with kaizen, which is incremental",
+    "Risk: high. A clean-sheet redesign disrupts the organisation and can fail outright"
+   ]
+  },
+  {
+   "t": "h",
+   "v": "Benchmarking Process Performance"
+  },
+  {
+   "t": "p",
+   "v": "One of the best ways to develop the distinctive competencies behind competitive advantage — superior efficiency, quality, innovation, and responsiveness — is to identify and adopt BEST PRACTICES. Benchmarking is how that is done."
+  },
+  {
+   "t": "def",
+   "term": "Benchmarking",
+   "v": "Measuring the organisation against the products, practices, and services of its most efficient global competitors, or against other segments of the same company. Those standards — best practices — become the target or model for the firm's own operations."
+  },
+  {
+   "t": "b",
+   "v": [
+    "STEP 1 — Identify the CRITICAL SUCCESS FACTORS: the aspects of performance essential to competitive advantage. These depend on the type of competition the firm faces.",
+    "STEP 2 — Set up a cross-functional team, drawn from different areas with different skills.",
+    "STEP 3 — Perform BEST PRACTICE ANALYSIS: investigate and document best practice for the processes behind those critical success factors.",
+    "STEP 4 — Identify what needs improvement and implement it, using the benchmarked company's experience."
+   ]
+  },
+  {
+   "t": "p",
+   "v": "The benchmarked company DOES NOT need to be in the same industry. Firms are recognised as leaders in specific capabilities — Nordstrom in retailing, Ritz-Carlton in service, Apple in innovation — and any of them can be a benchmark for that capability."
+  },
+  {
+   "t": "b",
+   "v": [
+    "Benefit: establishes standards to measure against, driving continuous improvement in operations, services, and products",
+    "Benefit: identifies where improvement is needed, then measures progress in those key areas",
+    "Benefit: improvements can include cutting cost, increasing output, and improving quality",
+    "Limitation: copying a best practice from a firm with a different strategy or cost structure may not transfer"
+   ]
+  },
+  {
+   "t": "tip",
+   "v": "Exam Tips: BPR = RADICAL, clean sheet, discontinuous, high risk. Kaizen = SMALL, continuous, low risk. Benchmarking = comparison against best-in-class, and the benchmark firm need NOT be in your industry. Benchmarking starts with identifying critical success factors."
   },
   {
    "t": "h",
@@ -5229,6 +5622,72 @@
    "t": "def",
    "term": "Total Productive Maintenance (TPM)",
    "v": "A maintenance philosophy that transfers responsibility for basic machine care to operators, freeing specialists for complex tasks. Six big losses TPM eliminates: breakdowns, setups, small stops, reduced speed, defects, and startup losses."
+  },
+  {
+   "t": "h",
+   "v": "Customer-Response Time"
+  },
+  {
+   "t": "p",
+   "v": "A good TQM system also lets a company manage TIME better. Being first to market, and responding quickly to shifts in demand, both require shorter development time and shorter response time."
+  },
+  {
+   "t": "def",
+   "term": "Customer-Response Time",
+   "v": "The length of time between receipt of an order from a customer and receipt of the product BY that customer. It spans the whole journey — not just the time spent manufacturing."
+  },
+  {
+   "t": "tbl",
+   "h": [
+    "Component",
+    "Runs from → to",
+    "Value-adding?"
+   ],
+   "r": [
+    [
+     "Receipt time",
+     "Customer places order → order reaches manufacturing",
+     "No"
+    ],
+    [
+     "Waiting time",
+     "Order reaches manufacturing → manufacturing begins",
+     "No"
+    ],
+    [
+     "Manufacturing time",
+     "Manufacturing begins → finished goods complete",
+     "YES"
+    ],
+    [
+     "Delivery time",
+     "Finished goods complete → product received by customer",
+     "No"
+    ]
+   ]
+  },
+  {
+   "t": "def",
+   "term": "Manufacturing Cycle Time",
+   "v": "Waiting time PLUS manufacturing time — the portion of customer-response time that sits inside the factory. Customer-response time = receipt time + manufacturing cycle time + delivery time."
+  },
+  {
+   "t": "p",
+   "v": "Only actual manufacturing time is spent on value-adding activity. Total customer-response time is therefore reduced by attacking receipt time, waiting time, and delivery time — the three non-value-adding components."
+  },
+  {
+   "t": "f",
+   "l": "Manufacturing Cycle Efficiency (MCE)",
+   "v": "MCE = Value-Added (Processing) Time ÷ Total Manufacturing Cycle Time.  An MCE of 1.0 would mean zero waiting — every minute in the factory adds value."
+  },
+  {
+   "t": "ex",
+   "l": "Customer-Response Time Computation",
+   "v": "Order received Monday 09:00, reaches the plant Tuesday 09:00 (receipt time = 24 hrs). It waits in the queue 36 hrs, is manufactured in 12 hrs, and is delivered 18 hrs later.\nManufacturing cycle time = 36 + 12 = 48 hrs.\nCustomer-response time = 24 + 48 + 18 = 90 hrs.\nMCE = 12 ÷ 48 = 0.25 — only a quarter of factory time adds value."
+  },
+  {
+   "t": "tip",
+   "v": "Exam Tips: Customer-response time = receipt + waiting + manufacturing + delivery. Manufacturing CYCLE time is only the middle two (waiting + manufacturing). Only manufacturing time is value-adding. MCE uses manufacturing cycle time as the denominator, not total customer-response time."
   },
   {
    "t": "h",
