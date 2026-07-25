@@ -2330,7 +2330,10 @@ function buildQuizModeQuestions(sectionId){
   const sections=sectionId?S.filter(s=>s.id===sectionId):S;
   sections.forEach(sec=>{
     sec.lessons.forEach(l=>{
-      l.quizzes.forEach(q=>{allQ.push({...q,lessonId:l.id,sectionId:sec.id,lessonTitle:l.title,sectionTitle:sec.title,secEmoji:sec.emoji,secBar:sec.bar,secBg:sec.bg,secText:sec.text,secStrong:sec.strong});});
+      l.quizzes.forEach(q=>{
+        if(isOutOfScopeQ(l,q))return;   // Batch 10: exclude Part-2 content from Quiz Mode
+        allQ.push({...q,lessonId:l.id,sectionId:sec.id,lessonTitle:l.title,sectionTitle:sec.title,secEmoji:sec.emoji,secBar:sec.bar,secBg:sec.bg,secText:sec.text,secStrong:sec.strong});
+      });
     });
   });
   // Shuffle
@@ -4381,6 +4384,7 @@ async function saveExam(){
     sec.lessons.forEach(l=>{
       if(!lessonMatch(l.id))return;
       if(l.quizzes&&l.quizzes.length)l.quizzes.forEach((q,i)=>{
+        if(isOutOfScopeQ(l,q))return;   // Batch 10: never freeze Part-2 content into a graded exam
         pool.push({qid:l.id+':'+(q.id||i),_lid:l.id});
       });
     });
@@ -6143,7 +6147,10 @@ function renderExamUnitPicker(d){
   const selected=new Set((d.unitIds||[]).map(String));
   const chips=sec.lessons.map((l,idx)=>{
     const on=selected.has(String(l.id));
-    return `<button type="button" onclick="toggleExamUnit('${l.id}')" style="padding:6px 10px;border-radius:14px;border:1px solid ${on?'var(--brand)':'var(--border-4)'};background:${on?'var(--brand)':'#fff'};color:${on?'#fff':'#555'};font-size:11px;font-weight:${on?'600':'500'};cursor:pointer;font-family:inherit;white-space:nowrap">U${idx+1}: ${esc(l.title.length>28?l.title.slice(0,26)+'\u2026':l.title)}</button>`;
+    // Batch 10: flag out-of-scope units so instructors see why a unit
+    // (e.g. 4-7 CVP, 4-14 Variances) is excluded from auto-built exam pools.
+    const badge=l.outOfScope==='part2'?' \u26A0\uFE0F Part 2':(l.outOfScope?' \u26A0\uFE0F \u2192 Sec.3':'');
+    return `<button type="button" onclick="toggleExamUnit('${l.id}')" style="padding:6px 10px;border-radius:14px;border:1px solid ${on?'var(--brand)':'var(--border-4)'};background:${on?'var(--brand)':(l.outOfScope?'#fff7ed':'#fff')};color:${on?'#fff':(l.outOfScope?'#b45309':'#555')};font-size:11px;font-weight:${on?'600':'500'};cursor:pointer;font-family:inherit;white-space:nowrap">U${idx+1}: ${esc(l.title.length>28?l.title.slice(0,26)+'\u2026':l.title)}${badge}</button>`;
   }).join('');
   const allCount=sec.lessons.length;
   const sel=selected.size;
@@ -6188,7 +6195,10 @@ async function reshuffleExam(examId){
     const pool=[];
     sec.lessons.forEach(l=>{
       if(!lessonMatch(l.id))return;
-      if(l.quizzes&&l.quizzes.length)l.quizzes.forEach((q,i)=>pool.push(l.id+':'+(q.id||i)));
+      if(l.quizzes&&l.quizzes.length)l.quizzes.forEach((q,i)=>{
+        if(isOutOfScopeQ(l,q))return;   // Batch 10: same guard as saveExam
+        pool.push(l.id+':'+(q.id||i));
+      });
     });
     if(pool.length<ex.count){showToast('Only '+pool.length+' questions available now.','warning');return;}
     for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
@@ -8502,14 +8512,23 @@ function mockClearTimers(){
 }
 
 // ── Question selection ─────────────────────────────────────────
+// Batch 10: single source of truth for scope exclusion. Two levels:
+//  - lesson-level: the whole unit is out of Part 1 scope (e.g. 4-7 CVP is
+//    Part 2; 4-14 variances belong to Section C / app section 3)
+//  - question-level: a handful of questions inside an otherwise in-scope
+//    lesson are themselves out of scope (e.g. the 3 Theory-of-Constraints
+//    questions inside 4-20, which is 90% legitimate Part 1 Process Analysis
+//    content). Flagging the whole lesson would wrongly exclude the rest.
+// Used at every pool-building site (mock exam, quiz mode, exam builder,
+// exam re-shuffle) so Part-2 content never reaches a student-facing pool.
+function isOutOfScopeQ(lesson,q){
+  return !!(lesson.outOfScope || (q&&q.outOfScope));
+}
 function mockSelectMCQ(){
   const qs=[];
   S.forEach(sec=>{
     let pool=[];
-    // Batch 9 (D1/D2): units flagged outOfScope are not CMA Part 1 Section D
-    // material (4-7 CVP is Part 2; 4-14 variances belong to Section C / app
-    // section 3). They stay browsable but never enter the mock-exam pool.
-    sec.lessons.forEach(l=>{if(l.outOfScope)return;if(l.quizzes&&l.quizzes.length)l.quizzes.forEach(q=>pool.push({...q,sid:sec.id,stitle:sec.title,sbar:sec.bar,sweight:sec.weight}));});
+    sec.lessons.forEach(l=>{if(l.outOfScope)return;if(l.quizzes&&l.quizzes.length)l.quizzes.forEach(q=>{if(isOutOfScopeQ(l,q))return;pool.push({...q,sid:sec.id,stitle:sec.title,sbar:sec.bar,sweight:sec.weight});});});
     pool=mockShuffle(pool);
     qs.push(...pool.slice(0,sec.weight));
   });
