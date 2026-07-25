@@ -65,7 +65,20 @@
 // gained 93 authored MCQs closing every zero-coverage topic in Section D.
 // Both are precached, so CACHE_NAME bumps v26->v27. If Wave 1 (v26) was not
 // yet deployed, deploying v27 supersedes it — no need to ship v26 first.
-const CACHE_NAME = 'cma-prep-v27';
+//
+// v28 (Batch 10 — Hock validation audit follow-up): app.js gained a shared
+// isOutOfScopeQ() helper, now applied at every question-pool build site
+// (Quiz Mode, instructor exam builder saveExam/reshuffleExam, plus a "Part 2"
+// badge on the exam unit picker) — closing the leak where 4-7 CVP could
+// enter Quiz Mode or get frozen into a real graded exam. questions/s4.json
+// gained a question-level outOfScope tag on the 3 actual Theory-of-Constraints
+// questions inside 4-20 (the other 26 stay in-scope — they're legitimate
+// Hock D.5 Process Analysis content). lesson-s4.json gained a Kaizen
+// cross-reference note (4-20 -> 4-21) and 3 numeric worked examples closing
+// coverage gaps (4-14 four overhead variances, 4-16 backflush costing journal
+// entries, 4-19 strategic cost management). All three files are precached,
+// so CACHE_NAME bumps v27->v28.
+const CACHE_NAME = 'cma-prep-v28';
 const OFFLINE_URLS = [
   './',
   './index.html',
