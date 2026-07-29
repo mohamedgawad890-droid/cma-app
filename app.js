@@ -910,7 +910,7 @@ const STATE={tab:'loading',searchQ:'',dictQ:'',dictData:[],dictLoaded:false,lead
     flashcards:[],flashcardsIdx:0,flashcardsFlipped:false,flashcardsFilter:'all',flashcardsMode:'study',
     qotdState:{dateKey:'',question:null,selected:null,answered:false,taughtUnitCount:0},
     dailyGoalMinutes:30,fontSize:'md',
-    dashTab:'groups',dashGroups:[],dashGroupsLoaded:false,dashStudents:[],
+    dashTab:'groups',dashGroups:[],dashGroupsLoaded:false,dashStudents:[],dashSlideIdx:0,
     dashTeachingLog:[],dashTeachingLogLoaded:false,
     dashTeachingDraft:{groupCode:'',lectureNumber:'',date:'',unitIds:[],notes:'',lectureId:'',lectureTitle:''},
     dashLoaded:false,dashLoading:false,dashError:false,
@@ -5167,10 +5167,129 @@ function renderDashTabEmpty(tabLabel,groupCode,cta){
   </div>`;
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+// DASHBOARD SLIDES — presenter mode (instructor-only teaching aids)
+// ═══════════════════════════════════════════════════════════════════════════
+const DASH_SLIDES=[
+  {
+    id:'cost-behavior',
+    title:'Cost Classification by Behavior',
+    subtitle:'How does total cost react when activity volume changes?',
+    cards:[
+      {tag:'FC',tagBg:'#0C2D52',title:'Fixed Cost',desc:'Total stays constant regardless of volume',exColor:'#0C2D52',ex:'Factory rent'},
+      {tag:'VC',tagBg:'#177F73',title:'Variable Cost',desc:'Total changes in direct proportion to volume',exColor:'#177F73',ex:'Direct material cost'},
+      {tag:'MC',tagBg:'#C07A26',title:'Mixed Cost',desc:'Has both a fixed part and a variable part',exColor:'#C07A26',ex:'Electricity bill (base charge + usage)'}
+    ],
+    chart:{
+      title:'Total Cost vs. Volume',xLabel:'Volume (units)',xMax:5,yMax:700,yStep:100,
+      series:[
+        {label:'Fixed Cost (FC)',color:'#0C2D52',data:[500,500,500,500,500,500]},
+        {label:'Variable Cost (VC)',color:'#177F73',data:[0,100,200,300,400,500]},
+        {label:'Mixed Cost (MC)',color:'#C07A26',data:[200,280,360,440,520,600]}
+      ]
+    }
+  },
+  {
+    id:'cost-nature',
+    title:'Cost Classification by Nature',
+    subtitle:'Every product cost falls into one of three buckets',
+    cards:[
+      {tag:'DM',tagBg:'#0C2D52',title:'Direct Material',desc:'Raw materials directly traceable to the product',exColor:'#177F73',ex:'Wood used in a chair'},
+      {tag:'DL',tagBg:'#0C2D52',title:'Direct Labor',desc:'Wages of workers directly making the product',exColor:'#0C2D52',ex:'Carpenter\u2019s wages'},
+      {tag:'OH',tagBg:'#0C2D52',title:'Manufacturing Overhead',desc:'All other factory costs, not directly traceable',exColor:'#C07A26',ex:'Factory rent, utilities, supervisor salary'}
+    ],
+    banner:[
+      {label:'Prime Cost',labelColor:'#F0B361',formula:'DM + DL',desc:'Cost of the core inputs that go straight into the product'},
+      {label:'Conversion Cost',labelColor:'#5FC9BC',formula:'DL + OH',desc:'Cost of turning raw material into a finished product'}
+    ]
+  }
+];
+
+function renderSlideCard(c){
+  return `<div style="flex:1 1 240px;background:var(--surface-2);border-radius:14px;padding:20px;min-width:220px">
+    <div style="display:inline-block;background:${c.tagBg};color:#fff;font-weight:700;font-size:13px;padding:6px 14px;border-radius:8px;margin-bottom:14px">${esc(c.tag)}</div>
+    <div style="font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px">${esc(c.title)}</div>
+    <div style="font-size:14px;color:#555;line-height:1.5;margin-bottom:10px">${esc(c.desc)}</div>
+    <div style="font-size:13px;color:#333"><span style="font-weight:700;color:${c.exColor||'var(--ink)'}">Example: </span>${esc(c.ex)}</div>
+  </div>`;
+}
+
+function renderSlideBanner(items){
+  return `<div style="background:var(--brand);border-radius:14px;padding:24px;margin-top:20px;display:flex;flex-wrap:wrap;gap:24px">
+    ${items.map((b,i)=>`<div style="flex:1 1 260px;${i>0?'border-left:1px solid rgba(255,255,255,.25);padding-left:24px':''}">
+      <div style="font-size:16px;margin-bottom:8px"><span style="font-weight:700;color:${b.labelColor}">${esc(b.label)}</span><span style="color:#fff"> = ${esc(b.formula)}</span></div>
+      <div style="font-size:13px;color:rgba(255,255,255,.8)">${esc(b.desc)}</div>
+    </div>`).join('')}
+  </div>`;
+}
+
+function renderSlideChart(chart){
+  const W=640,H=280,padL=46,padR=16,padT=14,padB=34;
+  const plotW=W-padL-padR,plotH=H-padT-padB;
+  const xCount=chart.xMax+1;
+  const xStep=plotW/(xCount-1);
+  const yScale=v=>padT+plotH-(v/chart.yMax)*plotH;
+  const xScale=i=>padL+i*xStep;
+  let gridLines='';
+  for(let v=0;v<=chart.yMax;v+=chart.yStep){
+    const y=yScale(v);
+    gridLines+=`<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="#e5e5e0" stroke-width="1"/><text x="${padL-8}" y="${y+4}" font-size="11" fill="#666" text-anchor="end">${v}</text>`;
+  }
+  let xLabels='';
+  for(let i=0;i<xCount;i++){
+    xLabels+=`<text x="${xScale(i)}" y="${H-padB+18}" font-size="11" fill="#666" text-anchor="middle">${i}</text>`;
+  }
+  let seriesSvg='';
+  chart.series.forEach(s=>{
+    const pts=s.data.map((v,i)=>`${xScale(i)},${yScale(v)}`).join(' ');
+    const dots=s.data.map((v,i)=>`<circle cx="${xScale(i)}" cy="${yScale(v)}" r="3.5" fill="${s.color}"/>`).join('');
+    seriesSvg+=`<polyline points="${pts}" fill="none" stroke="${s.color}" stroke-width="2.5"/>${dots}`;
+  });
+  const legend=chart.series.map(s=>`<span style="display:inline-flex;align-items:center;gap:6px;margin-right:16px;font-size:12px;color:#333"><span style="width:14px;height:3px;background:${s.color};display:inline-block;border-radius:2px"></span>${esc(s.label)}</span>`).join('');
+  return `<div style="margin-top:6px">
+    <div style="font-weight:700;font-size:14px;color:var(--ink);margin-bottom:8px">${esc(chart.title)}</div>
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block">
+      <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H-padB}" stroke="#ccc"/>
+      <line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="#ccc"/>
+      ${gridLines}${xLabels}${seriesSvg}
+    </svg>
+    <div style="margin-top:8px;text-align:center">${legend}</div>
+    <div style="text-align:center;font-size:11px;color:#888;margin-top:2px">${esc(chart.xLabel)}</div>
+  </div>`;
+}
+
+function dashSlideNav(dir){
+  const n=DASH_SLIDES.length;
+  STATE.dashSlideIdx=Math.min(n-1,Math.max(0,(STATE.dashSlideIdx||0)+dir));
+  render();
+}
+
+function renderDashSlides(){
+  const slides=DASH_SLIDES;
+  const idx=Math.min(Math.max(STATE.dashSlideIdx||0,0),slides.length-1);
+  const s=slides[idx];
+  const prevDisabled=idx===0,nextDisabled=idx===slides.length-1;
+  const cardsHtml=s.cards.map(renderSlideCard).join('');
+  const extra=s.chart?renderSlideChart(s.chart):(s.banner?renderSlideBanner(s.banner):'');
+  const dots=slides.map((_,i)=>`<button onclick="STATE.dashSlideIdx=${i};render()" style="width:9px;height:9px;border-radius:50%;border:none;padding:0;cursor:pointer;background:${i===idx?'var(--brand)':'#d8d8d2'}"></button>`).join('');
+  return `<div style="max-width:900px;margin:0 auto;padding:8px 4px 30px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <button ${prevDisabled?'disabled':''} onclick="dashSlideNav(-1)" style="padding:8px 14px;border-radius:8px;border:.5px solid var(--border-4);background:#fff;font-size:14px;cursor:${prevDisabled?'default':'pointer'};opacity:${prevDisabled?'.35':'1'}">\u2190 Prev</button>
+      <div style="display:flex;gap:6px">${dots}</div>
+      <button ${nextDisabled?'disabled':''} onclick="dashSlideNav(1)" style="padding:8px 14px;border-radius:8px;border:.5px solid var(--border-4);background:#fff;font-size:14px;cursor:${nextDisabled?'default':'pointer'};opacity:${nextDisabled?'.35':'1'}">Next \u2192</button>
+    </div>
+    <h1 style="font-size:26px;font-weight:800;color:var(--ink);margin-bottom:6px">${esc(s.title)}</h1>
+    <p style="font-size:15px;color:#666;margin-bottom:22px">${esc(s.subtitle)}</p>
+    <div style="display:flex;flex-wrap:wrap;gap:14px">${cardsHtml}</div>
+    ${extra}
+  </div>`;
+}
+
 function renderDashboard(){
   if(!isInstructor())return renderIntro();
   if(!STATE.dashLoaded&&!STATE.dashLoading&&!STATE.dashGroupsLoaded)loadDashboardP1();
   const SUB_DASH=[
+    {id:'slides',      icon:'\u{1F4FD}\uFE0F', label:'Slides'},
     {id:'groups',      icon:'\u{1F465}', label:'Groups'},
     {id:'students',    icon:'\u{1F464}', label:'Students'},
     {id:'lectures',    icon:'\u{1F3AC}', label:'Lectures'},
@@ -5183,7 +5302,7 @@ function renderDashboard(){
     {id:'teaching-log',icon:'\u{1F4D3}', label:'Actual Teaching'},
     {id:'at-risk',     icon:'\u{1F6A8}', label:'At Risk'}
   ];
-  const _validTabs=['groups','students','lectures','attendance','exams','results','progress','leader','plan','teaching-log','at-risk'];
+  const _validTabs=['slides','groups','students','lectures','attendance','exams','results','progress','leader','plan','teaching-log','at-risk'];
   const tab=_validTabs.includes(STATE.dashTab)?STATE.dashTab:'groups';
   const subnav=`<div class="sub-nav">${SUB_DASH.map(it=>
     `<button class="sub-nav-btn${tab===it.id?' active':''}" onclick="STATE.dashTab='${it.id}';render()">${it.icon} ${it.label}</button>`
@@ -5203,6 +5322,9 @@ function renderDashboard(){
   }else if(tab==='students'){
     // Batch 5 Students tab: unscoped (roster is already loaded with groups).
     body=STATE.dashGroupsLoaded?renderDashStudents():renderDashSkeleton();
+  }else if(tab==='slides'){
+    // Presenter mode: static teaching aids, no group/data dependency.
+    body=renderDashSlides();
   }else if(!STATE.dashSelectedGroup){
     // Scoped tab but no group picked → empty state
     body=renderDashPickGroupEmpty(scopedTabs[tab]||'items');

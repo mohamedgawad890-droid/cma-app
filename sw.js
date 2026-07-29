@@ -78,7 +78,15 @@
 // coverage gaps (4-14 four overhead variances, 4-16 backflush costing journal
 // entries, 4-19 strategic cost management). All three files are precached,
 // so CACHE_NAME bumps v27->v28.
-const CACHE_NAME = 'cma-prep-v28';
+// v29 (Dashboard Slides — presenter mode): app.js gained a "Slides" sub-tab
+// under the instructor Dashboard (DASH_SLIDES data + renderDashSlides/
+// renderSlideCard/renderSlideBanner/renderSlideChart + dashSlideNav), used
+// for screen-sharing teaching aids ("Cost Classification by Behavior" and
+// "Cost Classification by Nature") live during class. Unscoped tab — no
+// group selection or Firestore data required. app.js is a precached shell
+// file, so CACHE_NAME bumps v28->v29 to refresh the precache and trigger
+// the clean SKIP_WAITING auto-reload on deploy.
+const CACHE_NAME = 'cma-prep-v29';
 const OFFLINE_URLS = [
   './',
   './index.html',
