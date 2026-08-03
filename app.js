@@ -157,7 +157,7 @@ const S=[
       {id:"4-4",title:"Joint Product Costing",dur:"30 min",blocks:[],quizzes:[]},
       {id:"4-5",title:"Byproduct Costing",dur:"25 min",blocks:[],quizzes:[]},
       {id:"4-6",title:"Costing Systems: Process Costing",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"4-7",title:"Cost-Volume-Profit (CVP) Analysis",dur:"35 min",blocks:[],quizzes:[],outOfScope:"part2"},
+      {id:"4-7",title:"Take a Break ☕",dur:"2 min",blocks:[],quizzes:[]},
       {id:"4-8",title:"Job-Order and Life-Cycle Costing",dur:"30 min",blocks:[],quizzes:[]},
       {id:"4-9",title:"Overhead Costs and Allocation",dur:"30 min",blocks:[],quizzes:[]},
       {id:"4-10",title:"Accounting for Overhead",dur:"25 min",blocks:[],quizzes:[]},
@@ -3687,13 +3687,6 @@ function renderFormulaBank(){
       ['Min Transfer Price','Outlay Cost + Opportunity Cost (CM foregone)'],
     ]},
     {title:'Cost Management',color:'var(--warn-strong)',bg:'var(--warn-tint)',formulas:[
-      ['Break-Even Units','Fixed Costs ÷ CM per Unit'],
-      ['Break-Even Sales $','Fixed Costs ÷ CM Ratio'],
-      ['CM per Unit','Selling Price − Variable Cost per Unit'],
-      ['CM Ratio','CM per Unit ÷ Selling Price'],
-      ['Target Profit Units','(Fixed Costs + Target Profit) ÷ CM per Unit'],
-      ['Margin of Safety','Actual Sales − Break-Even Sales'],
-      ['Operating Leverage','CM ÷ Operating Income'],
       ['Predetermined OH Rate','Budgeted OH ÷ Budgeted Activity'],
       ['Applied OH','POHR × Actual Activity'],
       ['COGM','DM Used + DL + OH Applied + Begin WIP − End WIP'],
@@ -6270,7 +6263,7 @@ function renderExamUnitPicker(d){
   const chips=sec.lessons.map((l,idx)=>{
     const on=selected.has(String(l.id));
     // Batch 10: flag out-of-scope units so instructors see why a unit
-    // (e.g. 4-7 CVP, 4-14 Variances) is excluded from auto-built exam pools.
+    // (e.g. 4-14 Variances) is excluded from auto-built exam pools. 4-7 CVP content was removed entirely (Hock SU7 has no Part 1 content).
     const badge=l.outOfScope==='part2'?' \u26A0\uFE0F Part 2':(l.outOfScope?' \u26A0\uFE0F \u2192 Sec.3':'');
     return `<button type="button" onclick="toggleExamUnit('${l.id}')" style="padding:6px 10px;border-radius:14px;border:1px solid ${on?'var(--brand)':'var(--border-4)'};background:${on?'var(--brand)':(l.outOfScope?'#fff7ed':'#fff')};color:${on?'#fff':(l.outOfScope?'#b45309':'#555')};font-size:11px;font-weight:${on?'600':'500'};cursor:pointer;font-family:inherit;white-space:nowrap">U${idx+1}: ${esc(l.title.length>28?l.title.slice(0,26)+'\u2026':l.title)}${badge}</button>`;
   }).join('');
@@ -8635,7 +8628,7 @@ function mockClearTimers(){
 
 // ── Question selection ─────────────────────────────────────────
 // Batch 10: single source of truth for scope exclusion. Two levels:
-//  - lesson-level: the whole unit is out of Part 1 scope (e.g. 4-7 CVP is
+//  - lesson-level: the whole unit is out of Part 1 scope (e.g. 4-14 Variances is
 //    Part 2; 4-14 variances belong to Section C / app section 3)
 //  - question-level: a handful of questions inside an otherwise in-scope
 //    lesson are themselves out of scope (e.g. the 3 Theory-of-Constraints
