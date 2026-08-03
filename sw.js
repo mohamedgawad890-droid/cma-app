@@ -86,7 +86,17 @@
 // group selection or Firestore data required. app.js is a precached shell
 // file, so CACHE_NAME bumps v28->v29 to refresh the precache and trigger
 // the clean SKIP_WAITING auto-reload on deploy.
-const CACHE_NAME = 'cma-prep-v29';
+// v30 (CVP removal — Unit 7 matches Hock exactly): lesson-s4.json 4-7 content
+// (45 blocks) replaced with a short "Take a Break" note, matching Hock's own
+// Study Unit 7 (deleted, no Part 1 content, Sept/Oct 2024+). questions/s4.json
+// 4-7 key removed (20 CVP MCQs deleted — was already outOfScope, never graded).
+// app.js: lesson-4-7 metadata retitled "Take a Break ☕", 7 CVP formulas removed
+// from the Formula Bank's Cost Management category. cbq-data.js: CBQ D1 (full
+// CVP case, "NovaStar Electronics") deleted — it was unprotected by
+// mockSelectCBQ() and could have surfaced in a mock exam; D2-D5 renumbered
+// num 1-4 (ids kept unchanged so any locally-saved CBQ progress survives).
+// All four files are precached, so CACHE_NAME bumps v29->v30.
+const CACHE_NAME = 'cma-prep-v30';
 const OFFLINE_URLS = [
   './',
   './index.html',
