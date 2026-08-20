@@ -96,7 +96,52 @@
 // mockSelectCBQ() and could have surfaced in a mock exam; D2-D5 renumbered
 // num 1-4 (ids kept unchanged so any locally-saved CBQ progress survives).
 // All four files are precached, so CACHE_NAME bumps v29->v30.
-const CACHE_NAME = 'cma-prep-v30';
+// v31 (Sessions A-E — outOfScope gap closure, unit 4-7 removal, IMA subtopic
+// tagging, Section 4 topic accordion, full Hock-brand removal, scrape-artifact
+// cleanup, and 9 broken data-table questions repaired):
+//
+// Session A: app.js — ensureQotd() was the one remaining pool-building site
+// missing the isOutOfScopeQ() guard (Batch 10 had covered every other site);
+// now closed. Unit 4-7 ("Take a Break" placeholder, empty since the v30 CVP
+// removal) deleted outright from app.js, lesson-s4.json, and manifest.json —
+// slot left open, 4-8..4-21 IDs unchanged, no impact to saved student progress.
+//
+// Session B: app.js — every lesson (112 total) tagged with its official IMA
+// CSO subtopic reference (imaRef: "D.1" etc.) for future coverage auditing;
+// stored in app.js metadata alongside the existing outOfScope flag, not in
+// the lesson-sN.json content files, to avoid restructuring content blocks.
+// lesson-s4.json — all 20 units' topic headers renumbered sequentially
+// (1, 2, 3...) excluding the intro header. app.js + app.css — new collapsible
+// topic accordion for Section 4 lessons only (renderLessonBody(), default
+// collapsed + "Expand all"); every other section's lesson renderer is
+// unchanged.
+//
+// Session C: app.js — 2 user-facing "Hock"/"Gleim or Hock" mentions reworded.
+// questions/s1-s6.json — 193 "source" fields renamed HOCK*->LEGACY*;
+// s3/s4 — leaked "Thank you in advance...HOCK study materials better"
+// boilerplate stripped from explanations.
+//
+// Session D: questions/s1-s4.json — full removal of leftover web-scrape
+// artifacts from wrongWhy/explanation text (mangled URLs, page-footer
+// timestamps, "Test Bank — HOCK international" breadcrumbs, boilerplate
+// variants) — ~140+ instances across all four files. 7 instances of
+// legitimately-authored explanation text in s4.json that cited "Hock" as a
+// teaching authority were reworded rather than deleted.
+//
+// Session E: questions/s2-s4.json — 9 questions where the data-table
+// extraction had been genuinely broken (not just messy) — the `data` field
+// was missing rows of information that existed only in garbled stem text,
+// in some cases showing a completely different set of line items than the
+// question needed. Each was manually reconstructed and cross-verified
+// against that question's own explanation arithmetic before being committed
+// (Lions Club profit matrix, 5-job labor variance table, Resto A/B/C table,
+// and the 6-question Rochester Manufacturing / ICMA 18.P1.066 cluster).
+//
+// All of app.js, app.css, lesson-s4.json, manifest.json, and
+// questions/s1-s6.json changed or were re-validated; CACHE_NAME bumps
+// v30->v31 to invalidate stale copies and trigger the clean SKIP_WAITING
+// auto-reload on deploy.
+const CACHE_NAME = 'cma-prep-v31';
 const OFFLINE_URLS = [
   './',
   './index.html',
