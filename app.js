@@ -2893,7 +2893,7 @@ function renderOnboarding(){
         <div style="font-size:17px;font-weight:500;color:var(--ink);margin-bottom:12px">✨ What's inside?</div>
         <div style="display:flex;flex-direction:column;gap:10px">
           ${[
-            ['📚','Study','6 sections · 113 lessons covering all CMA Part 1 topics with detailed content based on the HOCK textbook'],
+            ['📚','Study','6 sections · 112 lessons covering all CMA Part 1 topics with detailed, structured content'],
             ['❓','Quizzes','2,295 MCQs — exam-style questions with full explanations after each answer'],
             ['📊','Progress','Track your completed lessons and quiz scores across all sections'],
             ['📌','Tracker','Mark lessons as Good or Bad to know what to review'],
@@ -3305,7 +3305,7 @@ function renderIntro(){
         <div class="card" style="margin-bottom:0">
           ${[
             ["Register with IMA","Go to imanet.org, create an account, pay IMA membership fee, and register for the CMA program. This unlocks your 3-year exam window. Watch the step-by-step video guide: <a href=\'https://www.youtube.com/watch?v=oIjCp1jx3jY\' target=\'_blank\' style=\'color:var(--brand-2);font-weight:500\'>YouTube Guide →</a>"],
-            ["Choose your study materials","I recommend Gleim or Hock. Get the full package including MCQ bank. Do NOT study without a structured MCQ bank."],
+            ["Choose your study materials","Get a structured review course with a full MCQ bank. Do NOT study without a structured MCQ bank."],
             ["Follow the 7-month plan","Study 10 hours/week. Break it into daily 1.5 hour sessions. Consistency beats intensity every time — small daily progress compounds into exam success."],
             ["MCQs are your best friend","Do at least 20 MCQs per study session. Review every wrong answer. Understand WHY wrong answers are wrong."],
             ["Use this app daily","Read lessons here, take quizzes, track your progress, and use the Formula Bank for quick reference. Consistency beats intensity — study a little every day."],
