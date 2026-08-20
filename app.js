@@ -80,133 +80,133 @@ const NOTIFICATION_VARIANTS=[
 const S=[
   {id:1,title:"External Financial Reporting",weight:15,emoji:"📋",bar:"var(--brand-2)",bg:"var(--brand-tint)",text:"#1A5A9E",strong:"var(--brand)",
     lessons:[
-      {id:"1-1",title:"IFRS vs US GAAP — Key Differences",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"1-2",title:"Users of Financial Information",dur:"20 min",blocks:[],quizzes:[]},
-      {id:"1-3",title:"The Four Financial Statements & Their Interrelation",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"1-4",title:"Elements of Financial Statements",dur:"20 min",blocks:[],quizzes:[]},
-      {id:"1-5",title:"Recognition, Measurement & Valuation of FS Items",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"1-6",title:"The Balance Sheet — Structure & Components",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"1-7",title:"Comprehensive Income & the Income Statement",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"1-8",title:"Statement of Comprehensive Income",dur:"20 min",blocks:[],quizzes:[]},
-      {id:"1-9",title:"Statement of Owners' Equity & Notes to FS",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"1-10",title:"Statement of Cash Flows — Introduction",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"1-11",title:"Operating Activities — the Indirect Method",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"1-12",title:"Investing & Financing Activities, SCF Disclosures",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"1-13",title:"Integrated Reporting",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"1-14",title:"Accounts Receivable",dur:"35 min",blocks:[],quizzes:[]},
-      {id:"1-15",title:"Inventory & Inventory Tracking Methods",dur:"35 min",blocks:[],quizzes:[]},
-      {id:"1-16",title:"Inventory Count, Errors & Valuation",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"1-17",title:"Investments Overview & Debt Securities",dur:"35 min",blocks:[],quizzes:[]},
-      {id:"1-18",title:"Equity Investments",dur:"35 min",blocks:[],quizzes:[]},
-      {id:"1-19",title:"Business Combinations & Consolidations",dur:"35 min",blocks:[],quizzes:[]},
-      {id:"1-20",title:"Recording Fixed Assets",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"1-21",title:"Depreciation of Fixed Assets & Impairment",dur:"35 min",blocks:[],quizzes:[]},
-      {id:"1-22",title:"Intangible Assets",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"1-23",title:"Reclassification of Short-Term Liabilities",dur:"20 min",blocks:[],quizzes:[]},
-      {id:"1-24",title:"Warranties",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"1-25",title:"Accounting for Income Taxes",dur:"40 min",blocks:[],quizzes:[]},
-      {id:"1-26",title:"Leases",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"1-27",title:"Owners' Equity & Retained Earnings",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"1-28",title:"Common Stock",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"1-29",title:"Preferred Stock",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"1-30",title:"Treasury Stock & Classification of Shares",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"1-31",title:"Revenue Recognition (ASC 606)",dur:"35 min",blocks:[],quizzes:[]},
-      {id:"1-32",title:"Bonds Payable & Long-Term Debt",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"1-33",title:"Earnings Per Share (EPS)",dur:"25 min",blocks:[],quizzes:[]}
+      {id:"1-1",imaRef:"A.1",title:"IFRS vs US GAAP — Key Differences",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"1-2",imaRef:"A.1",title:"Users of Financial Information",dur:"20 min",blocks:[],quizzes:[]},
+      {id:"1-3",imaRef:"A.1",title:"The Four Financial Statements & Their Interrelation",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"1-4",imaRef:"A.1",title:"Elements of Financial Statements",dur:"20 min",blocks:[],quizzes:[]},
+      {id:"1-5",imaRef:"A.1",title:"Recognition, Measurement & Valuation of FS Items",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"1-6",imaRef:"A.1",title:"The Balance Sheet — Structure & Components",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"1-7",imaRef:"A.1",title:"Comprehensive Income & the Income Statement",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"1-8",imaRef:"A.1",title:"Statement of Comprehensive Income",dur:"20 min",blocks:[],quizzes:[]},
+      {id:"1-9",imaRef:"A.1",title:"Statement of Owners' Equity & Notes to FS",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"1-10",imaRef:"A.1",title:"Statement of Cash Flows — Introduction",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"1-11",imaRef:"A.1",title:"Operating Activities — the Indirect Method",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"1-12",imaRef:"A.1",title:"Investing & Financing Activities, SCF Disclosures",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"1-13",imaRef:"A.1",title:"Integrated Reporting",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"1-14",imaRef:"A.2",title:"Accounts Receivable",dur:"35 min",blocks:[],quizzes:[]},
+      {id:"1-15",imaRef:"A.2",title:"Inventory & Inventory Tracking Methods",dur:"35 min",blocks:[],quizzes:[]},
+      {id:"1-16",imaRef:"A.2",title:"Inventory Count, Errors & Valuation",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"1-17",imaRef:"A.2",title:"Investments Overview & Debt Securities",dur:"35 min",blocks:[],quizzes:[]},
+      {id:"1-18",imaRef:"A.2",title:"Equity Investments",dur:"35 min",blocks:[],quizzes:[]},
+      {id:"1-19",imaRef:"A.2",title:"Business Combinations & Consolidations",dur:"35 min",blocks:[],quizzes:[]},
+      {id:"1-20",imaRef:"A.2",title:"Recording Fixed Assets",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"1-21",imaRef:"A.2",title:"Depreciation of Fixed Assets & Impairment",dur:"35 min",blocks:[],quizzes:[]},
+      {id:"1-22",imaRef:"A.2",title:"Intangible Assets",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"1-23",imaRef:"A.2",title:"Reclassification of Short-Term Liabilities",dur:"20 min",blocks:[],quizzes:[]},
+      {id:"1-24",imaRef:"A.2",title:"Warranties",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"1-25",imaRef:"A.2",title:"Accounting for Income Taxes",dur:"40 min",blocks:[],quizzes:[]},
+      {id:"1-26",imaRef:"A.2",title:"Leases",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"1-27",imaRef:"A.2",title:"Owners' Equity & Retained Earnings",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"1-28",imaRef:"A.2",title:"Common Stock",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"1-29",imaRef:"A.2",title:"Preferred Stock",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"1-30",imaRef:"A.2",title:"Treasury Stock & Classification of Shares",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"1-31",imaRef:"A.2",title:"Revenue Recognition (ASC 606)",dur:"35 min",blocks:[],quizzes:[]},
+      {id:"1-32",imaRef:"A.2",title:"Bonds Payable & Long-Term Debt",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"1-33",imaRef:"A.2",title:"Earnings Per Share (EPS)",dur:"25 min",blocks:[],quizzes:[]}
     ]},
   {id:2,title:"Planning, Budgeting & Forecasting",weight:20,emoji:"📊",bar:"var(--ok)",bg:"var(--ok-tint)",text:"#4A7A1A",strong:"var(--ok-strong)",
     lessons:[
-      {id:"2-1",title:"Strategic Planning: Overview, Mission & Goals",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"2-2",title:"Analyzing External & Internal Environments",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"2-3",title:"Formulating & Implementing Strategies",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"2-4",title:"Other Planning Tools",dur:"20 min",blocks:[],quizzes:[]},
-      {id:"2-5",title:"Budgeting Concepts",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"2-6",title:"Establishing Standards",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"2-7",title:"Forecasting Techniques & Regression Analysis",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"2-8",title:"Learning Curves",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"2-9",title:"Probability",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"2-10",title:"Budget Methodologies",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"2-11",title:"Annual Profit Plan & Supporting Schedules",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"2-12",title:"Preparing the Budget",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"2-13",title:"Ongoing Budgetary Reporting",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"2-14",title:"Answering Budgeting Calculation Questions",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"2-15",title:"Top-Level Planning and Analysis",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"2-16",title:"Capital Budgeting Techniques",dur:"35 min",blocks:[],quizzes:[]}
+      {id:"2-1",imaRef:"B.1",title:"Strategic Planning: Overview, Mission & Goals",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"2-2",imaRef:"B.1",title:"Analyzing External & Internal Environments",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"2-3",imaRef:"B.1",title:"Formulating & Implementing Strategies",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"2-4",imaRef:"B.1",title:"Other Planning Tools",dur:"20 min",blocks:[],quizzes:[]},
+      {id:"2-5",imaRef:"B.2",title:"Budgeting Concepts",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"2-6",imaRef:"B.2",title:"Establishing Standards",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"2-7",imaRef:"B.3",title:"Forecasting Techniques & Regression Analysis",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"2-8",imaRef:"B.3",title:"Learning Curves",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"2-9",imaRef:"B.3",title:"Probability",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"2-10",imaRef:"B.4",title:"Budget Methodologies",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"2-11",imaRef:"B.4",title:"Annual Profit Plan & Supporting Schedules",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"2-12",imaRef:"B.4",title:"Preparing the Budget",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"2-13",imaRef:"B.5",title:"Ongoing Budgetary Reporting",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"2-14",imaRef:"B.5",title:"Answering Budgeting Calculation Questions",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"2-15",imaRef:"B.6",title:"Top-Level Planning and Analysis",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"2-16",imaRef:"B.6",title:"Capital Budgeting Techniques",dur:"35 min",blocks:[],quizzes:[]}
     ]},
   {id:3,title:"Performance Management",weight:20,emoji:"🎯",bar:"var(--accent-purple)",bg:"#F3E8FF",text:"#6A2E8F",strong:"#4A1F70",
     lessons:[
-      {id:"3-1",title:"Introduction to Cost and Variance Measures",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"3-2",title:"Direct Material Variances",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"3-3",title:"Direct Labor Variances",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"3-4",title:"Multiple Input or Multiple Class Variances",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"3-5",title:"Overhead Variances",dur:"35 min",blocks:[],quizzes:[]},
-      {id:"3-6",title:"Sales Variances",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"3-7",title:"Market Variances",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"3-8",title:"Responsibility Centers",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"3-9",title:"Contribution Income Statement for Evaluation",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"3-10",title:"Transfer Pricing",dur:"35 min",blocks:[],quizzes:[]},
-      {id:"3-11",title:"Performance Measures, ROI, and RI",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"3-12",title:"Multiple Performance Measures",dur:"35 min",blocks:[],quizzes:[]},
-      {id:"3-13",title:"Financial Statement Analysis",dur:"35 min",blocks:[],quizzes:[]}
+      {id:"3-1",imaRef:"C.1",title:"Introduction to Cost and Variance Measures",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"3-2",imaRef:"C.1",title:"Direct Material Variances",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"3-3",imaRef:"C.1",title:"Direct Labor Variances",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"3-4",imaRef:"C.1",title:"Multiple Input or Multiple Class Variances",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"3-5",imaRef:"C.1",title:"Overhead Variances",dur:"35 min",blocks:[],quizzes:[]},
+      {id:"3-6",imaRef:"C.1",title:"Sales Variances",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"3-7",imaRef:"C.1",title:"Market Variances",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"3-8",imaRef:"C.2",title:"Responsibility Centers",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"3-9",imaRef:"C.2",title:"Contribution Income Statement for Evaluation",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"3-10",imaRef:"C.2",title:"Transfer Pricing",dur:"35 min",blocks:[],quizzes:[]},
+      {id:"3-11",imaRef:"C.3",title:"Performance Measures, ROI, and RI",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"3-12",imaRef:"C.3",title:"Multiple Performance Measures",dur:"35 min",blocks:[],quizzes:[]},
+      {id:"3-13",imaRef:"C.3",title:"Financial Statement Analysis",dur:"35 min",blocks:[],quizzes:[]}
     ]},
   {id:4,title:"Cost Management",weight:15,emoji:"💰",bar:"var(--warn)",bg:"var(--warn-tint)",text:"#BA7517",strong:"var(--warn-strong)",
     lessons:[
-      {id:"4-1",title:"Measurement Concepts & Classification of Costs",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"4-2",title:"Costing Methods: Standard, Normal & Actual Costing",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"4-3",title:"Cost of Goods Sold and Manufactured (COGM)",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"4-4",title:"Joint Product Costing",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"4-5",title:"Byproduct Costing",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"4-6",title:"Costing Systems: Process Costing",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"4-8",title:"Job-Order and Life-Cycle Costing",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"4-9",title:"Overhead Costs and Allocation",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"4-10",title:"Accounting for Overhead",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"4-11",title:"Activity-Based Costing (ABC)",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"4-12",title:"Variable and Absorption Costing",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"4-13",title:"Shared Service Cost Allocation",dur:"35 min",blocks:[],quizzes:[]},
-      {id:"4-14",title:"Standard Cost Variances: DM, DL & Overhead",dur:"35 min",blocks:[],quizzes:[],outOfScope:"section3"},
-      {id:"4-15",title:"Estimating Fixed and Variable Costs",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"4-16",title:"Supply Chain & Lean Resource Management",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"4-17",title:"Just-In-Time Systems and MRP, MRPII, ERP",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"4-18",title:"Capacity Level and Management Decisions",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"4-19",title:"Business Process Improvement & the Value Chain",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"4-20",title:"Process Analysis",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"4-21",title:"Quality Management and Costs of Quality",dur:"25 min",blocks:[],quizzes:[]}
+      {id:"4-1",imaRef:"D.1",title:"Measurement Concepts & Classification of Costs",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"4-2",imaRef:"D.1",title:"Costing Methods: Standard, Normal & Actual Costing",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"4-3",imaRef:"D.2",title:"Cost of Goods Sold and Manufactured (COGM)",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"4-4",imaRef:"D.2",title:"Joint Product Costing",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"4-5",imaRef:"D.2",title:"Byproduct Costing",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"4-6",imaRef:"D.2",title:"Costing Systems: Process Costing",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"4-8",imaRef:"D.2",title:"Job-Order and Life-Cycle Costing",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"4-9",imaRef:"D.3",title:"Overhead Costs and Allocation",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"4-10",imaRef:"D.3",title:"Accounting for Overhead",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"4-11",imaRef:"D.3",title:"Activity-Based Costing (ABC)",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"4-12",imaRef:"D.2",title:"Variable and Absorption Costing",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"4-13",imaRef:"D.3",title:"Shared Service Cost Allocation",dur:"35 min",blocks:[],quizzes:[]},
+      {id:"4-14",imaRef:"D.3",title:"Standard Cost Variances: DM, DL & Overhead",dur:"35 min",blocks:[],quizzes:[],outOfScope:"section3"},
+      {id:"4-15",imaRef:"D.4",title:"Estimating Fixed and Variable Costs",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"4-16",imaRef:"D.4",title:"Supply Chain & Lean Resource Management",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"4-17",imaRef:"D.4",title:"Just-In-Time Systems and MRP, MRPII, ERP",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"4-18",imaRef:"D.4",title:"Capacity Level and Management Decisions",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"4-19",imaRef:"D.5",title:"Business Process Improvement & the Value Chain",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"4-20",imaRef:"D.5",title:"Process Analysis",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"4-21",imaRef:"D.5",title:"Quality Management and Costs of Quality",dur:"25 min",blocks:[],quizzes:[]}
     ]},
   {id:5,title:"Internal Controls",weight:15,emoji:"🔒",bar:"var(--err)",bg:"var(--err-tint)",text:"var(--err-2)",strong:"var(--err-strong)",
     lessons:[
-      {id:"5-1",title:"COSO Framework & Internal Control Fundamentals",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"5-2",title:"Risk Assessment & Enterprise Risk Management",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"5-3",title:"Control Activities & Preventive Controls",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"5-4",title:"Information Systems Controls & IT Governance",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"5-5",title:"Sarbanes-Oxley (SOX) & Regulatory Compliance",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"5-6",title:"Internal Audit Function",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"5-7",title:"Fraud Prevention & Detection",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"5-8",title:"Corporate Governance",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"5-9",title:"Compliance & Ethics Programs",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"5-10",title:"Monitoring, Auditing & Evaluating Controls",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"5-11",title:"Business Continuity Planning & Disaster Recovery",dur:"25 min",blocks:[],quizzes:[]}
+      {id:"5-1",imaRef:"E.1",title:"COSO Framework & Internal Control Fundamentals",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"5-2",imaRef:"E.1",title:"Risk Assessment & Enterprise Risk Management",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"5-3",imaRef:"E.1",title:"Control Activities & Preventive Controls",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"5-4",imaRef:"E.3",title:"Information Systems Controls & IT Governance",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"5-5",imaRef:"E.1",title:"Sarbanes-Oxley (SOX) & Regulatory Compliance",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"5-6",imaRef:"E.2",title:"Internal Audit Function",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"5-7",imaRef:"E.2",title:"Fraud Prevention & Detection",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"5-8",imaRef:"E.1",title:"Corporate Governance",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"5-9",imaRef:"E.1",title:"Compliance & Ethics Programs",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"5-10",imaRef:"E.1",title:"Monitoring, Auditing & Evaluating Controls",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"5-11",imaRef:"E.3",title:"Business Continuity Planning & Disaster Recovery",dur:"25 min",blocks:[],quizzes:[]}
     ]},
   {id:6,title:"Technology & Analytics",weight:15,emoji:"💻",bar:"#0A8A8A",bg:"#E0F7F7",text:"#0A6E6E",strong:"#075252",
     lessons:[
-      {id:"6-0",title:"AIS Transaction Cycles",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"6-1",title:"Data Analytics & Business Intelligence Fundamentals",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"6-2",title:"Data Governance & Data Quality",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"6-3",title:"Enterprise Resource Planning (ERP) Systems",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"6-4",title:"Business Intelligence & Reporting Tools",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"6-5",title:"Data Analytics Tools & Techniques",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"6-6",title:"Cybersecurity Fundamentals",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"6-7",title:"Cloud Computing",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"6-8",title:"Blockchain & Distributed Ledger Technology",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"6-9",title:"Artificial Intelligence & Machine Learning in Finance",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"6-10",title:"Robotic Process Automation (RPA)",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"6-11",title:"IT Infrastructure & Disaster Recovery",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"6-12",title:"System Development Life Cycle (SDLC)",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"6-13",title:"Digital Finance Transformation",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"6-14",title:"Cybersecurity Risk Management",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"6-15",title:"Data Privacy & Regulatory Compliance",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"6-16",title:"Emerging Technologies in Finance",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"6-17",title:"IT Audit & Assurance",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"6-18",title:"Technology Strategy & IT Governance",dur:"25 min",blocks:[],quizzes:[]}
+      {id:"6-0",imaRef:"F.1",title:"AIS Transaction Cycles",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"6-1",imaRef:"F.1",title:"Data Analytics & Business Intelligence Fundamentals",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"6-2",imaRef:"F.2",title:"Data Governance & Data Quality",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"6-3",imaRef:"F.1",title:"Enterprise Resource Planning (ERP) Systems",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"6-4",imaRef:"F.3",title:"Business Intelligence & Reporting Tools",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"6-5",imaRef:"F.3",title:"Data Analytics Tools & Techniques",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"6-6",imaRef:"F.4",title:"Cybersecurity Fundamentals",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"6-7",imaRef:"F.4",title:"Cloud Computing",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"6-8",imaRef:"F.4",title:"Blockchain & Distributed Ledger Technology",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"6-9",imaRef:"F.3",title:"Artificial Intelligence & Machine Learning in Finance",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"6-10",imaRef:"F.4",title:"Robotic Process Automation (RPA)",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"6-11",imaRef:"F.1",title:"IT Infrastructure & Disaster Recovery",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"6-12",imaRef:"F.1",title:"System Development Life Cycle (SDLC)",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"6-13",imaRef:"F.4",title:"Digital Finance Transformation",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"6-14",imaRef:"F.4",title:"Cybersecurity Risk Management",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"6-15",imaRef:"F.2",title:"Data Privacy & Regulatory Compliance",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"6-16",imaRef:"F.4",title:"Emerging Technologies in Finance",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"6-17",imaRef:"F.4",title:"IT Audit & Assurance",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"6-18",imaRef:"F.4",title:"Technology Strategy & IT Governance",dur:"25 min",blocks:[],quizzes:[]}
     ]}
 ];
 const TOTAL_LESSONS=S.reduce((acc,s)=>acc+s.lessons.length,0);
@@ -1518,6 +1518,60 @@ function normalizeCase(t){const K=new Set(['GAAP','IFRS','LIFO','FIFO','WACC','R
 function getStudyStreak(){return loadStreak().count||0;}
 
 // ─── RENDER LESSON BLOCK ──────────────────────────────────────────────────────
+// ─── LESSON ACCORDION (Session B item 5 — Section 4 pilot) ────────────────
+// Groups a lesson's content blocks by 'h' (topic-header) boundary and
+// renders each topic as a collapsible section. The FIRST header in a lesson
+// is treated as the lesson's own title echo (not a listed topic) and stays
+// non-collapsible, matching the numbering rule from item 4 (topic numbers
+// start after the intro header). Falls back to the flat renderBlock map for
+// any section other than 4, or for a lesson with 0-1 headers (nothing to
+// collapse) — zero behavior change outside the pilot.
+function renderLessonBody(lesson,sec){
+  const blocks=lesson.blocks||[];
+  if(sec.id!==4) return blocks.map(b=>renderBlock(b,sec)).join('');
+  const hIdx=[];
+  blocks.forEach((b,i)=>{if(b&&b.t==='h')hIdx.push(i);});
+  if(hIdx.length<=1) return blocks.map(b=>renderBlock(b,sec)).join('');
+  const introHTML=blocks.slice(0,hIdx[1]).map(b=>renderBlock(b,sec)).join('');
+  let topicsHTML='';
+  for(let t=1;t<hIdx.length;t++){
+    const start=hIdx[t];
+    const end=(t+1<hIdx.length)?hIdx[t+1]:blocks.length;
+    const headerBlock=blocks[start];
+    const bodyHTML=blocks.slice(start+1,end).map(b=>renderBlock(b,sec)).join('');
+    const topicId=lesson.id+'-t'+t;
+    topicsHTML+=`<div class="lesson-topic" id="topic-wrap-${topicId}">
+      <button type="button" class="lesson-topic-toggle" onclick="toggleLessonTopic('${topicId}')" id="topic-btn-${topicId}">
+        <span class="lesson-topic-title">${esc(headerBlock.v)}</span>
+        <span class="lesson-topic-chevron" id="topic-chevron-${topicId}">›</span>
+      </button>
+      <div class="lesson-topic-body" id="topic-body-${topicId}" style="display:none">${bodyHTML}</div>
+    </div>`;
+  }
+  const expandAllBtn=`<div style="display:flex;justify-content:flex-end;margin-bottom:8px">
+    <button type="button" class="lesson-expand-all" onclick="toggleAllLessonTopics('${lesson.id}')" id="expand-all-${lesson.id}">Expand all</button>
+  </div>`;
+  return introHTML+expandAllBtn+`<div id="topics-container-${lesson.id}">`+topicsHTML+`</div>`;
+}
+function toggleLessonTopic(topicId){
+  const body=document.getElementById('topic-body-'+topicId);
+  const chevron=document.getElementById('topic-chevron-'+topicId);
+  if(!body)return;
+  const isOpen=body.style.display!=='none';
+  body.style.display=isOpen?'none':'block';
+  if(chevron)chevron.style.transform=isOpen?'rotate(0deg)':'rotate(90deg)';
+}
+function toggleAllLessonTopics(lessonId){
+  const container=document.getElementById('topics-container-'+lessonId);
+  const btn=document.getElementById('expand-all-'+lessonId);
+  if(!container)return;
+  const bodies=container.querySelectorAll('.lesson-topic-body');
+  const chevrons=container.querySelectorAll('.lesson-topic-chevron');
+  const anyClosed=Array.from(bodies).some(b=>b.style.display==='none');
+  bodies.forEach(b=>{b.style.display=anyClosed?'block':'none';});
+  chevrons.forEach(c=>{c.style.transform=anyClosed?'rotate(90deg)':'rotate(0deg)';});
+  if(btn)btn.textContent=anyClosed?'Collapse all':'Expand all';
+}
 function renderBlock(block,sec){
   const bg=sec.bg,tx=sec.text,st=sec.strong;
   switch(block.t){
@@ -1669,7 +1723,7 @@ function renderStudy(){
     return`<div class="bh"><button class="bh-back" onclick="studyGo(STATE.sectId,null)">‹</button>
       <div style="min-width:0"><div style="font-size:11px;font-weight:500;color:${sec.text}">${sec.emoji} ${esc(sec.title)}</div>
       <div class="ellipsis" style="font-size:15px;font-weight:500;margin-top:1px">${lessonIdx+1}. ${esc(lesson.title)}</div></div></div>
-    <div class="scroll-area pad"><div class="card" style="margin-top:14px;padding:4px 16px 16px">${lesson.blocks.map(b=>renderBlock(b,sec)).join('')}${videoPlaceholder}</div>
+    <div class="scroll-area pad"><div class="card" style="margin-top:14px;padding:4px 16px 16px">${renderLessonBody(lesson,sec)}${videoPlaceholder}</div>
     <button class="btn" data-markdone="${lesson.id}" onclick="markDone('${lesson.id}')" style="margin-top:14px;background:${done?'var(--ok-tint)':sec.bar};color:${done?'var(--ok-strong)':'#fff'}">${done?'✓ Completed — Back':'Mark as Complete ✓'}</button>
     ${(()=>{const nx=getNextLesson(sec.id,lesson.id);if(!nx)return'';return`<button class="btn btn-outline" onclick="studyGo(${nx.sec.id},'${nx.lesson.id}')" style="margin-top:8px;border-color:var(--brand-2)20;color:var(--brand-2)">Next: ${esc(nx.lesson.title)} →</button>`;})()}
     <div style="margin-top:12px">
@@ -3404,7 +3458,7 @@ function renderLessons(){
     const hasVideo2=lesson.blocks&&lesson.blocks.some(b=>b.t==='video');
     const videoPlaceholder2=hasVideo2?'':`<div style="margin:14px 0 4px;background:var(--surface-3);border:.5px dashed #c0c0b8;border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px"><div style="width:36px;height:36px;background:var(--brand-tint);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px">🎬</div><div><div style="font-size:13px;font-weight:500;color:#555">Video lesson coming soon</div><div style="font-size:11px;color:#999;margin-top:2px">Gawad will record this lesson shortly</div></div></div>`;
     return`<div class="bh"><button class="bh-back" onclick="STATE.lessonId=null;render()">‹</button><div style="min-width:0"><div style="font-size:11px;font-weight:500;color:${sec.text}">${sec.emoji} ${esc(sec.title)}</div><div class="ellipsis" style="font-size:15px;font-weight:500;margin-top:1px">${lessonIdx+1}. ${esc(lesson.title)}</div></div></div>
-    <div class="scroll-area pad"><div class="card" style="margin-top:14px;padding:4px 16px 16px">${lesson.blocks.map(b=>renderBlock(b,sec)).join('')}${videoPlaceholder2}</div>
+    <div class="scroll-area pad"><div class="card" style="margin-top:14px;padding:4px 16px 16px">${renderLessonBody(lesson,sec)}${videoPlaceholder2}</div>
     <button class="btn" onclick="markDone('${lesson.id}')" style="margin-top:14px;background:${done?'var(--ok-tint)':sec.bar};color:${done?'var(--ok-strong)':'#fff'}">${done?'✓ Completed — Back to lessons':'Mark as Complete ✓'}</button><div style="height:20px"></div></div>`;
   }
   if(sectId!==null){
