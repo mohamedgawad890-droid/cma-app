@@ -157,7 +157,6 @@ const S=[
       {id:"4-4",title:"Joint Product Costing",dur:"30 min",blocks:[],quizzes:[]},
       {id:"4-5",title:"Byproduct Costing",dur:"25 min",blocks:[],quizzes:[]},
       {id:"4-6",title:"Costing Systems: Process Costing",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"4-7",title:"Take a Break ☕",dur:"2 min",blocks:[],quizzes:[]},
       {id:"4-8",title:"Job-Order and Life-Cycle Costing",dur:"30 min",blocks:[],quizzes:[]},
       {id:"4-9",title:"Overhead Costs and Allocation",dur:"30 min",blocks:[],quizzes:[]},
       {id:"4-10",title:"Accounting for Overhead",dur:"25 min",blocks:[],quizzes:[]},
@@ -5457,7 +5456,7 @@ function loadQotdState(){try{const d=localStorage.getItem('cma-qotd-v1');return 
 function saveQotdState(v){try{localStorage.setItem('cma-qotd-v1',JSON.stringify(v));}catch{}}
 async function ensureQotd(){const st=loadStudent();if(!st||!st.groupCode||!STATE.user)return;const dateKey=_todayKey();const stored=loadQotdState();const key=st.groupCode+'|'+dateKey;const already=stored[key];if(STATE.qotdState.dateKey===dateKey&&STATE.qotdState.question)return;
   try{const snap=await db.collection('teaching-log').where('groupCode','==',st.groupCode.toUpperCase()).get();const entries=snap.docs.map(d=>d.data());const taughtSet=new Set();entries.forEach(e=>(e.unitIds||[]).forEach(u=>taughtSet.add(u)));if(!taughtSet.size){STATE.qotdState={dateKey,question:null,taughtUnitCount:0,answered:false,selected:null};return;}
-    const secIds=[...new Set([...taughtSet].map(u=>parseInt(u.split('-')[0])).filter(n=>n>0))];await Promise.all(secIds.map(i=>ensureQuizzes(i)));const pool=[];S.forEach(sec=>{sec.lessons.forEach(l=>{if(taughtSet.has(l.id)&&l.quizzes&&l.quizzes.length)l.quizzes.forEach(q=>pool.push({...q,secId:sec.id,secTitle:sec.title,secBar:sec.bar,lessonTitle:l.title}));});});if(!pool.length){STATE.qotdState={dateKey,question:null,taughtUnitCount:taughtSet.size,answered:false,selected:null};return;}
+    const secIds=[...new Set([...taughtSet].map(u=>parseInt(u.split('-')[0])).filter(n=>n>0))];await Promise.all(secIds.map(i=>ensureQuizzes(i)));const pool=[];S.forEach(sec=>{sec.lessons.forEach(l=>{if(l.outOfScope)return;if(taughtSet.has(l.id)&&l.quizzes&&l.quizzes.length)l.quizzes.forEach(q=>{if(isOutOfScopeQ(l,q))return;pool.push({...q,secId:sec.id,secTitle:sec.title,secBar:sec.bar,lessonTitle:l.title});});});});if(!pool.length){STATE.qotdState={dateKey,question:null,taughtUnitCount:taughtSet.size,answered:false,selected:null};return;}
     const seed=_hashCode(st.groupCode+'|'+dateKey);const q=shuffleQuestionOptions(pool[seed%pool.length]);STATE.qotdState={dateKey,question:q,taughtUnitCount:taughtSet.size,answered:!!(already&&already.answered),selected:already?already.selected:null};if(STATE.tab==='intro')render();
   }catch(e){console.warn('QoD load failed:',e);}
 }
@@ -6263,7 +6262,8 @@ function renderExamUnitPicker(d){
   const chips=sec.lessons.map((l,idx)=>{
     const on=selected.has(String(l.id));
     // Batch 10: flag out-of-scope units so instructors see why a unit
-    // (e.g. 4-14 Variances) is excluded from auto-built exam pools. 4-7 CVP content was removed entirely (Hock SU7 has no Part 1 content).
+    // (e.g. 4-14 Variances) is excluded from auto-built exam pools.
+    // (Session A: unit 4-7, formerly an empty "Take a Break" CVP-removal placeholder, was deleted outright — slot left open, 4-8..4-21 IDs unchanged.)
     const badge=l.outOfScope==='part2'?' \u26A0\uFE0F Part 2':(l.outOfScope?' \u26A0\uFE0F \u2192 Sec.3':'');
     return `<button type="button" onclick="toggleExamUnit('${l.id}')" style="padding:6px 10px;border-radius:14px;border:1px solid ${on?'var(--brand)':'var(--border-4)'};background:${on?'var(--brand)':(l.outOfScope?'#fff7ed':'#fff')};color:${on?'#fff':(l.outOfScope?'#b45309':'#555')};font-size:11px;font-weight:${on?'600':'500'};cursor:pointer;font-family:inherit;white-space:nowrap">U${idx+1}: ${esc(l.title.length>28?l.title.slice(0,26)+'\u2026':l.title)}${badge}</button>`;
   }).join('');
