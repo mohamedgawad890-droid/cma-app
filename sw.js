@@ -141,7 +141,40 @@
 // questions/s1-s6.json changed or were re-validated; CACHE_NAME bumps
 // v30->v31 to invalidate stale copies and trigger the clean SKIP_WAITING
 // auto-reload on deploy.
-const CACHE_NAME = 'cma-prep-v31';
+// v32 (Sessions D-continued through F — full item 8/9/10 completion):
+// questions/s1-s4.json received extensive content-quality repair, all
+// cross-verified against each question's own explanation arithmetic before
+// commit (not blind formatting):
+//
+// Item 9 (data-table headers + currency formatting) — completed for all
+// ~291 affected questions across Sections 2 (70), 3 (100), and 4 (121):
+// added proper column headers to every `data` array; corrected a
+// widespread pattern where physical quantities (hours, units, pounds,
+// bundles, cases) had been mislabeled with "$" during original extraction;
+// identified 3 non-USD questions (Euro, Yen) that would otherwise have
+// been silently mislabeled as dollars; reconstructed several genuinely
+// incomplete tables where real exam data existed only in stem text, never
+// in the structured `data` field (verified via cross-checking against the
+// explanation's own calculations before committing any reconstructed
+// numbers).
+//
+// Item 8 (fused-header stem cleanup) — completed for all 46 affected
+// questions across Sections 1-4: stripped flattened table-header/number
+// fragments that had been merged into the running question paragraph
+// during original extraction, moving that data into a proper `data` table
+// instead. Section 1 (External Financial Reporting) carried the heaviest
+// concentration — cash-flow-statement and long-term construction-contract
+// question clusters (Madden Corp, Pell Co., Diamond Clover, Carefree
+// Construction, Beach Construction, Allan Construction, Paulson Co., Rose
+// Construction, Calvin Ltd., Madison Corp, Lally Corp).
+//
+// Item 10 (scrape-artifact / Hock-boilerplate cleanup) — this batch closes
+// out fully: no further "hock" mentions remain in any content field.
+//
+// All four questions/sN.json files (s1-s4) changed; CACHE_NAME bumps
+// v31->v32 to invalidate stale copies and trigger the clean SKIP_WAITING
+// auto-reload on deploy.
+const CACHE_NAME = 'cma-prep-v32';
 const OFFLINE_URLS = [
   './',
   './index.html',
