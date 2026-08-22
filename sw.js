@@ -265,7 +265,54 @@
 // All six question banks plus app.js changed; CACHE_NAME bumps v33->v34 to
 // invalidate stale copies and trigger the clean SKIP_WAITING auto-reload on
 // deploy.
-const CACHE_NAME = 'cma-prep-v34';
+// v35 (Batch 12 — audit fixes: outOfScope leak, dead code, data-table integrity):
+//
+// app.js changes:
+// - Closed the outOfScope leak in buildExamQuestions() — the function that
+//   resolves a student's actual exam question set. Legacy exams with no
+//   frozen questionIds, and the missing-id filler top-up path (used on ANY
+//   exam when a frozen id goes stale), both drew from an unfiltered pool.
+//   Now guarded with isOutOfScopeQ() like every other pool-building site.
+// - Same fix applied to buildGraceMiniSet()'s fallback pool (comeback/streak
+//   practice set — lower stakes, ungraded, but same principle).
+// - dataTableHTML() now detects a genuine header row (text labels, not $
+//   amounts or bare numbers) and renders it bold with an underline rule, so
+//   students can tell column headers from data at a glance.
+// - Removed 12 confirmed-dead functions found via full-codebase reference
+//   scan (zero call sites anywhere, including HTML onclick strings):
+//   nextQuestion, nextQuizModeQuestion (explicit back-compat aliases),
+//   _dashSecTitle, genUniqueStudentId, getPrevLesson, goLesson,
+//   loadTeachingLog, renderLessons, renderQuizList, saveFeedback, setRating,
+//   uploadToCloudinary (an orphaned duplicate — the active Cloudinary upload
+//   path is a separate, still-used code path).
+//
+// firestore.rules changes:
+// - `lectures` read access is now scoped to the student's own group (was:
+//   any signed-in user could read every group's lecture docs). Added
+//   myGroupCode() helper that looks up the caller's own students/{uid} doc.
+//
+// Content changes (s3.json, s4.json):
+// - CIA 583 IV.5 (s4): fixed a fused/mislabeled data row — an hours count
+//   had incorrectly picked up a $ sign during original extraction.
+// - CMA 697 3.28 "Watson Products" (s4): the Rework $725 data row had leaked
+//   into the question stem as raw text instead of appearing in the table;
+//   restored it to the table and cleaned the stem.
+// - CMA 697 3.29 "Hinzel Company" (s3): removed a duplicate leaked table
+//   fragment stuck in the stem (the data table itself was already complete).
+// - 9 distinct multi-column cost-allocation data tables across 14 sibling
+//   questions in Section 4 (Logo Inc, Adam Corp, M&P Tool, Nash Glassworks,
+//   IT/Engineering reciprocal, HR/IT, Power/Maintenance, Cost X/Y, CP/CO)
+//   had no header row at all — every column was unlabeled. Headers
+//   reconstructed and cross-checked against each question's worked
+//   explanation. Two additional candidates (CIA 1194 III.49, CIA 596
+//   III.83/82) were reviewed but NOT modified — their raw values don't
+//   reconcile cleanly against the explanation text, so they're flagged for
+//   Gawad to verify against original source material rather than guessed.
+//
+// app.js, firestore.rules, s3.json, and s4.json all changed; CACHE_NAME
+// bumps v34->v35 to invalidate stale copies and trigger the clean
+// SKIP_WAITING auto-reload on deploy.
+const CACHE_NAME = 'cma-prep-v35';
 const OFFLINE_URLS = [
   './',
   './index.html',
