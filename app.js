@@ -915,7 +915,7 @@ const STATE={tab:'loading',searchQ:'',dictQ:'',dictData:[],dictLoaded:false,lead
     dashLoaded:false,dashLoading:false,dashError:false,
     dashLectures:[],dashLive:{},dashLectureDraft:{title:'',groupCode:'',date:''},dashAttendance:[],
     dashExams:[],dashExamsLoaded:false,
-    dashExamDraft:{title:'',groupCode:'',sectionId:'',unitIds:[],count:20,durationMinutes:30,opensAt:'',closesAt:''},
+    dashExamDraft:{title:'',groupCode:'',sectionIds:[],unitsBySection:{},count:20,durationMinutes:30,opensAt:'',closesAt:''},
     studentExams:[],studentExamsLoaded:false,studentExamResults:{},examSession:null,
     dashExamResults:{},dashExamViewingId:null,dashResultsSort:'score-desc',dashExamPreviewId:null,dashInstructorNotes:{},dashStudentDetailLoadedFor:null,dashStudentDetailLoading:false,dashAttendanceView:null,
     // ── Batch 2: group-scoped dashboard state ──────────────────────────
@@ -1487,6 +1487,20 @@ function dataTableHTML(q){
   return`<pre class="q-data">${lines}</pre>`;
 }
 
+// Batch 11: optional "ask" sentence, rendered AFTER the data table and right
+// before the answer choices (standard exam format: scenario -> data -> ask ->
+// choices). Only questions with a populated `ask` field render this — every
+// other question is completely unaffected (renders exactly as before, ask
+// stays embedded in the stem). Content authoring to populate `ask` per
+// question is a separate, careful manual pass (see batch notes) — automated
+// splitting was tested and rejected due to leaked table-header contamination
+// in a meaningful share of stems.
+function askHTML(q){
+  if(!q||!q.ask)return'';
+  return `<p style="font-size:15px;font-weight:600;line-height:1.55;margin:14px 0 16px">${stemHTML(q.ask)}</p>`;
+}
+
+
 // S4-D: render a question stem one sentence per line for readability on
 // data-heavy stems. Escapes, then splits on sentence-final punctuation
 // followed by whitespace + a capital/number/$, skipping known abbreviations
@@ -1494,8 +1508,10 @@ function dataTableHTML(q){
 // plain escaped string unchanged when there is only one sentence (no-op for
 // conceptual one-liners). Used on full-stem reading surfaces only.
 var _STEM_ABBR=/^(?:Co|Corp|Inc|Ltd|Bros|Mr|Mrs|Ms|Dr|St|No|Nos|vs|etc|approx|est|avg|dept|mfg|Fig|Eq|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec|hr|hrs|yr|yrs|min|sec)$/i;
-function stemHTML(text){
-  const raw=String(text==null?'':text);
+// Batch 11: generic sentence-boundary split (the original stemHTML body,
+// extracted so it can also be reused on the setup text before a Roman-numeral
+// list — see stemHTML() below).
+function _stemSplitPlain(raw){
   const parts=[]; let start=0; const re=/[.?!]\s+(?=[A-Z0-9$])/g; let m;
   while((m=re.exec(raw))){
     const end=m.index+1;
@@ -1506,7 +1522,30 @@ function stemHTML(text){
     start=re.lastIndex;
   }
   parts.push(raw.slice(start).trim());
-  const clean=parts.filter(Boolean);
+  return parts.filter(Boolean);
+}
+// Roman-numeral sub-list marker, e.g. "I. ", "II. ", ... "X. " followed by a
+// capital letter (the start of that list item's text).
+const _STEM_ROMAN_RE=/\b(?:I|II|III|IV|V|VI|VII|VIII|IX|X)\.\s+[A-Z]/g;
+function stemHTML(text){
+  const raw=String(text==null?'':text);
+  // Batch 11: "which of the following... I. ... II. ... III. ..." style stems.
+  // The generic splitter above has no notion of Roman-numeral list markers,
+  // so it attaches each numeral to the END of the wrong line instead of the
+  // START of its own item. Detect >=2 markers and split BEFORE each one so
+  // "I. Fixed direct manufacturing costs" stays together as one clean line.
+  const romanMatches=raw.match(_STEM_ROMAN_RE)||[];
+  if(romanMatches.length>=2){
+    const firstIdx=raw.search(_STEM_ROMAN_RE);
+    const prefix=raw.slice(0,firstIdx).trim();
+    const listPart=raw.slice(firstIdx);
+    const listLines=listPart.split(/(?=\b(?:I|II|III|IV|V|VI|VII|VIII|IX|X)\.\s+[A-Z])/).map(s=>s.trim()).filter(Boolean);
+    const prefixLines=prefix?_stemSplitPlain(prefix):[];
+    const all=[...prefixLines,...listLines];
+    if(all.length<=1) return esc(raw);
+    return all.map(s=>`<span class="stem-line">${esc(s)}</span>`).join('');
+  }
+  const clean=_stemSplitPlain(raw);
   if(clean.length<=1) return esc(raw);
   return clean.map(s=>`<span class="stem-line">${esc(s)}</span>`).join('');
 }
@@ -2521,7 +2560,7 @@ function renderQuizMode(){
   <div style="height:5px;background:var(--surface-4);flex-shrink:0"><div style="height:100%;width:${barW}%;background:var(--brand);transition:width .4s;border-radius:0 3px 3px 0"></div></div>
   ${qmDots}
   <div class="scroll-area pad" style="padding-top:16px">
-    <div class="card" id="qm-question-card"><p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${stemHTML(q.q)}</p>${dataTableHTML(q)}${opts}${explanation}</div>
+    <div class="card" id="qm-question-card"><p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${stemHTML(q.q)}</p>${dataTableHTML(q)}${askHTML(q)}${opts}${explanation}</div>
     <div style="margin-top:12px" id="qm-next-wrap">${qmNavRow}</div>
     <div style="height:20px"></div>
   </div>`;
@@ -3543,7 +3582,7 @@ function renderQuizSession(){
   const _crumb=quizBreadcrumb(qs.isRetry?q._secId:qs.sId, qs.isRetry?q._lessonId:qs.lessonId, q.topic, q.concept);
   return`<div class="bh"><button class="bh-back" onclick="STATE.tab=${qs.isRetry?`'wrong-answers'`:`'study'`};STATE.quizState=null;render()">‹</button><div style="flex:1"><div style="font-size:11px;font-weight:500;color:${sec.text}">${esc(_crumb||headerTitle)}</div><div style="font-size:14px;font-weight:500">${headerSub}</div></div>${timerBadge}</div>
   <div style="height:5px;background:var(--surface-4);flex-shrink:0"><div style="height:100%;width:${barW}%;background:${qs.isRetry?'var(--err)':sec.bar};transition:width .4s;border-radius:0 3px 3px 0"></div></div>
-  ${quizDots}<div class="scroll-area pad" style="padding-top:16px"><div class="card" id="qs-question-card"><p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${stemHTML(q.q)}</p>${dataTableHTML(q)}${opts}${explanation}</div><div style="margin-top:12px" id="qs-next-wrap">${navRow}</div><div style="height:20px"></div></div>`;
+  ${quizDots}<div class="scroll-area pad" style="padding-top:16px"><div class="card" id="qs-question-card"><p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${stemHTML(q.q)}</p>${dataTableHTML(q)}${askHTML(q)}${opts}${explanation}</div><div style="margin-top:12px" id="qs-next-wrap">${navRow}</div><div style="height:20px"></div></div>`;
 }
 
 // ─── QUIZ RESULTS ─────────────────────────────────────────────────────────────
@@ -3707,6 +3746,7 @@ function renderQuizReview(){
     +'<div class="card" style="margin-bottom:12px">'
     +'<p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:16px">'+stemHTML(q.q)+'</p>'
     +(typeof dataTableHTML==='function'?dataTableHTML(q):'')
+    +askHTML(q)
     +opts
     +explanation
     +'</div>'
@@ -4073,7 +4113,9 @@ function resetAll(){saveProg({done:[],lessonScores:{},mcqTotal:0,mcqRight:0});ST
 // their own DOM node on <body> and never touch #content-area or the render loop.
 // Any error fails silent — this subsystem can never block the app.
 const LIVE_POLL_MS = 25000;                    // continuous poll cadence
-const LIVE_AUTOCLOSE_MS = 3*60*60*1000;        // 3h hard bound — a forgotten-open lecture self-expires
+const LIVE_AUTOCLOSE_MS = 8*60*60*1000;        // Batch 11: 3h -> 8h — a forgotten-open lecture self-expires
+// Batch 11: centralized exam pass/fail line, shared by student result screen and instructor Results tab.
+const EXAM_PASS_THRESHOLD = 72;
 let _liveTimer = null;
 let _liveShownFor = null;                      // lectureId whose modal is currently up
 
@@ -4308,8 +4350,26 @@ async function submitLectureFeedback(lectureId,groupCode,title,rating,comment){
 var _feedbackDismissedSession = {};
 function markFeedbackDismissed(lectureId){ if(lectureId) _feedbackDismissedSession[lectureId] = 1; }
 
+// Batch 11: one-shot lazy fetch of the student's group's recent lectures, so
+// maybeShowFeedbackPrompt can check each one's COMPUTED 7-day feedback window
+// (checkinClosedAt) — the live/{groupCode} pointer alone isn't enough since
+// its lectureId goes null the moment check-in closes.
+// NOTE: needs a Firestore rule allowing students to read `lectures` scoped to
+// their own groupCode (previously instructor-only) — add manually via console.
+async function loadRecentLecturesForFeedback(){
+  if(STATE.studentRecentLecturesLoaded||isInstructor()||!STATE.user)return;
+  const st=loadStudent();
+  if(!st||!st.groupCode)return;
+  STATE.studentRecentLecturesLoaded=true;
+  try{
+    const g=st.groupCode.toUpperCase();
+    const snap=await db.collection('lectures').where('groupCode','==',g).orderBy('createdAt','desc').limit(10).get();
+    STATE.studentRecentLectures=snap.docs.map(d=>({id:d.id,...d.data()}));
+  }catch(e){console.warn('[loadRecentLecturesForFeedback] failed (may need a Firestore rule):',e);}
+}
 function maybeShowFeedbackPrompt(){
   if(!STATE.user)return;
+  loadRecentLecturesForFeedback();   // fire-and-forget, one-shot per session
   const groups=Object.keys(STATE.dashLive||{});
   for(const g of groups){
     const p=STATE.dashLive[g];
@@ -4320,6 +4380,18 @@ function maybeShowFeedbackPrompt(){
     if(_feedbackDismissedSession[p.lectureId])continue; // Batch 8: dismissed this session
     if(document.getElementById('feedback-overlay'))continue;
     STATE._feedbackPromptFor={lectureId:p.lectureId,title:p.title,groupCode:g};
+    return;
+  }
+  // Batch 11: computed 7-day windows from recently-closed lectures (covers
+  // the case where the live/{groupCode} pointer has since moved to a newer
+  // lecture, or was never manually toggled at all).
+  for(const lec of (STATE.studentRecentLectures||[])){
+    if(!isFeedbackOpen(lec))continue;
+    if(!hasCheckedIn(lec.id))continue;
+    if(hasSubmittedFeedback(lec.id))continue;
+    if(_feedbackDismissedSession[lec.id])continue;
+    if(document.getElementById('feedback-overlay'))continue;
+    STATE._feedbackPromptFor={lectureId:lec.id,title:lec.title,groupCode:lec.groupCode};
     return;
   }
   STATE._feedbackPromptFor=null;
@@ -4400,11 +4472,83 @@ async function loadDashExams(){
   await refreshDashScoped();
 }
 
+// Batch 11: largest-remainder split of `total` into `n` integer buckets that
+// sum back to `total` exactly (e.g. 40/3 -> [14,13,13], not 13.33 each).
+function _largestRemainderSplit(total,n){
+  if(n<=0)return[];
+  const base=Math.floor(total/n);
+  const rem=total-base*n;
+  const arr=new Array(n).fill(base);
+  for(let i=0;i<rem;i++)arr[i]++;
+  return arr;
+}
+// Batch 11: shared section- and unit-balanced pool builder, used by both
+// saveExam (creation) and reshuffleExam (re-roll) so distribution logic
+// never drifts between the two. sectionIds: array of section ids.
+// unitsBySection: {sectionId:[unitIds]} (empty/missing = whole section).
+// Returns {ok:true,questionIds:[...]} or {ok:false,message}.
+async function buildDistributedExamPool(sectionIds,unitsBySection,count){
+  await Promise.all(sectionIds.map(sid=>ensureQuizzes(sid)));
+  const secPools={};   // sid -> {unitId -> [qid,...]}
+  sectionIds.forEach(sid=>{
+    const sec=S.find(s=>s.id===sid);
+    if(!sec)return;
+    const filterUnits=Array.isArray(unitsBySection[sid])&&unitsBySection[sid].length?unitsBySection[sid].map(String):null;
+    const byUnit={};
+    sec.lessons.forEach(l=>{
+      if(filterUnits&&!filterUnits.includes(String(l.id)))return;
+      if(l.quizzes&&l.quizzes.length){
+        l.quizzes.forEach((q,i)=>{
+          if(isOutOfScopeQ(l,q))return;   // never freeze Part-2 content into a graded exam
+          const qid=l.id+':'+(q.id||i);
+          (byUnit[l.id]=byUnit[l.id]||[]).push(qid);
+        });
+      }
+    });
+    secPools[sid]=byUnit;
+  });
+  const secQuotas={};
+  _largestRemainderSplit(count,sectionIds.length).forEach((q,i)=>{secQuotas[sectionIds[i]]=q;});
+  const picked=[];
+  const leftoverPool=[];   // surplus questions (available but past their unit's quota) — backfill source
+  let totalShortfall=0;
+  sectionIds.forEach(sid=>{
+    const byUnit=secPools[sid]||{};
+    const unitIds=Object.keys(byUnit);
+    const quota=secQuotas[sid]||0;
+    const unitQuotas={};
+    _largestRemainderSplit(quota,unitIds.length).forEach((q,i)=>{unitQuotas[unitIds[i]]=q;});
+    let filled=0;
+    unitIds.forEach(uid=>{
+      const pool=byUnit[uid].slice();
+      for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+      const take=Math.min(unitQuotas[uid]||0,pool.length);
+      picked.push(...pool.slice(0,take));
+      filled+=take;
+      leftoverPool.push(...pool.slice(take));   // unused surplus from this unit
+    });
+    if(filled<quota)totalShortfall+=(quota-filled);
+  });
+  // Redistribute shortfall from whatever surplus exists elsewhere in the exam.
+  if(totalShortfall>0&&leftoverPool.length){
+    for(let i=leftoverPool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[leftoverPool[i],leftoverPool[j]]=[leftoverPool[j],leftoverPool[i]];}
+    while(totalShortfall>0&&leftoverPool.length){picked.push(leftoverPool.pop());totalShortfall--;}
+  }
+  if(picked.length<count){
+    return {ok:false,message:'Only '+picked.length+' in-scope questions available across your selection (need '+count+'). Reduce Question count or select more units/sections.'};
+  }
+  const finalShuffled=picked.slice();
+  for(let i=finalShuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[finalShuffled[i],finalShuffled[j]]=[finalShuffled[j],finalShuffled[i]];}
+  return {ok:true,questionIds:finalShuffled.slice(0,count)};
+}
+
 async function saveExam(){
+
   const d=STATE.dashExamDraft;
   if(!d.title||!d.title.trim()){showToast('Enter an exam title.','warning');return;}
   if(!d.groupCode){showToast('Choose a group.','warning');return;}
-  if(!d.sectionId){showToast('Choose a section.','warning');return;}
+  const sectionIds=Array.isArray(d.sectionIds)?d.sectionIds.map(Number).filter(Boolean):[];
+  if(!sectionIds.length){showToast('Choose at least one section.','warning');return;}
   const count=parseInt(d.count);
   if(!count||count<3||count>50){showToast('Question count must be 3–50.','warning');return;}
   const dur=parseInt(d.durationMinutes);
@@ -4415,43 +4559,21 @@ async function saveExam(){
   if(new Date(closesISO)<=new Date(opensISO)){showToast('Closes must be after opens.','warning');return;}
   if(new Date(closesISO)<=new Date()){showToast('Closes time is in the past.','warning');return;}
   try{
-    // Batch 5: build the frozen question set at creation. Same question set for
-    // every student; per-student seeded order + option shuffling happens at
-    // exam-start time via buildExamQuestions().
-    const secId=parseInt(d.sectionId);
-    const unitIds=Array.isArray(d.unitIds)?d.unitIds.map(String).filter(Boolean):[];
-    await ensureQuizzes(secId);
-    const sec=S.find(s=>s.id===secId);
-    if(!sec){showToast('Section not found.','error');return;}
-    // Pool: if unitIds is non-empty, restrict to lessons whose id is in unitIds.
-    // Else, whole section.
-    const lessonMatch=(lid)=>!unitIds.length||unitIds.includes(String(lid));
-    const pool=[];
-    sec.lessons.forEach(l=>{
-      if(!lessonMatch(l.id))return;
-      if(l.quizzes&&l.quizzes.length)l.quizzes.forEach((q,i)=>{
-        if(isOutOfScopeQ(l,q))return;   // Batch 10: never freeze Part-2 content into a graded exam
-        pool.push({qid:l.id+':'+(q.id||i),_lid:l.id});
-      });
-    });
-    if(pool.length<count){
-      showToast('Only '+pool.length+' questions available in your selection. Reduce Question count or pick more units.','warning');
-      return;
-    }
-    // Random freeze from pool
-    const shuffled=pool.slice();
-    for(let i=shuffled.length-1;i>0;i--){
-      const j=Math.floor(Math.random()*(i+1));
-      [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];
-    }
-    const questionIds=shuffled.slice(0,count).map(x=>x.qid);
+    // Batch 11: even split across sections, then even split across each
+    // section's selected units (largest-remainder rounding), shared with
+    // reshuffleExam() via buildDistributedExamPool().
+    const unitsBySection=d.unitsBySection||{};
+    const result=await buildDistributedExamPool(sectionIds,unitsBySection,count);
+    if(!result.ok){showToast(result.message,'warning');return;}
     await db.collection('exams').add({
       title:d.title.trim(),
       groupCode:d.groupCode.toUpperCase(),
       questionSource:'auto',
-      sectionId:secId,
-      unitIds,                                 // Batch 5: unit filter (empty = whole section)
-      questionIds,                             // Batch 5: frozen set — same for all students
+      sectionIds,                              // Batch 11: multi-section
+      unitsBySection,                          // Batch 11: {sectionId:[unitIds]}
+      sectionId:sectionIds[0],                 // legacy single-section field, kept for old display code / old exam readers
+      unitIds:unitsBySection[sectionIds[0]]||[],
+      questionIds:result.questionIds,          // frozen set — same for all students
       count,durationMinutes:dur,
       opensAt:opensISO,closesAt:closesISO,
       status:'scheduled',
@@ -4461,7 +4583,7 @@ async function saveExam(){
     showToast('Exam created \u2705','success');
     // Batch 2: preserve group prefill so back-to-back exams for the same
     // group don't require re-selection
-    STATE.dashExamDraft={title:'',groupCode:STATE.dashSelectedGroup,sectionId:'',unitIds:[],count:20,durationMinutes:30,opensAt:'',closesAt:''};
+    STATE.dashExamDraft={title:'',groupCode:STATE.dashSelectedGroup,sectionIds:[],unitsBySection:{},count:20,durationMinutes:30,opensAt:'',closesAt:''};
     await loadDashExams();
   }catch(e){
     showToast('Error: '+e.message,'error');
@@ -4779,6 +4901,10 @@ async function createLecture(){
     STATE.dashLectureDraft={title:'',groupCode:STATE.dashSelectedGroup,date:''};
     render();
     showToast('Lecture created.','success');
+    // Batch 11: auto-open check-in immediately on creation — no separate
+    // manual click needed. Reuses openLecture()'s existing "one live per
+    // group" takeover-confirmation flow, so nothing about that UX changes.
+    await openLecture(ref.id);
   }catch(e){console.warn('[Lecture] create failed:',e);showToast('Error creating lecture.','error');}
 }
 
@@ -4834,11 +4960,37 @@ async function closeLecture(id){
   try{
     await db.collection('live').doc(g).set({lectureId:null});
     STATE.dashLive[g]={lectureId:null};
-    await db.collection('lectures').doc(id).update({status:'ended'});
+    // Batch 11: checkinClosedAt lives on the LECTURE doc (not the shared
+    // live/{groupCode} pointer) so its 7-day feedback window survives even
+    // after a newer lecture's check-in overwrites the group's live pointer.
+    const checkinClosedAt=new Date().toISOString();
+    await db.collection('lectures').doc(id).update({status:'ended',checkinClosedAt});
     lec.status='ended';
+    lec.checkinClosedAt=checkinClosedAt;
     render();
-    showToast('Lecture closed. Check-in ended.','info');
+    showToast('Lecture closed. Feedback is now open for 7 days.','info');
   }catch(e){console.warn('[Lecture] close failed:',e);showToast('Error closing lecture.','error');}
+}
+// Batch 11: feedback window is COMPUTED from checkinClosedAt, same pattern as
+// _liveWindowOpen() for check-in — no write needed at the exact close moment,
+// and multiple lectures can have independently-running windows.
+function isFeedbackOpen(lec){
+  if(!lec||!lec.checkinClosedAt)return false;
+  const elapsed=Date.now()-Date.parse(lec.checkinClosedAt);
+  return elapsed>=0 && elapsed<7*24*60*60*1000;
+}
+// Batch 11: lazy backfill for the AUTO-close case (8h lapse). There's no cron,
+// so whichever client renders the lecture list first and notices the check-in
+// window has lapsed (autoEnded) but checkinClosedAt was never written, writes
+// it now — using the SCHEDULED autoCloseAt time (not "now"), so the 7-day
+// feedback window starts from when the check-in should have closed.
+function _maybeBackfillCheckinClosedAt(lec,ptr){
+  if(!lec||lec.checkinClosedAt||!ptr||!ptr.autoCloseAt)return;
+  if(ptr.lectureId!==lec.id)return;
+  if(Date.now()<=Date.parse(ptr.autoCloseAt))return;   // still within window
+  const checkinClosedAt=ptr.autoCloseAt;
+  lec.checkinClosedAt=checkinClosedAt;   // optimistic, avoids repeat writes this session
+  db.collection('lectures').doc(lec.id).update({status:'ended',checkinClosedAt}).catch(()=>{});
 }
 
 function isLectureLive(lec){
@@ -4873,6 +5025,7 @@ function renderDashLectures(){
     const dt=l.date?new Date(l.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
     const _ptr=STATE.dashLive[l.groupCode];
     const autoEnded=!live&&_ptr&&_ptr.lectureId===l.id;  // pointed here but window passed
+    if(autoEnded)_maybeBackfillCheckinClosedAt(l,_ptr);   // Batch 11: lazy-detect auto-close
     const badge=live
       ?`<span style="font-size:10px;font-weight:700;padding:2px 9px;border-radius:10px;background:var(--err-tint);color:#C0392B">\u{1F534} LIVE</span>`
       :(autoEnded
@@ -4927,13 +5080,15 @@ function closeExamPreview(){
 // Returns null if the section isn't cached yet (caller triggers ensureQuizzes).
 function _hydrateExamQuestions(ex){
   try{
-    const secId=parseInt(ex.sectionId);
-    const sec=S.find(s=>s.id===secId);
-    if(!sec) return [];
-    const hasCache=sec.lessons.some(l=>Array.isArray(l.quizzes)&&l.quizzes.length);
+    // Batch 11: multi-section aware — legacy single-section exams (no
+    // sectionIds array) fall back to their one sectionId as before.
+    const secIds=Array.isArray(ex.sectionIds)&&ex.sectionIds.length?ex.sectionIds:[ex.sectionId];
+    const secs=secIds.map(sid=>S.find(s=>s.id===parseInt(sid))).filter(Boolean);
+    if(!secs.length) return [];
+    const hasCache=secs.some(sec=>sec.lessons.some(l=>Array.isArray(l.quizzes)&&l.quizzes.length));
     if(!hasCache) return null;
     const byLesson={};
-    sec.lessons.forEach(l=>{ byLesson[l.id]=l; });
+    secs.forEach(sec=>{ sec.lessons.forEach(l=>{ byLesson[l.id]=l; }); });
     const out=[];
     (ex.questionIds||[]).forEach(qid=>{
       const [lid,tail]=String(qid).split(':');
@@ -4958,15 +5113,20 @@ function renderDashExamPreview(){
   // freeze writes ex.questionIds. Hydration is client-side (no extra reads)
   // because section quiz JSON is already cached after ensureQuizzes().
   let qs=ex.questions||[];
+  // Batch 11: multi-section aware.
+  const _previewSecIds=Array.isArray(ex.sectionIds)&&ex.sectionIds.length?ex.sectionIds:[ex.sectionId];
   if((!qs || !qs.length) && Array.isArray(ex.questionIds) && ex.questionIds.length){
     qs=_hydrateExamQuestions(ex);
     if(qs===null){
-      ensureQuizzes(parseInt(ex.sectionId)).then(()=>{ if(STATE.dashExamPreviewId===examId) render(); }).catch(()=>{});
+      Promise.all(_previewSecIds.map(sid=>ensureQuizzes(parseInt(sid)))).then(()=>{ if(STATE.dashExamPreviewId===examId) render(); }).catch(()=>{});
       qs=[];
     }
   }
-  const sec=sect(ex.sectionId);
-  const previewUnits=unitTitles(ex.sectionId,ex.unitIds,{max:6}); // Batch 8
+  const sectionsSummary=_previewSecIds.map(sid=>{
+    const s=sect(sid);
+    const u=unitTitles(sid,(ex.unitsBySection&&ex.unitsBySection[sid])||ex.unitIds,{max:6});
+    return 'Sec '+sid+(s?' — '+esc(s.title):'')+(u?' (Units: '+esc(u)+')':' (Full section)');
+  }).join(' + ');
   const letters=['A','B','C','D','E'];
 
   const questionsHTML=qs.length?qs.map((q,i)=>{
@@ -5015,7 +5175,7 @@ function renderDashExamPreview(){
     <div style="background:linear-gradient(135deg,var(--brand),var(--brand-2));border-radius:14px;padding:18px;color:#fff;margin-bottom:14px">
       <div style="font-size:10px;font-weight:700;letter-spacing:1px;opacity:.85;margin-bottom:4px">EXAM PREVIEW · INSTRUCTOR VIEW</div>
       <div style="font-size:17px;font-weight:600;line-height:1.35;margin-bottom:8px">${esc(ex.title||'Untitled exam')}</div>
-      <div style="font-size:12px;opacity:.85;line-height:1.6">Section ${ex.sectionId}${sec?' — '+esc(sec.title):''}${previewUnits?' \u00B7 Units: '+esc(previewUnits):' \u00B7 Full section'}<br><b>${(ex.questionIds&&ex.questionIds.length)||qs.length||ex.count||0}</b> question${((ex.questionIds&&ex.questionIds.length)||qs.length||ex.count||0)===1?'':'s'} · <b>${ex.durationMinutes||0}</b> min · Group <b>${esc(ex.groupCode||'—')}</b></div>
+      <div style="font-size:12px;opacity:.85;line-height:1.6">${sectionsSummary}<br><b>${(ex.questionIds&&ex.questionIds.length)||qs.length||ex.count||0}</b> question${((ex.questionIds&&ex.questionIds.length)||qs.length||ex.count||0)===1?'':'s'} · <b>${ex.durationMinutes||0}</b> min · Group <b>${esc(ex.groupCode||'—')}</b></div>
     </div>
     <div style="display:flex;gap:8px;margin-bottom:14px">
       <button onclick="window.print()" style="flex:1;padding:10px;border-radius:10px;border:.5px solid var(--border-4);background:var(--surface-3);color:#333;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">🖨️ Print / Save as PDF</button>
@@ -5039,9 +5199,15 @@ function renderDashExams(){
   // group by default. Instructor doesn't have to pick manually every time.
   if(selectedGroup&&!d.groupCode)d.groupCode=selectedGroup;
 
-  const sectionOpts=S.map(s=>
-    `<option value="${s.id}" ${String(d.sectionId)===String(s.id)?'selected':''}>Sec ${s.id} — ${esc(s.title)}</option>`
-  ).join('');
+  // Batch 11: Section is now a multi-select — pick 1+ sections (e.g. Cost +
+  // Budget). Question count splits evenly across selected sections, then
+  // each section's share splits evenly across its selected units.
+  const selectedSections=new Set((d.sectionIds||[]).map(String));
+  const sectionChips=S.map(s=>{
+    const on=selectedSections.has(String(s.id));
+    return `<button type="button" onclick="toggleExamSection('${s.id}')" style="padding:7px 12px;border-radius:14px;border:1px solid ${on?'var(--brand)':'var(--border-4)'};background:${on?'var(--brand)':'#fff'};color:${on?'#fff':'#555'};font-size:12px;font-weight:${on?'600':'500'};cursor:pointer;font-family:inherit;white-space:nowrap">Sec ${s.id} \u2014 ${esc(s.title)}</button>`;
+  }).join('');
+  const unitPickers=(d.sectionIds||[]).map(sid=>renderExamUnitPicker(d,sid)).join('');
 
   const createCard=`
     <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:10px">\u2795 Create an Exam for <span style="font-family:'Courier New',monospace;color:var(--brand)">${esc(selectedGroup)}</span></div>
@@ -5054,13 +5220,10 @@ function renderDashExams(){
                style="width:100%;padding:9px 12px;border-radius:8px;border:.5px solid var(--border-4);font-size:14px;font-family:inherit;outline:none;color:var(--ink);background:var(--surface);box-sizing:border-box">
       </div>
       <div style="margin-bottom:10px">
-        <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Section *</label>
-        <select onchange="onExamSectionChange(this.value)"
-                style="width:100%;padding:9px;border-radius:8px;border:.5px solid var(--border-4);font-size:13px;font-family:inherit;background:#fff;color:var(--ink);box-sizing:border-box">
-          <option value="">Select...</option>${sectionOpts}
-        </select>
+        <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Section(s) * <span style="font-weight:400">— pick one or more; questions split evenly across your picks</span></label>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;padding:8px;background:var(--surface);border:.5px solid var(--border);border-radius:8px">${sectionChips}</div>
       </div>
-      ${renderExamUnitPicker(d)}
+      ${unitPickers}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
         <div>
           <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Questions (3\u201350) *</label>
@@ -5115,8 +5278,14 @@ function renderDashExams(){
 
   const examCard=(x)=>{
     const status=examWindowStatus(x);
-    const sec=sect(x.sectionId);
-    const units=unitTitles(x.sectionId,x.unitIds,{max:3}); // Batch 8
+    // Batch 11: multi-section exams show every selected section + its units;
+    // legacy single-section exams (no sectionIds array) show as before.
+    const xSectionIds=Array.isArray(x.sectionIds)&&x.sectionIds.length?x.sectionIds:[x.sectionId];
+    const sectionsLine=xSectionIds.map(sid=>{
+      const s=sect(sid);
+      const u=unitTitles(sid,(x.unitsBySection&&x.unitsBySection[sid])||x.unitIds,{max:3});
+      return 'Sec '+sid+(s?' — '+esc(s.title):'')+(u?' (Units: '+esc(u)+')':'');
+    }).join('<br>');
     const canClose=status!=='closed';
     return `<div style="background:#fff;border:.5px solid ${status==='active'?'#1E844940':'var(--border)'};border-radius:12px;padding:13px 14px;margin-bottom:10px">
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">
@@ -5124,7 +5293,7 @@ function renderDashExams(){
       </div>
       <div style="font-size:14px;font-weight:600;color:var(--ink);line-height:1.35;margin-bottom:6px">${esc(x.title)}</div>
       <div style="font-size:11px;color:#666;line-height:1.7;margin-bottom:10px">
-        Section ${x.sectionId}${sec?' — '+esc(sec.title):''}${units?'<br><span style="color:#555">Units: '+esc(units)+'</span>':''}<br>
+        ${sectionsLine}<br>
         <b>${x.count}</b> questions · <b>${x.durationMinutes}</b> min<br>
         Opens <b>${fmtDT(x.opensAt)}</b> · Closes <b>${fmtDT(x.closesAt)}</b>
       </div>
@@ -5334,10 +5503,12 @@ function renderDashSlides(){
 function renderDashboard(){
   if(!isInstructor())return renderIntro();
   if(!STATE.dashLoaded&&!STATE.dashLoading&&!STATE.dashGroupsLoaded)loadDashboardP1();
+  const _pendingApprovalsCount=(STATE.dashApprovals&&STATE.dashApprovals.rows||[]).filter(r=>r.status==='pending').length;
   const SUB_DASH=[
     {id:'slides',      icon:'\u{1F4FD}\uFE0F', label:'Slides'},
     {id:'groups',      icon:'\u{1F465}', label:'Groups'},
     {id:'students',    icon:'\u{1F464}', label:'Students'},
+    {id:'approvals',   icon:'\u2705', label:'Approvals'+(_pendingApprovalsCount?' \u00B7 '+_pendingApprovalsCount:'')},
     {id:'lectures',    icon:'\u{1F3AC}', label:'Lectures'},
     {id:'attendance',  icon:'\u{2705}', label:'Attendance'},
     {id:'exams',       icon:'\u{1F4DD}', label:'Exams'},
@@ -5348,7 +5519,7 @@ function renderDashboard(){
     {id:'teaching-log',icon:'\u{1F4D3}', label:'Actual Teaching'},
     {id:'at-risk',     icon:'\u{1F6A8}', label:'At Risk'}
   ];
-  const _validTabs=['slides','groups','students','lectures','attendance','exams','results','progress','leader','plan','teaching-log','at-risk'];
+  const _validTabs=['slides','groups','students','approvals','lectures','attendance','exams','results','progress','leader','plan','teaching-log','at-risk'];
   const tab=_validTabs.includes(STATE.dashTab)?STATE.dashTab:'groups';
   const subnav=`<div class="sub-nav">${SUB_DASH.map(it=>
     `<button class="sub-nav-btn${tab===it.id?' active':''}" onclick="STATE.dashTab='${it.id}';render()">${it.icon} ${it.label}</button>`
@@ -5368,6 +5539,14 @@ function renderDashboard(){
   }else if(tab==='students'){
     // Batch 5 Students tab: unscoped (roster is already loaded with groups).
     body=STATE.dashGroupsLoaded?renderDashStudents():renderDashSkeleton();
+  }else if(tab==='approvals'){
+    // Batch 11: unscoped — pending join/switch requests span all groups.
+    if(!STATE.dashApprovals||!STATE.dashApprovals.loaded){
+      loadDashApprovals();
+      body=renderDashSkeleton();
+    }else{
+      body=renderDashApprovals();
+    }
   }else if(tab==='slides'){
     // Presenter mode: static teaching aids, no group/data dependency.
     body=renderDashSlides();
@@ -5584,7 +5763,8 @@ function _examSaveLocal(sess){
   try{
     localStorage.setItem(_examLocalKey(sess.examId),JSON.stringify({
       examId:sess.examId,answers:sess.answers,currentIdx:sess.currentIdx,
-      startedAt:sess.startedAt,deadlineAt:sess.deadlineAt,submitted:sess.submitted
+      startedAt:sess.startedAt,deadlineAt:sess.deadlineAt,submitted:sess.submitted,
+      flagged:sess.flagged||{}   // Batch 11: mark-for-review, survives reload/resume
     }));
   }catch{}
 }
@@ -5628,18 +5808,24 @@ async function loadStudentExams(){
 // student sees the SAME set; only ORDER and OPTION ORDER are shuffled per-uid.
 // Legacy exams (created before Batch 5) fall through to the pool-random path.
 async function buildExamQuestions(exam,uid){
-  await ensureQuizzes(exam.sectionId);
-  const sec=S.find(s=>s.id===exam.sectionId);
-  if(!sec)return[];
+  // Batch 11: multi-section aware. Legacy single-section exams (sectionId
+  // only, no sectionIds array) still work unchanged via the fallback.
+  const sectionIds=Array.isArray(exam.sectionIds)&&exam.sectionIds.length?exam.sectionIds:[exam.sectionId];
+  const unitsBySection=exam.unitsBySection||(exam.unitIds?{[exam.sectionId]:exam.unitIds}:{});
+  await Promise.all(sectionIds.map(sid=>ensureQuizzes(sid)));
   // Build a full pool with qid keys so we can resolve frozen sets and honor unit filter
   const poolAll=[];
-  const unitIds=Array.isArray(exam.unitIds)?exam.unitIds.map(String).filter(Boolean):[];
-  const lessonMatch=(lid)=>!unitIds.length||unitIds.includes(String(lid));
-  sec.lessons.forEach(l=>{
-    if(!lessonMatch(l.id))return;
-    if(l.quizzes&&l.quizzes.length)l.quizzes.forEach((q,i)=>{
-      const qid=l.id+':'+(q.id||i);
-      poolAll.push({...q,_qid:qid,_lid:l.id,_ltitle:l.title});
+  sectionIds.forEach(sid=>{
+    const sec=S.find(s=>s.id===sid);
+    if(!sec)return;
+    const unitIds=Array.isArray(unitsBySection[sid])?unitsBySection[sid].map(String).filter(Boolean):[];
+    const lessonMatch=(lid)=>!unitIds.length||unitIds.includes(String(lid));
+    sec.lessons.forEach(l=>{
+      if(!lessonMatch(l.id))return;
+      if(l.quizzes&&l.quizzes.length)l.quizzes.forEach((q,i)=>{
+        const qid=l.id+':'+(q.id||i);
+        poolAll.push({...q,_qid:qid,_lid:l.id,_ltitle:l.title});
+      });
     });
   });
   if(!poolAll.length)return[];
@@ -5698,19 +5884,20 @@ async function startExam(examId){
   });
   if(!ok)return;
 
-  let startedAt,deadlineAt,answers,currentIdx;
+  let startedAt,deadlineAt,answers,currentIdx,flagged;
   if(resumeMode){
     startedAt=existing.startedAt;
     deadlineAt=existing.deadlineAt;
     const local=_examLoadLocal(examId);
     answers=(local&&local.answers)||{};
     currentIdx=(local&&local.currentIdx)||0;
+    flagged=(local&&local.flagged)||{};   // Batch 11: restore flags on resume
   }else{
     startedAt=new Date().toISOString();
     const byDur=Date.now()+exam.durationMinutes*60000;
     const byClose=exam.closesAt?Date.parse(exam.closesAt):byDur;
     deadlineAt=new Date(Math.min(byDur,byClose)).toISOString();
-    answers={};currentIdx=0;
+    answers={};currentIdx=0;flagged={};
     try{
       await db.collection('exam-results').doc(examId+'_'+STATE.user.uid).set({
         examId,userId:STATE.user.uid,groupCode:exam.groupCode,sectionId:exam.sectionId,
@@ -5723,7 +5910,7 @@ async function startExam(examId){
   if(!questions.length){showToast('No questions available for this section yet.','error');return;}
 
   STATE.examSession={
-    examId,exam,questions,answers,currentIdx,
+    examId,exam,questions,answers,currentIdx,flagged,
     startedAt,deadlineAt,submitting:false,submitted:false,results:null,navOpen:false
   };
   _examSaveLocal(STATE.examSession);
@@ -5753,6 +5940,16 @@ function _examStopTimer(){if(_examTimerInterval){clearInterval(_examTimerInterva
 function examAnswer(qIdx,optIdx){
   if(!STATE.examSession||STATE.examSession.submitted)return;
   STATE.examSession.answers[qIdx]=optIdx;
+  _examSaveLocal(STATE.examSession);
+  _examRenderRunner();
+}
+// Batch 11: personal navigation aid only — never sent to Firestore, cleared
+// with the rest of local exam state on submit (_examClearLocal).
+function examToggleFlag(qIdx){
+  if(!STATE.examSession||STATE.examSession.submitted)return;
+  STATE.examSession.flagged=STATE.examSession.flagged||{};
+  if(STATE.examSession.flagged[qIdx])delete STATE.examSession.flagged[qIdx];
+  else STATE.examSession.flagged[qIdx]=true;
   _examSaveLocal(STATE.examSession);
   _examRenderRunner();
 }
@@ -5789,30 +5986,60 @@ async function submitExam(auto){
   }
   sess.submitting=true;_examStopTimer();
   let score=0;
+  let unanswered=0;
   const answersOut=[];
+  // Batch 11: per-lesson miss tally -> surfaces the weakest unit on the result screen.
+  const missByLesson={};
   sess.questions.forEach((q,i)=>{
     const picked=sess.answers[i];
     const correct=picked===q.a;
     if(correct)score++;
+    else{
+      const lid=q._lid||'';
+      if(!missByLesson[lid])missByLesson[lid]={count:0,title:q._ltitle||lid};
+      missByLesson[lid].count++;
+    }
+    if(picked==null)unanswered++;
     answersOut.push({picked:picked==null?null:picked,correct});
   });
   const total=sess.questions.length;
   const percentage=total?Math.round(score/total*100):0;
   const submittedAt=new Date().toISOString();
+  // Batch 11: actual time consumed + simple per-question average (overall
+  // average only — per-question timestamps aren't captured in the exam
+  // runner the way Quiz Mode's questionTimes[] are).
+  const timeMs=Math.max(0,Date.parse(submittedAt)-Date.parse(sess.startedAt||submittedAt));
+  const avgMsPerQ=total?Math.round(timeMs/total):0;
+  // Batch 11: per-section correct/total — trivial for today's single-section
+  // exams, becomes meaningful once multi-section exams ship.
+  const bySection={};
+  sess.questions.forEach((q,i)=>{
+    const sid=(q._lid||'').split('-')[0]||'?';
+    if(!bySection[sid])bySection[sid]={correct:0,total:0};
+    bySection[sid].total++;
+    if(answersOut[i].correct)bySection[sid].correct++;
+  });
+  const weakestLesson=Object.values(missByLesson).sort((a,b)=>b.count-a.count)[0]||null;
   try{
+    const st=loadStudent()||{};
     const questionSnapshot=sess.questions.map(q=>({q:q.q,o:q.o,a:q.a,e:q.e||'',wrongWhy:q.wrongWhy||null,_lid:q._lid||'',_ltitle:q._ltitle||''}));
     await db.collection('exam-results').doc(sess.examId+'_'+STATE.user.uid).set({
-      examId:sess.examId,userId:STATE.user.uid,groupCode:sess.exam.groupCode,sectionId:sess.exam.sectionId,
+      examId:sess.examId,userId:STATE.user.uid,studentName:st.name||STATE.user.displayName||'Student',
+      groupCode:sess.exam.groupCode,sectionId:sess.exam.sectionId,
       startedAt:sess.startedAt,deadlineAt:sess.deadlineAt,
       answers:answersOut,questionSnapshot,score,total,percentage,
       submitted:true,submittedAt,autoSubmitted:!!auto
     },{merge:true});
     sess.submitted=true;
-    sess.results={score,total,percentage,autoSubmitted:!!auto,submittedAt};
+    sess.results={
+      score,total,percentage,autoSubmitted:!!auto,submittedAt,
+      unanswered,timeMs,avgMsPerQ,bySection,weakestLesson,
+      passed:percentage>=EXAM_PASS_THRESHOLD
+    };
     sess.submitting=false;
     _examClearLocal(sess.examId);
     STATE.studentExamResults=STATE.studentExamResults||{};
-    STATE.studentExamResults[sess.examId]={submitted:true,score,total,percentage};
+    STATE.studentExamResults[sess.examId]={submitted:true,score,total,percentage,submittedAt};
     render();
     if(auto)showToast('\u23F0 Time up — exam auto-submitted.','warning',4000);
     else showToast('\u2705 Exam submitted.','success');
@@ -5883,7 +6110,9 @@ function renderExamsStrip(){
     let banner,body,btn;
     if(submitted){
       banner={bg:'linear-gradient(135deg,var(--ok-strong-2),var(--ok))',label:'\u2705 COMPLETED'};
-      body='Score: <b>'+res.score+'/'+res.total+'</b> \u00B7 '+res.percentage+'%';
+      // Batch 11: show when the exam was taken (was missing entirely).
+      const takenDate=res.submittedAt?fmtDT(res.submittedAt):'';
+      body='Score: <b>'+res.score+'/'+res.total+'</b> \u00B7 '+res.percentage+'%'+(takenDate?' \u00B7 '+takenDate:'');
       btn='<button onclick="openExamReview(\''+ex.id+'\')" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Review \u2192</button>';
     }else if(st==='active'){
       const inProgress=_examLoadLocal(ex.id);
@@ -5923,6 +6152,7 @@ function renderExamRunner(){
   if(!q)return '<div style="padding:30px;text-align:center;color:#888">No question.</div>';
   const total=sess.questions.length;
   const picked=sess.answers[sess.currentIdx];
+  const isFlagged=!!(sess.flagged&&sess.flagged[sess.currentIdx]);   // Batch 11
   const answeredCount=Object.keys(sess.answers).length;
   const remaining=Math.max(0,Date.parse(sess.deadlineAt)-Date.now());
   const s=Math.floor(remaining/1000);
@@ -5952,7 +6182,8 @@ function renderExamRunner(){
      +sess.questions.map((_,i)=>{
         const ans=sess.answers[i]!==undefined;
         const cur=i===sess.currentIdx;
-        return '<button onclick="examGoTo('+i+')" style="padding:9px 0;border-radius:8px;border:'+(cur?'2px solid var(--brand)':'.5px solid var(--border-4)')+';background:'+(ans?'var(--ok-tint)':'#fff')+';color:'+(ans?'var(--ok-strong)':'#666')+';font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">'+(i+1)+'</button>';
+        const flag=!!(sess.flagged&&sess.flagged[i]);   // Batch 11: mark-for-review overlay
+        return '<button onclick="examGoTo('+i+')" style="position:relative;padding:9px 0;border-radius:8px;border:'+(cur?'2px solid var(--brand)':(flag?'1.5px solid #D2691E':'.5px solid var(--border-4)'))+';background:'+(ans?'var(--ok-tint)':'#fff')+';color:'+(ans?'var(--ok-strong)':'#666')+';font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">'+(flag?'<span style="position:absolute;top:-5px;right:-4px;font-size:11px">\u{1F6A9}</span>':'')+(i+1)+'</button>';
       }).join('')
      +'</div>'
      +'<button onclick="examNavToggle();submitExam(false)" style="margin-top:14px;width:100%;padding:12px;border-radius:10px;border:none;background:var(--brand);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Submit Exam</button>'
@@ -5974,6 +6205,7 @@ function renderExamRunner(){
     +'<div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.4px">'+esc(sess.exam.title)+'</div>'
     +'<div style="font-size:13px;font-weight:600;color:var(--ink)">Question '+(sess.currentIdx+1)+' of '+total+' \u00B7 <span style="color:var(--ok-strong-2)">'+answeredCount+' answered</span></div>'
     +'</div>'
+    +'<button onclick="examToggleFlag('+sess.currentIdx+')" title="Mark for review" style="padding:6px 10px;border-radius:8px;border:.5px solid '+(isFlagged?'#D2691E':'var(--border-4)')+';background:'+(isFlagged?'#FDF0E6':'var(--surface)')+';font-size:14px;cursor:pointer;font-family:inherit">'+(isFlagged?'\u{1F6A9}':'\u{1F3F3}\uFE0F')+'</button>'
     +'<button onclick="examNavToggle()" style="padding:6px 10px;border-radius:8px;border:.5px solid var(--border-4);background:var(--surface);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u2630 Nav</button>'
     +'<div style="background:var(--surface);border:.5px solid var(--border-4);border-radius:8px;padding:6px 10px;font-family:\'Courier New\',monospace;font-size:14px;font-weight:700;color:'+timerColor+'" id="exam-timer">'+timerText+'</div>'
     +'</div>'
@@ -5982,6 +6214,7 @@ function renderExamRunner(){
     +'<div class="card" style="margin-bottom:12px">'
     +'<p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">'+stemHTML(q.q)+'</p>'
     +dataTableHTML(q)
+    +askHTML(q)
     +opts
     +'</div>'
     +'<div style="display:flex;gap:8px;margin-bottom:14px">'+prevBtn+nextBtn+'</div>'
@@ -5991,18 +6224,53 @@ function renderExamRunner(){
     +'</div>';
 }
 
+// Batch 11: mm:ss for <1h, Xh Ym for >=1h.
+function _fmtDuration(ms){
+  const totalSec=Math.max(0,Math.round((ms||0)/1000));
+  const h=Math.floor(totalSec/3600),m=Math.floor((totalSec%3600)/60),s=totalSec%60;
+  if(h>0)return h+'h '+m+'m';
+  return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
 function renderExamResult(){
   const sess=STATE.examSession;
   const r=sess.results;
   if(!r)return '';
   const emoji=r.percentage>=80?'\u{1F3C6}':r.percentage>=60?'\u{1F44D}':'\u{1F4DA}';
   const label=r.percentage>=80?'Excellent!':r.percentage>=60?'Good work!':'Keep studying!';
+  // Batch 11: explicit pass/fail line, independent of the tiered emoji/label above.
+  const passed=r.passed!=null?r.passed:(r.percentage>=EXAM_PASS_THRESHOLD);
+  const passBadge='<div style="display:inline-block;margin-top:6px;padding:5px 14px;border-radius:14px;font-size:12px;font-weight:700;background:'+(passed?'var(--ok-tint-2)':'var(--err-tint)')+';color:'+(passed?'var(--ok-2)':'var(--err-2)')+'">'+(passed?'\u2705 Passed':'\u274C Not Passed \u2014 need '+EXAM_PASS_THRESHOLD+'%')+'</div>';
+  // Batch 11: time / average / unanswered / section breakdown / weakest unit.
+  const statRow=(label,val)=>'<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:.5px solid var(--border)"><span style="color:#888">'+label+'</span><span style="font-weight:600;color:var(--ink)">'+val+'</span></div>';
+  let statsHTML=''
+    +statRow('Time taken',_fmtDuration(r.timeMs))
+    +statRow('Avg. per question',_fmtDuration(r.avgMsPerQ))
+    +statRow('Unanswered',(r.unanswered||0)+' of '+r.total);
+  if(r.bySection){
+    const sids=Object.keys(r.bySection);
+    if(sids.length){
+      const parts=sids.map(sid=>{
+        const sec=S.find(s=>String(s.id)===String(sid));
+        const b=r.bySection[sid];
+        return (sec?sec.title:'Sec.'+sid)+': '+b.correct+'/'+b.total;
+      });
+      statsHTML+=statRow('By section',parts.join(' \u00B7 '));
+    }
+  }
+  const weakBlock=(r.weakestLesson&&r.weakestLesson.count>0)
+    ?'<div class="card" style="text-align:left;margin-bottom:14px;background:var(--warn-tint)">'
+     +'<div style="font-size:12px;font-weight:600;color:var(--warn-strong);margin-bottom:4px">\u{1F4CC} Focus next on</div>'
+     +'<div style="font-size:13px;color:#333">'+esc(r.weakestLesson.title)+' \u2014 '+r.weakestLesson.count+' missed here</div>'
+     +'</div>':'';
   return '<div class="scroll-area" style="padding:36px 16px 20px;text-align:center">'
     +'<div style="font-size:56px">'+emoji+'</div>'
     +'<div style="font-size:20px;font-weight:500;margin-top:8px">'+label+'</div>'
-    +'<div style="font-size:12px;color:#aaa;margin:4px 0 14px">'+esc(sess.exam.title)+(r.autoSubmitted?' \u00B7 auto-submitted at deadline':'')+'</div>'
-    +'<div style="font-size:52px;font-weight:500;color:'+(r.percentage>=60?'var(--ok-strong-2)':'var(--err)')+';margin-bottom:2px">'+r.percentage+'%</div>'
+    +'<div style="font-size:12px;color:#aaa;margin:4px 0 4px">'+esc(sess.exam.title)+(r.autoSubmitted?' \u00B7 auto-submitted at deadline':'')+'</div>'
+    +passBadge
+    +'<div style="font-size:52px;font-weight:500;color:'+(r.percentage>=60?'var(--ok-strong-2)':'var(--err)')+';margin:10px 0 2px">'+r.percentage+'%</div>'
     +'<div style="font-size:15px;color:#666;margin-bottom:20px">'+r.score+' out of '+r.total+' correct</div>'
+    +'<div class="card" style="text-align:left;margin-bottom:14px">'+statsHTML+'</div>'
+    +weakBlock
     +'<div class="card" style="text-align:left;margin-bottom:14px">'
     +'<div style="font-size:13px;font-weight:600;color:#333;margin-bottom:6px">Result recorded \u2705</div>'
     +'<div style="font-size:12px;color:#666;line-height:1.6">Your instructor can now see this result on their dashboard. Tap <b>Review Answers</b> to see the correct answers and explanations.</div>'
@@ -6216,6 +6484,7 @@ function renderExamReview(){
     +'<div class="card" style="margin-bottom:12px">'
     +'<p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:16px">'+stemHTML(q.q)+'</p>'
     +(typeof dataTableHTML==='function'?dataTableHTML(q):'')
+    +askHTML(q)
     +opts
     +explanation
     +attribution
@@ -6262,12 +6531,21 @@ async function loadExamResults(examId){
   STATE.dashExamResults[examId]={loading:true,loaded:false,results:[]};
   try{
     const snap=await db.collection('exam-results').where('examId','==',examId).get();
-    const results=snap.docs.map(d=>({_docId:d.id,...d.data()}));
+    // Batch 11: cross-reference userId against the already-loaded roster so rows
+    // show the student's real name instead of falling back to "Student" —
+    // exam-results docs never stored studentName at submit time, and this
+    // works retroactively for old results with no Firestore migration needed.
+    const rosterByUid={};
+    (STATE.dashStudents||[]).forEach(s=>{rosterByUid[s.uid]=s.name||'';});
+    const results=snap.docs.map(d=>{
+      const data=d.data();
+      return {_docId:d.id,...data,studentName:data.studentName||rosterByUid[data.userId]||'Student'};
+    });
     // Compute aggregates
     const submitted=results.filter(r=>r.submitted);
     const scores=submitted.map(r=>r.percentage||0);
     const avg=scores.length?Math.round(scores.reduce((s,v)=>s+v,0)/scores.length):0;
-    const passCount=submitted.filter(r=>(r.percentage||0)>=60).length;
+    const passCount=submitted.filter(r=>(r.percentage||0)>=EXAM_PASS_THRESHOLD).length; // Batch 11: was hardcoded 60
     const passRate=submitted.length?Math.round(passCount/submitted.length*100):0;
     const sorted=[...scores].sort((a,b)=>a-b);
     const median=sorted.length?(sorted.length%2?sorted[(sorted.length-1)/2]:Math.round((sorted[sorted.length/2-1]+sorted[sorted.length/2])/2)):0;
@@ -6307,45 +6585,61 @@ function closeExamResults(){
 function _dashSecTitle(secId){const s=S.find(x=>x.id===Number(secId));return s?s.title:('Section '+secId);}
 
 // Unit picker used by the Exam create form. Empty selection = whole section.
-function renderExamUnitPicker(d){
-  const secId=d&&d.sectionId?parseInt(d.sectionId):0;
-  if(!secId)return '<div style="margin-bottom:10px;font-size:11px;color:#aaa">Pick a section to filter by units.</div>';
+// Batch 11: unit picker is now PER-SECTION — each selected section gets its
+// own chip group, stored at unitsBySection[sectionId] (empty = whole section).
+function renderExamUnitPicker(d,sectionId){
+  const secId=parseInt(sectionId);
   const sec=S.find(s=>s.id===secId);
   if(!sec)return '';
-  const selected=new Set((d.unitIds||[]).map(String));
+  d.unitsBySection=d.unitsBySection||{};
+  const selected=new Set((d.unitsBySection[secId]||[]).map(String));
   const chips=sec.lessons.map((l,idx)=>{
     const on=selected.has(String(l.id));
     // Batch 10: flag out-of-scope units so instructors see why a unit
     // (e.g. 4-14 Variances) is excluded from auto-built exam pools.
-    // (Session A: unit 4-7, formerly an empty "Take a Break" CVP-removal placeholder, was deleted outright — slot left open, 4-8..4-21 IDs unchanged.)
     const badge=l.outOfScope==='part2'?' \u26A0\uFE0F Part 2':(l.outOfScope?' \u26A0\uFE0F \u2192 Sec.3':'');
-    return `<button type="button" onclick="toggleExamUnit('${l.id}')" style="padding:6px 10px;border-radius:14px;border:1px solid ${on?'var(--brand)':'var(--border-4)'};background:${on?'var(--brand)':(l.outOfScope?'#fff7ed':'#fff')};color:${on?'#fff':(l.outOfScope?'#b45309':'#555')};font-size:11px;font-weight:${on?'600':'500'};cursor:pointer;font-family:inherit;white-space:nowrap">U${idx+1}: ${esc(l.title.length>28?l.title.slice(0,26)+'\u2026':l.title)}${badge}</button>`;
+    return `<button type="button" onclick="toggleExamUnit(${secId},'${l.id}')" style="padding:6px 10px;border-radius:14px;border:1px solid ${on?'var(--brand)':'var(--border-4)'};background:${on?'var(--brand)':(l.outOfScope?'#fff7ed':'#fff')};color:${on?'#fff':(l.outOfScope?'#b45309':'#555')};font-size:11px;font-weight:${on?'600':'500'};cursor:pointer;font-family:inherit;white-space:nowrap">U${idx+1}: ${esc(l.title.length>28?l.title.slice(0,26)+'\u2026':l.title)}${badge}</button>`;
   }).join('');
   const allCount=sec.lessons.length;
   const sel=selected.size;
   const label=sel===0?`All units (${allCount})`:`${sel} of ${allCount} units`;
   return `<div style="margin-bottom:10px">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-      <label style="font-size:11px;color:#888">Units <span style="font-weight:600;color:var(--brand)">${label}</span></label>
-      <button type="button" onclick="clearExamUnits()" style="background:none;border:none;color:var(--brand);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">Clear \u2192 all</button>
+      <label style="font-size:11px;color:#888">Sec ${secId} \u2014 ${esc(sec.title)} units <span style="font-weight:600;color:var(--brand)">${label}</span></label>
+      <button type="button" onclick="clearExamUnits(${secId})" style="background:none;border:none;color:var(--brand);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">Clear \u2192 all</button>
     </div>
     <div style="display:flex;flex-wrap:wrap;gap:6px;padding:8px;background:var(--surface);border:.5px solid var(--border);border-radius:8px;max-height:150px;overflow-y:auto">${chips}</div>
     <div style="font-size:11px;color:#888;margin-top:4px">Leave empty to include the whole section.</div>
   </div>`;
 }
-function onExamSectionChange(v){
-  STATE.dashExamDraft.sectionId=v;
-  STATE.dashExamDraft.unitIds=[];   // section change resets units
+function toggleExamSection(sidStr){
+  const sid=parseInt(sidStr);
+  const d=STATE.dashExamDraft;
+  d.sectionIds=d.sectionIds||[];
+  const i=d.sectionIds.findIndex(x=>parseInt(x)===sid);
+  if(i>=0){
+    d.sectionIds.splice(i,1);
+    if(d.unitsBySection)delete d.unitsBySection[sid];
+  }else{
+    d.sectionIds.push(sid);
+  }
   render();
 }
-function toggleExamUnit(uid){
-  const arr=STATE.dashExamDraft.unitIds||[];
+function toggleExamUnit(sectionId,uid){
+  const d=STATE.dashExamDraft;
+  d.unitsBySection=d.unitsBySection||{};
+  const arr=d.unitsBySection[sectionId]||[];
   const i=arr.indexOf(uid);
   if(i>=0)arr.splice(i,1);else arr.push(uid);
-  STATE.dashExamDraft.unitIds=arr.slice();
+  d.unitsBySection[sectionId]=arr.slice();
   render();
 }
-function clearExamUnits(){STATE.dashExamDraft.unitIds=[];render();}
+function clearExamUnits(sectionId){
+  const d=STATE.dashExamDraft;
+  d.unitsBySection=d.unitsBySection||{};
+  d.unitsBySection[sectionId]=[];
+  render();
+}
 
 // ── Ticket #9 exam re-shuffle (only while status === 'scheduled') ──────────
 async function reshuffleExam(examId){
@@ -6353,26 +6647,16 @@ async function reshuffleExam(examId){
   const ex=(STATE.dashExams||[]).find(e=>e.id===examId);
   if(!ex){showToast('Exam not found.','error');return;}
   if(examWindowStatus(ex)!=='scheduled'){showToast('Only scheduled exams can be re-shuffled.','warning');return;}
-  const ok=await showModal({icon:'\u{1F504}',title:'Re-shuffle Questions?',body:'This picks a fresh random set of '+ex.count+' questions from the same units. Students haven\u2019t started yet, so this is safe.',type:'info',confirmText:'Re-shuffle',cancelText:'Cancel'});
+  const ok=await showModal({icon:'\u{1F504}',title:'Re-shuffle Questions?',body:'This picks a fresh random set of '+ex.count+' questions from the same sections/units, keeping the same even split. Students haven\u2019t started yet, so this is safe.',type:'info',confirmText:'Re-shuffle',cancelText:'Cancel'});
   if(!ok)return;
   try{
-    await ensureQuizzes(ex.sectionId);
-    const sec=S.find(s=>s.id===ex.sectionId);
-    if(!sec){showToast('Section not found.','error');return;}
-    const unitIds=Array.isArray(ex.unitIds)?ex.unitIds.map(String).filter(Boolean):[];
-    const lessonMatch=(lid)=>!unitIds.length||unitIds.includes(String(lid));
-    const pool=[];
-    sec.lessons.forEach(l=>{
-      if(!lessonMatch(l.id))return;
-      if(l.quizzes&&l.quizzes.length)l.quizzes.forEach((q,i)=>{
-        if(isOutOfScopeQ(l,q))return;   // Batch 10: same guard as saveExam
-        pool.push(l.id+':'+(q.id||i));
-      });
-    });
-    if(pool.length<ex.count){showToast('Only '+pool.length+' questions available now.','warning');return;}
-    for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
-    const questionIds=pool.slice(0,ex.count);
-    await db.collection('exams').doc(examId).update({questionIds,reshuffledAt:new Date().toISOString()});
+    // Batch 11: same distribution logic as saveExam — legacy single-section
+    // exams (no sectionIds array) fall back to their one sectionId/unitIds.
+    const sectionIds=Array.isArray(ex.sectionIds)&&ex.sectionIds.length?ex.sectionIds:[ex.sectionId];
+    const unitsBySection=ex.unitsBySection||(ex.unitIds?{[ex.sectionId]:ex.unitIds}:{});
+    const result=await buildDistributedExamPool(sectionIds,unitsBySection,ex.count);
+    if(!result.ok){showToast(result.message,'warning');return;}
+    await db.collection('exams').doc(examId).update({questionIds:result.questionIds,reshuffledAt:new Date().toISOString()});
     showToast('Questions re-shuffled \u2705','success');
     await refreshDashScoped();
   }catch(e){console.warn('[reshuffleExam]',e);showToast('Error: '+e.message,'error');}
@@ -6440,12 +6724,117 @@ function renderDashStudents(){
   </div>`;
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+//  BATCH 11 — APPROVALS TAB (group join/switch requests)
+// ═══════════════════════════════════════════════════════════════════════════
+// Data model: group-requests/{id} = {uid,studentName,studentEmail,studentMobile,
+//   groupCode,status:'pending'|'approved'|'rejected',requestedAt,resolvedAt,resolvedBy}
+// Rules (add manually via Firebase Console — no firestore.rules file in project):
+//   create: any signed-in user, doc.uid must equal auth.uid
+//   read/update/delete: instructor only
+STATE.dashApprovals={loaded:false,loading:false,rows:[]};
+
+async function loadDashApprovals(){
+  if(STATE.dashApprovals.loading)return;
+  STATE.dashApprovals={loading:true,loaded:false,rows:STATE.dashApprovals.rows||[]};
+  try{
+    const snap=await db.collection('group-requests').where('status','==','pending').get();
+    const rows=snap.docs.map(d=>({_docId:d.id,...d.data()}))
+      .sort((a,b)=>(a.requestedAt||'').localeCompare(b.requestedAt||''));
+    STATE.dashApprovals={loading:false,loaded:true,rows};
+    if(STATE.tab==='dashboard'&&STATE.dashTab==='approvals')render();
+  }catch(e){
+    console.warn('[loadDashApprovals] failed:',e);
+    STATE.dashApprovals={loading:false,loaded:true,rows:[],error:e.message};
+    if(STATE.tab==='dashboard'&&STATE.dashTab==='approvals')render();
+  }
+}
+
+function renderDashApprovals(){
+  const rows=(STATE.dashApprovals&&STATE.dashApprovals.rows)||[];
+  if(!rows.length){
+    return `<div style="padding:14px"><div class="gs-empty">
+      <div class="gs-empty-icon">\u2705</div>
+      <div class="gs-empty-title">No pending requests</div>
+      <div class="gs-empty-body">When a student enters a new or different group code on their profile, their request to join shows up here for you to approve or reject.</div>
+    </div></div>`;
+  }
+  const fmtDT=(iso)=>{if(!iso)return '';try{return new Date(iso).toLocaleDateString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});}catch{return iso;}};
+  const cards=rows.map(r=>`<div style="background:#fff;border:.5px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:10px">
+    <div style="font-size:14px;font-weight:600;color:var(--ink)">${esc(r.studentName||'Unnamed')}</div>
+    <div style="font-size:11px;color:#888;margin-top:2px">${esc(r.studentEmail||r.studentMobile||'')}</div>
+    <div style="font-size:12px;color:#555;margin-top:6px">Requesting group <b style="font-family:'Courier New',monospace">${esc(r.groupCode)}</b> \u00B7 ${fmtDT(r.requestedAt)}</div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button onclick="approveGroupRequest('${esc(r._docId)}')" style="flex:1;padding:9px;border-radius:8px;border:none;background:var(--ok-strong-2);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">\u2705 Approve</button>
+      <button onclick="rejectGroupRequest('${esc(r._docId)}')" style="flex:1;padding:9px;border-radius:8px;border:.5px solid var(--err);background:var(--err-tint);color:var(--err-2);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">\u2716 Reject</button>
+    </div>
+  </div>`).join('');
+  return `<div style="padding:14px">
+    <div style="font-size:12px;color:#888;margin-bottom:10px">${rows.length} pending request${rows.length===1?'':'s'}.</div>
+    ${cards}
+    <div style="height:30px"></div>
+  </div>`;
+}
+
+async function approveGroupRequest(requestId){
+  if(!isInstructor()){showToast('Not authorized.','error');return;}
+  const req=(STATE.dashApprovals.rows||[]).find(r=>r._docId===requestId);
+  if(!req)return;
+  try{
+    await db.collection('students').doc(req.uid).set({groupCode:req.groupCode,pendingGroupCode:''},{merge:true});
+    await db.collection('group-requests').doc(requestId).update({status:'approved',resolvedAt:new Date().toISOString(),resolvedBy:STATE.user.uid});
+    STATE.dashApprovals.rows=(STATE.dashApprovals.rows||[]).filter(r=>r._docId!==requestId);
+    // Keep the roster's cached copy in sync so Students tab reflects it immediately.
+    const idx=(STATE.dashStudents||[]).findIndex(s=>s.uid===req.uid);
+    if(idx>=0){STATE.dashStudents[idx].groupCode=req.groupCode;STATE.dashStudents[idx].pendingGroupCode='';}
+    showToast('\u2705 Approved — '+(req.studentName||'Student')+' is now in '+req.groupCode,'success');
+    render();
+  }catch(e){console.warn('[approveGroupRequest]',e);showToast('Error: '+e.message,'error');}
+}
+
+async function rejectGroupRequest(requestId){
+  if(!isInstructor()){showToast('Not authorized.','error');return;}
+  const req=(STATE.dashApprovals.rows||[]).find(r=>r._docId===requestId);
+  if(!req)return;
+  const ok=await showModal({icon:'\u2716',title:'Reject Request?',body:'This declines '+(req.studentName||'this student')+'\u2019s request to join '+req.groupCode+'. They\u2019ll see it was declined and can contact you or try a different code.',type:'warning',confirmText:'Reject',cancelText:'Cancel'});
+  if(!ok)return;
+  try{
+    await db.collection('students').doc(req.uid).set({pendingGroupCode:''},{merge:true});
+    // Kept as a record (status:'rejected'), not deleted — audit trail.
+    await db.collection('group-requests').doc(requestId).update({status:'rejected',resolvedAt:new Date().toISOString(),resolvedBy:STATE.user.uid});
+    STATE.dashApprovals.rows=(STATE.dashApprovals.rows||[]).filter(r=>r._docId!==requestId);
+    const idx=(STATE.dashStudents||[]).findIndex(s=>s.uid===req.uid);
+    if(idx>=0){STATE.dashStudents[idx].pendingGroupCode='';}
+    showToast('Request rejected.','info');
+    render();
+  }catch(e){console.warn('[rejectGroupRequest]',e);showToast('Error: '+e.message,'error');}
+}
+
 // Batch 6 · Item G — Student Detail live re-fetch + full profile + G.5 notes.
+
 // Fix: dashboard roster caches on first open (dashGroupsLoaded=true), so any
 // profile fields the student completes AFTER cache-warm never appear here.
 // We now re-fetch students/{uid} on detail open (one read per open — cheap)
 // and merge over the cached row so the second open is instant.
+// Batch 11: instructor-initiated removal from a group (confirm modal, then
+// clears groupCode — student falls back to self-study until they re-join
+// via a fresh request, which goes through approval again like any other).
+async function removeStudentFromGroup(uid){
+  if(!isInstructor()){showToast('Not authorized.','error');return;}
+  const s=(STATE.dashStudents||[]).find(x=>x.uid===uid);
+  if(!s)return;
+  const ok=await showModal({icon:'\u{1F6AA}',title:'Remove from Group?',body:'This removes '+(s.name||'this student')+' from group '+esc(s.groupCode)+'. They\u2019ll need a new request (approved by you) to rejoin any group.',type:'danger',confirmText:'Remove',cancelText:'Cancel'});
+  if(!ok)return;
+  try{
+    await db.collection('students').doc(uid).set({groupCode:'',pendingGroupCode:''},{merge:true});
+    s.groupCode='';s.pendingGroupCode='';
+    showToast('Removed from group.','success');
+    render();
+  }catch(e){console.warn('[removeStudentFromGroup]',e);showToast('Error: '+e.message,'error');}
+}
+
 async function loadStudentDetailFresh(uid){
+
   if(!uid||!db) return;
   STATE.dashStudentDetailLoading=true;
   try{
@@ -6551,6 +6940,7 @@ function renderDashStudentDetail(){
       <button onclick="saveInstructorNote('${esc(uid)}')" style="margin-top:8px;padding:8px 16px;border-radius:8px;border:none;background:var(--accent-purple-strong);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Save note</button>
     </div>
     <button onclick="openStudentAttendanceHistory('${esc(s.uid)}')" style="width:100%;padding:12px;border-radius:10px;border:.5px solid var(--brand-2);background:var(--brand-tint);color:var(--brand);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:12px">\u{1F4C5} View attendance history</button>
+    ${s.groupCode?`<button onclick="removeStudentFromGroup('${esc(s.uid)}')" style="width:100%;padding:12px;border-radius:10px;border:.5px solid var(--err);background:var(--err-tint);color:var(--err-2);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:12px">\u{1F6AA} Remove from group</button>`:''}
     ${registered?`<div style="text-align:center;font-size:11px;color:var(--muted-2);margin-bottom:8px">Registered ${esc(registered)}</div>`:''}
     <div style="height:30px"></div>
   </div>`;
@@ -6817,9 +7207,161 @@ function exportAttendanceMatrixCSV(groupCode){
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
+//  BATCH 11 — FEEDBACK MATRIX (one row per student, one column per lecture)
+// ═══════════════════════════════════════════════════════════════════════════
+STATE.dashFeedbackByGroup={};   // {groupCode: {loaded,loading,rows:[lecture-feedback docs]}}
+
+async function loadGroupFeedback(groupCode){
+  const cache=STATE.dashFeedbackByGroup[groupCode];
+  if(cache&&(cache.loaded||cache.loading))return;
+  STATE.dashFeedbackByGroup[groupCode]={loading:true,loaded:false,rows:[]};
+  try{
+    const snap=await db.collection('lecture-feedback').where('groupCode','==',groupCode).get();
+    STATE.dashFeedbackByGroup[groupCode]={loading:false,loaded:true,rows:snap.docs.map(d=>d.data())};
+    if(STATE.tab==='dashboard'&&STATE.dashTab==='attendance')render();
+  }catch(e){
+    console.warn('[loadGroupFeedback] failed:',e);
+    STATE.dashFeedbackByGroup[groupCode]={loading:false,loaded:true,rows:[],error:e.message};
+    if(STATE.tab==='dashboard'&&STATE.dashTab==='attendance')render();
+  }
+}
+
+function renderDashFeedbackMatrix(groupCode,lectures,students){
+  const cache=STATE.dashFeedbackByGroup[groupCode];
+  if(!cache||!cache.loaded){
+    loadGroupFeedback(groupCode);
+    return `<div style="text-align:center;padding:34px 20px;color:var(--muted-2)"><div style="font-size:26px;margin-bottom:8px">\u23F3</div><div style="font-size:13px">Loading feedback\u2026</div></div>`;
+  }
+  const lecturesSorted=lectures.slice().sort((a,b)=>{
+    const da=a.date||a.createdAt||''; const dbb=b.date||b.createdAt||'';
+    return String(da).localeCompare(String(dbb));
+  });
+  const studentsSorted=students.slice().sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+  if(!studentsSorted.length){
+    return `<div style="text-align:center;padding:34px 20px;color:var(--muted-2)"><div style="font-size:36px;margin-bottom:8px">\u{1F464}</div><div style="font-size:13px">No students in group ${esc(groupCode)}.</div></div>`;
+  }
+  // fb[userId][lectureId] = {rating,comment}
+  const fb={};
+  (cache.rows||[]).forEach(r=>{
+    if(!r.userId)return;
+    if(!fb[r.userId])fb[r.userId]={};
+    fb[r.userId][r.lectureId]={rating:r.rating||0,comment:r.comment||''};
+  });
+  const rowSummary={}, colSummary={};
+  studentsSorted.forEach(s=>{
+    let sum=0,n=0;
+    lecturesSorted.forEach(l=>{
+      const r=(fb[s.uid]||{})[l.id];
+      if(r){sum+=r.rating;n++;}
+    });
+    rowSummary[s.uid]={avg:n?Math.round(sum/n*10)/10:0,n,total:lecturesSorted.length};
+  });
+  lecturesSorted.forEach(l=>{
+    let sum=0,n=0;
+    studentsSorted.forEach(s=>{
+      const r=(fb[s.uid]||{})[l.id];
+      if(r){sum+=r.rating;n++;}
+    });
+    colSummary[l.id]={avg:n?Math.round(sum/n*10)/10:0,n,rate:studentsSorted.length?Math.round(n/studentsSorted.length*100):0};
+  });
+  const fmtDate=(iso)=>{ if(!iso) return '\u2014'; try{ return new Date(iso).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}); }catch{return '\u2014';}};
+  const cellFor=(s,l)=>{
+    const r=(fb[s.uid]||{})[l.id];
+    if(!r)return `<div title="No feedback" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--muted-2);font-size:12px">\u2013</div>`;
+    const tip=r.comment?esc(r.comment):'No comment';
+    return `<div title="${tip}" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--warn-tint);color:var(--warn-strong);font-weight:700;font-size:11px">${r.rating}\u2605</div>`;
+  };
+  const headerCells=lecturesSorted.map(l=>{
+    const dt=fmtDate(l.date||l.createdAt);
+    return `<th style="min-width:56px;max-width:56px;padding:6px 4px;background:var(--surface-3);border:1px solid var(--border);font-weight:600;font-size:10px;color:var(--ink-2);line-height:1.2;position:sticky;top:0;z-index:2" title="${esc(l.title||'')} - ${esc(dt)}">${esc(dt)}</th>`;
+  }).join('');
+  const headerRow=`<thead><tr>
+    <th style="min-width:150px;max-width:170px;padding:8px 10px;background:var(--surface-3);border:1px solid var(--border);font-weight:600;font-size:11px;color:var(--ink-2);text-align:left;position:sticky;left:0;top:0;z-index:3">Student</th>
+    ${headerCells}
+    <th style="min-width:70px;max-width:70px;padding:6px 4px;background:var(--surface-3);border:1px solid var(--border);font-weight:600;font-size:10px;color:var(--ink-2);position:sticky;top:0;z-index:2">Avg</th>
+  </tr></thead>`;
+  const bodyRows=studentsSorted.map(s=>{
+    const cells=lecturesSorted.map(l=>`<td style="min-width:56px;max-width:56px;height:34px;padding:0;border:1px solid var(--border);background:var(--card)">${cellFor(s,l)}</td>`).join('');
+    const sum=rowSummary[s.uid];
+    const rateColor=sum.avg>=4?'var(--ok-2)':(sum.avg>=3?'var(--warn-strong)':'var(--err-2)');
+    return `<tr>
+      <td onclick="STATE.dashStudentDetailUid='${esc(s.uid)}';render()" style="min-width:150px;max-width:170px;padding:8px 10px;background:var(--card);border:1px solid var(--border);font-size:12px;color:var(--ink);text-align:left;position:sticky;left:0;z-index:1;cursor:pointer;font-weight:500;white-space:normal;word-break:break-word;line-height:1.3" title="${esc(s.name||'')}">${esc(s.name||'Unnamed')}</td>
+      ${cells}
+      <td style="min-width:70px;max-width:70px;padding:4px;border:1px solid var(--border);background:var(--card);text-align:center"><div style="font-size:12px;font-weight:700;color:${sum.n?rateColor:'var(--muted-2)'}">${sum.n?sum.avg+'\u2605':'\u2014'}</div><div style="font-size:9px;color:var(--muted-2);margin-top:1px">${sum.n}/${sum.total}</div></td>
+    </tr>`;
+  }).join('');
+  const footerCells=lecturesSorted.map(l=>{
+    const c=colSummary[l.id];
+    const col=c.avg>=4?'var(--ok-2)':(c.avg>=3?'var(--warn-strong)':'var(--err-2)');
+    return `<td style="min-width:56px;max-width:56px;padding:4px;border:1px solid var(--border);background:var(--surface-3);text-align:center"><div style="font-size:11px;font-weight:700;color:${c.n?col:'var(--muted-2)'}">${c.n?c.avg+'\u2605':'\u2014'}</div><div style="font-size:9px;color:var(--muted-2);margin-top:1px">${c.rate}%</div></td>`;
+  }).join('');
+  const footerRow=`<tfoot><tr>
+    <td style="min-width:150px;max-width:170px;padding:8px 10px;background:var(--surface-3);border:1px solid var(--border);font-size:11px;font-weight:600;color:var(--ink-2);text-align:left;position:sticky;left:0;z-index:1">Lecture avg</td>
+    ${footerCells}
+    <td style="background:var(--surface-3);border:1px solid var(--border)"></td>
+  </tr></tfoot>`;
+  return `<div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
+      <button onclick="exportFeedbackMatrixCSV('${esc(groupCode)}')" style="padding:7px 12px;border-radius:8px;border:.5px solid var(--border);background:var(--card);color:var(--ink);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">\u{1F4E5} Export CSV</button>
+    </div>
+    <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;max-height:70vh;border-radius:10px;border:1px solid var(--border);background:var(--card)">
+      <table style="border-collapse:collapse;font-family:inherit;width:auto">
+        ${headerRow}
+        <tbody>${bodyRows}</tbody>
+        ${footerRow}
+      </table>
+    </div>
+    <div style="font-size:11px;color:var(--muted-2);margin-top:8px;line-height:1.4">Tap a student name to open their profile. Hover a cell to see the comment, if any.</div>
+  </div>`;
+}
+
+function exportFeedbackMatrixCSV(groupCode){
+  try{
+    const cache=STATE.dashFeedbackByGroup[groupCode];
+    const lectures=(STATE.dashLectures||[]).slice().sort((a,b)=>{
+      const da=a.date||a.createdAt||''; const dbb=b.date||b.createdAt||'';
+      return String(da).localeCompare(String(dbb));
+    });
+    const students=(STATE.dashStudents||[]).filter(s=>(s.groupCode||'').toUpperCase()===String(groupCode).toUpperCase())
+      .slice().sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+    const fb={};
+    (cache&&cache.rows||[]).forEach(r=>{
+      if(!r.userId)return;
+      if(!fb[r.userId])fb[r.userId]={};
+      fb[r.userId][r.lectureId]={rating:r.rating||0,comment:r.comment||''};
+    });
+    const csvEsc=(s)=>{ s=String(s==null?'':s); return /[,"\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; };
+    const fmtDate=(iso)=>{ try{ return new Date(iso).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}); }catch{return '';} };
+    const headers=['Student','Mobile','Email'].concat(lectures.map(l=>fmtDate(l.date||l.createdAt)+' - '+(l.title||''))).concat(['Avg Rating','Responses','Total']);
+    const rows=[headers.map(csvEsc).join(',')];
+    students.forEach(s=>{
+      let sum=0,n=0;
+      const cells=lectures.map(l=>{
+        const r=(fb[s.uid]||{})[l.id];
+        if(r){sum+=r.rating;n++;return r.rating;}
+        return '';
+      });
+      const avg=n?Math.round(sum/n*10)/10:'';
+      const row=[s.name||'',s.mobile||'',s.email||''].concat(cells).concat([avg,n,lectures.length]);
+      rows.push(row.map(csvEsc).join(','));
+    });
+    const csv='\uFEFF'+rows.join('\n');
+    const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    const stamp=new Date().toISOString().slice(0,10);
+    a.href=url; a.download=`feedback-${groupCode}-${stamp}.csv`;
+    document.body.appendChild(a); a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 100);
+    showToast('CSV downloaded','success',1500);
+  }catch(e){ showToast('Export failed: '+e.message,'error'); }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
 //  ATTENDANCE TAB — per-lecture summary with online/offline/absent counts
 // ═══════════════════════════════════════════════════════════════════════════
 function renderDashAttendance(){
+
   const g=STATE.dashSelectedGroup;
   const lectures=(STATE.dashLectures||[]).slice();
   const students=(STATE.dashStudents||[]).filter(s=>(s.groupCode||'').toUpperCase()===g.toUpperCase());
@@ -6827,10 +7369,11 @@ function renderDashAttendance(){
   // Batch 7: ensure view mode is primed (may be null on first dashboard open)
   _primeAttendanceView();
   const activeView=STATE.dashAttendanceView||'list';
-  // Batch 7: segmented toggle — List vs Matrix
+  // Batch 7/11: segmented toggle — List / Attendance Matrix / Feedback Matrix
   const viewToggle=`<div class="att-view-toggle">
     <button class="att-view-btn${activeView==='list'?' active':''}" onclick="setAttendanceView('list')">\u{1F4CB} List View</button>
-    <button class="att-view-btn${activeView==='matrix'?' active':''}" onclick="setAttendanceView('matrix')">\u{1F4CA} Matrix View</button>
+    <button class="att-view-btn${activeView==='matrix'?' active':''}" onclick="setAttendanceView('matrix')">\u{1F4CA} Attendance Matrix</button>
+    <button class="att-view-btn${activeView==='feedback'?' active':''}" onclick="setAttendanceView('feedback')">\u2B50 Feedback Matrix</button>
   </div>`;
   if(!lectures.length){
     return `<div style="padding:14px">${viewToggle}${renderDashTabEmpty('Attendance',g,{icon:'\u2705',body:'No lectures yet for this group. Create a lecture first, then attendance summaries will appear here.'})}</div>`;
@@ -6845,6 +7388,15 @@ function renderDashAttendance(){
       <div style="font-size:12px;color:var(--muted-2);margin-bottom:12px">Group has <b>${total}</b> student${total===1?'':'s'} \u00B7 ${lectures.length} lecture${lectures.length===1?'':'s'}</div>
       ${csvBtn}
       ${renderDashAttendanceMatrix(g,lectures,students)}
+      <div style="height:30px"></div>
+    </div>`;
+  }
+  // Batch 11: Feedback Matrix view — one row per student, one column per lecture.
+  if(activeView==='feedback'){
+    return `<div style="padding:14px">
+      ${viewToggle}
+      <div style="font-size:12px;color:var(--muted-2);margin-bottom:12px">Group has <b>${total}</b> student${total===1?'':'s'} \u00B7 ${lectures.length} lecture${lectures.length===1?'':'s'}</div>
+      ${renderDashFeedbackMatrix(g,lectures,students)}
       <div style="height:30px"></div>
     </div>`;
   }
@@ -6893,7 +7445,13 @@ function renderDashAttendance(){
 function _lectureFeedbackToggleBtn(lec){
   const p=STATE.dashLive[lec.groupCode];
   const isPointer=p&&p.lectureId===lec.id;
-  const on=!!(isPointer&&p.feedbackOpen);
+  // Batch 11: default state is now COMPUTED (isFeedbackOpen — 7 days from
+  // checkinClosedAt). The button still lets the instructor override early
+  // (force-close during the auto window, or force-open before it) via the
+  // existing live/{groupCode}.feedbackOpen flag while this lecture is current.
+  const auto=isFeedbackOpen(lec);
+  const manualOverride=isPointer&&p.feedbackOpen!=null?p.feedbackOpen:null;
+  const on=manualOverride!=null?manualOverride:auto;
   return `<button onclick="toggleLectureFeedback('${lec.id}','${lec.groupCode}')" style="padding:8px 10px;border-radius:8px;border:.5px solid ${on?'#C0392B40':'#1E844940'};background:${on?'var(--err-tint)':'var(--ok-tint-2)'};color:${on?'var(--err-2)':'var(--ok-2)'};font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;flex:1">${on?'\u{1F6D1} Close Feedback':'\u25B6 Open Feedback'}</button>`;
 }
 
@@ -6945,10 +7503,38 @@ async function openLectureFeedback(lectureId){
 // ═══════════════════════════════════════════════════════════════════════════
 STATE.dashResultsExpanded={};
 
+// Batch 11: Per-exam / Matrix view toggle, same pattern as Attendance tab.
+STATE.dashResultsView=null;
+function setResultsView(v){
+  STATE.dashResultsView=v;
+  try{ localStorage.setItem('cma-results-view', v); }catch{}
+  render();
+}
+function _primeResultsView(){
+  if(STATE.dashResultsView) return;
+  try{ STATE.dashResultsView = localStorage.getItem('cma-results-view') || 'list'; }
+  catch{ STATE.dashResultsView = 'list'; }
+}
 function renderDashResults(){
   const exams=(STATE.dashExams||[]).slice();
   if(!exams.length){
     return `<div style="padding:14px">${renderDashTabEmpty('Results',STATE.dashSelectedGroup,{icon:'\u{1F4CA}',body:'No exams yet for this group. Create one from the Exams tab.'})}</div>`;
+  }
+  _primeResultsView();
+  const activeView=STATE.dashResultsView||'list';
+  const viewToggle=`<div class="att-view-toggle">
+    <button class="att-view-btn${activeView==='list'?' active':''}" onclick="setResultsView('list')">\u{1F4CB} Per-Exam View</button>
+    <button class="att-view-btn${activeView==='matrix'?' active':''}" onclick="setResultsView('matrix')">\u{1F4CA} Matrix View</button>
+  </div>`;
+  if(activeView==='matrix'){
+    const g=STATE.dashSelectedGroup;
+    const students=(STATE.dashStudents||[]).filter(s=>(s.groupCode||'').toUpperCase()===String(g).toUpperCase());
+    return `<div style="padding:14px">
+      ${viewToggle}
+      <div style="font-size:12px;color:var(--muted-2);margin-bottom:12px">Group has <b>${students.length}</b> student${students.length===1?'':'s'} \u00B7 ${exams.length} exam${exams.length===1?'':'s'}</div>
+      ${renderDashResultsMatrix(g,exams,students)}
+      <div style="height:30px"></div>
+    </div>`;
   }
   const closed=exams.filter(x=>examWindowStatus(x)==='closed');
   const active=exams.filter(x=>examWindowStatus(x)==='active');
@@ -6956,13 +7542,149 @@ function renderDashResults(){
   const order=[...closed,...active,...scheduled];
   const rows=order.map(x=>renderResultsCard(x)).join('');
   return `<div style="padding:14px">
-    <div style="font-size:12px;color:#888;margin-bottom:10px">Tap any exam to expand per-student breakdown.</div>
+    ${viewToggle}
+    <div style="font-size:12px;color:#888;margin:10px 0">Tap any exam to expand per-student breakdown.</div>
     ${rows}
     <div style="height:30px"></div>
   </div>`;
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+//  BATCH 11 — RESULTS MATRIX (one row per student, one column per exam)
+// ═══════════════════════════════════════════════════════════════════════════
+function renderDashResultsMatrix(groupCode,exams,students){
+  let missing=0;
+  exams.forEach(x=>{
+    const cache=STATE.dashExamResults[x.id];
+    if(!cache||!cache.loaded){
+      missing++;
+      loadExamResults(x.id).then(()=>{if(STATE.tab==='dashboard'&&STATE.dashTab==='results')render();}).catch(()=>{});
+    }
+  });
+  if(missing>0){
+    return `<div style="text-align:center;padding:34px 20px;color:var(--muted-2)"><div style="font-size:26px;margin-bottom:8px">\u23F3</div><div style="font-size:13px">Loading results for ${missing} exam${missing===1?'':'s'}\u2026</div></div>`;
+  }
+  const examsSorted=exams.slice().sort((a,b)=>(a.opensAt||'').localeCompare(b.opensAt||''));
+  const studentsSorted=students.slice().sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+  if(!studentsSorted.length){
+    return `<div style="text-align:center;padding:34px 20px;color:var(--muted-2)"><div style="font-size:36px;margin-bottom:8px">\u{1F464}</div><div style="font-size:13px">No students in group ${esc(groupCode)}.</div></div>`;
+  }
+  // res[userId][examId] = percentage
+  const res={};
+  examsSorted.forEach(x=>{
+    const cache=STATE.dashExamResults[x.id];
+    (cache&&cache.results||[]).forEach(r=>{
+      if(!r.userId||!r.submitted)return;
+      if(!res[r.userId])res[r.userId]={};
+      res[r.userId][x.id]=r.percentage||0;
+    });
+  });
+  const rowSummary={};
+  studentsSorted.forEach(s=>{
+    let sum=0,n=0;
+    examsSorted.forEach(x=>{
+      const p=(res[s.uid]||{})[x.id];
+      if(p!=null){sum+=p;n++;}
+    });
+    rowSummary[s.uid]={avg:n?Math.round(sum/n):0,n,total:examsSorted.length};
+  });
+  const colSummary={};
+  examsSorted.forEach(x=>{
+    let sum=0,n=0;
+    studentsSorted.forEach(s=>{
+      const p=(res[s.uid]||{})[x.id];
+      if(p!=null){sum+=p;n++;}
+    });
+    colSummary[x.id]={avg:n?Math.round(sum/n):0,n,rate:studentsSorted.length?Math.round(n/studentsSorted.length*100):0};
+  });
+  const pctColor=(p)=>p>=80?'var(--ok-2)':(p>=60?'var(--warn-strong)':'var(--err-2)');
+  const pctBg=(p)=>p>=80?'var(--ok-tint-2)':(p>=60?'#FEF5E7':'var(--err-tint)');
+  const cellFor=(s,x)=>{
+    const p=(res[s.uid]||{})[x.id];
+    if(p==null)return `<div title="Not taken" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--muted-2);font-size:12px">\u2013</div>`;
+    return `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:${pctBg(p)};color:${pctColor(p)};font-weight:700;font-size:11px">${p}%</div>`;
+  };
+  const headerCells=examsSorted.map(x=>`<th style="min-width:64px;max-width:64px;padding:6px 4px;background:var(--surface-3);border:1px solid var(--border);font-weight:600;font-size:10px;color:var(--ink-2);line-height:1.2;position:sticky;top:0;z-index:2" title="${esc(x.title||'')}">${esc((x.title||'').length>10?(x.title||'').slice(0,9)+'\u2026':(x.title||''))}</th>`).join('');
+  const headerRow=`<thead><tr>
+    <th style="min-width:150px;max-width:170px;padding:8px 10px;background:var(--surface-3);border:1px solid var(--border);font-weight:600;font-size:11px;color:var(--ink-2);text-align:left;position:sticky;left:0;top:0;z-index:3">Student</th>
+    ${headerCells}
+    <th style="min-width:80px;max-width:80px;padding:6px 4px;background:var(--surface-3);border:1px solid var(--border);font-weight:600;font-size:10px;color:var(--ink-2);position:sticky;top:0;z-index:2">Avg</th>
+  </tr></thead>`;
+  const bodyRows=studentsSorted.map(s=>{
+    const cells=examsSorted.map(x=>`<td style="min-width:64px;max-width:64px;height:34px;padding:0;border:1px solid var(--border);background:var(--card)">${cellFor(s,x)}</td>`).join('');
+    const sum=rowSummary[s.uid];
+    return `<tr>
+      <td onclick="STATE.dashStudentDetailUid='${esc(s.uid)}';render()" style="min-width:150px;max-width:170px;padding:8px 10px;background:var(--card);border:1px solid var(--border);font-size:12px;color:var(--ink);text-align:left;position:sticky;left:0;z-index:1;cursor:pointer;font-weight:500;white-space:normal;word-break:break-word;line-height:1.3" title="${esc(s.name||'')}">${esc(s.name||'Unnamed')}</td>
+      ${cells}
+      <td style="min-width:80px;max-width:80px;padding:4px;border:1px solid var(--border);background:var(--card);text-align:center"><div style="font-size:12px;font-weight:700;color:${sum.n?pctColor(sum.avg):'var(--muted-2)'}">${sum.n?sum.avg+'%':'\u2014'}</div><div style="font-size:9px;color:var(--muted-2);margin-top:1px">${sum.n}/${sum.total}</div></td>
+    </tr>`;
+  }).join('');
+  const footerCells=examsSorted.map(x=>{
+    const c=colSummary[x.id];
+    return `<td style="min-width:64px;max-width:64px;padding:4px;border:1px solid var(--border);background:var(--surface-3);text-align:center"><div style="font-size:11px;font-weight:700;color:${c.n?pctColor(c.avg):'var(--muted-2)'}">${c.n?c.avg+'%':'\u2014'}</div><div style="font-size:9px;color:var(--muted-2);margin-top:1px">${c.rate}%</div></td>`;
+  }).join('');
+  const footerRow=`<tfoot><tr>
+    <td style="min-width:150px;max-width:170px;padding:8px 10px;background:var(--surface-3);border:1px solid var(--border);font-size:11px;font-weight:600;color:var(--ink-2);text-align:left;position:sticky;left:0;z-index:1">Exam avg</td>
+    ${footerCells}
+    <td style="background:var(--surface-3);border:1px solid var(--border)"></td>
+  </tr></tfoot>`;
+  return `<div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
+      <button onclick="exportResultsMatrixCSV('${esc(groupCode)}')" style="padding:7px 12px;border-radius:8px;border:.5px solid var(--border);background:var(--card);color:var(--ink);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">\u{1F4E5} Export CSV</button>
+    </div>
+    <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;max-height:70vh;border-radius:10px;border:1px solid var(--border);background:var(--card)">
+      <table style="border-collapse:collapse;font-family:inherit;width:auto">
+        ${headerRow}
+        <tbody>${bodyRows}</tbody>
+        ${footerRow}
+      </table>
+    </div>
+    <div style="font-size:11px;color:var(--muted-2);margin-top:8px;line-height:1.4">Tap a student name to open their profile. Color bands: green \u226580%, amber \u226560%, red below.</div>
+  </div>`;
+}
+
+function exportResultsMatrixCSV(groupCode){
+  try{
+    const exams=(STATE.dashExams||[]).slice().sort((a,b)=>(a.opensAt||'').localeCompare(b.opensAt||''));
+    const students=(STATE.dashStudents||[]).filter(s=>(s.groupCode||'').toUpperCase()===String(groupCode).toUpperCase())
+      .slice().sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+    const res={};
+    exams.forEach(x=>{
+      const cache=STATE.dashExamResults[x.id];
+      (cache&&cache.results||[]).forEach(r=>{
+        if(!r.userId||!r.submitted)return;
+        if(!res[r.userId])res[r.userId]={};
+        res[r.userId][x.id]=r.percentage||0;
+      });
+    });
+    const csvEsc=(s)=>{ s=String(s==null?'':s); return /[,"\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; };
+    const headers=['Student','Mobile','Email'].concat(exams.map(x=>x.title||'')).concat(['Avg %','Exams Taken','Total Exams']);
+    const rows=[headers.map(csvEsc).join(',')];
+    students.forEach(s=>{
+      let sum=0,n=0;
+      const cells=exams.map(x=>{
+        const p=(res[s.uid]||{})[x.id];
+        if(p!=null){sum+=p;n++;return p;}
+        return '';
+      });
+      const avg=n?Math.round(sum/n):'';
+      const row=[s.name||'',s.mobile||'',s.email||''].concat(cells).concat([avg,n,exams.length]);
+      rows.push(row.map(csvEsc).join(','));
+    });
+    const csv='\uFEFF'+rows.join('\n');
+    const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    const stamp=new Date().toISOString().slice(0,10);
+    a.href=url; a.download=`results-${groupCode}-${stamp}.csv`;
+    document.body.appendChild(a); a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 100);
+    showToast('CSV downloaded','success',1500);
+  }catch(e){ showToast('Export failed: '+e.message,'error'); }
+}
+
 function renderResultsCard(exam){
+
   const expanded=!!STATE.dashResultsExpanded[exam.id];
   const cache=STATE.dashExamResults[exam.id];
   const status=examWindowStatus(exam);
@@ -8067,7 +8789,7 @@ function renderRegister(){
       </div>
     </div>
 
-    <div class="info-title" style="font-size:14px;margin-bottom:10px">👥 Group Code <span style="font-size:11px;color:#aaa;font-weight:400">· if you're in a class</span></div><div class="card" style="margin-bottom:14px"><label style="font-size:12px;color:#888;display:block;margin-bottom:5px">Your instructor's group code</label><input id="f-groupcode" type="text" value="${fval('groupCode')}" placeholder="" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9\x2D]/g,'')" maxlength="20" style="width:100%;padding:10px 12px;border-radius:8px;border:.5px solid var(--border-4);font-size:14px;font-family:'Courier New',monospace;letter-spacing:.5px;outline:none;color:var(--ink);background:var(--surface);text-transform:uppercase"><div style="font-size:11px;color:#888;margin-top:6px;line-height:1.5">Enter the code your instructor gave you to unlock your group's <b>Question of the Day</b>. Leave blank if you're studying on your own.</div></div><div class="info-title" style="font-size:14px;margin-bottom:10px">📊 CMA Study Profile <span style="font-size:11px;color:#aaa;font-weight:400">· optional</span></div>
+    <div class="info-title" style="font-size:14px;margin-bottom:10px">👥 Group Code <span style="font-size:11px;color:#aaa;font-weight:400">· if you're in a class</span></div><div class="card" style="margin-bottom:14px"><label style="font-size:12px;color:#888;display:block;margin-bottom:5px">Your instructor's group code</label><input id="f-groupcode" type="text" value="${fval('groupCode')}" placeholder="" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9\x2D]/g,'')" maxlength="20" style="width:100%;padding:10px 12px;border-radius:8px;border:.5px solid var(--border-4);font-size:14px;font-family:'Courier New',monospace;letter-spacing:.5px;outline:none;color:var(--ink);background:var(--surface);text-transform:uppercase">${(st&&st.pendingGroupCode&&st.pendingGroupCode!==(st.groupCode||''))?`<div style="margin-top:8px;padding:8px 10px;border-radius:8px;background:var(--warn-tint);color:var(--warn-strong);font-size:12px;font-weight:600">⏳ Pending instructor approval for ${esc(st.pendingGroupCode)}</div>`:''}<div style="font-size:11px;color:#888;margin-top:6px;line-height:1.5">Enter the code your instructor gave you to unlock your group's <b>Question of the Day</b>. Leave blank if you're studying on your own.</div></div><div class="info-title" style="font-size:14px;margin-bottom:10px">📊 CMA Study Profile <span style="font-size:11px;color:#aaa;font-weight:400">· optional</span></div>
     <div class="card" style="margin-bottom:14px">
       <div style="margin-bottom:12px">
         <label style="font-size:12px;color:#888;display:block;margin-bottom:5px">Your current accounting/finance level</label>
@@ -8249,29 +8971,59 @@ async function submitProfile(){
   if(missing.length>0){
     showModal({icon:'📋',title:'Missing Required Fields',body:'Please complete the following to continue:',list:missing,type:'warning',confirmText:'OK'});return;
   }
-  // ── Batch 7: Group code validation ──────────────────────────────────
-  // If student entered a group code, verify it exists before saving.
-  // Prevents silent failures downstream (QoD, live check-ins, attendance,
-  // exams all fail silently on invalid codes). Empty code = self-study OK.
-  // Offline behavior: on network failure, accept the save and log a warning
-  // rather than block the user (auth is offline-tolerant, so should be this).
+  // ── Batch 11: Group join-approval workflow ────────────────────────────
+  // A valid code no longer writes `groupCode` directly. It's only applied
+  // immediately if it matches the student's ALREADY-APPROVED group
+  // (grandfathered / unchanged — re-saving the profile shouldn't re-trigger
+  // approval). Any NEW code or a SWITCH to a different code goes through
+  // instructor approval via a `group-requests` doc + `pendingGroupCode`.
+  // Empty code = leaving / self-study — allowed directly, no approval needed.
+  const _priorStudent=loadStudent();
+  const currentGroupCode=(_priorStudent&&_priorStudent.groupCode||'').toUpperCase();
+  const currentPending=(_priorStudent&&_priorStudent.pendingGroupCode||'').toUpperCase();
+  let groupCodeToSave=currentGroupCode;
+  let pendingGroupCodeToSave=_priorStudent&&_priorStudent.pendingGroupCode||'';
+  let justRequestedCode='';
   if(groupCode){
-    try{
-      const snap=await db.collection('groups').where('code','==',groupCode).limit(1).get();
-      if(snap.empty){
-        showModal({
-          icon:'⚠️',
-          title:'Group Code Not Found',
-          body:`The group code "${groupCode}" doesn't match any active group. Please check with your instructor for the correct code, or leave it blank if you're studying on your own.`,
-          type:'warning',
-          confirmText:'OK'
-        });
-        return;
+    if(groupCode===currentGroupCode){
+      groupCodeToSave=groupCode;   // unchanged / grandfathered — no approval needed
+      pendingGroupCodeToSave='';
+    }else{
+      try{
+        const snap=await db.collection('groups').where('code','==',groupCode).limit(1).get();
+        if(snap.empty){
+          showModal({
+            icon:'⚠️',
+            title:'Group Code Not Found',
+            body:`The group code "${groupCode}" doesn't match any active group. Please check with your instructor for the correct code, or leave it blank if you're studying on your own.`,
+            type:'warning',
+            confirmText:'OK'
+          });
+          return;
+        }
+        // New join, or switching from a different already-approved group —
+        // both go through approval. Avoid duplicate request docs if a
+        // request for this exact code is already pending.
+        if(groupCode!==currentPending){
+          await db.collection('group-requests').add({
+            uid:STATE.user.uid,
+            studentName:name,studentEmail:email,studentMobile:mobile,
+            groupCode,status:'pending',
+            requestedAt:new Date().toISOString(),resolvedAt:null,resolvedBy:null
+          });
+        }
+        pendingGroupCodeToSave=groupCode;
+        justRequestedCode=groupCode;
+        // groupCodeToSave stays at currentGroupCode — real membership only
+        // changes on instructor approval.
+      }catch(err){
+        // Network / permission failure — don't block the rest of the save.
+        console.warn('[submitProfile] group code validation skipped (network error):', err);
       }
-    }catch(err){
-      // Network / permission failure — don't block save. Log for diagnosis.
-      console.warn('[submitProfile] group code validation skipped (network error):', err);
     }
+  }else{
+    groupCodeToSave='';
+    pendingGroupCodeToSave='';
   }
   let photoUrl=existingPhoto;
   if(pendingB64&&pendingB64.startsWith('data:')){
@@ -8283,7 +9035,7 @@ async function submitProfile(){
     }catch(err){photoUrl=pendingB64;}
     window._pendingPhoto=null;
   }
-  saveStudent({name,mobile,email,country,city,university,faculty,gradyear,title,company,experience,level,goal,examdate,groupCode,timezone,preferredLang,attemptType,photo:photoUrl,registeredAt:loadStudent()?.registeredAt||new Date().toISOString()});
+  saveStudent({name,mobile,email,country,city,university,faculty,gradyear,title,company,experience,level,goal,examdate,groupCode:groupCodeToSave,pendingGroupCode:pendingGroupCodeToSave,timezone,preferredLang,attemptType,photo:photoUrl,registeredAt:loadStudent()?.registeredAt||new Date().toISOString()});
   STATE.showProfileWarning=false;
   try{STATE.qotdState={dateKey:'',question:null,selected:null,answered:false,taughtUnitCount:0};ensureQotd();}catch(e){}
 
@@ -8301,7 +9053,9 @@ async function submitProfile(){
     const el=document.getElementById('content-area');
     if(el)el.scrollTop=0;
   },50);
-  showModal({icon:'🎓',title:'Welcome Aboard!',body:"Great to have you here. I've received your info and I'm ready to help you pass the CMA. Let's get to work! — Gawad",type:'success',confirmText:'Let\'s Go 🚀'});
+  // Batch 11: let the student know a join/switch request is pending.
+  const _pendingNote=justRequestedCode?`<br><br>⏳ Your request to join group <b>${esc(justRequestedCode)}</b> is pending your instructor's approval. You'll get full access to that group once approved.`:'';
+  showModal({icon:'🎓',title:'Welcome Aboard!',body:"Great to have you here. I've received your info and I'm ready to help you pass the CMA. Let's get to work! — Gawad"+_pendingNote,type:'success',confirmText:'Let\'s Go 🚀'});
 }
 
 async function navTo(tab){
@@ -8797,6 +9551,8 @@ function renderMockMCQContent(){
       <button id="mock-flag-btn" onclick="mockFlagQ(${mcqCurr})" style="border:none;background:none;cursor:pointer;font-size:13px;font-weight:600;color:${flagged?'var(--warn)':'#888'};font-family:inherit;padding:4px 8px;border-radius:8px;border:.5px solid ${flagged?'var(--warn)':'var(--border-3)'}">${flagged?'🚩 Flagged':'⚑ Flag'}</button>
     </div>
     <div style="font-size:15px;font-weight:500;color:var(--ink);line-height:1.6;margin-bottom:18px">${stemHTML(q.q)}</div>
+    ${typeof dataTableHTML==='function'?dataTableHTML(q):''}
+    ${askHTML(q)}
     <div style="display:flex;flex-direction:column;gap:9px" id="mock-opts">
       ${q.o.map((opt,i)=>{
         const sel=answered===i;

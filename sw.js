@@ -174,7 +174,98 @@
 // All four questions/sN.json files (s1-s4) changed; CACHE_NAME bumps
 // v31->v32 to invalidate stale copies and trigger the clean SKIP_WAITING
 // auto-reload on deploy.
-const CACHE_NAME = 'cma-prep-v32';
+// v33 (Batch 11 — student exam UX, instructor reporting foundations, lecture
+// automation, content-quality leftovers):
+//
+// app.js changes:
+// - Results tab: exam-results rows now resolve the student's real name
+//   (cross-referenced against the group roster) instead of falling back to
+//   the generic "Student" placeholder.
+// - New centralized EXAM_PASS_THRESHOLD = 72 constant, used on both the
+//   student result screen (explicit Passed / Not Passed badge) and the
+//   instructor Results tab's pass-rate stat (was hardcoded at 60%).
+// - Student exam result screen: now shows time taken, average time per
+//   question, unanswered-question count, per-section correct/total, and the
+//   weakest unit in that exam as a study pointer.
+// - Student Home page completed-exam cards now show the date the exam was
+//   taken (submittedAt) — previously missing entirely.
+// - New flag/mark-for-review control on exam questions during the exam
+//   (student-facing only, not sent to Firestore, cleared on submit).
+// - stemHTML() Roman-numeral sub-list fix: "which of the following / which
+//   combination" style questions with I./II./III./IV. sub-items now render
+//   each item as a clean separate line instead of mis-attaching the numeral
+//   to the end of the wrong line.
+// - Lecture check-in now opens automatically the moment a lecture is
+//   created (previously a separate manual step); auto-close window extended
+//   from 3h to 8h.
+// - Lecture feedback now opens automatically the moment check-in closes
+//   (manual close or 8h auto-expiry) and auto-closes 7 days later, computed
+//   per-lecture instead of a single shared per-group toggle — multiple
+//   lectures can now have independently-running feedback windows.
+//   NOTE: the student-side auto-trigger reads the `lectures` collection
+//   directly, which needs a new Firestore rule (students read-only, scoped
+//   to their own groupCode) — add manually via the Firebase Console.
+//
+// Content changes (s3.json, s4.json):
+// - Fixed 4 leftover questions (Nanjones shared-scenario cluster, lessons
+//   3-5 and 4-9) still carrying the garbled fused-header fragment
+//   ("Planning Data Annual November Data for November") that the v32 Item 8
+//   cleanup was supposed to catch but missed. Re-audited the full s1-s6
+//   question set afterward — zero remaining instances found.
+//
+// app.js, s3.json, and s4.json all changed; CACHE_NAME bumps v32->v33 to
+// invalidate stale copies and trigger the clean SKIP_WAITING auto-reload on
+// deploy.
+// v34 (Batch 11, Wave 2 — instructor group-approval workflow, multi-section
+// exams, consolidated matrix reports, ask-after-table plumbing):
+//
+// app.js changes:
+// - NEW: Group join-approval workflow. Students entering a new or different
+//   group code no longer join instantly — a `group-requests` doc is created
+//   and the instructor approves/rejects from a new "Approvals" dashboard tab
+//   (with a pending-count badge). Existing group memberships are grandfathered
+//   in untouched. New "Remove from group" action on the student detail page.
+//   REQUIRES a new Firestore rule for the `group-requests` collection (see
+//   deploy notes).
+// - NEW: Multi-section exam creation. Instructors can select 2+ sections for
+//   one exam; the question count splits evenly across sections (largest-
+//   remainder rounding), then each section's share splits evenly across its
+//   selected units. Shared distribution logic between exam creation and
+//   re-shuffle. Legacy single-section exams keep working unchanged.
+// - NEW: Feedback Matrix (Attendance tab, 3rd view) and Exam Scores Matrix
+//   (Results tab, Matrix view toggle) — consolidated student-row/column-per-
+//   item reports mirroring the existing Attendance Matrix, both with CSV
+//   export.
+// - Verified/confirmed (no code change needed): lesson 4-20's 3 actual
+//   Part-2 (TOC) questions were already correctly tagged outOfScope at the
+//   question level from Batch 9 — a lesson-level flag would have wrongly
+//   excluded the other 26 in-scope questions, so none was added. Lesson
+//   4-20's Kaizen cross-reference to 4-21 already existed in content.
+// - Added `askHTML()` plumbing + wired into all 6 question-rendering call
+//   sites (Quiz Mode, Quiz Session, Exam Runner, Exam Review, Wrong-Answers
+//   Review, Mock Exam) so a question's `ask` field — once populated — will
+//   render after the data table instead of embedded in the stem before it.
+//   No question content was changed: automated stem-splitting was tested
+//   against all ~322 data-table questions and rejected — roughly 20% of a
+//   confident-looking automated split still carried leaked table-header
+//   fragments into the visible "ask" line. This needs a careful manual/
+//   reviewed content pass, not blind automation. Fixed a related pre-existing
+//   bug as a side effect: Mock Exam mode never called dataTableHTML() at
+//   all, so any data-table question there rendered without its data table —
+//   now fixed.
+// - Verified/confirmed (no code change needed): lessons 4-14, 4-16, and 4-19
+//   already have accurate worked numeric examples (re-verified the math by
+//   hand) — the "gap" in an earlier batch note no longer reflects the
+//   content's current state.
+//
+// s1.json, s2.json, s5.json, s6.json: 1,284 previously-id-less questions
+// (S1/S2/S5/S6) now have a stable per-lesson synthetic id ("{lessonId}.q{n}")
+// — existing ids untouched, zero duplicates.
+//
+// All six question banks plus app.js changed; CACHE_NAME bumps v33->v34 to
+// invalidate stale copies and trigger the clean SKIP_WAITING auto-reload on
+// deploy.
+const CACHE_NAME = 'cma-prep-v34';
 const OFFLINE_URLS = [
   './',
   './index.html',
