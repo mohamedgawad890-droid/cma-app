@@ -436,7 +436,7 @@ async function buildGraceMiniSet(){
       const secIds=[...new Set([...taught].map(u=>parseInt(u.split('-')[0])).filter(n=>n>0))];
       await Promise.all(secIds.map(i=>ensureQuizzes(i)));
       const pool=[];
-      S.forEach(sec=>sec.lessons.forEach(l=>{if(taught.has(l.id)&&l.quizzes)l.quizzes.forEach(q=>pool.push({...q,secId:sec.id,secTitle:sec.title,lessonTitle:l.title}));}));
+      S.forEach(sec=>sec.lessons.forEach(l=>{if(taught.has(l.id)&&l.quizzes)l.quizzes.forEach(q=>{if(isOutOfScopeQ(l,q))return;pool.push({...q,secId:sec.id,secTitle:sec.title,lessonTitle:l.title});});}));
       for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
       pool.slice(0,5-out.length).forEach(q=>out.push(shuffleQuestionOptions(q)));
     }
@@ -1476,13 +1476,20 @@ function dataTableHTML(q){
   for(let c=0;c<nCols-1;c++){
     widths[c]=Math.max(0,...rows.map(r=>(r[c]||'').replace(/\s+$/,'').length));
   }
-  const lines=rows.map(r=>{
+  // Batch 12: if row 0 reads as a header (its value columns hold text labels,
+  // not $ amounts or bare numbers) rather than data, bold it and underline it
+  // with a rule so students can see it's naming the columns, not a data row.
+  const looksLikeValue=c=>/^\s*\$?\s?[\d,]+(\.\d+)?%?\s*$/.test(c||'');
+  const isHeaderRow=nCols>1&&rows[0].slice(1).every(c=>!looksLikeValue(c));
+  const lineWidth=r=>{let w=0;for(let c=0;c<nCols;c++){const cell=(r[c]||'').replace(/\s+$/,'');w+=(c<nCols-1)?widths[c]+2:cell.length;}return w;};
+  const lines=rows.map((r,ri)=>{
     let out='';
     for(let c=0;c<nCols;c++){
       const cell=(r[c]||'').replace(/\s+$/,'');
       out+=(c<nCols-1)?cell.padEnd(widths[c]+2):cell;
     }
-    return esc(out);
+    const escaped=esc(out);
+    return(isHeaderRow&&ri===0)?`<strong>${escaped}</strong>\n${'\u2500'.repeat(lineWidth(r))}`:escaped;
   }).join('\n');
   return`<pre class="q-data">${lines}</pre>`;
 }
@@ -2466,7 +2473,6 @@ function quizModeGoto(i){
 }
 function quizModeNav(dir){ const qm=STATE.quizMode; if(qm) quizModeGoto(qm.idx+dir); }
 function quizModeJump(i){ quizModeGoto(i); }
-function nextQuizModeQuestion(){ quizModeNav(1); }   // back-compat alias
 
 async function finishQuizMode(){
   const qm=STATE.quizMode; if(!qm) return;
@@ -3490,35 +3496,6 @@ function renderIntro(){
 
 // ─── DASHBOARD ────────────────────────────────────────────────────────────────
 
-function renderLessons(){
-  const{sectId,lessonId,progress}=STATE;
-  if(lessonId!==null){
-    const sec=sect(sectId);const lesson=sec.lessons.find(l=>l.id===lessonId);const lessonIdx=sec.lessons.findIndex(l=>l.id===lessonId);const done=lessonDone(lesson.id);
-    const hasVideo2=lesson.blocks&&lesson.blocks.some(b=>b.t==='video');
-    const videoPlaceholder2=hasVideo2?'':`<div style="margin:14px 0 4px;background:var(--surface-3);border:.5px dashed #c0c0b8;border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px"><div style="width:36px;height:36px;background:var(--brand-tint);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px">🎬</div><div><div style="font-size:13px;font-weight:500;color:#555">Video lesson coming soon</div><div style="font-size:11px;color:#999;margin-top:2px">Gawad will record this lesson shortly</div></div></div>`;
-    return`<div class="bh"><button class="bh-back" onclick="STATE.lessonId=null;render()">‹</button><div style="min-width:0"><div style="font-size:11px;font-weight:500;color:${sec.text}">${sec.emoji} ${esc(sec.title)}</div><div class="ellipsis" style="font-size:15px;font-weight:500;margin-top:1px">${lessonIdx+1}. ${esc(lesson.title)}</div></div></div>
-    <div class="scroll-area pad"><div class="card" style="margin-top:14px;padding:4px 16px 16px">${renderLessonBody(lesson,sec)}${videoPlaceholder2}</div>
-    <button class="btn" onclick="markDone('${lesson.id}')" style="margin-top:14px;background:${done?'var(--ok-tint)':sec.bar};color:${done?'var(--ok-strong)':'#fff'}">${done?'✓ Completed — Back to lessons':'Mark as Complete ✓'}</button><div style="height:20px"></div></div>`;
-  }
-  if(sectId!==null){
-    const sec=sect(sectId);
-    const items=sec.lessons.map((l,i)=>{const done=lessonDone(l.id);return`<div class="card" onclick="STATE.tab='study';studyGo(STATE.sectId,'${l.id}')" style="cursor:pointer;border-color:${done?sec.text+'45':'var(--border)'}"><div class="row"><div style="width:32px;height:32px;border-radius:50%;background:${done?sec.bg:'var(--bg)'};display:flex;align-items:center;justify-content:center;font-size:14px;color:${done?sec.strong:'#999'};border:1px solid ${done?sec.text+'40':'var(--border)'};flex-shrink:0;font-weight:500">${done?'✓':i+1}</div><div style="flex:1;min-width:0"><div class="ellipsis" style="font-size:14px;font-weight:500">${i+1}. ${esc(l.title)}</div><div style="font-size:12px;color:#888;margin-top:2px">${l.dur} · ${done?'Completed':'Not started'}</div></div><span style="color:#bbb;font-size:18px">›</span></div></div>`;}).join('');
-    return`<div class="bh"><button class="bh-back" onclick="STATE.sectId=null;render()">‹</button><div><div style="font-size:16px;font-weight:500">${sec.emoji} ${esc(sec.title)}</div><div style="font-size:12px;color:#888;margin-top:1px">${sec.lessons.length} lessons · ${sec.weight}% of exam</div></div></div>
-    <div class="scroll-area pad" style="padding-top:14px">${items}<div style="height:20px"></div></div>`;
-  }
-  const doneCount=STATE.progress.done.length;
-  const items=S.map(sec=>{const done=sec.lessons.filter(l=>lessonDone(l.id)).length;return`<div class="card" onclick="STATE.tab='study';studyGo(${sec.id},null)" style="cursor:pointer"><div class="row"><div class="sect-icon" style="background:${sec.bg}">${sec.emoji}</div><div style="flex:1;min-width:0"><div class="ellipsis" style="font-size:14px;font-weight:500">${esc(sec.title)}</div><div style="font-size:12px;color:#888;margin-top:2px">${done}/${sec.lessons.length} done · ${sec.weight}% of exam</div></div><span style="color:#bbb;font-size:18px">›</span></div></div>`;}).join('');
-  return`<div class="sh"><h2>All Lessons</h2><p>${doneCount} of ${TOTAL_LESSONS} completed</p></div><div class="scroll-area pad" style="padding-top:14px">${items}<div style="height:20px"></div></div>`;
-}
-
-// ─── QUIZ LIST ────────────────────────────────────────────────────────────────
-function renderQuizList(){
-  const items=S.map(sec=>{const sc=null;const scColor=sc?(sc.correct/sc.total>=0.8?'var(--ok-strong-2)':sc.correct/sc.total>=0.6?'#BA7517':'var(--err-2)'):'#888';
-  return`<div class="card"><div class="row" style="margin-bottom:12px"><div class="sect-icon" style="background:${sec.bg}">${sec.emoji}</div><div style="flex:1;min-width:0"><div class="ellipsis" style="font-size:13px;font-weight:500">${esc(sec.title)}</div>${sc?`<div style="font-size:11px;margin-top:2px;color:${scColor}">Last: ${sc.correct}/${sc.total} (${Math.round(sc.correct/sc.total*100)}%)</div>`:`<div style="font-size:11px;color:#888;margin-top:2px">Not attempted yet</div>`}</div></div>
-  <button class="btn-sm" onclick="startQuiz(${sec.id})" style="background:${sec.bg};color:${sec.strong};border:1px solid ${sec.text}50">${sc?'Retake Quiz':'Start Quiz'} — 5 MCQs</button></div>`;}).join('');
-  return`<div class="sh"><h2>Practice Quizzes</h2><p>5 MCQs per section · Detailed explanations included</p></div><div class="scroll-area pad" style="padding-top:14px">${items}<div style="height:20px"></div></div>`;
-}
-
 // ─── QUIZ SESSION ─────────────────────────────────────────────────────────────
 
 // ─── TIMER HELPERS ────────────────────────────────────────────────────────────
@@ -3999,7 +3976,6 @@ function renderProgress(){
 
 
 // ─── ACTIONS ──────────────────────────────────────────────────────────────────
-function goLesson(sId){STATE.tab='study';studyGo(sId,null);}
 function markDone(lid){
   if(!_getDoneSet().has(lid)){
     saveProg({...STATE.progress,done:[...STATE.progress.done,lid]});
@@ -4055,7 +4031,6 @@ function quizGoto(i){
 }
 function quizNav(dir){ const qs=STATE.quizState; if(qs) quizGoto(qs.idx+dir); }
 function quizJump(i){ quizGoto(i); }
-function nextQuestion(){ quizNav(1); }   // back-compat alias
 
 async function finishQuiz(){
   const qs=STATE.quizState; if(!qs) return;
@@ -4624,7 +4599,6 @@ async function deleteExam(id){
 
 // ==== PHASE 1 DASHBOARD HANDLERS (ported from FMAA, remapped) ====
 // Legacy shim — teaching-log is now scoped by group in loadDashScopedData.
-async function loadTeachingLog(){await refreshDashScoped();}
 function toggleTeachingUnit(uid){const u=STATE.dashTeachingDraft.unitIds;const i=u.indexOf(uid);if(i>=0)u.splice(i,1);else u.push(uid);render();}
 
 // Batch 8 (teaching-log-lecture-picker): link an Actual-Teaching entry to a
@@ -5696,7 +5670,6 @@ async function ensureQotd(){const st=loadStudent();if(!st||!st.groupCode||!STATE
 function qotdAnswer(i){const st=loadStudent();if(!st||!st.groupCode)return;const q=STATE.qotdState.question;if(!q||STATE.qotdState.answered)return;STATE.qotdState.selected=i;STATE.qotdState.answered=true;const dateKey=_todayKey();const key=st.groupCode+'|'+dateKey;const stored=loadQotdState();stored[key]={answered:true,selected:i,correct:i===q.a};saveQotdState(stored);const p=STATE.progress;saveProg({...p,mcqTotal:(p.mcqTotal||0)+1,mcqRight:(p.mcqRight||0)+(i===q.a?1:0)});updateStreak();render();}
 
 // ─── LESSON PREV/NEXT ────────────────────────────────────────────────────
-function getPrevLesson(secId,lessonId){const si=S.findIndex(s=>s.id===secId);if(si<0)return null;const sec=S[si];const li=sec.lessons.findIndex(l=>l.id===lessonId);if(li>0)return{sec,lesson:sec.lessons[li-1]};if(si>0){const prev=S[si-1];return{sec:prev,lesson:prev.lessons[prev.lessons.length-1]};}return null;}
 
 // --- shuffle ---
 // ═════════════════════════════════════════════════════════════════════
@@ -5823,6 +5796,9 @@ async function buildExamQuestions(exam,uid){
     sec.lessons.forEach(l=>{
       if(!lessonMatch(l.id))return;
       if(l.quizzes&&l.quizzes.length)l.quizzes.forEach((q,i)=>{
+        if(isOutOfScopeQ(l,q))return;   // Batch 12: close the exam-builder leak — legacy no-questionIds
+                                         // exams and the missing-id filler top-up below both drew from
+                                         // this pool unfiltered, risking Part-2 content in a graded exam.
         const qid=l.id+':'+(q.id||i);
         poolAll.push({...q,_qid:qid,_lid:l.id,_ltitle:l.title});
       });
@@ -6582,7 +6558,6 @@ function closeExamResults(){
 // ═══════════════════════════════════════════════════════════════════════════
 
 // ── UI helpers ──────────────────────────────────────────────────────────────
-function _dashSecTitle(secId){const s=S.find(x=>x.id===Number(secId));return s?s.title:('Section '+secId);}
 
 // Unit picker used by the Exam create form. Empty selection = whole section.
 // Batch 11: unit picker is now PER-SECTION — each selected section gets its
@@ -8245,17 +8220,6 @@ function shuffleQuestionOptions(q){
 
 // --- studentId ---
 function genStudentId(){const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<6;i++)s+=chars[Math.floor(Math.random()*chars.length)];return s;}
-async function genUniqueStudentId(){
-  for(let i=0;i<6;i++){
-    const cand=genStudentId();
-    try{
-      const snap=await db.collection('students').where('studentId','==',cand).limit(1).get();
-      if(snap.empty)return cand;
-    }catch(_){return cand;}
-  }
-  return genStudentId();
-}
-
 // --- renderNotes ---
 function renderNotes(){
   const notes=buildAllNotes();
@@ -8639,7 +8603,6 @@ function saveStudent(d){
   if(STATE.user){db.collection('students').doc(STATE.user.uid).set(d).catch(()=>{});}
 }
 function loadFeedback(){try{const d=localStorage.getItem('cma-feedback-v1');return d?JSON.parse(d):{rating:0,comments:'',improvements:''};}catch{return{rating:0,comments:'',improvements:''};}}
-function saveFeedback(d){try{localStorage.setItem('cma-feedback-v1',JSON.stringify(d));}catch{}}
 
 // Batch 4 — notification + email digest opt-in card (used in Profile/onboarding).
 function renderNotifOptInCard(){
@@ -8871,14 +8834,6 @@ function renderRegister(){
 }
 
 let _currentRating = loadFeedback().rating || 0;
-function setRating(n){
-  _currentRating = n;
-  [1,2,3,4,5].forEach(i=>{
-    const el=document.getElementById('star-'+i);
-    if(el){el.textContent=i<=n?'⭐':'☆';el.style.opacity=i<=n?'1':'0.3';}
-  });
-}
-
 function handlePhoto(input){
   const file=input.files[0];
   if(!file)return;
@@ -8891,15 +8846,6 @@ function handlePhoto(input){
     window._pendingPhoto=b64;
   };
   reader.readAsDataURL(file);
-}
-
-async function uploadToCloudinary(base64data){
-  try{
-    const res=await fetch(base64data);const blob=await res.blob();
-    const fd=new FormData();fd.append('file',blob);fd.append('upload_preset',CLD_PRESET);
-    const r=await fetch(`https://api.cloudinary.com/v1_1/${CLD_CLOUD}/image/upload`,{method:'POST',body:fd});
-    const d=await r.json();return d.secure_url||null;
-  }catch(e){console.log('Cloudinary error:',e);return null;}
 }
 
 async function sendToSheet(data){
