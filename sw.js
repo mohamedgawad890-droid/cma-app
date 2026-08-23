@@ -312,7 +312,61 @@
 // app.js, firestore.rules, s3.json, and s4.json all changed; CACHE_NAME
 // bumps v34->v35 to invalidate stale copies and trigger the clean
 // SKIP_WAITING auto-reload on deploy.
-const CACHE_NAME = 'cma-prep-v35';
+//
+// v36 (Batch 13 — leaked data-table row fix, all 6 question banks):
+//
+// Content changes (s1.json, s2.json, s3.json, s4.json):
+// - Root cause: a subset of questions had numeric data left as unbroken
+//   running text in the stem (`q`) instead of proper `data` table rows,
+//   because stemHTML() only breaks lines at sentence punctuation and this
+//   text had none between adjacent label/amount pairs. Two variants fixed:
+//   (1) 26 questions already had a `data` table but were still missing 1+
+//   rows, which had been left behind as leaked text in the stem (e.g.
+//   ICMA 10.P1.161 "Total indirect labor/non-labor-related costs" — the
+//   exact case reported by a student screenshot). All 26 verified: missing
+//   rows either duplicated a row the table already had (removed from stem
+//   only) or were genuinely absent (added to `data`, cross-checked against
+//   each question's explanation math).
+//   (2) 51 questions had NO `data` table at all — full tables built from
+//   scratch from the leaked stem text, cross-verified against the
+//   worked explanation for every question. Sibling questions sharing one
+//   underlying scenario (e.g. Water Control Inc., Kristina Company,
+//   Landau Corporation, the technical-magazine-articles standards used
+//   across 3 different lessons) reuse one verified table.
+// - Not modified (flagged instead, consistent with prior-batch practice
+//   of not guessing at unreconciled source data): ICMA 08.P2.392 (s1/1-19)
+//   — multi-column book/fair-value figures don't map cleanly one-to-one
+//   onto their labels in the source text; needs Gawad's source-document
+//   verification before a table can be safely built.
+// - Also left as-is (13 short "Label = $X, Label2 = $Y" formula-style
+//   questions, e.g. the 3-13.aN ratio drills, plus ICMA 10.P1.078 and
+//   ICMA 1603.P1.057): these already read cleanly as prose and did not
+//   need a table.
+// - Incidental cleanup of OCR/scrape artifacts (stray "F", "a3", ";", "|",
+//   typos like "xpense"->"expense", "stimated"->"estimated") in the ~15
+//   stems touched that had them.
+//
+// s1.json, s2.json, s3.json, and s4.json all changed; CACHE_NAME bumps
+// v35->v36 to invalidate stale copies and trigger the clean SKIP_WAITING
+// auto-reload on deploy.
+//
+// Batch 14 (v36->v37): removed CIA 1187 IV.51 (s4/4-12) — a 4-column
+// absorption-costing matching table whose source only gives per-row X
+// counts, not X column-positions, so it can't be reconstructed without
+// guessing. Also ran a full-bank number/value-formatting audit across all
+// 2,710 questions (s1-s6, not just s1-s4 like Batch 13): no thousands-
+// separator, decimal, or $/% consistency defects found — bank is clean.
+// s4.json total drops 596->595.
+//
+// Batch 15 (v37->v38): removed ICMA 08.P2.392 (s1/1-19) — the multi-
+// column book/fair-value business-combination table flagged in Batch 13
+// as irreconcilable without Gawad's source-document verification; Gawad
+// confirmed removal rather than reconstruction. s1.json total drops
+// 679->678 (bank total 2,709->2,708).
+//
+// s1.json and s4.json changed; CACHE_NAME bumps v37->v38 to invalidate
+// stale copies and trigger the clean SKIP_WAITING auto-reload on deploy.
+const CACHE_NAME = 'cma-prep-v38';
 const OFFLINE_URLS = [
   './',
   './index.html',
