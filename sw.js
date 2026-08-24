@@ -366,7 +366,53 @@
 //
 // s1.json and s4.json changed; CACHE_NAME bumps v37->v38 to invalidate
 // stale copies and trigger the clean SKIP_WAITING auto-reload on deploy.
-const CACHE_NAME = 'cma-prep-v38';
+//
+// Batch 16 (v38->v39): IMA Content Specification Outline alignment —
+// deleted out-of-scope (Part 2 / wrong-section) content and questions from
+// Sections 2, 3, and 4, per Gawad's decision to delete rather than tag:
+// - s2.json: lesson 2-16 "Capital Budgeting Techniques" removed entirely
+//   (Part 2 Section E content, 27 questions) — lesson slot removed from
+//   nav, no renumbering of surviving lessons. Lesson 2-13 "Ongoing
+//   Budgetary Reporting" removed entirely (Part 1 Section C content, 20
+//   questions) — lesson slot removed from nav. Lesson 2-15's "CVP as a
+//   Planning Tool" topic block removed (Part 2 Section C.1 content, 4
+//   questions) — rest of 2-15 (pro forma, sales forecasting, long-range
+//   planning, segment profitability) unchanged. Lesson 2-9's Sensitivity
+//   Analysis / Decision Trees / Monte Carlo Simulation topics removed
+//   (beyond B.3's 3 official elements; 0 matching questions found — all
+//   33 were legitimate expected-value content). Lesson 2-4's Theory of
+//   Constraints topic removed (dropped from IMA's 2024 LOS; 3 questions).
+//   Lesson 2-6's Variance Analysis Overview topic removed (Section C.1
+//   content, duplicative of Section 3's dedicated variance lessons; 7
+//   overlapping questions). s2.json total: 459->398.
+// - s3.json: lesson 3-13 "Financial Statement Analysis" removed entirely
+//   (Part 2 Section A content, 20 questions) — lesson slot removed from
+//   nav. s3.json total: 368->348.
+// - s4.json: lesson 4-17's "Outsourcing Decisions" topics removed (Part 2
+//   Section C.2 content; 0 matching questions — all 20 were legitimate
+//   JIT/MRP/ERP content). Lesson 4-18's "Relevant Costing for Short-term
+//   Decisions / Make or Buy / Special Order / Keep or Drop / Constrained
+//   Resource" topics removed (Part 2 Section C.2 content; 11 matching
+//   questions removed, 13 legitimate capacity-concept questions kept).
+//   Lesson 4-11's Activity-Based Management topics removed (dropped from
+//   IMA's 2024 LOS D.5; 2 questions) — remaining topic renumbered 11->8
+//   to close the gap. Lesson 4-6's computational Process Costing content
+//   (EUP, weighted-average/FIFO, spoilage/rework/scrap) trimmed to
+//   conceptual-only per 2024 LOS Level-A downgrade — 21 of 26 questions
+//   removed, 5 conceptual/industry-recognition questions kept. s4.json
+//   total: 595->561.
+// - app.js: imaRef metadata corrected — lessons 4-4 and 4-5 (Joint/
+//   Byproduct Costing) D.2->D.1; lesson 4-15 (Estimating Fixed/Variable
+//   Costs) D.4->D.1. Lesson accordion (collapsible topics + "Expand all",
+//   previously Section-4-only pilot) rolled out to all 6 sections. New
+//   in-lesson search box added to renderLessonBody() — filters/expands
+//   matching topics and highlights matched text within the open lesson.
+//
+// Bank total: 2,708 -> 2,593 (115 questions removed across s2/s3/s4).
+// s2.json, s3.json, s4.json, and app.js all changed; CACHE_NAME bumps
+// v38->v39 to invalidate stale copies and trigger the clean SKIP_WAITING
+// auto-reload on deploy.
+const CACHE_NAME = 'cma-prep-v39';
 const OFFLINE_URLS = [
   './',
   './index.html',
