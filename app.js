@@ -128,10 +128,8 @@ const S=[
       {id:"2-10",imaRef:"B.4",title:"Budget Methodologies",dur:"30 min",blocks:[],quizzes:[]},
       {id:"2-11",imaRef:"B.4",title:"Annual Profit Plan & Supporting Schedules",dur:"30 min",blocks:[],quizzes:[]},
       {id:"2-12",imaRef:"B.4",title:"Preparing the Budget",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"2-13",imaRef:"B.5",title:"Ongoing Budgetary Reporting",dur:"25 min",blocks:[],quizzes:[]},
       {id:"2-14",imaRef:"B.5",title:"Answering Budgeting Calculation Questions",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"2-15",imaRef:"B.6",title:"Top-Level Planning and Analysis",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"2-16",imaRef:"B.6",title:"Capital Budgeting Techniques",dur:"35 min",blocks:[],quizzes:[]}
+      {id:"2-15",imaRef:"B.6",title:"Top-Level Planning and Analysis",dur:"25 min",blocks:[],quizzes:[]}
     ]},
   {id:3,title:"Performance Management",weight:20,emoji:"🎯",bar:"var(--accent-purple)",bg:"#F3E8FF",text:"#6A2E8F",strong:"#4A1F70",
     lessons:[
@@ -146,16 +144,15 @@ const S=[
       {id:"3-9",imaRef:"C.2",title:"Contribution Income Statement for Evaluation",dur:"30 min",blocks:[],quizzes:[]},
       {id:"3-10",imaRef:"C.2",title:"Transfer Pricing",dur:"35 min",blocks:[],quizzes:[]},
       {id:"3-11",imaRef:"C.3",title:"Performance Measures, ROI, and RI",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"3-12",imaRef:"C.3",title:"Multiple Performance Measures",dur:"35 min",blocks:[],quizzes:[]},
-      {id:"3-13",imaRef:"C.3",title:"Financial Statement Analysis",dur:"35 min",blocks:[],quizzes:[]}
+      {id:"3-12",imaRef:"C.3",title:"Multiple Performance Measures",dur:"35 min",blocks:[],quizzes:[]}
     ]},
   {id:4,title:"Cost Management",weight:15,emoji:"💰",bar:"var(--warn)",bg:"var(--warn-tint)",text:"#BA7517",strong:"var(--warn-strong)",
     lessons:[
       {id:"4-1",imaRef:"D.1",title:"Measurement Concepts & Classification of Costs",dur:"30 min",blocks:[],quizzes:[]},
       {id:"4-2",imaRef:"D.1",title:"Costing Methods: Standard, Normal & Actual Costing",dur:"30 min",blocks:[],quizzes:[]},
       {id:"4-3",imaRef:"D.2",title:"Cost of Goods Sold and Manufactured (COGM)",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"4-4",imaRef:"D.2",title:"Joint Product Costing",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"4-5",imaRef:"D.2",title:"Byproduct Costing",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"4-4",imaRef:"D.1",title:"Joint Product Costing",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"4-5",imaRef:"D.1",title:"Byproduct Costing",dur:"25 min",blocks:[],quizzes:[]},
       {id:"4-6",imaRef:"D.2",title:"Costing Systems: Process Costing",dur:"30 min",blocks:[],quizzes:[]},
       {id:"4-8",imaRef:"D.2",title:"Job-Order and Life-Cycle Costing",dur:"30 min",blocks:[],quizzes:[]},
       {id:"4-9",imaRef:"D.3",title:"Overhead Costs and Allocation",dur:"30 min",blocks:[],quizzes:[]},
@@ -164,7 +161,7 @@ const S=[
       {id:"4-12",imaRef:"D.2",title:"Variable and Absorption Costing",dur:"30 min",blocks:[],quizzes:[]},
       {id:"4-13",imaRef:"D.3",title:"Shared Service Cost Allocation",dur:"35 min",blocks:[],quizzes:[]},
       {id:"4-14",imaRef:"D.3",title:"Standard Cost Variances: DM, DL & Overhead",dur:"35 min",blocks:[],quizzes:[],outOfScope:"section3"},
-      {id:"4-15",imaRef:"D.4",title:"Estimating Fixed and Variable Costs",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"4-15",imaRef:"D.1",title:"Estimating Fixed and Variable Costs",dur:"30 min",blocks:[],quizzes:[]},
       {id:"4-16",imaRef:"D.4",title:"Supply Chain & Lean Resource Management",dur:"30 min",blocks:[],quizzes:[]},
       {id:"4-17",imaRef:"D.4",title:"Just-In-Time Systems and MRP, MRPII, ERP",dur:"30 min",blocks:[],quizzes:[]},
       {id:"4-18",imaRef:"D.4",title:"Capacity Level and Management Decisions",dur:"30 min",blocks:[],quizzes:[]},
@@ -1564,17 +1561,17 @@ function normalizeCase(t){const K=new Set(['GAAP','IFRS','LIFO','FIFO','WACC','R
 function getStudyStreak(){return loadStreak().count||0;}
 
 // ─── RENDER LESSON BLOCK ──────────────────────────────────────────────────────
-// ─── LESSON ACCORDION (Session B item 5 — Section 4 pilot) ────────────────
+// ─── LESSON ACCORDION (rolled out app-wide — was a Section 4 pilot) ───────
 // Groups a lesson's content blocks by 'h' (topic-header) boundary and
 // renders each topic as a collapsible section. The FIRST header in a lesson
 // is treated as the lesson's own title echo (not a listed topic) and stays
 // non-collapsible, matching the numbering rule from item 4 (topic numbers
 // start after the intro header). Falls back to the flat renderBlock map for
-// any section other than 4, or for a lesson with 0-1 headers (nothing to
-// collapse) — zero behavior change outside the pilot.
+// any lesson with 0-1 headers (nothing to collapse) — applies uniformly
+// across all 6 sections now that every lesson has been confirmed to have
+// 2+ header blocks.
 function renderLessonBody(lesson,sec){
   const blocks=lesson.blocks||[];
-  if(sec.id!==4) return blocks.map(b=>renderBlock(b,sec)).join('');
   const hIdx=[];
   blocks.forEach((b,i)=>{if(b&&b.t==='h')hIdx.push(i);});
   if(hIdx.length<=1) return blocks.map(b=>renderBlock(b,sec)).join('');
@@ -1594,10 +1591,87 @@ function renderLessonBody(lesson,sec){
       <div class="lesson-topic-body" id="topic-body-${topicId}" style="display:none">${bodyHTML}</div>
     </div>`;
   }
-  const expandAllBtn=`<div style="display:flex;justify-content:flex-end;margin-bottom:8px">
-    <button type="button" class="lesson-expand-all" onclick="toggleAllLessonTopics('${lesson.id}')" id="expand-all-${lesson.id}">Expand all</button>
+  const toolbarHTML=`<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+    <div style="position:relative;flex:1;min-width:0">
+      <input type="text" id="lesson-search-${lesson.id}" placeholder="Search this lesson..." oninput="filterLessonTopics('${lesson.id}',this.value)"
+        style="width:100%;padding:8px 30px 8px 12px;border-radius:8px;border:.5px solid var(--border-4);font-size:13px;font-family:inherit;outline:none;background:var(--surface);color:var(--ink);box-sizing:border-box">
+      <span id="lesson-search-clear-${lesson.id}" onclick="document.getElementById('lesson-search-${lesson.id}').value='';filterLessonTopics('${lesson.id}','')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:16px;cursor:pointer;color:#aaa;line-height:1;display:none">×</span>
+    </div>
+    <button type="button" class="lesson-expand-all" onclick="toggleAllLessonTopics('${lesson.id}')" id="expand-all-${lesson.id}" style="flex-shrink:0">Expand all</button>
   </div>`;
-  return introHTML+expandAllBtn+`<div id="topics-container-${lesson.id}">`+topicsHTML+`</div>`;
+  return introHTML+toolbarHTML+`<div id="topics-container-${lesson.id}">`+topicsHTML+`</div>`;
+}
+
+// ─── IN-LESSON SEARCH (searches topic headers + body text within the
+// currently open lesson, auto-expands matching topics, highlights the
+// matched substring, scrolls the first match into view). Pure DOM text-node
+// walking so it never touches existing markup (e.g. dictionary term spans).
+function _domClearLessonHighlights(container){
+  container.querySelectorAll('mark.lesson-search-hit').forEach(m=>{
+    m.replaceWith(document.createTextNode(m.textContent));
+  });
+  container.normalize();
+}
+function _domHighlightLessonText(container,query){
+  if(!query)return false;
+  const ql=query.toLowerCase();
+  let found=false;
+  const walker=document.createTreeWalker(container,NodeFilter.SHOW_TEXT,null);
+  const textNodes=[];
+  let n;
+  while((n=walker.nextNode()))textNodes.push(n);
+  textNodes.forEach(node=>{
+    const text=node.nodeValue;
+    const idx=text.toLowerCase().indexOf(ql);
+    if(idx===-1)return;
+    found=true;
+    const before=text.slice(0,idx),match=text.slice(idx,idx+query.length),after=text.slice(idx+query.length);
+    const frag=document.createDocumentFragment();
+    if(before)frag.appendChild(document.createTextNode(before));
+    const mark=document.createElement('mark');
+    mark.className='lesson-search-hit';
+    mark.textContent=match;
+    frag.appendChild(mark);
+    if(after)frag.appendChild(document.createTextNode(after));
+    node.parentNode.replaceChild(frag,node);
+  });
+  return found;
+}
+function filterLessonTopics(lessonId,query){
+  const container=document.getElementById('topics-container-'+lessonId);
+  const clearBtn=document.getElementById('lesson-search-clear-'+lessonId);
+  if(!container)return;
+  if(clearBtn)clearBtn.style.display=query?'block':'none';
+  const wraps=container.querySelectorAll('.lesson-topic');
+  const q=(query||'').trim();
+  if(!q){
+    wraps.forEach(w=>{
+      const body=w.querySelector('.lesson-topic-body');
+      const chevron=w.querySelector('.lesson-topic-chevron');
+      if(body){_domClearLessonHighlights(body);body.style.display='none';}
+      if(chevron)chevron.style.transform='rotate(0deg)';
+      w.style.outline='';
+    });
+    const btn=document.getElementById('expand-all-'+lessonId);
+    if(btn)btn.textContent='Expand all';
+    return;
+  }
+  let firstMatch=null;
+  wraps.forEach(w=>{
+    const titleEl=w.querySelector('.lesson-topic-title');
+    const body=w.querySelector('.lesson-topic-body');
+    const chevron=w.querySelector('.lesson-topic-chevron');
+    if(!body)return;
+    _domClearLessonHighlights(body);
+    const headerMatch=titleEl&&titleEl.textContent.toLowerCase().includes(q.toLowerCase());
+    const bodyMatch=_domHighlightLessonText(body,q);
+    const isMatch=headerMatch||bodyMatch;
+    body.style.display=isMatch?'block':'none';
+    if(chevron)chevron.style.transform=isMatch?'rotate(90deg)':'rotate(0deg)';
+    w.style.outline=isMatch?'2px solid var(--brand)':'';
+    if(isMatch&&!firstMatch)firstMatch=w;
+  });
+  if(firstMatch)firstMatch.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 function toggleLessonTopic(topicId){
   const body=document.getElementById('topic-body-'+topicId);
