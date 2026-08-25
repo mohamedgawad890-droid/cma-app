@@ -430,7 +430,18 @@
 // cleanup) to @media print so every topic is forced open and its full
 // content prints. Also moved the search/expand-all toolbar into .no-print.
 // app.js and app.css changed; CACHE_NAME bumps v40->v41.
-const CACHE_NAME = 'cma-prep-v41';
+// v42 (Batch 18): Section PDF download. Extends the Batch 17 lesson-PDF
+// print flow to a whole section — a new "⬇️ Section PDF" button next to
+// LESSONS & QUIZZES (in both the full-render sectCards and the toggleSection
+// fast-path DOM update) calls downloadSectionPDF(sectionId), which ensures
+// the section's lessons are loaded, enters a dedicated print render mode
+// (STATE.printSectionId), renders every lesson back-to-back with a cover
+// block, and fires window.print() once the DOM settles. Reuses the existing
+// #lesson-print-area/.print-only/.no-print print stylesheet as-is; only new
+// CSS is a page-break-before rule between lessons (.section-lesson-print).
+// No data/JSON changes. app.js and app.css changed; CACHE_NAME bumps v41->v42
+// to invalidate stale copies and trigger the clean SKIP_WAITING auto-reload.
+const CACHE_NAME = 'cma-prep-v42';
 const OFFLINE_URLS = [
   './',
   './index.html',
