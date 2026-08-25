@@ -616,6 +616,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   #exam-preview-root > div:nth-of-type(2){
     display:none !important;
   }
+  /* Batch 17: lesson PDF download — hide interactive-only chrome (download
+     button, mark-complete, next-lesson, notes box) and reveal the print-only
+     title block that isn't shown on screen. */
+  .no-print{display:none !important}
+  .print-only{display:block !important}
   #app{
     box-shadow:none !important;
     max-width:100% !important;
@@ -629,6 +634,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     width:100% !important;
     height:auto !important;
   }
+  .scroll-area{overflow:visible !important;height:auto !important}
   body{background:#fff !important}
   .case-block,.def-block,.ex-block{page-break-inside:avoid}
 }

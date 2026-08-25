@@ -412,7 +412,17 @@
 // s2.json, s3.json, s4.json, and app.js all changed; CACHE_NAME bumps
 // v38->v39 to invalidate stale copies and trigger the clean SKIP_WAITING
 // auto-reload on deploy.
-const CACHE_NAME = 'cma-prep-v39';
+//
+// v40 (Batch 17): Lesson PDF download. Reuses the native window.print()
+// approach already used for exam preview — no new library, works offline,
+// preserves Arabic RTL rendering exactly as shown on screen. app.js: new
+// downloadLessonPDF() + a "⬇️" button in the lesson reader header; lesson
+// content wrapped in #lesson-print-area with a print-only title block.
+// app.css: @media print extended with .no-print / .print-only helper
+// classes to hide interactive chrome (download/mark-complete/next-lesson/
+// notes) and reveal the print title when printing. app.js and app.css
+// changed; CACHE_NAME bumps v39->v40 to invalidate stale copies.
+const CACHE_NAME = 'cma-prep-v40';
 const OFFLINE_URLS = [
   './',
   './index.html',

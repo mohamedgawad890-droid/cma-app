@@ -1738,6 +1738,19 @@ function renderBlock(block,sec){
   }
 }
 
+// ─── LESSON PDF DOWNLOAD (Batch 17) ─────────────────────────────────────────
+// Reuses the browser's native print-to-PDF (same approach as exam preview),
+// scoped to the lesson reader via #lesson-print-area + .print-only/.no-print
+// helper classes in the @media print stylesheet. No external library needed —
+// keeps this working offline inside the PWA and preserves Arabic RTL content
+// exactly as rendered on screen.
+function downloadLessonPDF(){
+  if(!document.getElementById('lesson-print-area')){
+    if(typeof showToast==='function')showToast('Open a lesson first to download it.','error',3000);
+    return;
+  }
+  window.print();
+}
 
 // ─── STUDY SCREEN (merged Home + Lessons + Quiz) ─────────────────────────────
 // ── STUDY SCREEN — TARGETED UPDATE FUNCTIONS ─────────────────────────────────
@@ -1841,12 +1854,19 @@ function renderStudy(){
     const hasVideo=lesson.blocks&&lesson.blocks.some(b=>b.t==='video');
     const videoPlaceholder=hasVideo?'':`<div style="margin:14px 0 4px;background:var(--surface-3);border:.5px dashed #c0c0b8;border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px"><div style="width:36px;height:36px;background:var(--brand-tint);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px">🎬</div><div><div style="font-size:13px;font-weight:500;color:#555">Video lesson coming soon</div><div style="font-size:11px;color:#999;margin-top:2px">Gawad will record this lesson shortly</div></div></div>`;
     return`<div class="bh"><button class="bh-back" onclick="studyGo(STATE.sectId,null)">‹</button>
-      <div style="min-width:0"><div style="font-size:11px;font-weight:500;color:${sec.text}">${sec.emoji} ${esc(sec.title)}</div>
-      <div class="ellipsis" style="font-size:15px;font-weight:500;margin-top:1px">${lessonIdx+1}. ${esc(lesson.title)}</div></div></div>
-    <div class="scroll-area pad"><div class="card" style="margin-top:14px;padding:4px 16px 16px">${renderLessonBody(lesson,sec)}${videoPlaceholder}</div>
-    <button class="btn" data-markdone="${lesson.id}" onclick="markDone('${lesson.id}')" style="margin-top:14px;background:${done?'var(--ok-tint)':sec.bar};color:${done?'var(--ok-strong)':'#fff'}">${done?'✓ Completed — Back':'Mark as Complete ✓'}</button>
-    ${(()=>{const nx=getNextLesson(sec.id,lesson.id);if(!nx)return'';return`<button class="btn btn-outline" onclick="studyGo(${nx.sec.id},'${nx.lesson.id}')" style="margin-top:8px;border-color:var(--brand-2)20;color:var(--brand-2)">Next: ${esc(nx.lesson.title)} →</button>`;})()}
-    <div style="margin-top:12px">
+      <div style="min-width:0;flex:1"><div style="font-size:11px;font-weight:500;color:${sec.text}">${sec.emoji} ${esc(sec.title)}</div>
+      <div class="ellipsis" style="font-size:15px;font-weight:500;margin-top:1px">${lessonIdx+1}. ${esc(lesson.title)}</div></div>
+      <button class="no-print" onclick="downloadLessonPDF()" title="Download this lesson as PDF" style="flex-shrink:0;width:36px;height:36px;border-radius:9px;border:.5px solid var(--border-4);background:var(--surface-3);color:${sec.text};font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">⬇️</button></div>
+    <div class="scroll-area pad"><div class="card" id="lesson-print-area" style="margin-top:14px;padding:4px 16px 16px">
+      <div class="print-only" style="display:none">
+        <div style="font-size:10px;color:#888;margin-bottom:2px">CMA Prep — Mohamed Abdelgawad</div>
+        <div style="font-size:11px;color:#888;margin-bottom:10px">${sec.emoji} ${esc(sec.title)} · Lesson ${lessonIdx+1} of ${sec.lessons.length}</div>
+        <div style="font-size:19px;font-weight:700;margin-bottom:14px;color:#111">${esc(lesson.title)}</div>
+      </div>
+      ${renderLessonBody(lesson,sec)}${videoPlaceholder}</div>
+    <button class="btn no-print" data-markdone="${lesson.id}" onclick="markDone('${lesson.id}')" style="margin-top:14px;background:${done?'var(--ok-tint)':sec.bar};color:${done?'var(--ok-strong)':'#fff'}">${done?'✓ Completed — Back':'Mark as Complete ✓'}</button>
+    ${(()=>{const nx=getNextLesson(sec.id,lesson.id);if(!nx)return'';return`<button class="btn btn-outline no-print" onclick="studyGo(${nx.sec.id},'${nx.lesson.id}')" style="margin-top:8px;border-color:var(--brand-2)20;color:var(--brand-2)">Next: ${esc(nx.lesson.title)} →</button>`;})()}
+    <div class="no-print" style="margin-top:12px">
       <div style="font-size:12px;font-weight:500;color:#888;margin-bottom:6px">📝 My Notes</div>
       <textarea id="lesson-notes-${lesson.id}" placeholder="Write your notes here... (saved automatically)" oninput="saveLessonNote('${lesson.id}',this.value)" style="width:100%;padding:10px 12px;border-radius:8px;border:.5px solid var(--border-4);font-size:13px;font-family:inherit;outline:none;background:var(--surface);color:var(--ink);resize:vertical;line-height:1.5;box-sizing:border-box;min-height:120px" rows="7">${loadLessonNote(lesson.id)}</textarea>
     </div>
