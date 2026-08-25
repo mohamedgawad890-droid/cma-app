@@ -901,7 +901,7 @@ function showToast(message, type = 'info', duration = 3600) {
 // renderWrongAnswers(), and markDone(). The old 'scores' key was never read, causing quiz
 // scores to silently disappear after login. Also fixes the Firestore write rejection
 // (rules now permit 'lessonScores' — see firestore.rules Fix 3).
-const STATE={tab:'loading',searchQ:'',dictQ:'',dictData:[],dictLoaded:false,leaderboardData:[],leaderboardLoaded:false,quizMode:{active:false,sectionId:null,idx:0,questions:[],answers:[],selected:null},user:null,authScreen:'login',authError:'',authLoading:false,communityFilter:'all',questionDetail:null,showAskForm:false,communityQuestions:[],communityLastDoc:null,communityHasMore:false,communityLoading:false,communityLoaded:false,questionReplies:[],draftTitle:'',draftBody:'',draftSection:'General',draftReply:'',trackerOpenSects:[],sectId:null,lessonId:null,quizState:null,showProfileWarning:false,progress:{done:[],lessonScores:{},mcqTotal:0,mcqRight:0},
+const STATE={tab:'loading',searchQ:'',dictQ:'',dictData:[],dictLoaded:false,leaderboardData:[],leaderboardLoaded:false,quizMode:{active:false,sectionId:null,idx:0,questions:[],answers:[],selected:null},user:null,authScreen:'login',authError:'',authLoading:false,communityFilter:'all',questionDetail:null,showAskForm:false,communityQuestions:[],communityLastDoc:null,communityHasMore:false,communityLoading:false,communityLoaded:false,questionReplies:[],draftTitle:'',draftBody:'',draftSection:'General',draftReply:'',trackerOpenSects:[],sectId:null,lessonId:null,printSectionId:null,quizState:null,showProfileWarning:false,progress:{done:[],lessonScores:{},mcqTotal:0,mcqRight:0},
     showReset:false,
     flashcards:[],flashcardsIdx:0,flashcardsFlipped:false,flashcardsFilter:'all',flashcardsMode:'study',
     qotdState:{dateKey:'',question:null,selected:null,answered:false,taughtUnitCount:0},
@@ -1752,6 +1752,42 @@ function downloadLessonPDF(){
   window.print();
 }
 
+// ─── SECTION PDF DOWNLOAD (Batch 18) ────────────────────────────────────────
+// Same window.print() approach as downloadLessonPDF, extended to render every
+// lesson in a section back-to-back into one printable document. Enters a
+// dedicated print mode (STATE.printSectionId) rather than manipulating a
+// temp/offscreen DOM, so it stays consistent with the render()-driven
+// architecture and the existing #lesson-print-area/.print-only/.no-print
+// print stylesheet needs zero section-specific changes — only a new
+// page-break rule between lessons (.section-lesson-print, app.css).
+async function downloadSectionPDF(sectionId){
+  const sec=S.find(s=>s.id===sectionId);
+  if(!sec)return;
+  if(typeof showToast==='function')showToast('Preparing PDF — this can take a few seconds for long sections…','info',3500);
+  await ensureLessons(sectionId); // no-op if already cached (prewarmLessons usually beat us here)
+  STATE.printSectionId=sectionId;
+  STATE.sectId=sectionId;
+  STATE.lessonId=null;
+  render();
+}
+// Fires once, right after entering print mode's render pass, so the print
+// dialog opens against the freshly-rendered DOM instead of a stale one.
+function _triggerSectionPrint(){
+  const sec=S.find(s=>s.id===STATE.printSectionId);
+  const prevTitle=document.title;
+  if(sec)document.title='CMA Prep — '+sec.title;
+  const restore=()=>{
+    document.title=prevTitle;
+    STATE.printSectionId=null;
+    window.removeEventListener('afterprint',restore);
+    render();
+  };
+  window.addEventListener('afterprint',restore);
+  // rAF ensures layout has settled (accordion-forced-open print CSS, images)
+  // before the print dialog measures page content.
+  requestAnimationFrame(()=>requestAnimationFrame(()=>window.print()));
+}
+
 // ─── STUDY SCREEN (merged Home + Lessons + Quiz) ─────────────────────────────
 // ── STUDY SCREEN — TARGETED UPDATE FUNCTIONS ─────────────────────────────────
 // ST-2: These replace render() calls within the study screen,
@@ -1817,7 +1853,10 @@ function toggleSection(secId){
       </div>`;
     }).join('');
     listEl.innerHTML = `<div style="margin-top:10px;border-top:.5px solid ${sec.text}20;padding-top:10px">
-      <div style="font-size:11px;font-weight:500;color:${sec.text};margin-bottom:8px;letter-spacing:.5px">LESSONS & QUIZZES</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:11px;font-weight:500;color:${sec.text};letter-spacing:.5px">LESSONS & QUIZZES</div>
+        <button onclick="event.stopPropagation();downloadSectionPDF(${sec.id})" title="Download all ${sec.lessons.length} lessons in this section as one PDF" style="flex-shrink:0;display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:7px;border:.5px solid ${sec.text}30;background:#fff;color:${sec.strong};font-size:11px;font-weight:500;cursor:pointer">⬇️ Section PDF</button>
+      </div>
       ${html}
     </div>`;
     listEl.style.display = 'block';
@@ -1827,6 +1866,32 @@ function toggleSection(secId){
 
 function renderStudy(){
   const{progress}=STATE;
+  // ── Section print view (Batch 18) — all lessons in one printable doc ──────
+  if(STATE.printSectionId!==null){
+    const sec=S.find(s=>s.id===STATE.printSectionId);
+    if(!sec){STATE.printSectionId=null;return renderStudy();}
+    const lessonsHTML=sec.lessons.map((l,i)=>`
+      <div class="section-lesson-print card" id="lesson-print-area-${l.id}" style="margin-top:14px;padding:4px 16px 16px">
+        <div class="print-only" style="display:none">
+          <div style="font-size:10px;color:#888;margin-bottom:2px">CMA Prep — Mohamed Abdelgawad</div>
+          <div style="font-size:11px;color:#888;margin-bottom:10px">${sec.emoji} ${esc(sec.title)} · Lesson ${i+1} of ${sec.lessons.length}</div>
+          <div style="font-size:19px;font-weight:700;margin-bottom:14px;color:#111">${i+1}. ${esc(l.title)}</div>
+        </div>
+        ${renderLessonBody(l,sec)}
+      </div>`).join('');
+    setTimeout(_triggerSectionPrint,0);
+    return`<div class="bh no-print"><button class="bh-back" onclick="STATE.printSectionId=null;render();">‹</button>
+      <div style="font-size:14px;font-weight:500">Preparing ${esc(sec.title)} PDF…</div></div>
+      <div class="scroll-area pad">
+        <div class="print-only" style="display:none;margin-bottom:20px">
+          <div style="font-size:22px;margin-bottom:2px">${sec.emoji}</div>
+          <div style="font-size:20px;font-weight:700;color:#111;margin-bottom:4px">${esc(sec.title)}</div>
+          <div style="font-size:12px;color:#888">${sec.lessons.length} lessons · CMA Prep — Mohamed Abdelgawad</div>
+        </div>
+        ${lessonsHTML}
+        <div style="height:20px"></div>
+      </div>`;
+  }
   // ── Lesson reader ──────────────────────────────────────────────────────────
   if(STATE.lessonId!==null){
     let sec=sect(STATE.sectId);
@@ -1881,7 +1946,10 @@ function renderStudy(){
     const isOpen=STATE.sectId===sec.id;
     const lessonList=isOpen?`
       <div style="margin-top:10px;border-top:.5px solid ${sec.text}20;padding-top:10px">
-        <div style="font-size:11px;font-weight:500;color:${sec.text};margin-bottom:8px;letter-spacing:.5px">LESSONS & QUIZZES</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div style="font-size:11px;font-weight:500;color:${sec.text};letter-spacing:.5px">LESSONS & QUIZZES</div>
+          <button onclick="event.stopPropagation();downloadSectionPDF(${sec.id})" title="Download all ${sec.lessons.length} lessons in this section as one PDF" style="flex-shrink:0;display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:7px;border:.5px solid ${sec.text}30;background:#fff;color:${sec.strong};font-size:11px;font-weight:500;cursor:pointer">⬇️ Section PDF</button>
+        </div>
         ${sec.lessons.map((l,i)=>{const done=lessonDone(l.id);const lsc=(progress.lessonScores||{})[l.id];const qpct=lsc?Math.round(lsc.correct/lsc.total*100):null;return`
           <div style="background:${done?sec.bg:'var(--surface-2)'};margin-bottom:8px;border-radius:10px;border:.5px solid ${done?sec.text+'30':'var(--border)'}">
             <div style="display:flex;align-items:center;gap:10px;padding:10px 12px">
