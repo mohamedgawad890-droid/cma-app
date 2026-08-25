@@ -1591,7 +1591,7 @@ function renderLessonBody(lesson,sec){
       <div class="lesson-topic-body" id="topic-body-${topicId}" style="display:none">${bodyHTML}</div>
     </div>`;
   }
-  const toolbarHTML=`<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+  const toolbarHTML=`<div class="no-print" style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
     <div style="position:relative;flex:1;min-width:0">
       <input type="text" id="lesson-search-${lesson.id}" placeholder="Search this lesson..." oninput="filterLessonTopics('${lesson.id}',this.value)"
         style="width:100%;padding:8px 30px 8px 12px;border-radius:8px;border:.5px solid var(--border-4);font-size:13px;font-family:inherit;outline:none;background:var(--surface);color:var(--ink);box-sizing:border-box">
