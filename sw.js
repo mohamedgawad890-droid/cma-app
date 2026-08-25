@@ -422,7 +422,15 @@
 // classes to hide interactive chrome (download/mark-complete/next-lesson/
 // notes) and reveal the print title when printing. app.js and app.css
 // changed; CACHE_NAME bumps v39->v40 to invalidate stale copies.
-const CACHE_NAME = 'cma-prep-v40';
+//
+// v41 (Batch 17 fix): v40's PDF only printed topic headers, not content —
+// the accordion collapses each topic body via inline style="display:none",
+// which silently beat the print stylesheet. Added
+// .lesson-topic-body{display:block!important} (and chevron/toggle chrome
+// cleanup) to @media print so every topic is forced open and its full
+// content prints. Also moved the search/expand-all toolbar into .no-print.
+// app.js and app.css changed; CACHE_NAME bumps v40->v41.
+const CACHE_NAME = 'cma-prep-v41';
 const OFFLINE_URLS = [
   './',
   './index.html',
