@@ -630,6 +630,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   .lesson-topic-chevron{display:none !important}
   .lesson-topic-toggle{cursor:default !important;background:transparent !important;border-bottom:.5px solid var(--border) !important}
   .lesson-topic{border:none !important;page-break-inside:avoid}
+  /* Batch 18: section PDF — start every lesson after the first on a fresh
+     page so lessons don't visually run into each other mid-page. */
+  .section-lesson-print{page-break-before:always}
+  .section-lesson-print:first-of-type{page-break-before:avoid}
   #app{
     box-shadow:none !important;
     max-width:100% !important;
