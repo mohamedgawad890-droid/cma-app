@@ -441,7 +441,17 @@
 // CSS is a page-break-before rule between lessons (.section-lesson-print).
 // No data/JSON changes. app.js and app.css changed; CACHE_NAME bumps v41->v42
 // to invalidate stale copies and trigger the clean SKIP_WAITING auto-reload.
-const CACHE_NAME = 'cma-prep-v42';
+// v43 (Batch 19): Collapsible desktop sidebar. On desktop (>=900px) a new
+// toggle button at the bottom of the sidebar (and Ctrl+B / Cmd+B) collapses
+// the 190/210px sidebar to a 60px icon-only rail. Nav labels, brand text and
+// the Install button hide; icons stay clickable with title tooltips. The
+// choice persists in localStorage ('cma-sidebar-v1') and is applied via a
+// single 'sidebar-rail' class on #app — the nav DOM is never rebuilt on
+// toggle, so render()'s _lastNavActive guard is untouched. Mobile top strip
+// unaffected. No data/JSON changes. app.js and app.css changed; CACHE_NAME
+// bumps v42->v43 to invalidate stale copies and trigger the clean
+// SKIP_WAITING auto-reload.
+const CACHE_NAME = 'cma-prep-v43';
 const OFFLINE_URLS = [
   './',
   './index.html',

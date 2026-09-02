@@ -8652,6 +8652,25 @@ const SUB_ME=[
   {id:'register',  icon:'🎓', label:'Profile'},
   {id:'feedback',  icon:'⭐', label:'Feedback'}
 ];
+// ── Batch 19: Collapsible desktop sidebar (icon rail) ────────────────────
+// Desktop (>=900px) only — the CSS class is inert on mobile. State persists in
+// localStorage so the choice survives reloads. Toggling flips a class on #app
+// and never rebuilds the nav DOM (render() only rebuilds nav when the active
+// group changes — see render._lastNavActive), so the button just re-syncs its
+// own glyph/title.
+function loadSidebarState(){try{return localStorage.getItem('cma-sidebar-v1')==='rail'?'rail':'open';}catch{return 'open';}}
+function saveSidebarState(s){try{localStorage.setItem('cma-sidebar-v1',s);}catch(_){}}
+function applySidebarState(){
+  const app=document.getElementById('app');if(!app)return;
+  const rail=loadSidebarState()==='rail';
+  app.classList.toggle('sidebar-rail',rail);
+  const btn=document.getElementById('sidebar-toggle');
+  if(btn){btn.innerHTML=rail?'&raquo;':'&laquo;';btn.title=rail?'Expand sidebar (Ctrl+B)':'Collapse sidebar (Ctrl+B)';}
+}
+function toggleSidebar(){
+  saveSidebarState(loadSidebarState()==='rail'?'open':'rail');
+  applySidebarState();
+}
 function render(){
   const content=document.getElementById('content-area');const nav=document.getElementById('bottom-nav');if(!content||!nav)return;
 
@@ -8748,7 +8767,9 @@ function render(){
     if(active!==render._lastNavActive){
       render._lastNavActive=active;
       const brandHeader=`<div class="desktop-brand" style="display:flex;align-items:center;justify-content:space-between;gap:10px"><div style="display:flex;align-items:center;gap:10px;min-width:0"><img src="./gawad-avatar.webp" alt="Mohamed Abdelgawad" style="width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--brand-tint)"><div style="min-width:0"><div style="font-size:13px;font-weight:600;color:var(--brand);letter-spacing:.5px">CMA Part One Prep</div><div style="font-size:10px;color:#888;margin-top:1px">With Gawad</div></div></div>${!window.matchMedia("(display-mode: standalone)").matches?'<button onclick="installApp()" title="Install App" style="display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:8px;border:1px solid #d0d8e8;background:var(--brand-tint);color:var(--brand);cursor:pointer;font-size:12px;font-weight:500;font-family:inherit;flex-shrink:0"><span style="font-size:14px">⬇</span><span>Install App</span></button>':''}</div>`;
-      nav.innerHTML=brandHeader+getNavTabs().map(t=>`<button class="nav-btn${t.id===active?' active':''}" onclick="navTo('${t.id}')"><span class="nav-icon">${t.icon}</span><span>${t.label}</span></button>`).join('');
+      nav.innerHTML=brandHeader+getNavTabs().map(t=>`<button class="nav-btn${t.id===active?' active':''}" onclick="navTo('${t.id}')" title="${t.label}"><span class="nav-icon">${t.icon}</span><span class="nav-label">${t.label}</span></button>`).join('')
+        +'<button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()">&laquo;</button>'; // Batch 19
+      applySidebarState(); // Batch 19: nav DOM was just rebuilt — re-sync class + button glyph
     }}
   // Start live per-question timer when on a quiz screen with unanswered question
   if(STATE.tab==='quiz-session'&&STATE.quizState&&STATE.quizState.selected===null){
@@ -10072,6 +10093,12 @@ auth.onAuthStateChanged(async(user)=>{
   enhance(area);
 
   document.addEventListener('keydown', function(e){
+    // Batch 19: Ctrl+B / Cmd+B toggles the desktop sidebar rail (desktop only — nav is a top strip below 900px)
+    if((e.ctrlKey||e.metaKey) && !e.altKey && (e.key==='b'||e.key==='B') && window.matchMedia('(min-width:900px)').matches){
+      const t=e.target; const tag=t&&t.tagName;
+      if(tag==='INPUT'||tag==='TEXTAREA'||(t&&t.isContentEditable)) return; // don't hijack bold in editable fields
+      e.preventDefault(); toggleSidebar(); return;
+    }
     if(e.key!=='Enter' && e.key!==' ') return;
     var el = e.target;
     if(!el || el.getAttribute('role')!=='button' || !el.hasAttribute('onclick')) return;
