@@ -4437,798 +4437,7 @@
       "id": "1-12.q20"
     }
   ],
-  "1-13": [
-    {
-      "q": "A company began work on a long-term construction contract in 20X1. The contract price was $3,000,000. Year-end information related to the contract is as follows (figures below). If the company recognizes the revenue for this contract at a point in time, when the performance obligations in the contract have been completely satisfied, the gross profit to be recognized in 20X3 is:",
-      "o": [
-        "$1,000,000",
-        "$800,000",
-        "$600,000",
-        "$200,000"
-      ],
-      "a": 0,
-      "e": "a0 When revenue is recognized at a point in time for a contract, it is recognized when the performance obligations in the contract have been completely satisfied. No revenue, cost, or gross profit are recognized until the project is complete. Then, in the period when the performance obligations in the contract have been satisfied, all of the revenue, cost, and gross profit of the project are recognized. 20X3 is the year in which the performance obligations in the contract are satisfied, and the total gross profit on the contract is $1,000,000 (calculated as the $3,000,000 price minus the $2,000,000 in costs incurred). This entire $1,000,000 of gross profit is recognized in 20X3.",
-      "wrongWhy": [
-        null,
-        "This is the difference between total cost and collections received in 20X3. This is not the way to calculate the gross profit to be recognized in 20X3. When revenue is recognized at a point in time for a contract, all revenue, costs, and gross profit on the contract are",
-        "This is the difference between billings and cost incurred in 20X3. This is not the way to calculate the gross profit to be recognized in 20X3. When revenue is recognized at a point in time for a contract, all revenue, costs, and gross profit on the contract are recognized when the performance obligations in the contract have been completely satisfied.",
-        "This is the difference between collections and billings in 20X3. This is not the way to calculate the gross profit to be recognized in 20X3. When revenue is recognized at a eg gs ; point in time for a contract, all revenue, costs, and gross profit on the contract are recognized when the performance obligations in the contract have been completely satisfied. eee TD"
-      ],
-      "source": "CIA 1196 P4 Q12",
-      "topic": "Long-Term Contracts",
-      "diffPct": 62,
-      "data": [
-        [
-          "",
-          "20X1",
-          "20X2",
-          "20X3"
-        ],
-        [
-          "Estimated total cost",
-          "$2,000,000",
-          "$2,000,000",
-          "$2,000,000"
-        ],
-        [
-          "Cost incurred",
-          "$700,000",
-          "$900,000",
-          "$400,000"
-        ],
-        [
-          "Billings",
-          "$800,000",
-          "$1,200,000",
-          "$1,000,000"
-        ],
-        [
-          "Collections",
-          "$600,000",
-          "$1,200,000",
-          "$1,200,000"
-        ]
-      ],
-      "id": "1-13.q1"
-    },
-    {
-      "q": "AAA Construction Company was hired by the California state government on January 1, Year One to build a section of a new highway. The contract price was $100 million and AAA estimated that the work would cost $96 million. During Year One, $18 million was spent on the work and the company's engineers believed that work costing $72 million remained to complete the work and satisfy the performance obligation. During Year Two, another $45 million was spent and $42 million of work was estimated to remain. The contract contained a clause indicating that the state owned the work-in-process as the highway was being constructed. Using the cost-to-cost input method to calculate progress toward satisfaction of the performance obligation, what amount of profit or loss should AAA recognize on the \" contract in Year Two?",
-      "o": [
-        "$5,000,000 loss.",
-        "$7,000,000 loss.",
-        "$4,760,000 profit.",
-        "$2,000,000 profit."
-      ],
-      "a": 1,
-      "e": "Because the state controls the work-in-process as the work is being done, the contract is accounted for over time. In Year One, $18 million was spent with $72 million remaining for a total estimated cost of $90 million at that time. Because the contract price was $100 million, the company estimated that a profit of $10 million would eventually be earned. At the end of Year One, the performance obligation was 20% satisfied ($18 million divided by $90 million). Thus, AAA recognized a profit of $2 million (20% of $10 million) in Year One. In Year Two, another $45 million was spent, bringing the total cost incurred to date to $63 million ($18 million plus $45 million). The company's engineers estimated at the end of Year Two that another $42 million of cost remained to satisfy the performance obligation, for a total estimated cost of $105 million ($63 million plus $42 million). Because the contract price was $100 million and at the end of Year Two, the total estimated cost on the contract was $105 million, AAA estimated at that time that a loss of $5 million would eventually be incurred.",
-      "wrongWhy": [
-        "$5,000,000 is the amount of the loss to be recognized to date, that is, through the end of Year Two of the contract. It is not the loss to be recognized in Year Two.",
-        null,
-        "This answer results from omitting the costs incurred during Year One from the Year Two calculations.",
-        "$2,000,000 is the profit recognized in Year One of the contract. eee | :"
-      ],
-      "source": "LEGACY RR606.02",
-      "topic": "Long-Term Contracts",
-      "diffPct": 38,
-      "id": "1-13.q2"
-    },
-    {
-      "q": "In accounting for long-term construction contracts, the difference between recognizing the revenue at a point in time versus recognizing the revenue over time is that",
-      "o": [
-        "It is only when revenue is recognized at a point in time that accumulated construction costs are included in a construction in process contract asset account.",
-        "When revenue is recognized over time, all revenues and gross profit on the a contract are recognized only when the performance obligations in the contract are completely satisfied.",
-        "It is only when revenue is recognized over time that gross profit earned to date is accumulated in the construction in process contract asset account.",
-        "It is only when the revenue is recognized over time that progress billings are accumulated in a contract liability account, billings on construction in process."
-      ],
-      "a": 2,
-      "e": "When revenue is recognized over time, the gross profit that is recognized each period is added to the construction in process contract asset account. When revenue is recognized at a point in time, no gross profit is recognized until the obligations in the contract have been completely satisfied.",
-      "wrongWhy": [
-        "; ; ; i, Accumulated construction costs are included in a construction in process contract asset account under both methods.",
-        "When the revenue is recognized at a point in time (not over time), all revenues and gross profit on the contract are recognized when the performance obligations in the contract are completely satisfied.",
-        null,
-        "Progress billings are accumulated in a contract liability account called billings on construction in process under both methods. Question 2. of 22"
-      ],
-      "source": "CIA 0594 P4 Q26",
-      "topic": "Long-Term Contracts",
-      "diffPct": 40,
-      "id": "1-13.q3"
-    },
-    {
-      "q": "Pell Co. builds new homes on lots that it owns the title to. The company normally obtains a signed sales contract before it begins construction on a home, so it usually does not build “on spec,” that is, speculatively. The contracts contain a provision allowing buyers to change their minds and cancel the contract during the construction period if they pay a fee. The customers make progress payments during construction, but they do not receive title to the property until construction is complete and the sale is closed. The following data pertain to Pell’s home construction jobs that commenced during 20X5 (figures below). What amount of gross profit (loss) should Pell report in its 20X5 income statement?",
-      "o": [
-        "$0.",
-        "$340,000.",
-        "$80,000.",
-        "$65,500."
-      ],
-      "a": 0,
-      "e": "Because Pell owns the property on which it builds the homes and the customers do not obtain control of the assets until construction is complete, Pell recognizes revenue, costs, and gross profit from these construction contracts at a point in time, that is, wnen the contract is fulfilled and the title is turned over to the customer. Both homes have estimated gross profit as of the end of 20X5. Home 1's estimated gross profit is $60,000 ($420,000 —- $240,000 - $120,000) and Home 2's estimated gross profit is $30,000 ($300,000 — $230,000 - $40,000). However, neither home is complete, so no gross profit will be recognized until the contracts have been completely fulfilled.",
-      "wrongWhy": [
-        null,
-        "This is not the correct answer. See explanation for A.",
-        "This is the amount billed to customers during 20X5 for both homes minus the amount received from customers during 20X5 for both homes. It is not the amount of gross profit (loss) that Pell should report in its 20X5 income statement. Please see the correct ~ answer explanation for more information.",
-        "This would be the gross profit to recognize if the revenue, costs, and gross profit were being accounted for over time. However, because Pell owns the property on which it builds the homes and the customers do not obtain control of the assets until construction is complete, Pell recognizes revenue, costs, and gross profit from these construction contracts at a point in time, that is, when the contract is fulfilled and the title is turned over to the customer. Neither contract is fulfilled at the end of 20X5. Please see the correct answer explanation for more information. Seer a ;"
-      ],
-      "source": "CMA1 M1 Q07",
-      "topic": "Long-Term Contracts",
-      "diffPct": 52,
-      "id": "1-13.q4"
-    },
-    {
-      "q": "Diamond Clover Construction Inc. is recognizing revenue at a point in time on Job #4115, a long-term contract with a contract price of $5,000,000. In Year 1, the company began work on the job. Other data are shown below (figures below). The total amount to be recognized as gross profit in Year 2 when the contract's performance obligations have been satisfied, is:",
-      "o": [
-        "$1,400,000",
-        "$700,000",
-        "$1,750,000",
-        "$2,650,000"
-      ],
-      "a": 2,
-      "e": "When revenue is recognized at a point in time, no revenue, expense, or gross profit is recognized until the performance obligations under the contract have been satisfied. In the year the performance obligations are satisfied, the entire amount of revenue, expenses, and gross profit are recognized. The gross profit is calculated as the contract price ($5,000,000) minus the total costs incurred to satisfy the performance obligations in the contract ($900,000 + $2,350,000). So, the total gross profit recognized in Year 2 was $1,750,000.",
-      "wrongWhy": [
-        "This is the estimated gross profit at the end of year 1. When revenue is recognized at a point in time, no revenue, expense, or gross profit is recognized until the performance obligations under the contract have been satisfied. In the year the performance obligations are satisfied, the entire amount of revenue, expenses, and gross profit are recognized. |",
-        "$700,000 may have been calculated as the contract price ($5,000,000) minus the collections during Year 2 ($4,300,000). It is also the collections during Year 1. However, it is not the gross profit to be recognized in Year 2 when the contract's performance obligations have been satisfied. The gross profit recognized in Year 2 is the contract price minus the total costs incurred to satisfy the performance obligations in the contract.",
-        null,
-        "; ; ; ; ; This is the contract price minus the costs incurred during Year 2. The calculation of the gross profit on the contract also needs to include the $900,000 of costs incurred during Year 1. When revenue is recognized at a point in time, no revenue, expense, or gross profit is recognized until the performance obligations under the contract have been satisfied. In the year the performance obligations are satisfied, the entire amount of revenue, expenses, and gross profit are recognized. The gross profit is calculated as the contract price minus the total costs incurred to satisfy the performance obligations in the contract. nnn nnnneeeeeeeeeeeeee"
-      ],
-      "source": "CMA 0696 P2 Q2",
-      "topic": "Long-Term Contracts",
-      "diffPct": 37,
-      "data": [
-        [
-          "",
-          "Year 1",
-          "Year 2"
-        ],
-        [
-          "Costs incurred during the year",
-          "$900,000",
-          "$2,350,000"
-        ],
-        [
-          "Estimated costs to complete",
-          "$2,700,000",
-          "$0"
-        ],
-        [
-          "Billings during the year",
-          "$1,000,000",
-          "$4,000,000"
-        ],
-        [
-          "Collections during the year",
-          "$700,000",
-          "$4,300,000"
-        ]
-      ],
-      "id": "1-13.q5"
-    },
-    {
-      "q": "Stander Construction Company signed a contract with the state of Ohio to build a short stretch of highway for $42 million. During 20X1, $8 million was spent and company officials anticipated that another $24 million would be needed to complete the work. During 20X2, another $13 million was spent and current information indicated that another $14 million would be required to finish the project. The contract contained a clause indicating that the state of Ohio owns the work-in-process as the highway is being constructed. Using the cost-to-cost input method to calculate Stander's progress toward satisfaction of the performance obligation, what amount of profit should the company recognize in 20X2?",
-      "o": [
-        "$4,200,000.",
-        "$2,600,000.",
-        "Zero.",
-        "$1,700,000."
-      ],
-      "a": 3,
-      "e": "Because the state of Ohio controls the work-in-process as the work is being done, the contract is accounted for over time. In 20X1, Stander spent $8 million out of an estimated total of $32 million ($8 million spent and $24 million expected) so that the performance obligation was 25 percent satisfied. The anticipated profit was $10 million ($42 million contract price — $32 million estimated cost) so that a profit of $2.5 million was recognized (25 percent of $10 on million) in 20X1. By the end of 20X2, Stander had spent a total of $21 million ($8 million in 20X1 and $13 million in 20X2). Because $14 million more in costs was expected, the total estimated cost was $35 million ($21 million + $14 million) and the estimated profit had fallen to $7 million ($42 million — $35 million). The performance obligation was 60 percent satisfied ($21 million divided by $35 million) so profit to date of $4.2 million needed to be recognized (60 percent of the $7 million total) through 20X2. The company had recognized $2.5 million in 20X1, so another $1.7 million should be recognized in 20X2 ($4.2 million less $2.5 million).",
-      "wrongWhy": [
-        "This is the profit to be recognized to date on the contract through the end of 20X2. It is not the amount of profit to be recognized for the year 20X2.",
-        "This answer results from using the total estimated cost and total estimated profit as of the end of 20X2 as the total estimated cost and profit at the end of 20X1, as well.",
-        "If the contract were being accounted for at a point in time, the profit recognized during 20X2 would be zero. However, because the state of Ohio controls the work-in-process as the work is being done, the contract is accounted for over time. Thus, some profit is recognized during each year of the contract.",
-        null
-      ],
-      "source": "LEGACY RR606.03",
-      "topic": "Long-Term Contracts",
-      "diffPct": 56,
-      "id": "1-13.q6"
-    },
-    {
-      "q": "Carefree Construction recognizes construction revenue and gross profit over time using the cost-to-cost method on a long-term project for a contract price of $1,500,000. Carefree began the project in 20X0 and the project continued through 20X3. Information on the project follows (figures below). Assume that Carefree had recognized $92,308 in gross profit on the contract through the end of 20X1. For the year 20X2, what is the amount Carefree should recognize as gross profit from this project?",
-      "o": [
-        "$50,000 loss",
-        "$0",
-        "$92,308 loss",
-        "$142,308 loss"
-      ],
-      "a": 3,
-      "e": "This question uses the formula for the recognition of revenue and gross profit over time. The formula is: Estimated Gross Profit x Percentage Satisfied = Total Gross Profit to be Recognized to Date - Profit Previously Recognized = Gross Profit to Recognize This Period Total costs incurred through the end of 20X2 were $1,350,000, and the estimated cost to complete the project was $200,000 as of that date, for a total estimated cost on the contract of $1,550,000 as of the end of 20X2. Therefore, at the end of 20X2, Carefree had an estimated loss of $50,000 on the contract ($1,500,000 - $1,550,000). The formula can still be used, but remember that losses are always 100% recognized. Therefore, a total loss of $50,000 needs to have been recognized on the project by the end of 20X2. However, the company already recognized $92,308 of gross profit through 20X1, so in order to change that to a loss of $50,000, it must recognize a $142,308 loss in 20X2 ($50,000 + $92,308).",
-      "wrongWhy": [
-        "This is the total loss on the contract that should be recognized through the end of 20X2, but it fails to take into account the profit that was recognized prior to 20X2. See the correct answer for a full explanation.",
-        "This answer is incorrect. See the correct answer for a full explanation.",
-        "This is the amount of profit that had been recognized prior to 20X2, but this is not the amount of loss that needs to be recognized in 20X2. See the correct answer for a full explanation. a a a",
-        null
-      ],
-      "source": "HTB 1.1.037",
-      "topic": "Long-Term Contracts",
-      "diffPct": 54,
-      "data": [
-        [
-          "",
-          "20X0",
-          "20X1",
-          "20X2",
-          "20X3"
-        ],
-        [
-          "Total Costs Incurred",
-          "$400,000",
-          "$600,000",
-          "$1,350,000",
-          "$1,550,000"
-        ],
-        [
-          "Estimated Costs to Complete",
-          "$800,000",
-          "$700,000",
-          "$200,000",
-          "$0"
-        ]
-      ],
-      "id": "1-13.q7"
-    },
-    {
-      "q": "Carefree Construction recognizes construction revenue and gross profit over time using the cost-to-cost method on a long-term project for a contract price of $1,500,000. Carefree began the project in 20X0 and the project continued through 20X3. Information on the project follows (figures below). Assume that Carefree recognized $100,000 of gross profit for the year 20X0. For the year 20X1, what is the amount Carefree should recognize as gross profit from this project?",
-      "o": [
-        "$7,692 loss",
-        "$92,308",
-        "$33,000 loss",
-        "$0"
-      ],
-      "a": 0,
-      "e": "This question uses the formula for the recognition of revenue and gross profit over time. The formula is: Estimated Gross Profit x Percentage Satisfied = Total Gross Profit to be Recognized to Date - Profit Previously Recognized = Gross Profit to Recognize This Period At the end of 20X1, total costs incurred are $600,000 and estimated total costs as of that date are $1,300,000 ($600,000 incurred plus $700,000 estimated cost to complete). Thus, the performance obligation at the end of 20X1 is 6/13 satisfied ($600,000 + $1,300,000). At this point, the total amount of gross profit that should be recognized to date on the contract is $92,308: ([$1,500,000 - $1,300,000] x 6/13). However, $100,000 of gross profit was recognized in 20X0. Therefore, the $100,000 that was recognized in 20X0 is subtracted from the total amount of profit that should be recognized to date, and the result is a loss to be recognized for 20X1. $92,308 - $100,000 = $(7,692). This loss for 20X71 is not a loss on the whole contract, at least not yet, but rather the de-recognition of some of the gross profit that had been over recognized in the prior period.",
-      "wrongWhy": [
-        null,
-        "This is the total amount of profit that should have been recognized to date on the contract at the end of 20X71, but it fails to take into account the profit that was recognized in 20X0. See the correct answer for a full explanation.",
-        "This answer is incorrect. See the correct answer for a full explanation.",
-        "This answer is incorrect. See the correct answer for a fuii expianation."
-      ],
-      "source": "HTB 1.1.036",
-      "topic": "Long-Term Contracts",
-      "diffPct": 56,
-      "data": [
-        [
-          "",
-          "20X0",
-          "20X1",
-          "20X2",
-          "20X3"
-        ],
-        [
-          "Total Costs Incurred",
-          "$400,000",
-          "$600,000",
-          "$1,350,000",
-          "$1,550,000"
-        ],
-        [
-          "Estimated Costs to Complete",
-          "$800,000",
-          "$700,000",
-          "$200,000",
-          "$0"
-        ]
-      ],
-      "id": "1-13.q8"
-    },
-    {
-      "q": "Carefree Construction recognizes construction revenue and gross profit over time using the cost-to-cost method on a long-term project for a contract price of $1,500,000. Carefree began the project in 20X0 and the project continued through 20X3. Information on the project follows (figures below). For the year 20X0, what is the amount Carefree should recognize as gross profit from this project?",
-      "o": [
-        "$100,000",
-        "$375,000",
-        "$0",
-        "$75,000"
-      ],
-      "a": 0,
-      "e": "This question uses the formula for the recognition of revenue and gross profit over time. The formula is: Estimated Gross Profit A x Percentage Satisfied = Total Gross Profit to be Recognized to Date - Profit Previously Recognized = Gross Profit to Recognize This Period In 20X0, $400,000 of costs had been incurred of an estimated $1,200,000 in total costs. Therefore, the performance obligation is 1/3 satisfied, so 1/3 of the estimated gross profit of $300,000 ($1,500,000 - $1,200,000) is to be recognized to date, or $100,000. Since 20X0 is the first year of the project, no revenue or gross profit has yet been recognized. Therefore, Carefree should recognize gross profit of $100,000 for 20X0.",
-      "wrongWhy": [
-        null,
-        "This answer is incorrect. See the correct answer for a full explanation.",
-        "This answer is incorrect. See the correct answer for a full explanation.",
-        "This answer is incorrect. See the correct answer for a full explanation. htips:/Awww.KGeMintdrnsbohal CBIR PEC ANeSietn eS BOE bar ANCA) BRPOTtING 330 Q an 112"
-      ],
-      "source": "HTB 1.1.035",
-      "topic": "Long-Term Contracts",
-      "diffPct": 82,
-      "data": [
-        [
-          "",
-          "20X0",
-          "20X1",
-          "20X2",
-          "20X3"
-        ],
-        [
-          "Total Costs Incurred",
-          "$400,000",
-          "$600,000",
-          "$1,350,000",
-          "$1,550,000"
-        ],
-        [
-          "Estimated Costs to Complete",
-          "$800,000",
-          "$700,000",
-          "$200,000",
-          "$0"
-        ]
-      ],
-      "id": "1-13.q9"
-    },
-    {
-      "q": "A company began work on a long-term construction contract in 20X1. The contract price was $3,000,000. Year-end information related to the contract is as follows (figures below). If the company recognizes the revenue for this contract over time using the cost-to-cost method, the gross profit to be recognized in 20X71 is:",
-      "o": [
-        "$100,000",
-        "$200,000",
-        "($100,000)",
-        "$350,000"
-      ],
-      "a": 3,
-      "e": "The amount of gross profit to be recognized for the year 20X71 is calculated as follows: a0 [(Estimated Gross Profit x Percentage Satisfied) - Gross Profit Previously Recognized]. 2\" The estimated gross profit is calculated by subtracting from the contract price ($3,000,000) the estimated total cost as of that date ($2,000,000). $3,000,000 - $2,000,000 = $1,000,000. The estimated gross profit is $1,000,000. Note that in this question, the estimated total cost for the contract is given. In another, different, question, it might be necessary to calculate the estimated total cost by summing the actual cost incurred to date and the estimated remaining cost that will be required to completely satisfy the contract at that point. The calculation of the percentage satisfied is done by dividing the actual costs incurred to date as of 20X1 on the contract ($700,000) by the total estimated costs for the project ($2,000,000) as of 20X1. $700,000 + $2,000,000 = 0.35. Thus, as of 20X1 the performance obligation in the contract is 35% satisfied.",
-      "wrongWhy": [
-        "This is the 20X71 billings minus the cost incurred in 20X1. This is not the way to calculate the gross profit to be recognized in 20X1. The amount of gross profit to be recognized for the year 20X1 is calculated as [(Estimated Gross Profit x Percentage Satisfied) - Gross Profit Previously Recognized].",
-        "This is the difference between the billings and the collections in 20X1. This is not the way to calculate the gross profit to be recognized in 20X1. The amount of gross profit to be recognized for the year 20X1 is calculated as [(Estimated Gross Profit x Percentage a Satisfied) - Gross Profit Previously Recognized]. ne",
-        "\" This is the collections for 20X1 minus the cost incurred in 20X1. This is not the way to calculate the gross profit to be recognized in 20X1. The amount of gross profit to be recognized for the year 20X1 is calculated as [(Estimated Gross Profit x Percentage Satisfied) - Gross Profit Previously Recognized].",
-        null
-      ],
-      "source": "CIA 1196 P4 Q11",
-      "topic": "Long-Term Contracts",
-      "diffPct": 65,
-      "data": [
-        [
-          "",
-          "20X1",
-          "20X2",
-          "20X3"
-        ],
-        [
-          "Estimated total cost",
-          "$2,000,000",
-          "$2,000,000",
-          "$2,000,000"
-        ],
-        [
-          "Cost incurred",
-          "$700,000",
-          "$900,000",
-          "$400,000"
-        ],
-        [
-          "Billings",
-          "$800,000",
-          "$1,200,000",
-          "$1,000,000"
-        ],
-        [
-          "Collections",
-          "$600,000",
-          "$1,200,000",
-          "$1,200,000"
-        ]
-      ],
-      "id": "1-13.q10"
-    },
-    {
-      "q": "Blue Water Shipbuilders obtained a contract to construct a cruise ship for Gateway Cruises at a contract price of $1 billion. Blue Water's estimated cost at the inception of the contract was $800 million, so at the inception of the contract, Blue Water estimated its profit on the contract would be $200 million. The construction was expected to require three years. The contract specified that Gateway Cruises owned the work-in-process as the cruise ship was being built. By the end of Year One, the engineer estimated that 20 percent of the performance obligation had been satisfied, and Blue Water's costs totaled $285 million. Blue Water's estimated cost to complete the construction and satisfy the performance obligation at that time was $665 million. Blue Water recognizes revenue and gross profit on shipbuilding contracts using the cost- a to-cost input method. How much revenue and gross profit should Blue Water recognize at the end of Year One?",
-      "o": [
-        "Revenue $300 million, gross profit $60 million.",
-        "Revenue $200 million, gross profit $10 million.",
-        "Revenue $200 million, gross profit $40 million.",
-        "Revenue $300 million, gross profit $15 million."
-      ],
-      "a": 3,
-      "e": "Because Gateway Cruises owns the work-in-process, control of the asset is transferred to Gateway over time and Blue Water accounts for the contract over time. Using the cost- to-cost input method to measure progress on the contract, 30% of the performance obligation has been satisfied at the end of Year One, calculated as $285 million divided by total estimated cost of $950 million ($285,000,000 + $665,000,000). Therefore, Blue Water recognizes 30% of the contract price of $1 billion, or $300 million, as revenue for Year One. Estimated gross profit on the contract at the end of Year One is $50 million: $1 billion less $950 million ($285 million + $665 million). Therefore, gross profit recognized at the end of Year One is 30% of $50 million, which equals $15 million.",
-      "wrongWhy": [
-        "This answer results from using the estimated costs and estimated gross profit at the inception of the contract to calculate the gross profit to recognize at the end of Year One,",
-        "This is not the correct answer. See explanation for D.",
-        "\" This answer results from two errors: ; (1) Using 20% as the proportion of the performance obligation that is complete at the end of Year One. Even though the question says that \"the engineer estimated that 20 percent . of the construction was complete,\" the question also says that Blue Water recognizes revenue and gross profit using the cost-to-cost input method. Therefore, the engineer's estimate is not relevant and the percentage to use in calculating the amount of revenue and gross profit to recognize at the end of Year One should be calculated as the costs incurred through the end of Year One divided by the total estimated costs. (2) Using the estimated costs and estimated gross profit at the inception of the contract to calculate the gross profit to recognize at the end of Year One, instead of using the estimated gross profit as of the end of Year One.",
-        null
-      ],
-      "source": "LEGACY RR606.04",
-      "topic": "Long-Term Contracts",
-      "diffPct": 50,
-      "id": "1-13.q11"
-    },
-    {
-      "q": "On September 1, 20X4, Beach Construction Company entered into a $10 million contract with City University to build a five-story parking garage on the university's campus. On that date, Beach's estimated total cost of constructing the building was $8 million. The estimated completion date for the garage was August 20X6. Beach's fiscal year ends May 31. Because Beach's performance creates an asset that City University controls as the work is being done, Beach accounts for the contract over time. Beach uses the cost- to-cost method to determine the percentage of the performance obligation in the contract that has been satisfied. Data regarding the contract are as follows (figures below). The gross profit recognized for the fiscal year ended May 31, 20X6 from this contract would be",
-      "o": [
-        "$500,000",
-        "$750,000",
-        "$250,000",
-        "$1,000,000 -"
-      ],
-      "a": 2,
-      "e": "The amount of gross profit to be recognized for the year ended May 31, 20X6 is calculated as follows: [(Estimated Gross Profit x Percentage Satisfied) - Gross Profit Previously Recognized]. The estimated gross profit is calculated by subtracting from the contract price ($10,000,000) the actual costs incurred to date as of fiscal year-end 20X6 ($6,750,000) and the estimated costs to complete the project as of that date ($2,250,000). _ _ _ ; gs",
-      "wrongWhy": [
-        "- This is the amount of gross profit that was recognized at May 31, 20X5. The question asks for the gross profit recognized for the fiscal year ended May 31, 20X6. The amount of gross profit to be recognized for the year ended May 31, 20X6 is calculated as [(Estimated Gross Profit x Percentage Satisfied) - Gross Profit Previously Recognized].",
-        "This is the total amount of gross profit that needs to be recognized by May 31, 20X6. However, some of this gross profit was recognized at May 31, 20X5. The amount of gross profit to be recognized for the year ended May 31, 20X6 is calculated as [(Estimated Gross Profit x Percentage Satisfied) - Gross Profit Previously Recognized].",
-        null,
-        "This is the total estimated gross profit on the contract as of May 31, 20X6. The amount of gross profit to be recognized for the year ended May 31, 20X6 is calculated as [(Estimated Gross Profit x Percentage Satisfied) - Gross Profit Previously Recognized]."
-      ],
-      "source": "CMA 0691 P2 Q13",
-      "topic": "Long-Term Contracts",
-      "diffPct": 54,
-      "data": [
-        [
-          "At May 31 (in thousands)",
-          "20X5",
-          "20X6"
-        ],
-        [
-          "Actual costs incurred to date",
-          "$2,000",
-          "$6,750"
-        ],
-        [
-          "Estimated costs to complete",
-          "$6,000",
-          "$2,250"
-        ],
-        [
-          "Progress billings to date",
-          "$1,800",
-          "$6,000"
-        ],
-        [
-          "Cash collected to date",
-          "$1,450",
-          "$5,500"
-        ]
-      ],
-      "id": "1-13.q12"
-    },
-    {
-      "q": "On September 1, 20X4, Beach Construction Company entered into a $10 million contract with City University to build a five-story parking garage on the university's campus. On that date, Beach's estimated total cost of constructing the building was $8 million. The estimated completion date for the garage was August 20X6. Beach's fiscal year ends May 31. Because Beach's performance creates an asset that City University controls as the work is being done, Beach accounts for the contract over time. Beach uses the cost- to-cost method to determine the percentage of the performance obligation in the contract that has been satisfied. Data regarding the contract are as follows (figures below). The current assets reported on Beach Construction Company's May 31, 20X6 statement of financial position as a result of this contract would be",
-      "o": [
-        "Accounts receivable of $6,000,000 and contract asset of $1,500,000.",
-        "Accounts receivable of $6,000,000 and contract asset of $6,750,000.",
-        "Accounts receivable of $500,000 and contract asset of $6,750,000.",
-        "Accounts receivable of $500,000 and contract asset of $1,500,000. -"
-      ],
-      "a": 3,
-      "e": "When the customer is invoiced for progress payments, the amount invoiced is debited to Accounts Receivable and credited to Billings on Construction in Process, a contract liability account. Beach's Accounts Receivable balance related to the City University contract is $500,000 on May 31, 20X6, the difference between the invoices issued through May 31, 20X6 ($6,000,000) and the cash collected through the same date ($5,500,000).",
-      "wrongWhy": [
-        "ry The accounts receivable amount in this answer is the total of progress billings to date - through May 31, 20X6, but it has not been adjusted (reduced) for the collections that have occurred. See the correct answer for a complete explanation.",
-        "The accounts receivable amount in this answer is the total of progress billings to date through May 31, 20X6, but it has not been adjusted (reduced) for the collections that have occurred. The contract asset figure in this answer is simply the costs incurred to date. This cost amount needs to be adjusted for the gross profit recognized to date and the invoices that have been issued. See the correct answer for a complete explanation.",
-        "The contract asset figure in this answer is simply the costs incurred to date as of May 31, 20X6. This amount needs to be adjusted for the gross profit recognized to date and the invoices that have been issued. See the correct answer for a complete explanation.",
-        null
-      ],
-      "source": "CMA 0691 P2 Q14",
-      "topic": "Long-Term Contracts",
-      "diffPct": 32,
-      "data": [
-        [
-          "At May 31 (in thousands)",
-          "20X5",
-          "20X6"
-        ],
-        [
-          "Actual costs incurred to date",
-          "$2,000",
-          "$6,750"
-        ],
-        [
-          "Estimated costs to complete",
-          "$6,000",
-          "$2,250"
-        ],
-        [
-          "Progress billings to date",
-          "$1,800",
-          "$6,000"
-        ],
-        [
-          "Cash collected to date",
-          "$1,450",
-          "$5,500"
-        ]
-      ],
-      "id": "1-13.q13"
-    },
-    {
-      "q": "Commercial Contractors is a commercial builder that purchases building sites and builds office buildings on them for sale to investors. Most of the buildings are built to an identified investor's specifications, and the investor who buys the property then leases the offices to professionals and small businesses. However, Commercial Contractors maintains ownership of all the properties throughout the construction period, and the investor does not obtain control of the property until all work is complete. An identified investor could \"walk away\" during the construction period, and Commercial Contractors could sell the building to another investor. On January 1, Year One, Commercial Contractors begins work on an office building for an identified investor for which the contract price is $10,000,000. The company estimates \" the work will cost $9,200,000 and require three years to complete. During Year One, $1,800,000 is spent on the construction, and the company's engineers believe that work costing $7,200,000 remains to be completed. During Year Two, another $3,900,000 is spent and $3,800,000 of work is now estimated to remain. What is the impact on net income to be recognized by Commercial Contractors in Year Two?",
-      "o": [
-        "$500,000.",
-        "$200,000.",
-        "$100,000.",
-        "Zero."
-      ],
-      "a": 3,
-      "e": "Because Commercial Contractors’ buyers do not obtain control of the properties until construction is complete, all of Commercial Contractors’ construction is accounted for at a point in time, that is, wnen the buyer obtains control of the completed structure. When recognizing revenue and gross profit at a point in time, recognition on the income statement does not take place until the performance obligation has been satisfied and the customer has obtained control of the asset, as long as a profit is anticipated ultimately. However, if a loss is anticipated at any point during the contract, the estimated loss must be recognized immediately. No revenue and no gross profit will have been recognized in either Year One or Year Two because the building is not complete-and-the customer-has not obtained control-of the",
-      "wrongWhy": [
-        "; $500,000 is the projected gross profit on the contract as of the end of Year Two. However, because the customer has not obtained control of the asset, the contract is accounted for at a point in time, so no revenue or gross profit is recognized until the contract is complete and the customer obtains control of the asset. And since no loss is expected on the contract, no loss needs to be recognized, either. Thus, there is no impact on net income to be recognized by Commercial Contractors in Year Two (or in Year One, either).",
-        "$200,000 would be the amount of gross profit Commercial Contractors would have recognized in Year One if the contract were accounted for over time. However, because the customer has not obtained control of the asset, the contract is accounted for at a point in time, so no revenue or gross profit is recognized until the contract is complete and the customer obtains control of the asset. And since no loss is expected on the contract, no loss needs to be recognized, either. Thus, there is no impact on net income to be recognized by Commercial Contractors in Year Two (or in Year One, either). -",
-        "$100,000 would be the amount of gross profit Commercial Contractors would have recognized in Year Two if the contract were accounted for over time. However, because the customer has not obtained control of the asset, the contract is accounted for at a point in time, so no revenue or gross profit is recognized until the contract is complete and the customer obtains control of the asset. And since no loss is expected on the contract, no loss needs to be recognized, either. Thus, there is no impact on net income to be recognized by Commercial Contractors in Year Two (or in Year One, either).",
-        null
-      ],
-      "source": "LEGACY RR606.05",
-      "topic": "Long-Term Contracts",
-      "diffPct": 49,
-      "id": "1-13.q14"
-    },
-    {
-      "q": "AAA Construction Company was hired by the California state government on January 1, Year One to build a section of a new highway. The contract price was $100 million and AAA estimated that the work would cost $92 million. During Year One, $18 million was spent on the work and the company's engineers believed that work costing $72 million remained to complete the work and satisfy the performance obligation. During Year Two, another $39 , million was spent and $38 million of work was estimated to remain. The contract contained a clause indicating that the state owned the work-in-process as the highway was being constructed. Using the cost-to-cost input method to calculate progress toward satisfaction of the performance obligation, what amount of profit or loss should AAA recognize on the contract in \" Year Two?",
-      "o": [
-        "$1,000,000 profit.",
-        "$4,300,000 profit.",
-        "$3,360,000 profit.",
-        "$2,000,000 profit."
-      ],
-      "a": 0,
-      "e": "Because the state controls the work-in-process as the work is being done, the contract is accounted for over time. In Year One, $18 million was spent with $72 million remaining for a total estimated cost of $90 million at that time. Because the contract price was $100 million, the company estimated that a profit of $10 million would eventually be earned. At the end of Year One, the performance obligation was 20% satisfied ($18 million divided by $90 million). Thus, AAA recognized a profit of $2 million (20% of $10 million) on the contract for Year One. In Year Two, another $39 million was spent, bringing the total cost incurred to date to $57 million ($18 million plus $39 million). The company's engineers estimated at the end of Year Two that another $38 million of cost remained to satisfy the performance obligation, for a total estimated cost of $95 million ($57 million plus $38 million). The total cost estimate had changed, but that is not uncommon with estimates. Because the contract price was $100 million and at the end of Year Two, the total estimated cost on the contract was $95 million, AAA estimated at that time that a profit of only $5 million would eventually be earned. At the end of Year Two, $57 million had been spent of the estimated total $95 million cost so that the work was 60% complete ($57 million divided by $95",
-      "wrongWhy": [
-        null,
-        "This answer results from using the total cost estimate as of the end of Year One as the total cost estimate for Year Two, as well, instead of updating it to the current estimate of total costs as of the end of Year Two.",
-        "This answer results from using the original total cost estimate of $92 million as the total cost $ estimate throughout Year One and Year Two instead of updating it to the current estimate of total costs as of the end of each year.",
-        "$2 million is the profit recognized in Year One of the contract. ee ."
-      ],
-      "source": "LEGACY RR606.01",
-      "topic": "Long-Term Contracts",
-      "diffPct": 63,
-      "id": "1-13.q15"
-    },
-    {
-      "q": "Allan Construction signed a $48,000,000 contract on September 1, 20X4 with the City of Springfield to construct a tunnel under the Maple River. On that date, the estimated cost to complete the tunnel, which was to be completed by June 20X7, was $36,000,000. Allan's fiscal year ends November 30, and the company recognized revenue on this contract over time using the cost-to-cost method. Data regarding the tunnel contract, which was begun December 1, 20X4, are as follows (figures below). Assume that the estimated costs to complete at November 30, 20X6 were $20 million rather than the $10 million shown in the given schedule. The gross loss recognized on the contract from its inception through November 30, 20X6 is",
-      "o": [
-        "$7,500,000.",
-        "$8,000,000.",
-        "$2,000,000.",
-        "$1,200,000."
-      ],
-      "a": 2,
-      "e": "The actual costs incurred to date as of November 30, 20X6 were $30,000,000. If the estimated costs to complete at the end of 20X6 were $20,000,000, the anticipated total cost for the project would be $30,000,000 + $20,000,000, or $50,000,000 at that date. Since revenue from the contract will be only $48,000,000, the entire project would have an estimated loss of $2,000,000. Estimated losses always need to be recognized in full in the period in which they arise, so by the end of 20X6, Allan would need to have recognized a $2,000,000 loss on the contract from its inception through November 30, 20X6.",
-      "wrongWhy": [
-        "This answer results from three errors: 1: Incorrectly calculating the total estimated cost for the contract as $30,000,000 actual costs incurred to date through 20X6 + $24,000,000 estimated cost to complete as of 20X5 + $34,000,000 estimated cost to complete as of 20X6 = $64,000,000.",
-        "An answer of an $8,000,000 loss results from two errors in reading the question: “4 1. The question asks for the gross loss on the contract from its inception through November 30, 20X6, in other words, for both years. The question does not ask for the gross loss recorded just for the year ended November 30, 20X6. This calculation is for the year ended November 30, 20X6. 2. The question says to assume the 20X6 estimated costs to complete were $20,000,000 instead of $10,000,000. An answer of an $8,000,000 loss for 20X6 results from assuming that gross profit of $4,000,000 for the year ended November 30, 20X5 had been recorded and gross profit of $2,000,000 for the year ended November 30, 20X6 had been recorded using the $10,000,000 estimated costs to complete, and then the estimated costs to complete as of the same date had been changed and a loss had been recorded for the same period. If that were the case, the second transaction dated November 30, 20X6 would be an $8,000,000 loss, to reverse the $6,000,000 recorded previously during the two years and recognize the expected $2,000,000 loss on the contract. However, since the question says to assume that the expected costs for complete as of November 30, 20X6 were $20,000,000 instead of $10,000,000, that change was made before any profit or loss on the contract was recorded for 20X6. Therefore, the loss recorded for 20X6 would have been not $8,000,000 but $6,000,000: the total expected loss on the contract of $2,000,000 ($48,000,000 — $50,000,000) plus the reversal of the $4,000,000 profit recorded in 20X5. The correct answer to this question is the contract price ($48,000,000) less the expected total cost on the contract as of November 30, 20X6 using $20,000,000 as the expected costs to complete as of that date and total estimated costs for the contract of $50,000,000.",
-        null,
-        "This is the loss that would be recognized if the loss were recognized based on the percentage of the contract that has been satisfied. However, estimated losses are always recognized in full in the period in which they arise. See the correct answer for a complete explanation. htips:/Awww.Noeintdrnsbohal CBRE PECANeSitn Hee BOE bar ANCA) BRPOTtING 330 Q ate 2/3"
-      ],
-      "source": "CMA 1292 P2 Q16",
-      "topic": "Long-Term Contracts",
-      "diffPct": 57,
-      "data": [
-        [
-          "At November 30 (in thousands)",
-          "20X5",
-          "20X6"
-        ],
-        [
-          "Actual costs to date",
-          "$12,000",
-          "$30,000"
-        ],
-        [
-          "Estimated costs to complete",
-          "$24,000",
-          "$10,000"
-        ],
-        [
-          "Progress billings to date",
-          "$10,000",
-          "$28,000"
-        ],
-        [
-          "Cash collected to date",
-          "$8,000",
-          "$24,000"
-        ]
-      ],
-      "id": "1-13.q16"
-    },
-    {
-      "q": "Allan Construction signed a $48,000,000 contract on September 1, 20X4 with the City of Springfield to construct a tunnel under the Maple River. On that date, the estimated cost to complete the tunnel, which was to be completed by June 20X7, was $36,000,000. Allan's fiscal year ends November 30, and the company recognized revenue on this contract over time using the cost-to-cost method. Data regarding the tunnel contract, which was begun December 1, 20X4, are as follows (figures below). The gross profit or loss recognized for the fiscal year ended November 30, 20X5 from the tunnel % contract using the cost-to-cost method is:",
-      "o": [
-        "$4,000,000 gross profit.",
-        "$6,000,000 gross profit.",
-        "$3,000,000 gross profit.",
-        "$12,000,000 gross profit."
-      ],
-      "a": 0,
-      "e": "The amount of gross profit to be recognized for the year ended November 30, 20X5 is calculated as follows: [(Estimated Gross Profit x Percentage Satisfied) - Gross Profit Previously Recognized]. The estimated gross profit is calculated by subtracting from the contract price ($48,000,000) the actual costs incurred to date as of fiscal year-end 20X5 ($12,000,000) and the estimated cost to complete as of that date ($24,000,000). $48,000,000 - $12,000,000 — $24,000,000 = $12,000,000. The estimated gross profit is $12,000,000. The calculation of the percentage satisfied is done by dividing the actual costs incurred to date as of November 30, 20X5 ($12,000,000) by the total estimated costs for the project ($12,000,000 + $24,000,000, or $36,000,000). $12,000,000 + $36,000,000 = 0.333. Thus, at the end of 20X5, the performance obligation in the contract is 1/3 satisfied. Therefore, Allen should have recognized in total $4,000,000 of gross profit by the end of 20X5 (1/3 of the $12,000,000 estimated gross profit on the contract). Since this is the first year of the project, there is no previously recognized gross profit to be subtracted. Therefore, the company should htips:tAwww.Noentdrn tt onal copier EAC che Grete Hes BONE pa GUY FaqPOming 330 Q ate 112 tee mans PART 1 SECTION (A) External Financail Reporting =\" Long: Tam Contrasts 22 pmanenal 29 This is the total gross profit to be recognized during 20X5 and 20X6.",
-      "wrongWhy": [
-        null,
-        "This is not the correct answer. See explanation for A.",
-        "This answer results from calculating the percentage satisfied as the actual costs incurred to date divided by the total contract price. The percentage satisfied is calculated by dividing the actual costs incurred to date by the total estimated costs for the project.",
-        "This is the estimated gross profit on the whole contract. However, not all of it can be recognized in the year ended November 30, 20X5. See the correct answer for a complete explanation. Oo"
-      ],
-      "source": "CMA 1292 P2 Q14",
-      "topic": "Long-Term Contracts",
-      "diffPct": 75,
-      "data": [
-        [
-          "At November 30 (in thousands)",
-          "20X5",
-          "20X6"
-        ],
-        [
-          "Actual costs to date",
-          "$12,000",
-          "$30,000"
-        ],
-        [
-          "Estimated costs to complete",
-          "$24,000",
-          "$10,000"
-        ],
-        [
-          "Progress billings to date",
-          "$10,000",
-          "$28,000"
-        ],
-        [
-          "Cash collected to date",
-          "$8,000",
-          "$24,000"
-        ]
-      ],
-      "id": "1-13.q17"
-    },
-    {
-      "q": "Paulson Company recognizes revenue and gross profit over time on long-term contract #0732 using the cost-to-cost method. The contract was awarded at a price of $700,000. The estimated costs were $500,000, and the contract duration was three years. (figures below). Assuming that $65,000 was recognized as gross profit in Year 1, the amount of gross profit Paulson recognized in Year 2 was:",
-      "o": [
-        "$49,950",
-        "$70,000",
-        "$135,000",
-        "$124,950"
-      ],
-      "a": 1,
-      "e": "As of the end of Year 2, estimated gross profit on the contract was $180,000 ($700,000 contract price minus [$390,000 cumulative costs incurred to date + $130,000 estimated cost to complete)). - The project was 75% satisfied ($390,000 + [$390,000 + $130,000]). Therefore, the total gross profit that should be recognized to date through Year 2 is 75% of $180,000, or $135,000. $65,000 in gross profit was recognized in Year 1, so the amount of gross profit to be recognized in Year 2 is $135,000 - $65,000, or $70,000.",
-      "wrongWhy": [
-        "This answer is incorrect. See the correct answer for a complete explanation.",
-        null,
-        "This is the total amount of profit that should be recognized by the end of Year 2, but it ignores the profit that was recognized in Year 1. See the correct answer for a complete explanation.",
-        "This answer is incorrect. See the correct answer for a complete explanation. htips:/Awww.Noeintd rast onal. CBRE PECANeSitn nes BONE bar ANCA) BRPOTtING 330 Q ate 112"
-      ],
-      "source": "HTB 1.1.038",
-      "topic": "Long-Term Contracts",
-      "diffPct": 68,
-      "data": [
-        [
-          "",
-          "Year 1",
-          "Year 2",
-          "Year 3"
-        ],
-        [
-          "Cumulative cost to date",
-          "$300,000",
-          "$390,000",
-          "$530,000"
-        ],
-        [
-          "Estimated cost to complete at year end",
-          "$250,000",
-          "$130,000",
-          "$0"
-        ],
-        [
-          "Progress billings",
-          "$325,000",
-          "$220,000",
-          "$155,000"
-        ],
-        [
-          "Collections on account",
-          "$300,000",
-          "$200,000",
-          "$200,000"
-        ]
-      ],
-      "id": "1-13.q18"
-    },
-    {
-      "q": "Diamond Clover Construction Inc. is recognizing revenue over time on Job #4115, a long-term contract with a contract price of $5,000,000. In Year 1, the company began work on the job. Other data are shown below (figures below). The amount of gross profit to be recognized in Year 1 using the cost-to-cost method is:",
-      "o": [
-        "$700,000",
-        "$1,400,000",
-        "$350,000",
-        "$766,667"
-      ],
-      "a": 2,
-      "e": "The amount of gross profit to be recognized in Year 1 is calculated as follows: [(Estimated Gross Profit x Percentage Satisfied) - Gross Profit Previously Recognized]. The estimated gross profit is calculated by subtracting from the contract price ($5,000,000) the actual costs incurred to date as of - Year 1 ($900,000) and the estimated cost to complete as of Year 1 ($2,700,000). $5,000,000 - $900,000 — $2,700,000 = $1,400,000. The estimated gross profit is $1,400,000. The calculation of the percentage satisfied is done by dividing the actual costs incurred to date as of Year 1 ($900,000) by the total estimated costs for the project ($900,000 + $2,700,000, or $3,600,000). $900,000 + $3,600,000 = 0.25. Thus, at the end of Year 1, the performance obligation in the contract is 25% satisfied. Therefore, Diamond Clover should have recognized in total $350,000 of gross profit by the end of Year 1 (25% of the $1,400,000 estimated gross profit on the contract). Since this is the first year of the project, there is no previously recognized gross profit to be subtracted. Therefore, the company should have recognized in total $350,000 in gross profit at the end of Year 1.",
-      "wrongWhy": [
-        "This is the amount of cash collected during Year 1. The amount of gross profit to be recognized in Year 1 is: [(Estimated Gross Profit x Percentage Satisfied) - Gross Profit Previously Recognized].",
-        "",
-        null,
-        "The amount of gross profit to be recognized in Year 1 is: [(Estimated Gross Profit x Percentage Satisfied) - Gross Profit Previously Recognized]. This answer results from not including the actual cost incurred to date as of Year 1 in the calculation of the estimated gross profit and the total estimated cost (used in calculating the percentage of the contract satisfied). [1] The estimated gross profit is the contract price minus the actual costs incurred to date as of Year 1 and minus the estimated costs to complete as of the end of Year 1 (not the contract price minus P only the estimated costs to complete as of the end of Year 1). [2] The percentage satisfied as of the end of Year 1 is the actual costs incurred to date as of Year 1 divided by the total of the costs incurred to date as of Year 1 and the estimated costs to complete as \"0 of the end of Year 1 (not the actual costs incurred to date as of Year 1 divided by only the estimated costs to complete as of the end of Year 1). [3] The amount of profit to be recognized in Year 1 is [(Estimated Gross Profit x Percentage Satisfied) - Gross Profit Previously Recognized]. Since this is the first year of the project, there is no previously recognized gross profit to be subtracted. Therefore, the amount of gross profit to be “4 recognized in Year 1 is the Estimated Gross Profit (calculated in [1] above) multiplied by the Percentage Satisfied (calculated in [2] above). SSS)"
-      ],
-      "source": "CMA 0696 P2 Q1",
-      "topic": "Long-Term Contracts",
-      "diffPct": 77,
-      "data": [
-        [
-          "",
-          "Year 1",
-          "Year 2"
-        ],
-        [
-          "Costs incurred during the year",
-          "$900,000",
-          "$2,350,000"
-        ],
-        [
-          "Estimated costs to complete",
-          "$2,700,000",
-          "$0"
-        ],
-        [
-          "Billings during the year",
-          "$1,000,000",
-          "$4,000,000"
-        ],
-        [
-          "Collections during the year",
-          "$700,000",
-          "$4,300,000"
-        ]
-      ],
-      "id": "1-13.q19"
-    },
-    {
-      "q": "Rose Construction Company had the following year-end data on a long-term construction contract started in 20X2 with a contract price of $100,000 (figures below). What amount of revenue will be reported in 20X3 if Rose recognizes revenue and gross profit over time on the contract using the cost-to-cost method?",
-      "o": [
-        "$50,000",
-        "$37,500",
-        "$62,500",
-        "$40,000 a"
-      ],
-      "a": 2,
-      "e": "Note that the question asks for the amount of revenue that will be reported in 20X3, not the amount of gross profit. Total revenue on the contract was $100,000. At the end of 20X2, construction was 37.5% complete ($30,000 + [$30,000 + $50,000]), so the revenue recognized for 20X2 was $37,500. At the end of 20X3, construction was completed because the estimated cost to complete as of the end of 20X3 was zero. Therefore, the $62,500 remaining revenue on the contract—$100,000 minus the $37,500 recognized in 20X2—will be recognized in 20X3.",
-      "wrongWhy": [
-        "This is half of the revenue, but the revenue is not recognized equally over both years of the contract.",
-        "This is the amount of revenue that would be recognized in 20X2.",
-        null,
-        "This answer is incorrect. See the correct answer for a full explanation."
-      ],
-      "source": "HTB 1.1.034",
-      "topic": "Long-Term Contracts",
-      "diffPct": 48,
-      "data": [
-        [
-          "",
-          "20X2",
-          "20X3"
-        ],
-        [
-          "Construction cost",
-          "$30,000",
-          "$40,000"
-        ],
-        [
-          "Estimated completion costs",
-          "$50,000",
-          "$0"
-        ],
-        [
-          "Selling, general and administrative expenses",
-          "$10,000",
-          "$10,000"
-        ]
-      ],
-      "id": "1-13.q20"
-    },
-    {
-      "q": "‘ According to ASC 606, under what circumstances should a long-term contract be accounted for over time?",
-      "o": [
-        "The production process can be readily divided into definite stages.",
-        "The company's performance creates or enhances an asset that the customer controls as the work is being done.",
-        "Cash has been received from the customer.",
-        "The company's performance creates an asset with an alternative use to the company."
-      ],
-      "a": 1,
-      "e": "Under ASC 606, a company satisfies a performance obligation over time and recognizes the revenue and costs over time if at least one of the following three criteria is met: 1. The customer simultaneously receives and consumes the benefits provided by the company's performance as the company is performing its obligations under the contract. 2. The company's performance creates or enhances an asset such as work in process that the customer controls as the work is being done. 3. The company's performance does not create an asset with an alternative use to the company, and the company has an enforceable right to payment for performance completed to date.",
-      "wrongWhy": [
-        "Though it may be that production on an individual long-term contract can be divided into definite stages, or that is not a criterion under ASC 606 for recognizing revenue, costs, and gross profit over time. -",
-        null,
-        "Though it may be that cash has been received from the customer on an individual long-term contract, that is not a criterion under ASC 606 for recognizing revenue, costs, and gross profit over time.",
-        "Under ASC 606, a company satisfies a performance obligation over time and recognizes the revenue and costs over time if the company's performance does not create an asset with an alternative use to the company, and the company has an enforceable right to payment for performance completed to date. That is one of three criteria for recognizing revenue, costs, and gross profit over time. The other two criteria for over-time recognition are: (1) the customer simultaneously receives and consumes the benefits provided by the company's performance as the company is performing its obligations under the contract or (2) the company's performance creates or enhances an asset such as work in process that the customer controls as the work is being done. Only one of the three criteria needs to be met for over-time recognition to take place."
-      ],
-      "source": "CMA 1292 P2 Q17",
-      "topic": "Long-Term Contracts",
-      "diffPct": 78,
-      "id": "1-13.q21"
-    }
-  ],
+  "1-13": [],
   "1-14": [
     {
       "q": "An internal auditor is deriving cash flow data based on an incomplete set of facts. Credit loss expense during the period was $2,000. Additional data for this period follow (net accounts receivable figures are net of allowance for credit losses): How much cash was collected from accounts receivable this period?",
@@ -12318,6 +11527,796 @@
       "e": "Step 1: Identify Contract. Step 2: Identify Performance Obligations. Step 3: Determine Transaction Price. Step 4: Allocate to POs by standalone selling price. Step 5: Recognize when/as each Po is satisfied.",
       "source": "Claude",
       "id": "1-31.q20"
+    },
+    {
+      "q": "A company began work on a long-term construction contract in 20X1. The contract price was $3,000,000. Year-end information related to the contract is as follows (figures below). If the company recognizes the revenue for this contract at a point in time, when the performance obligations in the contract have been completely satisfied, the gross profit to be recognized in 20X3 is:",
+      "o": [
+        "$1,000,000",
+        "$800,000",
+        "$600,000",
+        "$200,000"
+      ],
+      "a": 0,
+      "e": "a0 When revenue is recognized at a point in time for a contract, it is recognized when the performance obligations in the contract have been completely satisfied. No revenue, cost, or gross profit are recognized until the project is complete. Then, in the period when the performance obligations in the contract have been satisfied, all of the revenue, cost, and gross profit of the project are recognized. 20X3 is the year in which the performance obligations in the contract are satisfied, and the total gross profit on the contract is $1,000,000 (calculated as the $3,000,000 price minus the $2,000,000 in costs incurred). This entire $1,000,000 of gross profit is recognized in 20X3.",
+      "wrongWhy": [
+        null,
+        "This is the difference between total cost and collections received in 20X3. This is not the way to calculate the gross profit to be recognized in 20X3. When revenue is recognized at a point in time for a contract, all revenue, costs, and gross profit on the contract are",
+        "This is the difference between billings and cost incurred in 20X3. This is not the way to calculate the gross profit to be recognized in 20X3. When revenue is recognized at a point in time for a contract, all revenue, costs, and gross profit on the contract are recognized when the performance obligations in the contract have been completely satisfied.",
+        "This is the difference between collections and billings in 20X3. This is not the way to calculate the gross profit to be recognized in 20X3. When revenue is recognized at a eg gs ; point in time for a contract, all revenue, costs, and gross profit on the contract are recognized when the performance obligations in the contract have been completely satisfied. eee TD"
+      ],
+      "source": "CIA 1196 P4 Q12",
+      "topic": "Long-Term Contracts",
+      "diffPct": 62,
+      "data": [
+        [
+          "",
+          "20X1",
+          "20X2",
+          "20X3"
+        ],
+        [
+          "Estimated total cost",
+          "$2,000,000",
+          "$2,000,000",
+          "$2,000,000"
+        ],
+        [
+          "Cost incurred",
+          "$700,000",
+          "$900,000",
+          "$400,000"
+        ],
+        [
+          "Billings",
+          "$800,000",
+          "$1,200,000",
+          "$1,000,000"
+        ],
+        [
+          "Collections",
+          "$600,000",
+          "$1,200,000",
+          "$1,200,000"
+        ]
+      ],
+      "id": "1-13.q1"
+    },
+    {
+      "q": "AAA Construction Company was hired by the California state government on January 1, Year One to build a section of a new highway. The contract price was $100 million and AAA estimated that the work would cost $96 million. During Year One, $18 million was spent on the work and the company's engineers believed that work costing $72 million remained to complete the work and satisfy the performance obligation. During Year Two, another $45 million was spent and $42 million of work was estimated to remain. The contract contained a clause indicating that the state owned the work-in-process as the highway was being constructed. Using the cost-to-cost input method to calculate progress toward satisfaction of the performance obligation, what amount of profit or loss should AAA recognize on the \" contract in Year Two?",
+      "o": [
+        "$5,000,000 loss.",
+        "$7,000,000 loss.",
+        "$4,760,000 profit.",
+        "$2,000,000 profit."
+      ],
+      "a": 1,
+      "e": "Because the state controls the work-in-process as the work is being done, the contract is accounted for over time. In Year One, $18 million was spent with $72 million remaining for a total estimated cost of $90 million at that time. Because the contract price was $100 million, the company estimated that a profit of $10 million would eventually be earned. At the end of Year One, the performance obligation was 20% satisfied ($18 million divided by $90 million). Thus, AAA recognized a profit of $2 million (20% of $10 million) in Year One. In Year Two, another $45 million was spent, bringing the total cost incurred to date to $63 million ($18 million plus $45 million). The company's engineers estimated at the end of Year Two that another $42 million of cost remained to satisfy the performance obligation, for a total estimated cost of $105 million ($63 million plus $42 million). Because the contract price was $100 million and at the end of Year Two, the total estimated cost on the contract was $105 million, AAA estimated at that time that a loss of $5 million would eventually be incurred.",
+      "wrongWhy": [
+        "$5,000,000 is the amount of the loss to be recognized to date, that is, through the end of Year Two of the contract. It is not the loss to be recognized in Year Two.",
+        null,
+        "This answer results from omitting the costs incurred during Year One from the Year Two calculations.",
+        "$2,000,000 is the profit recognized in Year One of the contract. eee | :"
+      ],
+      "source": "LEGACY RR606.02",
+      "topic": "Long-Term Contracts",
+      "diffPct": 38,
+      "id": "1-13.q2"
+    },
+    {
+      "q": "In accounting for long-term construction contracts, the difference between recognizing the revenue at a point in time versus recognizing the revenue over time is that",
+      "o": [
+        "It is only when revenue is recognized at a point in time that accumulated construction costs are included in a construction in process contract asset account.",
+        "When revenue is recognized over time, all revenues and gross profit on the a contract are recognized only when the performance obligations in the contract are completely satisfied.",
+        "It is only when revenue is recognized over time that gross profit earned to date is accumulated in the construction in process contract asset account.",
+        "It is only when the revenue is recognized over time that progress billings are accumulated in a contract liability account, billings on construction in process."
+      ],
+      "a": 2,
+      "e": "When revenue is recognized over time, the gross profit that is recognized each period is added to the construction in process contract asset account. When revenue is recognized at a point in time, no gross profit is recognized until the obligations in the contract have been completely satisfied.",
+      "wrongWhy": [
+        "; ; ; i, Accumulated construction costs are included in a construction in process contract asset account under both methods.",
+        "When the revenue is recognized at a point in time (not over time), all revenues and gross profit on the contract are recognized when the performance obligations in the contract are completely satisfied.",
+        null,
+        "Progress billings are accumulated in a contract liability account called billings on construction in process under both methods. Question 2. of 22"
+      ],
+      "source": "CIA 0594 P4 Q26",
+      "topic": "Long-Term Contracts",
+      "diffPct": 40,
+      "id": "1-13.q3"
+    },
+    {
+      "q": "Pell Co. builds new homes on lots that it owns the title to. The company normally obtains a signed sales contract before it begins construction on a home, so it usually does not build “on spec,” that is, speculatively. The contracts contain a provision allowing buyers to change their minds and cancel the contract during the construction period if they pay a fee. The customers make progress payments during construction, but they do not receive title to the property until construction is complete and the sale is closed. The following data pertain to Pell’s home construction jobs that commenced during 20X5 (figures below). What amount of gross profit (loss) should Pell report in its 20X5 income statement?",
+      "o": [
+        "$0.",
+        "$340,000.",
+        "$80,000.",
+        "$65,500."
+      ],
+      "a": 0,
+      "e": "Because Pell owns the property on which it builds the homes and the customers do not obtain control of the assets until construction is complete, Pell recognizes revenue, costs, and gross profit from these construction contracts at a point in time, that is, wnen the contract is fulfilled and the title is turned over to the customer. Both homes have estimated gross profit as of the end of 20X5. Home 1's estimated gross profit is $60,000 ($420,000 —- $240,000 - $120,000) and Home 2's estimated gross profit is $30,000 ($300,000 — $230,000 - $40,000). However, neither home is complete, so no gross profit will be recognized until the contracts have been completely fulfilled.",
+      "wrongWhy": [
+        null,
+        "This is not the correct answer. See explanation for A.",
+        "This is the amount billed to customers during 20X5 for both homes minus the amount received from customers during 20X5 for both homes. It is not the amount of gross profit (loss) that Pell should report in its 20X5 income statement. Please see the correct ~ answer explanation for more information.",
+        "This would be the gross profit to recognize if the revenue, costs, and gross profit were being accounted for over time. However, because Pell owns the property on which it builds the homes and the customers do not obtain control of the assets until construction is complete, Pell recognizes revenue, costs, and gross profit from these construction contracts at a point in time, that is, when the contract is fulfilled and the title is turned over to the customer. Neither contract is fulfilled at the end of 20X5. Please see the correct answer explanation for more information. Seer a ;"
+      ],
+      "source": "CMA1 M1 Q07",
+      "topic": "Long-Term Contracts",
+      "diffPct": 52,
+      "id": "1-13.q4"
+    },
+    {
+      "q": "Diamond Clover Construction Inc. is recognizing revenue at a point in time on Job #4115, a long-term contract with a contract price of $5,000,000. In Year 1, the company began work on the job. Other data are shown below (figures below). The total amount to be recognized as gross profit in Year 2 when the contract's performance obligations have been satisfied, is:",
+      "o": [
+        "$1,400,000",
+        "$700,000",
+        "$1,750,000",
+        "$2,650,000"
+      ],
+      "a": 2,
+      "e": "When revenue is recognized at a point in time, no revenue, expense, or gross profit is recognized until the performance obligations under the contract have been satisfied. In the year the performance obligations are satisfied, the entire amount of revenue, expenses, and gross profit are recognized. The gross profit is calculated as the contract price ($5,000,000) minus the total costs incurred to satisfy the performance obligations in the contract ($900,000 + $2,350,000). So, the total gross profit recognized in Year 2 was $1,750,000.",
+      "wrongWhy": [
+        "This is the estimated gross profit at the end of year 1. When revenue is recognized at a point in time, no revenue, expense, or gross profit is recognized until the performance obligations under the contract have been satisfied. In the year the performance obligations are satisfied, the entire amount of revenue, expenses, and gross profit are recognized. |",
+        "$700,000 may have been calculated as the contract price ($5,000,000) minus the collections during Year 2 ($4,300,000). It is also the collections during Year 1. However, it is not the gross profit to be recognized in Year 2 when the contract's performance obligations have been satisfied. The gross profit recognized in Year 2 is the contract price minus the total costs incurred to satisfy the performance obligations in the contract.",
+        null,
+        "; ; ; ; ; This is the contract price minus the costs incurred during Year 2. The calculation of the gross profit on the contract also needs to include the $900,000 of costs incurred during Year 1. When revenue is recognized at a point in time, no revenue, expense, or gross profit is recognized until the performance obligations under the contract have been satisfied. In the year the performance obligations are satisfied, the entire amount of revenue, expenses, and gross profit are recognized. The gross profit is calculated as the contract price minus the total costs incurred to satisfy the performance obligations in the contract. nnn nnnneeeeeeeeeeeeee"
+      ],
+      "source": "CMA 0696 P2 Q2",
+      "topic": "Long-Term Contracts",
+      "diffPct": 37,
+      "data": [
+        [
+          "",
+          "Year 1",
+          "Year 2"
+        ],
+        [
+          "Costs incurred during the year",
+          "$900,000",
+          "$2,350,000"
+        ],
+        [
+          "Estimated costs to complete",
+          "$2,700,000",
+          "$0"
+        ],
+        [
+          "Billings during the year",
+          "$1,000,000",
+          "$4,000,000"
+        ],
+        [
+          "Collections during the year",
+          "$700,000",
+          "$4,300,000"
+        ]
+      ],
+      "id": "1-13.q5"
+    },
+    {
+      "q": "Stander Construction Company signed a contract with the state of Ohio to build a short stretch of highway for $42 million. During 20X1, $8 million was spent and company officials anticipated that another $24 million would be needed to complete the work. During 20X2, another $13 million was spent and current information indicated that another $14 million would be required to finish the project. The contract contained a clause indicating that the state of Ohio owns the work-in-process as the highway is being constructed. Using the cost-to-cost input method to calculate Stander's progress toward satisfaction of the performance obligation, what amount of profit should the company recognize in 20X2?",
+      "o": [
+        "$4,200,000.",
+        "$2,600,000.",
+        "Zero.",
+        "$1,700,000."
+      ],
+      "a": 3,
+      "e": "Because the state of Ohio controls the work-in-process as the work is being done, the contract is accounted for over time. In 20X1, Stander spent $8 million out of an estimated total of $32 million ($8 million spent and $24 million expected) so that the performance obligation was 25 percent satisfied. The anticipated profit was $10 million ($42 million contract price — $32 million estimated cost) so that a profit of $2.5 million was recognized (25 percent of $10 on million) in 20X1. By the end of 20X2, Stander had spent a total of $21 million ($8 million in 20X1 and $13 million in 20X2). Because $14 million more in costs was expected, the total estimated cost was $35 million ($21 million + $14 million) and the estimated profit had fallen to $7 million ($42 million — $35 million). The performance obligation was 60 percent satisfied ($21 million divided by $35 million) so profit to date of $4.2 million needed to be recognized (60 percent of the $7 million total) through 20X2. The company had recognized $2.5 million in 20X1, so another $1.7 million should be recognized in 20X2 ($4.2 million less $2.5 million).",
+      "wrongWhy": [
+        "This is the profit to be recognized to date on the contract through the end of 20X2. It is not the amount of profit to be recognized for the year 20X2.",
+        "This answer results from using the total estimated cost and total estimated profit as of the end of 20X2 as the total estimated cost and profit at the end of 20X1, as well.",
+        "If the contract were being accounted for at a point in time, the profit recognized during 20X2 would be zero. However, because the state of Ohio controls the work-in-process as the work is being done, the contract is accounted for over time. Thus, some profit is recognized during each year of the contract.",
+        null
+      ],
+      "source": "LEGACY RR606.03",
+      "topic": "Long-Term Contracts",
+      "diffPct": 56,
+      "id": "1-13.q6"
+    },
+    {
+      "q": "Carefree Construction recognizes construction revenue and gross profit over time using the cost-to-cost method on a long-term project for a contract price of $1,500,000. Carefree began the project in 20X0 and the project continued through 20X3. Information on the project follows (figures below). Assume that Carefree had recognized $92,308 in gross profit on the contract through the end of 20X1. For the year 20X2, what is the amount Carefree should recognize as gross profit from this project?",
+      "o": [
+        "$50,000 loss",
+        "$0",
+        "$92,308 loss",
+        "$142,308 loss"
+      ],
+      "a": 3,
+      "e": "This question uses the formula for the recognition of revenue and gross profit over time. The formula is: Estimated Gross Profit x Percentage Satisfied = Total Gross Profit to be Recognized to Date - Profit Previously Recognized = Gross Profit to Recognize This Period Total costs incurred through the end of 20X2 were $1,350,000, and the estimated cost to complete the project was $200,000 as of that date, for a total estimated cost on the contract of $1,550,000 as of the end of 20X2. Therefore, at the end of 20X2, Carefree had an estimated loss of $50,000 on the contract ($1,500,000 - $1,550,000). The formula can still be used, but remember that losses are always 100% recognized. Therefore, a total loss of $50,000 needs to have been recognized on the project by the end of 20X2. However, the company already recognized $92,308 of gross profit through 20X1, so in order to change that to a loss of $50,000, it must recognize a $142,308 loss in 20X2 ($50,000 + $92,308).",
+      "wrongWhy": [
+        "This is the total loss on the contract that should be recognized through the end of 20X2, but it fails to take into account the profit that was recognized prior to 20X2. See the correct answer for a full explanation.",
+        "This answer is incorrect. See the correct answer for a full explanation.",
+        "This is the amount of profit that had been recognized prior to 20X2, but this is not the amount of loss that needs to be recognized in 20X2. See the correct answer for a full explanation. a a a",
+        null
+      ],
+      "source": "HTB 1.1.037",
+      "topic": "Long-Term Contracts",
+      "diffPct": 54,
+      "data": [
+        [
+          "",
+          "20X0",
+          "20X1",
+          "20X2",
+          "20X3"
+        ],
+        [
+          "Total Costs Incurred",
+          "$400,000",
+          "$600,000",
+          "$1,350,000",
+          "$1,550,000"
+        ],
+        [
+          "Estimated Costs to Complete",
+          "$800,000",
+          "$700,000",
+          "$200,000",
+          "$0"
+        ]
+      ],
+      "id": "1-13.q7"
+    },
+    {
+      "q": "Carefree Construction recognizes construction revenue and gross profit over time using the cost-to-cost method on a long-term project for a contract price of $1,500,000. Carefree began the project in 20X0 and the project continued through 20X3. Information on the project follows (figures below). Assume that Carefree recognized $100,000 of gross profit for the year 20X0. For the year 20X1, what is the amount Carefree should recognize as gross profit from this project?",
+      "o": [
+        "$7,692 loss",
+        "$92,308",
+        "$33,000 loss",
+        "$0"
+      ],
+      "a": 0,
+      "e": "This question uses the formula for the recognition of revenue and gross profit over time. The formula is: Estimated Gross Profit x Percentage Satisfied = Total Gross Profit to be Recognized to Date - Profit Previously Recognized = Gross Profit to Recognize This Period At the end of 20X1, total costs incurred are $600,000 and estimated total costs as of that date are $1,300,000 ($600,000 incurred plus $700,000 estimated cost to complete). Thus, the performance obligation at the end of 20X1 is 6/13 satisfied ($600,000 + $1,300,000). At this point, the total amount of gross profit that should be recognized to date on the contract is $92,308: ([$1,500,000 - $1,300,000] x 6/13). However, $100,000 of gross profit was recognized in 20X0. Therefore, the $100,000 that was recognized in 20X0 is subtracted from the total amount of profit that should be recognized to date, and the result is a loss to be recognized for 20X1. $92,308 - $100,000 = $(7,692). This loss for 20X71 is not a loss on the whole contract, at least not yet, but rather the de-recognition of some of the gross profit that had been over recognized in the prior period.",
+      "wrongWhy": [
+        null,
+        "This is the total amount of profit that should have been recognized to date on the contract at the end of 20X71, but it fails to take into account the profit that was recognized in 20X0. See the correct answer for a full explanation.",
+        "This answer is incorrect. See the correct answer for a full explanation.",
+        "This answer is incorrect. See the correct answer for a fuii expianation."
+      ],
+      "source": "HTB 1.1.036",
+      "topic": "Long-Term Contracts",
+      "diffPct": 56,
+      "data": [
+        [
+          "",
+          "20X0",
+          "20X1",
+          "20X2",
+          "20X3"
+        ],
+        [
+          "Total Costs Incurred",
+          "$400,000",
+          "$600,000",
+          "$1,350,000",
+          "$1,550,000"
+        ],
+        [
+          "Estimated Costs to Complete",
+          "$800,000",
+          "$700,000",
+          "$200,000",
+          "$0"
+        ]
+      ],
+      "id": "1-13.q8"
+    },
+    {
+      "q": "Carefree Construction recognizes construction revenue and gross profit over time using the cost-to-cost method on a long-term project for a contract price of $1,500,000. Carefree began the project in 20X0 and the project continued through 20X3. Information on the project follows (figures below). For the year 20X0, what is the amount Carefree should recognize as gross profit from this project?",
+      "o": [
+        "$100,000",
+        "$375,000",
+        "$0",
+        "$75,000"
+      ],
+      "a": 0,
+      "e": "This question uses the formula for the recognition of revenue and gross profit over time. The formula is: Estimated Gross Profit A x Percentage Satisfied = Total Gross Profit to be Recognized to Date - Profit Previously Recognized = Gross Profit to Recognize This Period In 20X0, $400,000 of costs had been incurred of an estimated $1,200,000 in total costs. Therefore, the performance obligation is 1/3 satisfied, so 1/3 of the estimated gross profit of $300,000 ($1,500,000 - $1,200,000) is to be recognized to date, or $100,000. Since 20X0 is the first year of the project, no revenue or gross profit has yet been recognized. Therefore, Carefree should recognize gross profit of $100,000 for 20X0.",
+      "wrongWhy": [
+        null,
+        "This answer is incorrect. See the correct answer for a full explanation.",
+        "This answer is incorrect. See the correct answer for a full explanation.",
+        "This answer is incorrect. See the correct answer for a full explanation. htips:/Awww.KGeMintdrnsbohal CBIR PEC ANeSietn eS BOE bar ANCA) BRPOTtING 330 Q an 112"
+      ],
+      "source": "HTB 1.1.035",
+      "topic": "Long-Term Contracts",
+      "diffPct": 82,
+      "data": [
+        [
+          "",
+          "20X0",
+          "20X1",
+          "20X2",
+          "20X3"
+        ],
+        [
+          "Total Costs Incurred",
+          "$400,000",
+          "$600,000",
+          "$1,350,000",
+          "$1,550,000"
+        ],
+        [
+          "Estimated Costs to Complete",
+          "$800,000",
+          "$700,000",
+          "$200,000",
+          "$0"
+        ]
+      ],
+      "id": "1-13.q9"
+    },
+    {
+      "q": "A company began work on a long-term construction contract in 20X1. The contract price was $3,000,000. Year-end information related to the contract is as follows (figures below). If the company recognizes the revenue for this contract over time using the cost-to-cost method, the gross profit to be recognized in 20X71 is:",
+      "o": [
+        "$100,000",
+        "$200,000",
+        "($100,000)",
+        "$350,000"
+      ],
+      "a": 3,
+      "e": "The amount of gross profit to be recognized for the year 20X71 is calculated as follows: a0 [(Estimated Gross Profit x Percentage Satisfied) - Gross Profit Previously Recognized]. 2\" The estimated gross profit is calculated by subtracting from the contract price ($3,000,000) the estimated total cost as of that date ($2,000,000). $3,000,000 - $2,000,000 = $1,000,000. The estimated gross profit is $1,000,000. Note that in this question, the estimated total cost for the contract is given. In another, different, question, it might be necessary to calculate the estimated total cost by summing the actual cost incurred to date and the estimated remaining cost that will be required to completely satisfy the contract at that point. The calculation of the percentage satisfied is done by dividing the actual costs incurred to date as of 20X1 on the contract ($700,000) by the total estimated costs for the project ($2,000,000) as of 20X1. $700,000 + $2,000,000 = 0.35. Thus, as of 20X1 the performance obligation in the contract is 35% satisfied.",
+      "wrongWhy": [
+        "This is the 20X71 billings minus the cost incurred in 20X1. This is not the way to calculate the gross profit to be recognized in 20X1. The amount of gross profit to be recognized for the year 20X1 is calculated as [(Estimated Gross Profit x Percentage Satisfied) - Gross Profit Previously Recognized].",
+        "This is the difference between the billings and the collections in 20X1. This is not the way to calculate the gross profit to be recognized in 20X1. The amount of gross profit to be recognized for the year 20X1 is calculated as [(Estimated Gross Profit x Percentage a Satisfied) - Gross Profit Previously Recognized]. ne",
+        "\" This is the collections for 20X1 minus the cost incurred in 20X1. This is not the way to calculate the gross profit to be recognized in 20X1. The amount of gross profit to be recognized for the year 20X1 is calculated as [(Estimated Gross Profit x Percentage Satisfied) - Gross Profit Previously Recognized].",
+        null
+      ],
+      "source": "CIA 1196 P4 Q11",
+      "topic": "Long-Term Contracts",
+      "diffPct": 65,
+      "data": [
+        [
+          "",
+          "20X1",
+          "20X2",
+          "20X3"
+        ],
+        [
+          "Estimated total cost",
+          "$2,000,000",
+          "$2,000,000",
+          "$2,000,000"
+        ],
+        [
+          "Cost incurred",
+          "$700,000",
+          "$900,000",
+          "$400,000"
+        ],
+        [
+          "Billings",
+          "$800,000",
+          "$1,200,000",
+          "$1,000,000"
+        ],
+        [
+          "Collections",
+          "$600,000",
+          "$1,200,000",
+          "$1,200,000"
+        ]
+      ],
+      "id": "1-13.q10"
+    },
+    {
+      "q": "Blue Water Shipbuilders obtained a contract to construct a cruise ship for Gateway Cruises at a contract price of $1 billion. Blue Water's estimated cost at the inception of the contract was $800 million, so at the inception of the contract, Blue Water estimated its profit on the contract would be $200 million. The construction was expected to require three years. The contract specified that Gateway Cruises owned the work-in-process as the cruise ship was being built. By the end of Year One, the engineer estimated that 20 percent of the performance obligation had been satisfied, and Blue Water's costs totaled $285 million. Blue Water's estimated cost to complete the construction and satisfy the performance obligation at that time was $665 million. Blue Water recognizes revenue and gross profit on shipbuilding contracts using the cost- a to-cost input method. How much revenue and gross profit should Blue Water recognize at the end of Year One?",
+      "o": [
+        "Revenue $300 million, gross profit $60 million.",
+        "Revenue $200 million, gross profit $10 million.",
+        "Revenue $200 million, gross profit $40 million.",
+        "Revenue $300 million, gross profit $15 million."
+      ],
+      "a": 3,
+      "e": "Because Gateway Cruises owns the work-in-process, control of the asset is transferred to Gateway over time and Blue Water accounts for the contract over time. Using the cost- to-cost input method to measure progress on the contract, 30% of the performance obligation has been satisfied at the end of Year One, calculated as $285 million divided by total estimated cost of $950 million ($285,000,000 + $665,000,000). Therefore, Blue Water recognizes 30% of the contract price of $1 billion, or $300 million, as revenue for Year One. Estimated gross profit on the contract at the end of Year One is $50 million: $1 billion less $950 million ($285 million + $665 million). Therefore, gross profit recognized at the end of Year One is 30% of $50 million, which equals $15 million.",
+      "wrongWhy": [
+        "This answer results from using the estimated costs and estimated gross profit at the inception of the contract to calculate the gross profit to recognize at the end of Year One,",
+        "This is not the correct answer. See explanation for D.",
+        "\" This answer results from two errors: ; (1) Using 20% as the proportion of the performance obligation that is complete at the end of Year One. Even though the question says that \"the engineer estimated that 20 percent . of the construction was complete,\" the question also says that Blue Water recognizes revenue and gross profit using the cost-to-cost input method. Therefore, the engineer's estimate is not relevant and the percentage to use in calculating the amount of revenue and gross profit to recognize at the end of Year One should be calculated as the costs incurred through the end of Year One divided by the total estimated costs. (2) Using the estimated costs and estimated gross profit at the inception of the contract to calculate the gross profit to recognize at the end of Year One, instead of using the estimated gross profit as of the end of Year One.",
+        null
+      ],
+      "source": "LEGACY RR606.04",
+      "topic": "Long-Term Contracts",
+      "diffPct": 50,
+      "id": "1-13.q11"
+    },
+    {
+      "q": "On September 1, 20X4, Beach Construction Company entered into a $10 million contract with City University to build a five-story parking garage on the university's campus. On that date, Beach's estimated total cost of constructing the building was $8 million. The estimated completion date for the garage was August 20X6. Beach's fiscal year ends May 31. Because Beach's performance creates an asset that City University controls as the work is being done, Beach accounts for the contract over time. Beach uses the cost- to-cost method to determine the percentage of the performance obligation in the contract that has been satisfied. Data regarding the contract are as follows (figures below). The gross profit recognized for the fiscal year ended May 31, 20X6 from this contract would be",
+      "o": [
+        "$500,000",
+        "$750,000",
+        "$250,000",
+        "$1,000,000 -"
+      ],
+      "a": 2,
+      "e": "The amount of gross profit to be recognized for the year ended May 31, 20X6 is calculated as follows: [(Estimated Gross Profit x Percentage Satisfied) - Gross Profit Previously Recognized]. The estimated gross profit is calculated by subtracting from the contract price ($10,000,000) the actual costs incurred to date as of fiscal year-end 20X6 ($6,750,000) and the estimated costs to complete the project as of that date ($2,250,000). _ _ _ ; gs",
+      "wrongWhy": [
+        "- This is the amount of gross profit that was recognized at May 31, 20X5. The question asks for the gross profit recognized for the fiscal year ended May 31, 20X6. The amount of gross profit to be recognized for the year ended May 31, 20X6 is calculated as [(Estimated Gross Profit x Percentage Satisfied) - Gross Profit Previously Recognized].",
+        "This is the total amount of gross profit that needs to be recognized by May 31, 20X6. However, some of this gross profit was recognized at May 31, 20X5. The amount of gross profit to be recognized for the year ended May 31, 20X6 is calculated as [(Estimated Gross Profit x Percentage Satisfied) - Gross Profit Previously Recognized].",
+        null,
+        "This is the total estimated gross profit on the contract as of May 31, 20X6. The amount of gross profit to be recognized for the year ended May 31, 20X6 is calculated as [(Estimated Gross Profit x Percentage Satisfied) - Gross Profit Previously Recognized]."
+      ],
+      "source": "CMA 0691 P2 Q13",
+      "topic": "Long-Term Contracts",
+      "diffPct": 54,
+      "data": [
+        [
+          "At May 31 (in thousands)",
+          "20X5",
+          "20X6"
+        ],
+        [
+          "Actual costs incurred to date",
+          "$2,000",
+          "$6,750"
+        ],
+        [
+          "Estimated costs to complete",
+          "$6,000",
+          "$2,250"
+        ],
+        [
+          "Progress billings to date",
+          "$1,800",
+          "$6,000"
+        ],
+        [
+          "Cash collected to date",
+          "$1,450",
+          "$5,500"
+        ]
+      ],
+      "id": "1-13.q12"
+    },
+    {
+      "q": "On September 1, 20X4, Beach Construction Company entered into a $10 million contract with City University to build a five-story parking garage on the university's campus. On that date, Beach's estimated total cost of constructing the building was $8 million. The estimated completion date for the garage was August 20X6. Beach's fiscal year ends May 31. Because Beach's performance creates an asset that City University controls as the work is being done, Beach accounts for the contract over time. Beach uses the cost- to-cost method to determine the percentage of the performance obligation in the contract that has been satisfied. Data regarding the contract are as follows (figures below). The current assets reported on Beach Construction Company's May 31, 20X6 statement of financial position as a result of this contract would be",
+      "o": [
+        "Accounts receivable of $6,000,000 and contract asset of $1,500,000.",
+        "Accounts receivable of $6,000,000 and contract asset of $6,750,000.",
+        "Accounts receivable of $500,000 and contract asset of $6,750,000.",
+        "Accounts receivable of $500,000 and contract asset of $1,500,000. -"
+      ],
+      "a": 3,
+      "e": "When the customer is invoiced for progress payments, the amount invoiced is debited to Accounts Receivable and credited to Billings on Construction in Process, a contract liability account. Beach's Accounts Receivable balance related to the City University contract is $500,000 on May 31, 20X6, the difference between the invoices issued through May 31, 20X6 ($6,000,000) and the cash collected through the same date ($5,500,000).",
+      "wrongWhy": [
+        "ry The accounts receivable amount in this answer is the total of progress billings to date - through May 31, 20X6, but it has not been adjusted (reduced) for the collections that have occurred. See the correct answer for a complete explanation.",
+        "The accounts receivable amount in this answer is the total of progress billings to date through May 31, 20X6, but it has not been adjusted (reduced) for the collections that have occurred. The contract asset figure in this answer is simply the costs incurred to date. This cost amount needs to be adjusted for the gross profit recognized to date and the invoices that have been issued. See the correct answer for a complete explanation.",
+        "The contract asset figure in this answer is simply the costs incurred to date as of May 31, 20X6. This amount needs to be adjusted for the gross profit recognized to date and the invoices that have been issued. See the correct answer for a complete explanation.",
+        null
+      ],
+      "source": "CMA 0691 P2 Q14",
+      "topic": "Long-Term Contracts",
+      "diffPct": 32,
+      "data": [
+        [
+          "At May 31 (in thousands)",
+          "20X5",
+          "20X6"
+        ],
+        [
+          "Actual costs incurred to date",
+          "$2,000",
+          "$6,750"
+        ],
+        [
+          "Estimated costs to complete",
+          "$6,000",
+          "$2,250"
+        ],
+        [
+          "Progress billings to date",
+          "$1,800",
+          "$6,000"
+        ],
+        [
+          "Cash collected to date",
+          "$1,450",
+          "$5,500"
+        ]
+      ],
+      "id": "1-13.q13"
+    },
+    {
+      "q": "Commercial Contractors is a commercial builder that purchases building sites and builds office buildings on them for sale to investors. Most of the buildings are built to an identified investor's specifications, and the investor who buys the property then leases the offices to professionals and small businesses. However, Commercial Contractors maintains ownership of all the properties throughout the construction period, and the investor does not obtain control of the property until all work is complete. An identified investor could \"walk away\" during the construction period, and Commercial Contractors could sell the building to another investor. On January 1, Year One, Commercial Contractors begins work on an office building for an identified investor for which the contract price is $10,000,000. The company estimates \" the work will cost $9,200,000 and require three years to complete. During Year One, $1,800,000 is spent on the construction, and the company's engineers believe that work costing $7,200,000 remains to be completed. During Year Two, another $3,900,000 is spent and $3,800,000 of work is now estimated to remain. What is the impact on net income to be recognized by Commercial Contractors in Year Two?",
+      "o": [
+        "$500,000.",
+        "$200,000.",
+        "$100,000.",
+        "Zero."
+      ],
+      "a": 3,
+      "e": "Because Commercial Contractors’ buyers do not obtain control of the properties until construction is complete, all of Commercial Contractors’ construction is accounted for at a point in time, that is, wnen the buyer obtains control of the completed structure. When recognizing revenue and gross profit at a point in time, recognition on the income statement does not take place until the performance obligation has been satisfied and the customer has obtained control of the asset, as long as a profit is anticipated ultimately. However, if a loss is anticipated at any point during the contract, the estimated loss must be recognized immediately. No revenue and no gross profit will have been recognized in either Year One or Year Two because the building is not complete-and-the customer-has not obtained control-of the",
+      "wrongWhy": [
+        "; $500,000 is the projected gross profit on the contract as of the end of Year Two. However, because the customer has not obtained control of the asset, the contract is accounted for at a point in time, so no revenue or gross profit is recognized until the contract is complete and the customer obtains control of the asset. And since no loss is expected on the contract, no loss needs to be recognized, either. Thus, there is no impact on net income to be recognized by Commercial Contractors in Year Two (or in Year One, either).",
+        "$200,000 would be the amount of gross profit Commercial Contractors would have recognized in Year One if the contract were accounted for over time. However, because the customer has not obtained control of the asset, the contract is accounted for at a point in time, so no revenue or gross profit is recognized until the contract is complete and the customer obtains control of the asset. And since no loss is expected on the contract, no loss needs to be recognized, either. Thus, there is no impact on net income to be recognized by Commercial Contractors in Year Two (or in Year One, either). -",
+        "$100,000 would be the amount of gross profit Commercial Contractors would have recognized in Year Two if the contract were accounted for over time. However, because the customer has not obtained control of the asset, the contract is accounted for at a point in time, so no revenue or gross profit is recognized until the contract is complete and the customer obtains control of the asset. And since no loss is expected on the contract, no loss needs to be recognized, either. Thus, there is no impact on net income to be recognized by Commercial Contractors in Year Two (or in Year One, either).",
+        null
+      ],
+      "source": "LEGACY RR606.05",
+      "topic": "Long-Term Contracts",
+      "diffPct": 49,
+      "id": "1-13.q14"
+    },
+    {
+      "q": "AAA Construction Company was hired by the California state government on January 1, Year One to build a section of a new highway. The contract price was $100 million and AAA estimated that the work would cost $92 million. During Year One, $18 million was spent on the work and the company's engineers believed that work costing $72 million remained to complete the work and satisfy the performance obligation. During Year Two, another $39 , million was spent and $38 million of work was estimated to remain. The contract contained a clause indicating that the state owned the work-in-process as the highway was being constructed. Using the cost-to-cost input method to calculate progress toward satisfaction of the performance obligation, what amount of profit or loss should AAA recognize on the contract in \" Year Two?",
+      "o": [
+        "$1,000,000 profit.",
+        "$4,300,000 profit.",
+        "$3,360,000 profit.",
+        "$2,000,000 profit."
+      ],
+      "a": 0,
+      "e": "Because the state controls the work-in-process as the work is being done, the contract is accounted for over time. In Year One, $18 million was spent with $72 million remaining for a total estimated cost of $90 million at that time. Because the contract price was $100 million, the company estimated that a profit of $10 million would eventually be earned. At the end of Year One, the performance obligation was 20% satisfied ($18 million divided by $90 million). Thus, AAA recognized a profit of $2 million (20% of $10 million) on the contract for Year One. In Year Two, another $39 million was spent, bringing the total cost incurred to date to $57 million ($18 million plus $39 million). The company's engineers estimated at the end of Year Two that another $38 million of cost remained to satisfy the performance obligation, for a total estimated cost of $95 million ($57 million plus $38 million). The total cost estimate had changed, but that is not uncommon with estimates. Because the contract price was $100 million and at the end of Year Two, the total estimated cost on the contract was $95 million, AAA estimated at that time that a profit of only $5 million would eventually be earned. At the end of Year Two, $57 million had been spent of the estimated total $95 million cost so that the work was 60% complete ($57 million divided by $95",
+      "wrongWhy": [
+        null,
+        "This answer results from using the total cost estimate as of the end of Year One as the total cost estimate for Year Two, as well, instead of updating it to the current estimate of total costs as of the end of Year Two.",
+        "This answer results from using the original total cost estimate of $92 million as the total cost $ estimate throughout Year One and Year Two instead of updating it to the current estimate of total costs as of the end of each year.",
+        "$2 million is the profit recognized in Year One of the contract. ee ."
+      ],
+      "source": "LEGACY RR606.01",
+      "topic": "Long-Term Contracts",
+      "diffPct": 63,
+      "id": "1-13.q15"
+    },
+    {
+      "q": "Allan Construction signed a $48,000,000 contract on September 1, 20X4 with the City of Springfield to construct a tunnel under the Maple River. On that date, the estimated cost to complete the tunnel, which was to be completed by June 20X7, was $36,000,000. Allan's fiscal year ends November 30, and the company recognized revenue on this contract over time using the cost-to-cost method. Data regarding the tunnel contract, which was begun December 1, 20X4, are as follows (figures below). Assume that the estimated costs to complete at November 30, 20X6 were $20 million rather than the $10 million shown in the given schedule. The gross loss recognized on the contract from its inception through November 30, 20X6 is",
+      "o": [
+        "$7,500,000.",
+        "$8,000,000.",
+        "$2,000,000.",
+        "$1,200,000."
+      ],
+      "a": 2,
+      "e": "The actual costs incurred to date as of November 30, 20X6 were $30,000,000. If the estimated costs to complete at the end of 20X6 were $20,000,000, the anticipated total cost for the project would be $30,000,000 + $20,000,000, or $50,000,000 at that date. Since revenue from the contract will be only $48,000,000, the entire project would have an estimated loss of $2,000,000. Estimated losses always need to be recognized in full in the period in which they arise, so by the end of 20X6, Allan would need to have recognized a $2,000,000 loss on the contract from its inception through November 30, 20X6.",
+      "wrongWhy": [
+        "This answer results from three errors: 1: Incorrectly calculating the total estimated cost for the contract as $30,000,000 actual costs incurred to date through 20X6 + $24,000,000 estimated cost to complete as of 20X5 + $34,000,000 estimated cost to complete as of 20X6 = $64,000,000.",
+        "An answer of an $8,000,000 loss results from two errors in reading the question: “4 1. The question asks for the gross loss on the contract from its inception through November 30, 20X6, in other words, for both years. The question does not ask for the gross loss recorded just for the year ended November 30, 20X6. This calculation is for the year ended November 30, 20X6. 2. The question says to assume the 20X6 estimated costs to complete were $20,000,000 instead of $10,000,000. An answer of an $8,000,000 loss for 20X6 results from assuming that gross profit of $4,000,000 for the year ended November 30, 20X5 had been recorded and gross profit of $2,000,000 for the year ended November 30, 20X6 had been recorded using the $10,000,000 estimated costs to complete, and then the estimated costs to complete as of the same date had been changed and a loss had been recorded for the same period. If that were the case, the second transaction dated November 30, 20X6 would be an $8,000,000 loss, to reverse the $6,000,000 recorded previously during the two years and recognize the expected $2,000,000 loss on the contract. However, since the question says to assume that the expected costs for complete as of November 30, 20X6 were $20,000,000 instead of $10,000,000, that change was made before any profit or loss on the contract was recorded for 20X6. Therefore, the loss recorded for 20X6 would have been not $8,000,000 but $6,000,000: the total expected loss on the contract of $2,000,000 ($48,000,000 — $50,000,000) plus the reversal of the $4,000,000 profit recorded in 20X5. The correct answer to this question is the contract price ($48,000,000) less the expected total cost on the contract as of November 30, 20X6 using $20,000,000 as the expected costs to complete as of that date and total estimated costs for the contract of $50,000,000.",
+        null,
+        "This is the loss that would be recognized if the loss were recognized based on the percentage of the contract that has been satisfied. However, estimated losses are always recognized in full in the period in which they arise. See the correct answer for a complete explanation. htips:/Awww.Noeintdrnsbohal CBRE PECANeSitn Hee BOE bar ANCA) BRPOTtING 330 Q ate 2/3"
+      ],
+      "source": "CMA 1292 P2 Q16",
+      "topic": "Long-Term Contracts",
+      "diffPct": 57,
+      "data": [
+        [
+          "At November 30 (in thousands)",
+          "20X5",
+          "20X6"
+        ],
+        [
+          "Actual costs to date",
+          "$12,000",
+          "$30,000"
+        ],
+        [
+          "Estimated costs to complete",
+          "$24,000",
+          "$10,000"
+        ],
+        [
+          "Progress billings to date",
+          "$10,000",
+          "$28,000"
+        ],
+        [
+          "Cash collected to date",
+          "$8,000",
+          "$24,000"
+        ]
+      ],
+      "id": "1-13.q16"
+    },
+    {
+      "q": "Allan Construction signed a $48,000,000 contract on September 1, 20X4 with the City of Springfield to construct a tunnel under the Maple River. On that date, the estimated cost to complete the tunnel, which was to be completed by June 20X7, was $36,000,000. Allan's fiscal year ends November 30, and the company recognized revenue on this contract over time using the cost-to-cost method. Data regarding the tunnel contract, which was begun December 1, 20X4, are as follows (figures below). The gross profit or loss recognized for the fiscal year ended November 30, 20X5 from the tunnel % contract using the cost-to-cost method is:",
+      "o": [
+        "$4,000,000 gross profit.",
+        "$6,000,000 gross profit.",
+        "$3,000,000 gross profit.",
+        "$12,000,000 gross profit."
+      ],
+      "a": 0,
+      "e": "The amount of gross profit to be recognized for the year ended November 30, 20X5 is calculated as follows: [(Estimated Gross Profit x Percentage Satisfied) - Gross Profit Previously Recognized]. The estimated gross profit is calculated by subtracting from the contract price ($48,000,000) the actual costs incurred to date as of fiscal year-end 20X5 ($12,000,000) and the estimated cost to complete as of that date ($24,000,000). $48,000,000 - $12,000,000 — $24,000,000 = $12,000,000. The estimated gross profit is $12,000,000. The calculation of the percentage satisfied is done by dividing the actual costs incurred to date as of November 30, 20X5 ($12,000,000) by the total estimated costs for the project ($12,000,000 + $24,000,000, or $36,000,000). $12,000,000 + $36,000,000 = 0.333. Thus, at the end of 20X5, the performance obligation in the contract is 1/3 satisfied. Therefore, Allen should have recognized in total $4,000,000 of gross profit by the end of 20X5 (1/3 of the $12,000,000 estimated gross profit on the contract). Since this is the first year of the project, there is no previously recognized gross profit to be subtracted. Therefore, the company should htips:tAwww.Noentdrn tt onal copier EAC che Grete Hes BONE pa GUY FaqPOming 330 Q ate 112 tee mans PART 1 SECTION (A) External Financail Reporting =\" Long: Tam Contrasts 22 pmanenal 29 This is the total gross profit to be recognized during 20X5 and 20X6.",
+      "wrongWhy": [
+        null,
+        "This is not the correct answer. See explanation for A.",
+        "This answer results from calculating the percentage satisfied as the actual costs incurred to date divided by the total contract price. The percentage satisfied is calculated by dividing the actual costs incurred to date by the total estimated costs for the project.",
+        "This is the estimated gross profit on the whole contract. However, not all of it can be recognized in the year ended November 30, 20X5. See the correct answer for a complete explanation. Oo"
+      ],
+      "source": "CMA 1292 P2 Q14",
+      "topic": "Long-Term Contracts",
+      "diffPct": 75,
+      "data": [
+        [
+          "At November 30 (in thousands)",
+          "20X5",
+          "20X6"
+        ],
+        [
+          "Actual costs to date",
+          "$12,000",
+          "$30,000"
+        ],
+        [
+          "Estimated costs to complete",
+          "$24,000",
+          "$10,000"
+        ],
+        [
+          "Progress billings to date",
+          "$10,000",
+          "$28,000"
+        ],
+        [
+          "Cash collected to date",
+          "$8,000",
+          "$24,000"
+        ]
+      ],
+      "id": "1-13.q17"
+    },
+    {
+      "q": "Paulson Company recognizes revenue and gross profit over time on long-term contract #0732 using the cost-to-cost method. The contract was awarded at a price of $700,000. The estimated costs were $500,000, and the contract duration was three years. (figures below). Assuming that $65,000 was recognized as gross profit in Year 1, the amount of gross profit Paulson recognized in Year 2 was:",
+      "o": [
+        "$49,950",
+        "$70,000",
+        "$135,000",
+        "$124,950"
+      ],
+      "a": 1,
+      "e": "As of the end of Year 2, estimated gross profit on the contract was $180,000 ($700,000 contract price minus [$390,000 cumulative costs incurred to date + $130,000 estimated cost to complete)). - The project was 75% satisfied ($390,000 + [$390,000 + $130,000]). Therefore, the total gross profit that should be recognized to date through Year 2 is 75% of $180,000, or $135,000. $65,000 in gross profit was recognized in Year 1, so the amount of gross profit to be recognized in Year 2 is $135,000 - $65,000, or $70,000.",
+      "wrongWhy": [
+        "This answer is incorrect. See the correct answer for a complete explanation.",
+        null,
+        "This is the total amount of profit that should be recognized by the end of Year 2, but it ignores the profit that was recognized in Year 1. See the correct answer for a complete explanation.",
+        "This answer is incorrect. See the correct answer for a complete explanation. htips:/Awww.Noeintd rast onal. CBRE PECANeSitn nes BONE bar ANCA) BRPOTtING 330 Q ate 112"
+      ],
+      "source": "HTB 1.1.038",
+      "topic": "Long-Term Contracts",
+      "diffPct": 68,
+      "data": [
+        [
+          "",
+          "Year 1",
+          "Year 2",
+          "Year 3"
+        ],
+        [
+          "Cumulative cost to date",
+          "$300,000",
+          "$390,000",
+          "$530,000"
+        ],
+        [
+          "Estimated cost to complete at year end",
+          "$250,000",
+          "$130,000",
+          "$0"
+        ],
+        [
+          "Progress billings",
+          "$325,000",
+          "$220,000",
+          "$155,000"
+        ],
+        [
+          "Collections on account",
+          "$300,000",
+          "$200,000",
+          "$200,000"
+        ]
+      ],
+      "id": "1-13.q18"
+    },
+    {
+      "q": "Diamond Clover Construction Inc. is recognizing revenue over time on Job #4115, a long-term contract with a contract price of $5,000,000. In Year 1, the company began work on the job. Other data are shown below (figures below). The amount of gross profit to be recognized in Year 1 using the cost-to-cost method is:",
+      "o": [
+        "$700,000",
+        "$1,400,000",
+        "$350,000",
+        "$766,667"
+      ],
+      "a": 2,
+      "e": "The amount of gross profit to be recognized in Year 1 is calculated as follows: [(Estimated Gross Profit x Percentage Satisfied) - Gross Profit Previously Recognized]. The estimated gross profit is calculated by subtracting from the contract price ($5,000,000) the actual costs incurred to date as of - Year 1 ($900,000) and the estimated cost to complete as of Year 1 ($2,700,000). $5,000,000 - $900,000 — $2,700,000 = $1,400,000. The estimated gross profit is $1,400,000. The calculation of the percentage satisfied is done by dividing the actual costs incurred to date as of Year 1 ($900,000) by the total estimated costs for the project ($900,000 + $2,700,000, or $3,600,000). $900,000 + $3,600,000 = 0.25. Thus, at the end of Year 1, the performance obligation in the contract is 25% satisfied. Therefore, Diamond Clover should have recognized in total $350,000 of gross profit by the end of Year 1 (25% of the $1,400,000 estimated gross profit on the contract). Since this is the first year of the project, there is no previously recognized gross profit to be subtracted. Therefore, the company should have recognized in total $350,000 in gross profit at the end of Year 1.",
+      "wrongWhy": [
+        "This is the amount of cash collected during Year 1. The amount of gross profit to be recognized in Year 1 is: [(Estimated Gross Profit x Percentage Satisfied) - Gross Profit Previously Recognized].",
+        "",
+        null,
+        "The amount of gross profit to be recognized in Year 1 is: [(Estimated Gross Profit x Percentage Satisfied) - Gross Profit Previously Recognized]. This answer results from not including the actual cost incurred to date as of Year 1 in the calculation of the estimated gross profit and the total estimated cost (used in calculating the percentage of the contract satisfied). [1] The estimated gross profit is the contract price minus the actual costs incurred to date as of Year 1 and minus the estimated costs to complete as of the end of Year 1 (not the contract price minus P only the estimated costs to complete as of the end of Year 1). [2] The percentage satisfied as of the end of Year 1 is the actual costs incurred to date as of Year 1 divided by the total of the costs incurred to date as of Year 1 and the estimated costs to complete as \"0 of the end of Year 1 (not the actual costs incurred to date as of Year 1 divided by only the estimated costs to complete as of the end of Year 1). [3] The amount of profit to be recognized in Year 1 is [(Estimated Gross Profit x Percentage Satisfied) - Gross Profit Previously Recognized]. Since this is the first year of the project, there is no previously recognized gross profit to be subtracted. Therefore, the amount of gross profit to be “4 recognized in Year 1 is the Estimated Gross Profit (calculated in [1] above) multiplied by the Percentage Satisfied (calculated in [2] above). SSS)"
+      ],
+      "source": "CMA 0696 P2 Q1",
+      "topic": "Long-Term Contracts",
+      "diffPct": 77,
+      "data": [
+        [
+          "",
+          "Year 1",
+          "Year 2"
+        ],
+        [
+          "Costs incurred during the year",
+          "$900,000",
+          "$2,350,000"
+        ],
+        [
+          "Estimated costs to complete",
+          "$2,700,000",
+          "$0"
+        ],
+        [
+          "Billings during the year",
+          "$1,000,000",
+          "$4,000,000"
+        ],
+        [
+          "Collections during the year",
+          "$700,000",
+          "$4,300,000"
+        ]
+      ],
+      "id": "1-13.q19"
+    },
+    {
+      "q": "Rose Construction Company had the following year-end data on a long-term construction contract started in 20X2 with a contract price of $100,000 (figures below). What amount of revenue will be reported in 20X3 if Rose recognizes revenue and gross profit over time on the contract using the cost-to-cost method?",
+      "o": [
+        "$50,000",
+        "$37,500",
+        "$62,500",
+        "$40,000 a"
+      ],
+      "a": 2,
+      "e": "Note that the question asks for the amount of revenue that will be reported in 20X3, not the amount of gross profit. Total revenue on the contract was $100,000. At the end of 20X2, construction was 37.5% complete ($30,000 + [$30,000 + $50,000]), so the revenue recognized for 20X2 was $37,500. At the end of 20X3, construction was completed because the estimated cost to complete as of the end of 20X3 was zero. Therefore, the $62,500 remaining revenue on the contract—$100,000 minus the $37,500 recognized in 20X2—will be recognized in 20X3.",
+      "wrongWhy": [
+        "This is half of the revenue, but the revenue is not recognized equally over both years of the contract.",
+        "This is the amount of revenue that would be recognized in 20X2.",
+        null,
+        "This answer is incorrect. See the correct answer for a full explanation."
+      ],
+      "source": "HTB 1.1.034",
+      "topic": "Long-Term Contracts",
+      "diffPct": 48,
+      "data": [
+        [
+          "",
+          "20X2",
+          "20X3"
+        ],
+        [
+          "Construction cost",
+          "$30,000",
+          "$40,000"
+        ],
+        [
+          "Estimated completion costs",
+          "$50,000",
+          "$0"
+        ],
+        [
+          "Selling, general and administrative expenses",
+          "$10,000",
+          "$10,000"
+        ]
+      ],
+      "id": "1-13.q20"
+    },
+    {
+      "q": "‘ According to ASC 606, under what circumstances should a long-term contract be accounted for over time?",
+      "o": [
+        "The production process can be readily divided into definite stages.",
+        "The company's performance creates or enhances an asset that the customer controls as the work is being done.",
+        "Cash has been received from the customer.",
+        "The company's performance creates an asset with an alternative use to the company."
+      ],
+      "a": 1,
+      "e": "Under ASC 606, a company satisfies a performance obligation over time and recognizes the revenue and costs over time if at least one of the following three criteria is met: 1. The customer simultaneously receives and consumes the benefits provided by the company's performance as the company is performing its obligations under the contract. 2. The company's performance creates or enhances an asset such as work in process that the customer controls as the work is being done. 3. The company's performance does not create an asset with an alternative use to the company, and the company has an enforceable right to payment for performance completed to date.",
+      "wrongWhy": [
+        "Though it may be that production on an individual long-term contract can be divided into definite stages, or that is not a criterion under ASC 606 for recognizing revenue, costs, and gross profit over time. -",
+        null,
+        "Though it may be that cash has been received from the customer on an individual long-term contract, that is not a criterion under ASC 606 for recognizing revenue, costs, and gross profit over time.",
+        "Under ASC 606, a company satisfies a performance obligation over time and recognizes the revenue and costs over time if the company's performance does not create an asset with an alternative use to the company, and the company has an enforceable right to payment for performance completed to date. That is one of three criteria for recognizing revenue, costs, and gross profit over time. The other two criteria for over-time recognition are: (1) the customer simultaneously receives and consumes the benefits provided by the company's performance as the company is performing its obligations under the contract or (2) the company's performance creates or enhances an asset such as work in process that the customer controls as the work is being done. Only one of the three criteria needs to be met for over-time recognition to take place."
+      ],
+      "source": "CMA 1292 P2 Q17",
+      "topic": "Long-Term Contracts",
+      "diffPct": 78,
+      "id": "1-13.q21"
     }
   ],
   "1-32": [
