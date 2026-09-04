@@ -912,7 +912,7 @@ const STATE={tab:'loading',searchQ:'',dictQ:'',dictData:[],dictLoaded:false,lead
     dashLoaded:false,dashLoading:false,dashError:false,
     dashLectures:[],dashLive:{},dashLectureDraft:{title:'',groupCode:'',date:''},dashAttendance:[],
     dashExams:[],dashExamsLoaded:false,
-    dashExamDraft:{title:'',groupCode:'',sectionIds:[],unitsBySection:{},count:20,durationMinutes:30,opensAt:'',closesAt:''},
+    dashExamDraft:{title:'',groupCode:'',sectionIds:[],unitsBySection:{},count:20,durationMinutes:30,opensAt:'',closesAt:'',maxAttempts:3},
     studentExams:[],studentExamsLoaded:false,studentExamResults:{},examSession:null,
     dashExamResults:{},dashExamViewingId:null,dashResultsSort:'score-desc',dashExamPreviewId:null,dashInstructorNotes:{},dashStudentDetailLoadedFor:null,dashStudentDetailLoading:false,dashAttendanceView:null,
     // ── Batch 2: group-scoped dashboard state ──────────────────────────
@@ -4690,6 +4690,10 @@ async function saveExam(){
   if(!count||count<3||count>50){showToast('Question count must be 3–50.','warning');return;}
   const dur=parseInt(d.durationMinutes);
   if(!dur||dur<3||dur>240){showToast('Duration must be 3–240 minutes.','warning');return;}
+  // Batch 20: retake cap, instructor-configurable per exam. Defaults to 3
+  // total attempts (1 original + 2 retakes) if left blank.
+  const maxAttempts=parseInt(d.maxAttempts)||3;
+  if(maxAttempts<1||maxAttempts>10){showToast('Max attempts must be 1–10.','warning');return;}
   if(!d.opensAt||!d.closesAt){showToast('Set both opens and closes times.','warning');return;}
   const opensISO=new Date(d.opensAt).toISOString();
   const closesISO=new Date(d.closesAt).toISOString();
@@ -4711,7 +4715,7 @@ async function saveExam(){
       sectionId:sectionIds[0],                 // legacy single-section field, kept for old display code / old exam readers
       unitIds:unitsBySection[sectionIds[0]]||[],
       questionIds:result.questionIds,          // frozen set — same for all students
-      count,durationMinutes:dur,
+      count,durationMinutes:dur,maxAttempts,   // Batch 20: retake cap
       opensAt:opensISO,closesAt:closesISO,
       status:'scheduled',
       createdAt:new Date().toISOString(),
@@ -4720,7 +4724,7 @@ async function saveExam(){
     showToast('Exam created \u2705','success');
     // Batch 2: preserve group prefill so back-to-back exams for the same
     // group don't require re-selection
-    STATE.dashExamDraft={title:'',groupCode:STATE.dashSelectedGroup,sectionIds:[],unitsBySection:{},count:20,durationMinutes:30,opensAt:'',closesAt:''};
+    STATE.dashExamDraft={title:'',groupCode:STATE.dashSelectedGroup,sectionIds:[],unitsBySection:{},count:20,durationMinutes:30,opensAt:'',closesAt:'',maxAttempts:3};
     await loadDashExams();
   }catch(e){
     showToast('Error: '+e.message,'error');
@@ -5374,6 +5378,12 @@ function renderDashExams(){
                  style="width:100%;padding:9px;border-radius:8px;border:.5px solid var(--border-4);font-size:13px;font-family:inherit;outline:none;background:#fff;color:var(--ink);box-sizing:border-box">
         </div>
       </div>
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Max Attempts (1\u201310) <span style="font-weight:400">\u2014 students can retake up to this many times, in shuffled order</span></label>
+        <input type="number" min="1" max="10" value="${esc(String(d.maxAttempts==null?3:d.maxAttempts))}"
+               oninput="STATE.dashExamDraft.maxAttempts=this.value"
+               style="width:100%;padding:9px;border-radius:8px;border:.5px solid var(--border-4);font-size:13px;font-family:inherit;outline:none;background:#fff;color:var(--ink);box-sizing:border-box">
+      </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
         <div>
           <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Opens at *</label>
@@ -5838,18 +5848,23 @@ function qotdAnswer(i){const st=loadStudent();if(!st||!st.groupCode)return;const
 // PHASE 3a-ii — GROUP EXAMS (student taking surface)
 //
 // State machine:
-//   Home strip (renderExamsStrip) → student clicks Start → startExam()
-//   creates exam-results/{examId_uid} doc with submitted:false, seeds
-//   the deterministic question set, saves the session locally, opens the
-//   full-screen runner. Runner persists to localStorage on every answer
-//   so a refresh survives. Timer computes remaining from stored
-//   deadlineAt. Submit grades locally, writes final result, clears local.
+//   Home strip (renderExamsStrip) → student clicks Start (or Retake) →
+//   startExam() creates exam-results/{examId_uid_aN} doc — one per attempt,
+//   N = attempt number — with submitted:false, seeds the deterministic
+//   question set, saves the session locally, opens the full-screen runner.
+//   Runner persists to localStorage on every answer so a refresh survives.
+//   Timer computes remaining from stored deadlineAt. Submit grades locally,
+//   writes the final result to that same attempt doc, clears local.
 //
-// Determinism: seededShuffle(pool, examId+uid) picks questions; a second
-//   stream from the same seed reshuffles each question's options. Same
-//   student always gets the same exam; refresh cannot change it.
+// Determinism: seededShuffle(pool, examId+uid[+attemptN]) picks questions; a
+//   second stream from the same seed reshuffles each question's options.
+//   Same student gets the same exam on a given attempt; refresh cannot
+//   change it. Attempt 2+ gets a distinct seed so retake order differs
+//   (Batch 20) while the underlying frozen question SET stays identical.
 //
-// One-shot: Firestore doc id {examId}_{uid} + submitted-flag guard.
+// Retakes (Batch 20): capped at exam.maxAttempts (instructor-set at
+//   creation, default 3). Full attempt history is preserved — nothing is
+//   overwritten — and the instructor's Results tab shows every attempt.
 // Deadline: min(startedAt + durationMinutes, exam.closesAt) — hard stop.
 // ═════════════════════════════════════════════════════════════════════
 
@@ -5892,23 +5907,32 @@ function seededShuffleOptions(q,rand){
 }
 
 // ── Local session persistence (survives refresh) ─────────────────────
-function _examLocalKey(examId){return 'cma-exam-session-v1:'+examId;}
+// Batch 20: key now includes attempt number so a retake's in-progress local
+// cache can never collide with (or resume into) a prior attempt's leftovers.
+function _examLocalKey(examId,attemptNumber){return 'cma-exam-session-v1:'+examId+(attemptNumber>1?':a'+attemptNumber:'');}
 function _examSaveLocal(sess){
   if(!sess||!sess.examId)return;
   try{
-    localStorage.setItem(_examLocalKey(sess.examId),JSON.stringify({
-      examId:sess.examId,answers:sess.answers,currentIdx:sess.currentIdx,
+    localStorage.setItem(_examLocalKey(sess.examId,sess.attemptNumber||1),JSON.stringify({
+      examId:sess.examId,attemptNumber:sess.attemptNumber||1,docId:sess.docId,
+      answers:sess.answers,currentIdx:sess.currentIdx,
       startedAt:sess.startedAt,deadlineAt:sess.deadlineAt,submitted:sess.submitted,
       flagged:sess.flagged||{}   // Batch 11: mark-for-review, survives reload/resume
     }));
   }catch{}
 }
-function _examLoadLocal(examId){
-  try{const d=localStorage.getItem(_examLocalKey(examId));return d?JSON.parse(d):null;}catch{return null;}
+function _examLoadLocal(examId,attemptNumber){
+  try{const d=localStorage.getItem(_examLocalKey(examId,attemptNumber||1));return d?JSON.parse(d):null;}catch{return null;}
 }
-function _examClearLocal(examId){try{localStorage.removeItem(_examLocalKey(examId));}catch{}}
+function _examClearLocal(examId,attemptNumber){try{localStorage.removeItem(_examLocalKey(examId,attemptNumber||1));}catch{}}
 
 // ── Load student's group exams (lazy, cached in STATE) ────────────────
+// Batch 20: an exam can now have MULTIPLE exam-results docs for the same
+// student (one per attempt, doc id `${examId}_${uid}_a${attemptNumber}`),
+// so this fetches every attempt doc for the student on each exam (compound
+// equality query — examId==X AND userId==Y — needs no manual Firestore
+// index) and derives a summary: attemptsUsed, the latest submitted attempt
+// (for the Home strip score), and any in-progress attempt to resume.
 async function loadStudentExams(){
   if(STATE.studentExamsLoaded)return;
   const st=loadStudent();
@@ -5923,9 +5947,19 @@ async function loadStudentExams(){
       const results={};
       await Promise.all(STATE.studentExams.map(async ex=>{
         try{
-          const rid=ex.id+'_'+STATE.user.uid;
-          const doc=await db.collection('exam-results').doc(rid).get();
-          if(doc.exists)results[ex.id]=doc.data();
+          const asnap=await db.collection('exam-results')
+            .where('examId','==',ex.id).where('userId','==',STATE.user.uid).get();
+          const attempts=asnap.docs.map(d=>({_docId:d.id,...d.data()}))
+            .sort((a,b)=>(a.attemptNumber||1)-(b.attemptNumber||1));
+          if(!attempts.length)return;
+          const submitted=attempts.filter(a=>a.submitted);
+          const inProgress=attempts.find(a=>!a.submitted)||null;
+          const latestSubmitted=submitted.length?submitted[submitted.length-1]:null;
+          results[ex.id]={
+            attemptsUsed:attempts.length,
+            attempts,inProgress,
+            ...(latestSubmitted||{})   // spread last submitted attempt's fields for existing card/strip code
+          };
         }catch{}
       }));
       STATE.studentExamResults=results;
@@ -5942,7 +5976,7 @@ async function loadStudentExams(){
 // from the section pool by qid (format: `${lessonId}:${qid||index}`). Every
 // student sees the SAME set; only ORDER and OPTION ORDER are shuffled per-uid.
 // Legacy exams (created before Batch 5) fall through to the pool-random path.
-async function buildExamQuestions(exam,uid){
+async function buildExamQuestions(exam,uid,attemptNumber){
   // Batch 11: multi-section aware. Legacy single-section exams (sectionId
   // only, no sectionIds array) still work unchanged via the fallback.
   const sectionIds=Array.isArray(exam.sectionIds)&&exam.sectionIds.length?exam.sectionIds:[exam.sectionId];
@@ -5967,7 +6001,12 @@ async function buildExamQuestions(exam,uid){
     });
   });
   if(!poolAll.length)return[];
-  const seed=exam.id+':'+uid;
+  // Batch 20: attempt 1 keeps the original seed (unchanged for backward
+  // compatibility with reviews of exams submitted before retakes existed).
+  // Attempt 2+ gets a distinct seed so the question ORDER (and option order,
+  // via seededShuffleOptions below) differs on each retake — same frozen
+  // question SET, per the retake spec (shuffled order, not a different pool).
+  const seed=exam.id+':'+uid+((attemptNumber&&attemptNumber>1)?':a'+attemptNumber:'');
   const rand=_mulberry32(_hashStr(seed));
   let picked;
   if(Array.isArray(exam.questionIds)&&exam.questionIds.length){
@@ -6005,28 +6044,42 @@ async function startExam(examId){
   const status=examWindowStatus(exam);
   if(status!=='active'){showToast('This exam is not currently open.','warning');return;}
   const existing=(STATE.studentExamResults||{})[examId];
-  if(existing&&existing.submitted){showToast('You have already submitted this exam.','warning');return;}
+  const maxAttempts=exam.maxAttempts||3;   // Batch 20: instructor-configurable, defaults to 3
+  const attemptsUsed=existing?(existing.attemptsUsed||0):0;
+  const inProgress=existing&&existing.inProgress;   // an unsubmitted attempt to resume
 
-  const resumeMode=existing&&!existing.submitted&&existing.startedAt;
-  const modalTitle=resumeMode?'Resume '+exam.title+'?':'Start '+exam.title+'?';
+  if(!inProgress&&attemptsUsed>=maxAttempts){
+    showToast('You\u2019ve used all '+maxAttempts+' attempt'+(maxAttempts===1?'':'s')+' for this exam.','warning');
+    return;
+  }
+
+  const resumeMode=!!inProgress;
+  const attemptNumber=resumeMode?(inProgress.attemptNumber||1):attemptsUsed+1;
+  const isRetake=!resumeMode&&attemptsUsed>0;
+  const modalTitle=resumeMode?'Resume '+exam.title+'?':(isRetake?'Retake '+exam.title+'?':'Start '+exam.title+'?');
   // Batch 8: the modal body is set via textContent, so inline <b>/<br> HTML
   // showed up as literal text. Move the structured details into the list param
   // (which renders as bullets) and keep body as a single plain line.
   const modalBody=resumeMode
     ?'⏱️ Time remaining is calculated from when you first started. Any answers you saved earlier are restored.'
     :'⚠️ Timer starts immediately. The exam auto-submits at the deadline.';
-  const modalList=resumeMode?null:['⏱️ Duration: '+exam.durationMinutes+' minutes','📊 Questions: '+exam.count];
+  const modalList=resumeMode?null:[
+    '⏱️ Duration: '+exam.durationMinutes+' minutes',
+    '📊 Questions: '+exam.count+(isRetake?' (same questions, new shuffled order)':''),
+    '🔁 Attempt '+attemptNumber+' of '+maxAttempts
+  ];
   const ok=await showModal({
     icon:'\u{1F4DD}',title:modalTitle,body:modalBody,list:modalList,
-    type:'primary',confirmText:resumeMode?'Resume':'Start Now',cancelText:'Not Yet'
+    type:'primary',confirmText:resumeMode?'Resume':(isRetake?'Retake Now':'Start Now'),cancelText:'Not Yet'
   });
   if(!ok)return;
 
-  let startedAt,deadlineAt,answers,currentIdx,flagged;
+  let startedAt,deadlineAt,answers,currentIdx,flagged,docId;
   if(resumeMode){
-    startedAt=existing.startedAt;
-    deadlineAt=existing.deadlineAt;
-    const local=_examLoadLocal(examId);
+    docId=inProgress._docId;
+    startedAt=inProgress.startedAt;
+    deadlineAt=inProgress.deadlineAt;
+    const local=_examLoadLocal(examId,attemptNumber);
     answers=(local&&local.answers)||{};
     currentIdx=(local&&local.currentIdx)||0;
     flagged=(local&&local.flagged)||{};   // Batch 11: restore flags on resume
@@ -6036,19 +6089,23 @@ async function startExam(examId){
     const byClose=exam.closesAt?Date.parse(exam.closesAt):byDur;
     deadlineAt=new Date(Math.min(byDur,byClose)).toISOString();
     answers={};currentIdx=0;flagged={};
+    // Batch 20: doc id now includes the attempt number so each attempt is
+    // its own document (full history preserved) instead of overwriting the
+    // single prior doc that the old `${examId}_${uid}` id produced.
+    docId=examId+'_'+STATE.user.uid+'_a'+attemptNumber;
     try{
-      await db.collection('exam-results').doc(examId+'_'+STATE.user.uid).set({
+      await db.collection('exam-results').doc(docId).set({
         examId,userId:STATE.user.uid,groupCode:exam.groupCode,sectionId:exam.sectionId,
-        startedAt,deadlineAt,answers:{},submitted:false
+        attemptNumber,startedAt,deadlineAt,answers:{},submitted:false
       });
     }catch(e){showToast('Could not start exam: '+e.message,'error');return;}
   }
 
-  const questions=await buildExamQuestions(exam,STATE.user.uid);
+  const questions=await buildExamQuestions(exam,STATE.user.uid,attemptNumber);
   if(!questions.length){showToast('No questions available for this section yet.','error');return;}
 
   STATE.examSession={
-    examId,exam,questions,answers,currentIdx,flagged,
+    examId,docId,attemptNumber,maxAttempts,exam,questions,answers,currentIdx,flagged,
     startedAt,deadlineAt,submitting:false,submitted:false,results:null,navOpen:false
   };
   _examSaveLocal(STATE.examSession);
@@ -6161,9 +6218,11 @@ async function submitExam(auto){
   try{
     const st=loadStudent()||{};
     const questionSnapshot=sess.questions.map(q=>({q:q.q,o:q.o,a:q.a,e:q.e||'',wrongWhy:q.wrongWhy||null,_lid:q._lid||'',_ltitle:q._ltitle||''}));
-    await db.collection('exam-results').doc(sess.examId+'_'+STATE.user.uid).set({
+    const docId=sess.docId||(sess.examId+'_'+STATE.user.uid+'_a'+(sess.attemptNumber||1));
+    const attemptNumber=sess.attemptNumber||1;
+    await db.collection('exam-results').doc(docId).set({
       examId:sess.examId,userId:STATE.user.uid,studentName:st.name||STATE.user.displayName||'Student',
-      groupCode:sess.exam.groupCode,sectionId:sess.exam.sectionId,
+      groupCode:sess.exam.groupCode,sectionId:sess.exam.sectionId,attemptNumber,
       startedAt:sess.startedAt,deadlineAt:sess.deadlineAt,
       answers:answersOut,questionSnapshot,score,total,percentage,
       submitted:true,submittedAt,autoSubmitted:!!auto
@@ -6175,9 +6234,21 @@ async function submitExam(auto){
       passed:percentage>=EXAM_PASS_THRESHOLD
     };
     sess.submitting=false;
-    _examClearLocal(sess.examId);
+    _examClearLocal(sess.examId,attemptNumber);
+    // Batch 20: keep the attempts/attemptsUsed shape loadStudentExams builds
+    // — this attempt is now submitted, so it's no longer "in progress", and
+    // it becomes the latest submitted attempt shown on the Home strip card.
     STATE.studentExamResults=STATE.studentExamResults||{};
-    STATE.studentExamResults[sess.examId]={submitted:true,score,total,percentage,submittedAt};
+    const prior=STATE.studentExamResults[sess.examId]||{attemptsUsed:0,attempts:[]};
+    const thisAttempt={_docId:docId,examId:sess.examId,userId:STATE.user.uid,attemptNumber,
+      score,total,percentage,submitted:true,submittedAt,autoSubmitted:!!auto,
+      startedAt:sess.startedAt,deadlineAt:sess.deadlineAt};
+    const attempts=(prior.attempts||[]).filter(a=>a.attemptNumber!==attemptNumber).concat([thisAttempt])
+      .sort((a,b)=>(a.attemptNumber||1)-(b.attemptNumber||1));
+    STATE.studentExamResults[sess.examId]={
+      attemptsUsed:attempts.length,attempts,inProgress:null,
+      ...thisAttempt
+    };
     render();
     if(auto)showToast('\u23F0 Time up — exam auto-submitted.','warning',4000);
     else showToast('\u2705 Exam submitted.','success');
@@ -6250,10 +6321,21 @@ function renderExamsStrip(){
       banner={bg:'linear-gradient(135deg,var(--ok-strong-2),var(--ok))',label:'\u2705 COMPLETED'};
       // Batch 11: show when the exam was taken (was missing entirely).
       const takenDate=res.submittedAt?fmtDT(res.submittedAt):'';
-      body='Score: <b>'+res.score+'/'+res.total+'</b> \u00B7 '+res.percentage+'%'+(takenDate?' \u00B7 '+takenDate:'');
-      btn='<button onclick="openExamReview(\''+ex.id+'\')" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Review \u2192</button>';
+      // Batch 20: attempt count + Retake (or Resume, if a retake is mid-way).
+      const maxAttempts=ex.maxAttempts||3;
+      const attemptsUsed=res.attemptsUsed||1;
+      body='Score: <b>'+res.score+'/'+res.total+'</b> \u00B7 '+res.percentage+'%'+(takenDate?' \u00B7 '+takenDate:'')
+        +' \u00B7 Attempt '+(res.attemptNumber||attemptsUsed)+' of '+maxAttempts;
+      const reviewBtn='<button onclick="openExamReview(\''+ex.id+'\')" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;margin-right:6px">Review \u2192</button>';
+      let secondBtn='';
+      if(res.inProgress){
+        secondBtn='<button onclick="startExam(\''+ex.id+'\')" style="background:#fff;color:var(--ok-strong-2);border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Resume Attempt '+(res.inProgress.attemptNumber||attemptsUsed)+' \u2192</button>';
+      }else if(attemptsUsed<maxAttempts&&st==='active'){
+        secondBtn='<button onclick="startExam(\''+ex.id+'\')" style="background:#fff;color:var(--ok-strong-2);border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u{1F501} Retake \u2192</button>';
+      }
+      btn=reviewBtn+secondBtn;
     }else if(st==='active'){
-      const inProgress=_examLoadLocal(ex.id);
+      const inProgress=_examLoadLocal(ex.id,1);
       banner={bg:'linear-gradient(135deg,var(--brand),var(--brand-2))',label:inProgress?'\u25B6\uFE0F RESUME':'\u{1F7E2} ACTIVE'};
       body='<b>'+ex.count+'</b> Qs \u00B7 <b>'+ex.durationMinutes+'</b> min \u00B7 closes '+fmtCountdown(ex.closesAt);
       btn='<button onclick="startExam(\''+ex.id+'\')" style="background:#fff;color:var(--brand);border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">'+(inProgress?'Resume \u2192':'Start Exam \u2192')+'</button>';
@@ -6461,20 +6543,35 @@ async function openExamReview(examId){
   if(!exam){showToast('Exam not found.','error');return;}
   showToast('Loading review\u2026','info',1500);
   try{
-    const doc=await db.collection('exam-results').doc(examId+'_'+STATE.user.uid).get();
+    // Batch 20: resolve the LATEST attempt's specific doc id. Prefer the
+    // cache loadStudentExams already built (has _docId per attempt); fall
+    // back to a fresh query if the cache is missing (e.g. deep link).
+    let docId=null,attemptNumber=1;
+    const cached=(STATE.studentExamResults||{})[examId];
+    if(cached&&cached._docId){docId=cached._docId;attemptNumber=cached.attemptNumber||1;}
+    else{
+      const asnap=await db.collection('exam-results')
+        .where('examId','==',examId).where('userId','==',STATE.user.uid).get();
+      const submittedAttempts=asnap.docs.map(d=>({_docId:d.id,...d.data()})).filter(a=>a.submitted)
+        .sort((a,b)=>(a.attemptNumber||1)-(b.attemptNumber||1));
+      if(!submittedAttempts.length){showToast('No result found.','error');return;}
+      const last=submittedAttempts[submittedAttempts.length-1];
+      docId=last._docId;attemptNumber=last.attemptNumber||1;
+    }
+    const doc=await db.collection('exam-results').doc(docId).get();
     if(!doc.exists){showToast('No result found.','error');return;}
     const data=doc.data();
     let questions=data.questionSnapshot;
     if(!questions||!Array.isArray(questions)||!questions.length){
       // Fallback: regenerate deterministically. Same seed will yield the same
       // set as long as s{N}.json hasn't changed since submission.
-      questions=await buildExamQuestions(exam,STATE.user.uid);
+      questions=await buildExamQuestions(exam,STATE.user.uid,attemptNumber);
       if(!questions.length){showToast('Cannot rebuild review data.','error');return;}
       // Watchlist #5 — backfill the snapshot so future reviews use stored
       // data (independent of s{N}.json). Fire-and-forget; silent on failure.
       try{
         const backfill=questions.map(q=>({q:q.q,o:q.o,a:q.a,e:q.e||'',wrongWhy:q.wrongWhy||null,_lid:q._lid||'',_ltitle:q._ltitle||''}));
-        db.collection('exam-results').doc(examId+'_'+STATE.user.uid).update({questionSnapshot:backfill}).catch(()=>{});
+        db.collection('exam-results').doc(docId).update({questionSnapshot:backfill}).catch(()=>{});
       }catch{}
     }
     // Firestore stores answers as an array of {picked, correct}. Runner uses
@@ -6484,7 +6581,7 @@ async function openExamReview(examId){
       data.answers.forEach((a,i)=>{if(a&&a.picked!=null)answers[i]=a.picked;});
     }
     STATE.examSession={
-      examId,exam,questions,answers,currentIdx:0,reviewIdx:0,
+      examId,docId,attemptNumber,exam,questions,answers,currentIdx:0,reviewIdx:0,
       startedAt:data.startedAt,deadlineAt:data.deadlineAt,
       submitting:false,submitted:true,reviewMode:true,
       results:{
@@ -6679,8 +6776,22 @@ async function loadExamResults(examId){
       const data=d.data();
       return {_docId:d.id,...data,studentName:data.studentName||rosterByUid[data.userId]||'Student'};
     });
-    // Compute aggregates
-    const submitted=results.filter(r=>r.submitted);
+    // Batch 20: multiple attempt docs can now exist per student. Aggregate
+    // stats (avg/median/pass rate/submitted count) use ONE representative
+    // score per student — their BEST attempt — so a student who retakes
+    // doesn't get counted multiple times and skew the class average. The
+    // `results` array above is left untouched (every attempt, for the table).
+    const bestByStudent={};
+    results.filter(r=>r.submitted).forEach(r=>{
+      const cur=bestByStudent[r.userId];
+      if(!cur||(r.percentage||0)>(cur.percentage||0))bestByStudent[r.userId]=r;
+    });
+    const submitted=Object.values(bestByStudent);
+    // Students with an in-progress attempt and NO submitted attempt at all
+    // yet — still "pending" from the enrollment/completion point of view.
+    const pendingStudents=new Set(
+      results.filter(r=>!r.submitted&&!bestByStudent[r.userId]).map(r=>r.userId)
+    );
     const scores=submitted.map(r=>r.percentage||0);
     const avg=scores.length?Math.round(scores.reduce((s,v)=>s+v,0)/scores.length):0;
     const passCount=submitted.filter(r=>(r.percentage||0)>=EXAM_PASS_THRESHOLD).length; // Batch 11: was hardcoded 60
@@ -6690,9 +6801,10 @@ async function loadExamResults(examId){
     STATE.dashExamResults[examId]={
       loading:false,loaded:true,results,
       stats:{
-        total:results.length,
-        submitted:submitted.length,
-        pending:results.length-submitted.length,
+        total:results.length,          // total attempt docs (all attempts, all students)
+        submitted:submitted.length,    // unique students with >=1 submitted attempt
+        pending:pendingStudents.size,  // unique students mid-attempt, none submitted yet
+        attemptsTotal:results.length,
         avgPct:avg,
         medianPct:median,
         passCount,passRate,
@@ -7844,9 +7956,10 @@ function renderResultsCard(exam){
         const color=pct>=80?'var(--ok-2)':pct>=60?'#7D6608':'var(--err-2)';
         const bg=pct>=80?'var(--ok-tint-2)':pct>=60?'#FEF5E7':'var(--err-tint)';
         const submittedFlag=r.submitted?'\u2705':'\u23F3 in progress';
-        return `<div onclick="openInstructorReview('${exam.id}','${esc(r.userId||'')}')" style="background:#fff;border:.5px solid var(--border);border-radius:10px;padding:10px 12px;margin-top:6px;display:flex;align-items:center;gap:10px;cursor:pointer">
+        const attemptBadge=(r.attemptNumber&&r.attemptNumber>1)?' \u00B7 Attempt '+r.attemptNumber:'';
+        return `<div onclick="openInstructorReview('${exam.id}','${esc(r._docId||'')}')" style="background:#fff;border:.5px solid var(--border);border-radius:10px;padding:10px 12px;margin-top:6px;display:flex;align-items:center;gap:10px;cursor:pointer">
           <div style="min-width:0;flex:1"><div style="font-size:13px;font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r.studentName||'Student')}</div>
-          <div style="font-size:11px;color:#888;margin-top:2px">${submittedFlag} \u00B7 ${r.score||0}/${r.total||0}</div></div>
+          <div style="font-size:11px;color:#888;margin-top:2px">${submittedFlag} \u00B7 ${r.score||0}/${r.total||0}${attemptBadge}</div></div>
           <div style="background:${bg};color:${color};padding:5px 12px;border-radius:14px;font-size:13px;font-weight:700;flex-shrink:0">${pct}%</div>
           ${r.submitted?'<div style="flex-shrink:0;font-size:11px;font-weight:600;color:var(--brand);white-space:nowrap;padding-left:2px">Review \u203A</div>':''}
         </div>`;
@@ -8182,19 +8295,20 @@ function setResultsSort(mode){
 
 // Drill down into a specific student's attempt. Reuses renderExamReview
 // by populating STATE.examSession with the student's data + reviewMode:true.
-async function openInstructorReview(examId,uid){
+async function openInstructorReview(examId,docId){
   if(!isInstructor()){showToast('Not authorized.','error');return;}
   const cache=STATE.dashExamResults[examId];
   if(!cache||!cache.results.length){showToast('Results not loaded.','error');return;}
-  const result=cache.results.find(r=>r.userId===uid);
+  const result=cache.results.find(r=>r._docId===docId);
   if(!result){showToast('Student result not found.','error');return;}
   const exam=STATE.dashExams.find(e=>e.id===examId);
+  const uid=result.userId;
   const student=(STATE.dashStudents||[]).find(s=>s.uid===uid)||{name:'(unknown)'};
 
   let questions=result.questionSnapshot;
   if(!questions||!Array.isArray(questions)||!questions.length){
     // No snapshot — try deterministic rebuild (instructor can't backfill though).
-    try{questions=await buildExamQuestions(exam,uid);}
+    try{questions=await buildExamQuestions(exam,uid,result.attemptNumber||1);}
     catch(e){showToast('Cannot rebuild questions for this student.','error');return;}
     if(!questions.length){showToast('Cannot rebuild questions for this student.','error');return;}
   }
@@ -8203,7 +8317,7 @@ async function openInstructorReview(examId,uid){
     result.answers.forEach((a,i)=>{if(a&&a.picked!=null)answers[i]=a.picked;});
   }
   STATE.examSession={
-    examId,exam,questions,answers,currentIdx:0,reviewIdx:0,
+    examId,docId,attemptNumber:result.attemptNumber||1,exam,questions,answers,currentIdx:0,reviewIdx:0,
     startedAt:result.startedAt,deadlineAt:result.deadlineAt,
     submitting:false,submitted:true,reviewMode:true,
     reviewStudent:student,
@@ -8228,7 +8342,7 @@ function exportResultsCSV(examId){
   }
   const exam=STATE.dashExams.find(e=>e.id===examId);
   const students=STATE.dashStudents||[];
-  const header=['Student Name','Student ID','Group','Score','Total','Percentage','Time Taken (min)','Started At','Submitted At','Auto-Submitted','Status'];
+  const header=['Student Name','Student ID','Group','Attempt','Score','Total','Percentage','Time Taken (min)','Started At','Submitted At','Auto-Submitted','Status'];
   const rows=[header];
   cache.results.forEach(r=>{
     const st=students.find(s=>s.uid===r.userId)||{};
@@ -8239,6 +8353,7 @@ function exportResultsCSV(examId){
       st.name||'(unknown)',
       st.studentId||'',
       r.groupCode||'',
+      r.attemptNumber||1,
       r.score!=null?r.score:'',
       r.total!=null?r.total:'',
       r.percentage!=null?r.percentage:'',
@@ -8347,13 +8462,19 @@ function renderDashExamResults(){
     const statusPill=r.submitted
       ?(r.autoSubmitted?'<span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:8px;background:var(--warn-tint-2);color:#9A7D0A">AUTO</span>':'')
       :'<span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:8px;background:#EAECEE;color:#566573">IN PROGRESS</span>';
+    // Batch 20: a student can now have multiple attempt rows for this exam —
+    // badge the attempt number (only shown from attempt 2 on, to keep the
+    // common single-attempt case visually unchanged).
+    const attemptPill=(r.attemptNumber&&r.attemptNumber>1)
+      ?'<span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:8px;background:var(--brand-tint);color:var(--brand)">ATTEMPT '+r.attemptNumber+'</span>'
+      :'';
     return '<div style="background:#fff;border:.5px solid var(--border);border-radius:10px;padding:11px 13px;margin-bottom:8px;display:flex;align-items:center;gap:10px">'
       +'<div style="flex:1;min-width:0">'
-      +'<div style="font-size:13px;font-weight:600;color:var(--ink);line-height:1.3;display:flex;align-items:center;gap:6px">'+esc(r._stName)+' '+statusPill+'</div>'
+      +'<div style="font-size:13px;font-weight:600;color:var(--ink);line-height:1.3;display:flex;align-items:center;gap:6px">'+esc(r._stName)+' '+statusPill+' '+attemptPill+'</div>'
       +'<div style="font-size:10px;color:#888;margin-top:2px">'+(r._stId?esc(r._stId)+' \u00B7 ':'')+fmtDT(r.submittedAt)+(r._timeMin!=null?' \u00B7 '+r._timeMin+' min':'')+'</div>'
       +'</div>'
       +(r.submitted?('<div style="background:'+pctBg+';color:'+pctColor+';border-radius:8px;padding:5px 10px;font-family:\'Courier New\',monospace;font-size:13px;font-weight:700;min-width:64px;text-align:center">'+(r.score||0)+'/'+(r.total||0)+'<br><span style="font-size:11px">'+pct+'%</span></div>'):'')
-      +(r.submitted?('<button onclick="openInstructorReview(\''+examId+'\',\''+r.userId+'\')" style="padding:7px 10px;border-radius:8px;border:.5px solid var(--brand-2)40;background:var(--brand-tint);color:var(--brand);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">Review \u203A</button>'):'')
+      +(r.submitted?('<button onclick="openInstructorReview(\''+examId+'\',\''+r._docId+'\')" style="padding:7px 10px;border-radius:8px;border:.5px solid var(--brand-2)40;background:var(--brand-tint);color:var(--brand);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">Review \u203A</button>'):'')
       +'</div>';
   };
 
