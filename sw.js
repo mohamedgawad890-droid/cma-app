@@ -451,7 +451,17 @@
 // unaffected. No data/JSON changes. app.js and app.css changed; CACHE_NAME
 // bumps v42->v43 to invalidate stale copies and trigger the clean
 // SKIP_WAITING auto-reload.
-const CACHE_NAME = 'cma-prep-v43';
+// v44 (Batch 20): Exam retakes. Students can retake a completed exam up to
+// an instructor-configurable cap (exam.maxAttempts, default 3) — same frozen
+// question set, newly shuffled order per attempt. Every attempt is now its
+// own exam-results doc (id: {examId}_{uid}_a{N}) instead of one doc per
+// student per exam, so full attempt history is preserved; the instructor
+// Results tab shows every attempt and aggregates stats from each student's
+// best attempt only. Exam creation form gained a Max Attempts field.
+// No data/JSON schema changes to the precached shell beyond app.js; app.js
+// changed, so CACHE_NAME bumps v43->v44 to invalidate stale copies and
+// trigger the clean SKIP_WAITING auto-reload.
+const CACHE_NAME = 'cma-prep-v44';
 const OFFLINE_URLS = [
   './',
   './index.html',
