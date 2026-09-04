@@ -913,6 +913,8 @@ const STATE={tab:'loading',searchQ:'',dictQ:'',dictData:[],dictLoaded:false,lead
     dashLectures:[],dashLive:{},dashLectureDraft:{title:'',groupCode:'',date:''},dashAttendance:[],
     dashExams:[],dashExamsLoaded:false,
     dashExamDraft:{title:'',groupCode:'',sectionIds:[],unitsBySection:{},count:20,durationMinutes:30,opensAt:'',closesAt:'',maxAttempts:3},
+    practiceDraft:{sectionIds:[],unitsBySection:{},count:20,durationMinutes:30},
+    practiceHistory:[],practiceHistoryLoaded:false,
     studentExams:[],studentExamsLoaded:false,studentExamResults:{},examSession:null,
     dashExamResults:{},dashExamViewingId:null,dashResultsSort:'score-desc',dashExamPreviewId:null,dashInstructorNotes:{},dashStudentDetailLoadedFor:null,dashStudentDetailLoading:false,dashAttendanceView:null,
     // ── Batch 2: group-scoped dashboard state ──────────────────────────
@@ -6218,6 +6220,36 @@ async function submitExam(auto){
   try{
     const st=loadStudent()||{};
     const questionSnapshot=sess.questions.map(q=>({q:q.q,o:q.o,a:q.a,e:q.e||'',wrongWhy:q.wrongWhy||null,_lid:q._lid||'',_ltitle:q._ltitle||''}));
+
+    if(sess.isPractice){
+      // Batch 20 (item 9): custom practice tests are personal-only — written
+      // to a separate collection with no groupCode/sectionId (an exam-results
+      // doc implies a shared, instructor-visible assignment; this isn't one).
+      const docRef=await db.collection('custom-practice-results').add({
+        examId:sess.examId,userId:STATE.user.uid,title:(sess.exam&&sess.exam.title)||'Custom Practice Test',
+        startedAt:sess.startedAt,deadlineAt:sess.deadlineAt,
+        answers:answersOut,questionSnapshot,score,total,percentage,
+        submitted:true,submittedAt,autoSubmitted:!!auto
+      });
+      sess.docId=docRef.id;
+      sess.submitted=true;
+      sess.results={
+        score,total,percentage,autoSubmitted:!!auto,submittedAt,
+        unanswered,timeMs,avgMsPerQ,bySection,weakestLesson,
+        passed:percentage>=EXAM_PASS_THRESHOLD
+      };
+      sess.submitting=false;
+      _examClearLocal(sess.examId,1);
+      STATE.practiceHistory=[{_docId:docRef.id,examId:sess.examId,userId:STATE.user.uid,
+        title:(sess.exam&&sess.exam.title)||'Custom Practice Test',
+        score,total,percentage,submitted:true,submittedAt,autoSubmitted:!!auto,
+        startedAt:sess.startedAt,questionSnapshot},...(STATE.practiceHistory||[])];
+      render();
+      if(auto)showToast('\u23F0 Time up — practice test auto-submitted.','warning',4000);
+      else showToast('\u2705 Practice test submitted.','success');
+      return;
+    }
+
     const docId=sess.docId||(sess.examId+'_'+STATE.user.uid+'_a'+(sess.attemptNumber||1));
     const attemptNumber=sess.attemptNumber||1;
     await db.collection('exam-results').doc(docId).set({
@@ -6823,6 +6855,224 @@ async function loadExamResults(examId){
 function closeExamResults(){
   STATE.dashExamViewingId=null;
   render();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// BATCH 20 (item 9) — STUDENT CUSTOM PRACTICE TEST BUILDER
+//
+// A student-built, single-player analogue of the instructor's Exam Creator:
+// pick section(s), then unit(s) within each, choose your own question count
+// and duration, and get a timed test. Deliberately reuses the SAME proven
+// pool-building logic as instructor exams (buildDistributedExamPool) and the
+// SAME exam-runner UI (STATE.examSession / renderExam / submitExam) — a
+// practice test is just an ephemeral, single-student "exam" that is never
+// written to the `exams` collection (nothing to share with anyone else) and
+// whose result is written to `custom-practice-results` instead of
+// `exam-results`, keeping it fully separate from instructor Results/At Risk
+// aggregates (see submitExam()'s isPractice branch, and firestore.rules).
+// ═══════════════════════════════════════════════════════════════════════════
+
+function togglePracticeSection(sidStr){
+  const sid=parseInt(sidStr);
+  const d=STATE.practiceDraft;
+  d.sectionIds=d.sectionIds||[];
+  const i=d.sectionIds.findIndex(x=>parseInt(x)===sid);
+  if(i>=0){
+    d.sectionIds.splice(i,1);
+    if(d.unitsBySection)delete d.unitsBySection[sid];
+  }else{
+    d.sectionIds.push(sid);
+  }
+  render();
+}
+function togglePracticeUnit(sectionId,uid){
+  const d=STATE.practiceDraft;
+  d.unitsBySection=d.unitsBySection||{};
+  const arr=d.unitsBySection[sectionId]||[];
+  const i=arr.indexOf(uid);
+  if(i>=0)arr.splice(i,1);else arr.push(uid);
+  d.unitsBySection[sectionId]=arr.slice();
+  render();
+}
+function clearPracticeUnits(sectionId){
+  const d=STATE.practiceDraft;
+  d.unitsBySection=d.unitsBySection||{};
+  d.unitsBySection[sectionId]=[];
+  render();
+}
+// Mirrors renderExamUnitPicker's markup exactly, wired to the student's own
+// draft + toggle functions above (kept separate rather than parameterizing
+// the instructor version, so instructor exam creation is never at risk of
+// a regression from student-side changes).
+function renderPracticeUnitPicker(d,sectionId){
+  const secId=parseInt(sectionId);
+  const sec=S.find(s=>s.id===secId);
+  if(!sec)return '';
+  d.unitsBySection=d.unitsBySection||{};
+  const selected=new Set((d.unitsBySection[secId]||[]).map(String));
+  const chips=sec.lessons.map((l,idx)=>{
+    const on=selected.has(String(l.id));
+    const badge=l.outOfScope==='part2'?' \u26A0\uFE0F Part 2':(l.outOfScope?' \u26A0\uFE0F \u2192 Sec.3':'');
+    return `<button type="button" onclick="togglePracticeUnit(${secId},'${l.id}')" style="padding:6px 10px;border-radius:14px;border:1px solid ${on?'var(--brand)':'var(--border-4)'};background:${on?'var(--brand)':(l.outOfScope?'#fff7ed':'#fff')};color:${on?'#fff':(l.outOfScope?'#b45309':'#555')};font-size:11px;font-weight:${on?'600':'500'};cursor:pointer;font-family:inherit;white-space:nowrap">U${idx+1}: ${esc(l.title.length>28?l.title.slice(0,26)+'\u2026':l.title)}${badge}</button>`;
+  }).join('');
+  const allCount=sec.lessons.length;
+  const sel=selected.size;
+  const label=sel===0?`All units (${allCount})`:`${sel} of ${allCount} units`;
+  return `<div style="margin-bottom:10px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+      <label style="font-size:11px;color:#888">Sec ${secId} \u2014 ${esc(sec.title)} units <span style="font-weight:600;color:var(--brand)">${label}</span></label>
+      <button type="button" onclick="clearPracticeUnits(${secId})" style="background:none;border:none;color:var(--brand);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">Clear \u2192 all</button>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;padding:8px;background:var(--surface);border:.5px solid var(--border);border-radius:8px;max-height:150px;overflow-y:auto">${chips}</div>
+    <div style="font-size:11px;color:#888;margin-top:4px">Leave empty to include the whole section.</div>
+  </div>`;
+}
+
+function renderCustomPractice(){
+  const d=STATE.practiceDraft;
+  const selectedSections=new Set((d.sectionIds||[]).map(String));
+  const sectionChips=S.map(s=>{
+    const on=selectedSections.has(String(s.id));
+    return `<button type="button" onclick="togglePracticeSection('${s.id}')" style="padding:7px 12px;border-radius:14px;border:1px solid ${on?'var(--brand)':'var(--border-4)'};background:${on?'var(--brand)':'#fff'};color:${on?'#fff':'#555'};font-size:12px;font-weight:${on?'600':'500'};cursor:pointer;font-family:inherit;white-space:nowrap">Sec ${s.id} \u2014 ${esc(s.title)}</button>`;
+  }).join('');
+  const unitPickers=(d.sectionIds||[]).map(sid=>renderPracticeUnitPicker(d,sid)).join('');
+
+  if(!STATE.practiceHistoryLoaded)loadPracticeHistory();
+  const history=STATE.practiceHistory||[];
+  const historyHTML=history.length?`<div style="background:#fff;border:.5px solid var(--border);border-radius:12px;padding:14px;margin-top:16px">
+      <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:10px">\u{1F4C8} Your Recent Custom Tests</div>
+      ${history.slice(0,10).map(r=>{
+        const pct=r.percentage||0;
+        const col=pct>=EXAM_PASS_THRESHOLD?'var(--ok-strong-2)':'var(--err)';
+        const bg=pct>=EXAM_PASS_THRESHOLD?'var(--ok-tint)':'var(--err-tint)';
+        const dt=r.submittedAt?new Date(r.submittedAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}):'';
+        return `<div onclick="openPracticeReview('${r._docId}')" style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:.5px solid var(--bg);cursor:pointer">
+          <div style="background:${bg};color:${col};border-radius:8px;padding:5px 10px;font-size:12px;font-weight:700;min-width:44px;text-align:center">${pct}%</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:12px;font-weight:500;color:var(--ink)">${esc(r.title||'Custom Practice Test')}</div>
+            <div style="font-size:11px;color:#888;margin-top:1px">${r.score||0}/${r.total||0} \u00B7 ${dt}</div>
+          </div>
+          <div style="font-size:11px;font-weight:600;color:var(--brand)">Review \u203A</div>
+        </div>`;
+      }).join('')}
+    </div>`:'';
+
+  return`${renderSubNav(SUB_PRACTICE,'custom-practice')}<div class="sh"><h2>\u{1F6E0}\uFE0F Custom Practice Test</h2><p>Pick your own scope, question count, and time limit</p></div>
+  <div class="scroll-area pad" style="padding-top:14px">
+    <div style="background:#fff;border:.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px">
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Section(s) * \u2014 pick one or more; questions split evenly across your picks</label>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;padding:8px;background:var(--surface);border:.5px solid var(--border);border-radius:8px">${sectionChips}</div>
+      </div>
+      ${unitPickers}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+        <div>
+          <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Questions (3\u201350) *</label>
+          <input type="number" min="3" max="50" value="${esc(String(d.count||20))}"
+                 oninput="STATE.practiceDraft.count=this.value"
+                 style="width:100%;padding:9px;border-radius:8px;border:.5px solid var(--border-4);font-size:13px;font-family:inherit;outline:none;background:#fff;color:var(--ink);box-sizing:border-box">
+        </div>
+        <div>
+          <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Duration (min) *</label>
+          <input type="number" min="3" max="240" value="${esc(String(d.durationMinutes||30))}"
+                 oninput="STATE.practiceDraft.durationMinutes=this.value"
+                 style="width:100%;padding:9px;border-radius:8px;border:.5px solid var(--border-4);font-size:13px;font-family:inherit;outline:none;background:#fff;color:var(--ink);box-sizing:border-box">
+        </div>
+      </div>
+      <button onclick="startCustomPractice()"
+              style="width:100%;padding:11px;border-radius:10px;border:none;background:var(--brand);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">
+        \u{1F680} Generate Practice Test
+      </button>
+    </div>
+    ${historyHTML}
+    <div style="height:20px"></div>
+  </div>`;
+}
+
+async function startCustomPractice(){
+  const d=STATE.practiceDraft;
+  const sectionIds=Array.isArray(d.sectionIds)?d.sectionIds.map(Number).filter(Boolean):[];
+  if(!sectionIds.length){showToast('Choose at least one section.','warning');return;}
+  const count=parseInt(d.count);
+  if(!count||count<3||count>50){showToast('Question count must be 3\u201350.','warning');return;}
+  const dur=parseInt(d.durationMinutes);
+  if(!dur||dur<3||dur>240){showToast('Duration must be 3\u2013240 minutes.','warning');return;}
+
+  const unitsBySection=d.unitsBySection||{};
+  const result=await buildDistributedExamPool(sectionIds,unitsBySection,count);
+  if(!result.ok){showToast(result.message,'warning');return;}
+
+  // Ephemeral, personal-only pseudo-exam — never written to the `exams`
+  // collection (nothing here is shared with any other student or the
+  // instructor). Reuses buildExamQuestions exactly as a real exam would.
+  const practiceId='practice_'+Date.now();
+  const pseudoExam={
+    id:practiceId,title:'Custom Practice \u2014 '+sectionIds.map(id=>'Sec '+id).join('+'),
+    sectionIds,unitsBySection,questionIds:result.questionIds,
+    count,durationMinutes:dur
+  };
+  const questions=await buildExamQuestions(pseudoExam,STATE.user.uid,1);
+  if(!questions.length){showToast('No questions available for this selection.','error');return;}
+
+  const startedAt=new Date().toISOString();
+  const deadlineAt=new Date(Date.now()+dur*60000).toISOString();
+  STATE.examSession={
+    examId:practiceId,exam:pseudoExam,questions,answers:{},currentIdx:0,flagged:{},
+    startedAt,deadlineAt,submitting:false,submitted:false,results:null,navOpen:false,
+    isPractice:true,instructorReturnTab:'custom-practice'   // exitExam() already honors this field generically
+  };
+  _examSaveLocal(STATE.examSession);
+  STATE.tab='exam';render();
+  _examStartTimer();
+}
+
+// Loads the student's own custom-practice history (single-field equality
+// query on userId — no compound filter, no index needed).
+async function loadPracticeHistory(){
+  if(STATE.practiceHistoryLoaded||!STATE.user)return;
+  STATE.practiceHistoryLoaded=true;   // set first — avoid duplicate concurrent loads
+  try{
+    const snap=await db.collection('custom-practice-results')
+      .where('userId','==',STATE.user.uid).get();
+    STATE.practiceHistory=snap.docs.map(d=>({_docId:d.id,...d.data()}))
+      .filter(r=>r.submitted)
+      .sort((a,b)=>(b.submittedAt||'').localeCompare(a.submittedAt||''));
+    if(STATE.tab==='custom-practice')render();
+  }catch(e){
+    console.warn('[Practice History] load failed:',e);
+  }
+}
+
+async function openPracticeReview(docId){
+  const cached=(STATE.practiceHistory||[]).find(r=>r._docId===docId);
+  showToast('Loading review\u2026','info',1200);
+  try{
+    const doc=cached?null:await db.collection('custom-practice-results').doc(docId).get();
+    const data=cached||(doc&&doc.exists?doc.data():null);
+    if(!data){showToast('No result found.','error');return;}
+    const questions=data.questionSnapshot;
+    if(!questions||!Array.isArray(questions)||!questions.length){
+      showToast('Review data unavailable for this test.','error');return;
+    }
+    const answers={};
+    if(Array.isArray(data.answers)){
+      data.answers.forEach((a,i)=>{if(a&&a.picked!=null)answers[i]=a.picked;});
+    }
+    STATE.examSession={
+      examId:data.examId||docId,docId,exam:{title:data.title||'Custom Practice Test'},
+      questions,answers,currentIdx:0,reviewIdx:0,
+      startedAt:data.startedAt,deadlineAt:data.deadlineAt,
+      submitting:false,submitted:true,reviewMode:true,isPractice:true,
+      instructorReturnTab:'custom-practice',
+      results:{
+        score:data.score||0,total:data.total||questions.length,
+        percentage:data.percentage||0,autoSubmitted:!!data.autoSubmitted,
+        submittedAt:data.submittedAt||''
+      },
+      navOpen:false
+    };
+    STATE.tab='exam';render();
+  }catch(e){showToast('Could not load review: '+e.message,'error');}
 }
 
 
@@ -8732,7 +8982,7 @@ const TABS=[
 function activeNavTab(){
   const t=STATE.tab;
   if(t==='study'||t==='quiz-session'||t==='quiz-results'||t==='quiz-review'||t==='lessons')return'study';
-  if(t==='quiz-mode-select'||t==='quiz-mode'||t==='cbq'||t==='mock-exam'||t==='flashcards'||t==='wrong-answers')return'quiz-mode-select';
+  if(t==='quiz-mode-select'||t==='quiz-mode'||t==='cbq'||t==='mock-exam'||t==='custom-practice'||t==='flashcards'||t==='wrong-answers')return'quiz-mode-select';
   if(t==='progress'||t==='tracker'||t==='leaderboard')return'progress';
   if(t==='formula-bank'||t==='dictionary'||t==='my-notes')return'formula-bank';
   if(t==='search')return'search';
@@ -8755,6 +9005,7 @@ const SUB_PRACTICE=[
   {id:'quiz-mode-select', icon:'🎯', label:'MCQ Quiz'},
   {id:'cbq',              icon:'📝', label:'CBQ'},
   {id:'mock-exam',        icon:'🏆', label:'Mock Exam'},
+  {id:'custom-practice',  icon:'🛠️', label:'Custom Test'},
   {id:'flashcards',       icon:'🃏', label:'Flashcards'},
   {id:'wrong-answers',    icon:'❌', label:'Wrong Answers'}
 ];
@@ -8807,7 +9058,7 @@ function render(){
   // yields a graceful recovery card instead of a blank screen.
   try{
     switch(STATE.tab){
-      case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'wrong-answers':html=renderWrongAnswers();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'quiz-review':html=renderQuizReview();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;case'formula-bank':html=renderFormulaBank();break;case'dictionary':html=renderDictionary();break;case'flashcards':html=renderFlashcards();break;case'my-notes':html=renderNotes();break;case'dashboard':html=renderDashboard();break;case'cbq':html=renderCBQ();break;case'mock-exam':html=renderMockExamScreen();break;case'exam':html=renderExam();break;default:html=renderIntro();
+      case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'wrong-answers':html=renderWrongAnswers();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'quiz-review':html=renderQuizReview();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;case'formula-bank':html=renderFormulaBank();break;case'dictionary':html=renderDictionary();break;case'flashcards':html=renderFlashcards();break;case'my-notes':html=renderNotes();break;case'dashboard':html=renderDashboard();break;case'cbq':html=renderCBQ();break;case'mock-exam':html=renderMockExamScreen();break;case'custom-practice':html=renderCustomPractice();break;case'exam':html=renderExam();break;default:html=renderIntro();
     }
   }catch(err){
     console.error('[render] Renderer threw for tab='+STATE.tab, err);
