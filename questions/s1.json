@@ -4437,7 +4437,208 @@
       "id": "1-12.q20"
     }
   ],
-  "1-13": [],
+  "1-13": [
+    {
+      "q": "Integrated Reporting (IR) primarily differs from traditional financial reporting in that it:",
+      "o": [
+        "Replaces financial statements with a single sustainability report",
+        "Shows how an organization creates value over time across multiple capitals, not just financial capital",
+        "Is required only for companies reporting under IFRS",
+        "Focuses exclusively on environmental and social performance, excluding financial results"
+      ],
+      "a": 1,
+      "e": "Integrated Reporting is a framework that goes beyond traditional financial reporting to show how an organization creates value over the short, medium, and long term across multiple capitals — financial, manufactured, intellectual, human, social & relationship, and natural — not just financial capital.",
+      "wrongWhy": [
+        "IR supplements rather than replaces financial statements; the Basis of Preparation and Presentation content element explicitly ties the integrated report back to the financial statements.",
+        null,
+        "IR is a voluntary global framework, not tied to any single financial reporting regime (GAAP or IFRS filers can both adopt it).",
+        "IR does not exclude financial performance — financial capital and financial results remain a core part of the report; IR adds the other capitals rather than removing the financial ones."
+      ],
+      "source": "CMA Prep — Gawad",
+      "topic": "Integrated Reporting",
+      "id": "1-13.q22"
+    },
+    {
+      "q": "The International Integrated Reporting Framework was originally developed by the:",
+      "o": [
+        "Financial Accounting Standards Board (FASB)",
+        "International Integrated Reporting Council (IIRC)",
+        "Public Company Accounting Oversight Board (PCAOB)",
+        "Committee of Sponsoring Organizations (COSO)"
+      ],
+      "a": 1,
+      "e": "The IIRC (International Integrated Reporting Council) was founded in 2010 and published the International IR Framework in 2013. IR is now overseen by the IFRS Foundation's Value Reporting Foundation.",
+      "wrongWhy": [
+        "FASB sets US GAAP accounting standards; it did not develop the IR Framework.",
+        null,
+        "The PCAOB oversees audits of US public companies; it has no role in developing the IR Framework.",
+        "COSO develops internal control and enterprise risk management frameworks (e.g., the COSO Cube); it did not develop the IR Framework."
+      ],
+      "source": "CMA Prep — Gawad",
+      "topic": "Integrated Reporting",
+      "id": "1-13.q23"
+    },
+    {
+      "q": "Integrated Reporting has been most widely and formally adopted, including a listing requirement for public companies, in:",
+      "o": [
+        "The United States",
+        "The United Kingdom",
+        "South Africa",
+        "Japan"
+      ],
+      "a": 2,
+      "e": "Integrated Reporting is mandated for companies listed on the Johannesburg Stock Exchange (JSE) in South Africa, making it the jurisdiction with the strongest formal adoption of the framework.",
+      "wrongWhy": [
+        "IR is not mandated for US-listed companies; US public companies file under SEC financial reporting requirements, not the IR Framework.",
+        "IR is widely encouraged in the UK but is not a formal listing requirement there.",
+        null,
+        "Japan has encouraged forms of integrated disclosure but does not mandate the IIRC's IR Framework for listing."
+      ],
+      "source": "CMA Prep — Gawad",
+      "topic": "Integrated Reporting",
+      "id": "1-13.q24"
+    },
+    {
+      "q": "Under the Six Capitals model in Integrated Reporting, a company's patents, proprietary knowledge, and brand value are classified as:",
+      "o": [
+        "Manufactured capital",
+        "Intellectual capital",
+        "Human capital",
+        "Social & relationship capital"
+      ],
+      "a": 1,
+      "e": "Intellectual capital includes intangible, knowledge-based assets such as patents, intellectual property, R&D, and brand value.",
+      "wrongWhy": [
+        "Manufactured capital refers to physical infrastructure, equipment, and technology — tangible produced assets, not intangible knowledge assets.",
+        null,
+        "Human capital refers to employees' skills, experience, and motivation — the people themselves, not the intangible assets they help create.",
+        "Social & relationship capital refers to an organization's relationships with communities and stakeholder networks, not its intangible knowledge assets."
+      ],
+      "source": "CMA Prep — Gawad",
+      "topic": "Integrated Reporting",
+      "id": "1-13.q25"
+    },
+    {
+      "q": "A company's relationships with the communities in which it operates, along with its broader stakeholder networks, fall under which of the Six Capitals?",
+      "o": [
+        "Natural capital",
+        "Social & relationship capital",
+        "Intellectual capital",
+        "Manufactured capital"
+      ],
+      "a": 1,
+      "e": "Social & relationship capital captures an organization's community relationships and stakeholder networks — the trust and cooperation that support its ability to operate.",
+      "wrongWhy": [
+        "Natural capital refers to environmental resources, biodiversity, and ecosystem services, not stakeholder relationships.",
+        null,
+        "Intellectual capital refers to patents, IP, R&D, and brand value — knowledge-based assets, not relationships with communities.",
+        "Manufactured capital refers to physical infrastructure, equipment, and technology, not stakeholder relationships."
+      ],
+      "source": "CMA Prep — Gawad",
+      "topic": "Integrated Reporting",
+      "id": "1-13.q26"
+    },
+    {
+      "q": "Which of the following is NOT one of the Six Capitals in the Integrated Reporting Framework?",
+      "o": [
+        "Manufactured capital",
+        "Natural capital",
+        "Political capital",
+        "Human capital"
+      ],
+      "a": 2,
+      "e": "The Six Capitals are Financial, Manufactured, Intellectual, Human, Social & Relationship, and Natural capital. \"Political capital\" is not one of the six — it is not a recognized category under the IR Framework.",
+      "wrongWhy": [
+        "Manufactured capital (physical infrastructure, equipment, technology) is one of the Six Capitals.",
+        "Natural capital (environmental resources, biodiversity, ecosystem services) is one of the Six Capitals.",
+        null,
+        "Human capital (employees' skills, experience, motivation) is one of the Six Capitals."
+      ],
+      "source": "CMA Prep — Gawad",
+      "topic": "Integrated Reporting",
+      "id": "1-13.q27"
+    },
+    {
+      "q": "The Materiality principle within the IR Framework's Seven Guiding Principles requires an integrated report to:",
+      "o": [
+        "Disclose every possible piece of information about the organization, regardless of significance",
+        "Disclose information about matters that substantively affect the organization's ability to create value",
+        "Limit disclosure strictly to financial statement line items",
+        "Report only on risks, excluding opportunities"
+      ],
+      "a": 1,
+      "e": "Materiality means the report should focus on matters that substantively affect the organization's ability to create value over the short, medium, and long term — not an exhaustive list of every possible fact.",
+      "wrongWhy": [
+        "This describes the opposite of materiality — the Conciseness principle specifically pushes against including everything regardless of significance.",
+        null,
+        "Materiality is broader than financial statement line items — it covers strategic, operational, and non-financial value drivers as well.",
+        "IR reporting on risks AND opportunities together is covered under the Content Element \"Risks and opportunities,\" not the Materiality principle, and materiality is not limited to risk-only disclosure."
+      ],
+      "source": "CMA Prep — Gawad",
+      "topic": "Integrated Reporting",
+      "id": "1-13.q28"
+    },
+    {
+      "q": "The Connectivity of Information principle in the IR Framework refers to:",
+      "o": [
+        "Ensuring the report is published on the company's website with working hyperlinks",
+        "Showing how the various capitals, strategy, governance, and performance relate to and affect one another as a whole",
+        "Cross-referencing the integrated report to prior years' reports only",
+        "Linking executive compensation directly to social capital metrics"
+      ],
+      "a": 1,
+      "e": "Connectivity of Information means showing a holistic picture of how the capitals used and affected by the organization, and the combination, interrelatedness, and dependencies between them, connect to the organization's strategy, governance, performance, and prospects.",
+      "wrongWhy": [
+        "This principle is about the substance of how information connects conceptually, not about the report's digital distribution format.",
+        null,
+        "Connectivity relates the pieces of the CURRENT report to each other; it isn't limited to referencing prior years' reports.",
+        "Connectivity is a general principle about how all elements of value creation relate — it isn't specifically about linking pay to one particular capital."
+      ],
+      "source": "CMA Prep — Gawad",
+      "topic": "Integrated Reporting",
+      "id": "1-13.q29"
+    },
+    {
+      "q": "Under the Eight Content Elements of an integrated report, an explanation of how an organization's governance structure supports its ability to create value belongs under:",
+      "o": [
+        "Business model",
+        "Governance",
+        "Strategy and resource allocation",
+        "Basis of preparation and presentation"
+      ],
+      "a": 1,
+      "e": "The Governance content element addresses how the organization's governance structure supports its ability to create value in the short, medium, and long term.",
+      "wrongWhy": [
+        "Business model describes the system of inputs, business activities, outputs, and outcomes that create value — not the governance structure itself.",
+        null,
+        "Strategy and resource allocation addresses the organization's strategic objectives and how it plans to achieve them, which is distinct from governance structure.",
+        "Basis of preparation and presentation explains how the organization determined what to include in the report and how items are quantified/evaluated — not governance."
+      ],
+      "source": "CMA Prep — Gawad",
+      "topic": "Integrated Reporting",
+      "id": "1-13.q30"
+    },
+    {
+      "q": "Which of the following is NOT one of the Eight Content Elements of an integrated report?",
+      "o": [
+        "Risks and opportunities",
+        "Outlook",
+        "Internal control over financial reporting",
+        "Performance"
+      ],
+      "a": 2,
+      "e": "The Eight Content Elements are: organizational overview and external environment, governance, business model, risks and opportunities, strategy and resource allocation, performance, outlook, and basis of preparation and presentation. \"Internal control over financial reporting\" is a distinct SOX/COSO-related concept, not one of the eight IR content elements.",
+      "wrongWhy": [
+        "Risks and opportunities is one of the Eight Content Elements.",
+        "Outlook is one of the Eight Content Elements.",
+        null,
+        "Performance is one of the Eight Content Elements."
+      ],
+      "source": "CMA Prep — Gawad",
+      "topic": "Integrated Reporting",
+      "id": "1-13.q31"
+    }
+  ],
   "1-14": [
     {
       "q": "An internal auditor is deriving cash flow data based on an incomplete set of facts. Credit loss expense during the period was $2,000. Additional data for this period follow (net accounts receivable figures are net of allowance for credit losses): How much cash was collected from accounts receivable this period?",
