@@ -2902,6 +2902,36 @@
     },
     {
       "t": "h",
+      "v": "Long-Term Contracts — Percentage-of-Completion (Cost-to-Cost Method)"
+    },
+    {
+      "t": "p",
+      "v": "For long-term contracts recognized OVER TIME, the cost-to-cost method is the most common way to measure progress toward completion."
+    },
+    {
+      "t": "f",
+      "l": "Percent Complete (cumulative)",
+      "v": "% Complete = Costs Incurred to Date / Total Estimated Costs"
+    },
+    {
+      "t": "f",
+      "l": "Gross Profit to Recognize (current period)",
+      "v": "Cumulative Gross Profit to Date − Gross Profit Recognized in Prior Periods"
+    },
+    {
+      "t": "p",
+      "v": "Example: Contract price $100 million, total estimated cost $90 million (estimated total profit $10 million). Year 1 costs incurred: $18 million, of a total estimated cost of $90 million → 20% complete ($18M / $90M). Gross profit recognized in Year 1 = 20% × $10 million = $2 million."
+    },
+    {
+      "t": "p",
+      "v": "Recognized OVER TIME (percentage-of-completion): revenue, costs, and gross profit are recognized each period based on progress; the cumulative gross profit builds up in the Construction in Process (contract asset) account."
+    },
+    {
+      "t": "p",
+      "v": "Recognized AT A POINT IN TIME: no revenue, cost, or gross profit is recognized until the performance obligation is completely satisfied — then all of it is recognized in that final period."
+    },
+    {
+      "t": "h",
       "v": "Contract Assets vs Contract Liabilities"
     },
     {
@@ -2931,6 +2961,17 @@
     },
     {
       "t": "h",
+      "v": "Right of Return & Consigned Goods"
+    },
+    {
+      "t": "b",
+      "v": [
+        "Right of Return: when a customer has the right to return a product, the seller cannot recognize revenue for the amount expected to be returned. Revenue is recognized only for the amount expected to be kept by the customer; a refund liability is recorded for the expected returns, and a corresponding asset (right to recover the returned product) is recognized.",
+        "Consigned Goods: goods delivered to another party (the consignee, e.g., a retailer) who has NOT gained control of the goods and is only holding them for sale to a final customer. The consignor (owner) does NOT recognize revenue upon shipping to the consignee — control has not transferred. Revenue is recognized only when the consignee sells the goods to the end customer."
+      ]
+    },
+    {
+      "t": "h",
       "v": "Practical Expedients"
     },
     {
@@ -2944,7 +2985,7 @@
     },
     {
       "t": "tip",
-      "v": "Exam Tips: 5 steps — always in order. Distinct = can benefit on own AND separately identifiable. Control transfer = key trigger (not risks & rewards). Variable consideration = constrain to highly probable amount. Over time recognition requires one of 3 criteria. Contract liability = cash received before performance. Contract asset = performance before billing. Relative SSP method for allocation."
+      "v": "Exam Tips: 5 steps — always in order. Distinct = can benefit on own AND separately identifiable. Control transfer = key trigger (not risks & rewards). Variable consideration = constrain to highly probable amount. Over time recognition requires one of 3 criteria. Contract liability = cash received before performance. Contract asset = performance before billing. Relative SSP method for allocation. Long-term contracts: % complete = costs to date / total estimated cost; gross profit recognized = cumulative % × total estimated profit, less prior periods recognized. Right of return = don't recognize revenue for expected returns (record a refund liability). Consigned goods = consignor recognizes revenue only when the CONSIGNEE sells to the end customer, not on shipment."
     }
   ],
   "1-32": [
