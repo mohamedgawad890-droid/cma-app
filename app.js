@@ -207,7 +207,7 @@ const TOTAL_LESSONS=S.reduce((acc,s)=>acc+s.lessons.length,0);
 function loadProg(){try{const d=localStorage.getItem('cma-html-v2');return d?JSON.parse(d):{done:[],lessonScores:{},mcqTotal:0,mcqRight:0};}catch{return{done:[],lessonScores:{},mcqTotal:0,mcqRight:0};}}
 
 // Item 1: _doneSet caches STATE.progress.done as a Set for O(1) lookups.
-// lessonDone() is called hundreds of times per render across 113 lessons.
+// lessonDone() is called hundreds of times per render across all lessons (103 currently).
 // Array.includes() = O(n) per call → Set.has() = O(1) per call.
 // Invalidated in saveProg() and whenever Firestore overwrites STATE.progress.
 let _doneSet = null;
@@ -1926,7 +1926,10 @@ function renderStudy(){
       </div>
       ${renderLessonBody(lesson,sec)}${videoPlaceholder}</div>
     <button class="btn no-print" data-markdone="${lesson.id}" onclick="markDone('${lesson.id}')" style="margin-top:14px;background:${done?'var(--ok-tint)':sec.bar};color:${done?'var(--ok-strong)':'#fff'}">${done?'✓ Completed — Back':'Mark as Complete ✓'}</button>
-    ${(()=>{const nx=getNextLesson(sec.id,lesson.id);if(!nx)return'';return`<button class="btn btn-outline no-print" onclick="studyGo(${nx.sec.id},'${nx.lesson.id}')" style="margin-top:8px;border-color:var(--brand-2)20;color:var(--brand-2)">Next: ${esc(nx.lesson.title)} →</button>`;})()}
+    ${(()=>{const pv=getPrevLesson(sec.id,lesson.id);const nx=getNextLesson(sec.id,lesson.id);if(!pv&&!nx)return'';return`<div style="display:flex;gap:8px;margin-top:8px">
+      ${pv?`<button class="btn btn-outline no-print" onclick="studyGo(${pv.sec.id},'${pv.lesson.id}')" style="flex:1;border-color:var(--brand-2)20;color:var(--brand-2)">← Previous: ${esc(pv.lesson.title)}</button>`:'<div style="flex:1"></div>'}
+      ${nx?`<button class="btn btn-outline no-print" onclick="studyGo(${nx.sec.id},'${nx.lesson.id}')" style="flex:1;border-color:var(--brand-2)20;color:var(--brand-2)">Next: ${esc(nx.lesson.title)} →</button>`:''}
+    </div>`;})()}
     <div class="no-print" style="margin-top:12px">
       <div style="font-size:12px;font-weight:500;color:#888;margin-bottom:6px">📝 My Notes</div>
       <textarea id="lesson-notes-${lesson.id}" placeholder="Write your notes here... (saved automatically)" oninput="saveLessonNote('${lesson.id}',this.value)" style="width:100%;padding:10px 12px;border-radius:8px;border:.5px solid var(--border-4);font-size:13px;font-family:inherit;outline:none;background:var(--surface);color:var(--ink);resize:vertical;line-height:1.5;box-sizing:border-box;min-height:120px" rows="7">${loadLessonNote(lesson.id)}</textarea>
@@ -3066,8 +3069,8 @@ function renderOnboarding(){
       <div style="font-size:22px;font-weight:500;margin-bottom:4px">Gawad's CMA Prep</div>
       <div style="font-size:14px;opacity:.85;margin-bottom:20px">Your complete CMA Part 1 study companion</div>
       <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap">
-        <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px">113 Lessons</div>
-        <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px">2,295 MCQs</div>
+        <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px">${TOTAL_LESSONS} Lessons</div>
+        <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px">2,603 MCQs</div>
         <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px">6 Sections</div>
         <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px">Free Access</div>
       </div>
@@ -3096,8 +3099,8 @@ function renderOnboarding(){
         <div style="font-size:17px;font-weight:500;color:var(--ink);margin-bottom:12px">✨ What's inside?</div>
         <div style="display:flex;flex-direction:column;gap:10px">
           ${[
-            ['📚','Study','6 sections · 112 lessons covering all CMA Part 1 topics with detailed, structured content'],
-            ['❓','Quizzes','2,295 MCQs — exam-style questions with full explanations after each answer'],
+            ['📚','Study',`6 sections · ${TOTAL_LESSONS} lessons covering all CMA Part 1 topics with detailed, structured content`],
+            ['❓','Quizzes','2,603 MCQs — exam-style questions with full explanations after each answer'],
             ['📊','Progress','Track your completed lessons and quiz scores across all sections'],
             ['📌','Tracker','Mark lessons as Good or Bad to know what to review'],
             ['🌐','Community','Ask questions and get answers from fellow CMA candidates'],
@@ -4146,6 +4149,7 @@ function markDone(lid){
   setTimeout(()=>studyGo(STATE.sectId,null),180);
 }
 function getNextLesson(sectId,lessonId){const sec=sect(sectId);if(!sec)return null;const idx=sec.lessons.findIndex(l=>l.id===lessonId);if(idx===-1||idx>=sec.lessons.length-1){const sIdx=S.findIndex(s=>s.id===sectId);if(sIdx===-1||sIdx>=S.length-1)return null;return{sec:S[sIdx+1],lesson:S[sIdx+1].lessons[0]};}return{sec,lesson:sec.lessons[idx+1]};}
+function getPrevLesson(sectId,lessonId){const sec=sect(sectId);if(!sec)return null;const idx=sec.lessons.findIndex(l=>l.id===lessonId);if(idx<=0){const sIdx=S.findIndex(s=>s.id===sectId);if(sIdx<=0)return null;const prevSec=S[sIdx-1];return{sec:prevSec,lesson:prevSec.lessons[prevSec.lessons.length-1]};}return{sec,lesson:sec.lessons[idx-1]};}
 function doLessonQuiz(lid){startQuiz(lid);}
 async function startQuiz(lessonId){
   startStudyTimer('quiz-'+lessonId);
@@ -4678,8 +4682,13 @@ async function buildDistributedExamPool(sectionIds,unitsBySection,count){
 async function saveExam(){
 
   const d=STATE.dashExamDraft;
+  // Batch 22 (B22-01): same live-group fix as createLecture() -- read the
+  // group from dashSelectedGroup at submit time, not the draft's cached
+  // groupCode, which can go stale if the instructor switches groups after
+  // opening this form.
+  const g=STATE.dashSelectedGroup;
   if(!d.title||!d.title.trim()){showToast('Enter an exam title.','warning');return;}
-  if(!d.groupCode){showToast('Choose a group.','warning');return;}
+  if(!g){showToast('Choose a group.','warning');return;}
   const sectionIds=Array.isArray(d.sectionIds)?d.sectionIds.map(Number).filter(Boolean):[];
   if(!sectionIds.length){showToast('Choose at least one section.','warning');return;}
   const count=parseInt(d.count);
@@ -4704,7 +4713,7 @@ async function saveExam(){
     if(!result.ok){showToast(result.message,'warning');return;}
     await db.collection('exams').add({
       title:d.title.trim(),
-      groupCode:d.groupCode.toUpperCase(),
+      groupCode:g.toUpperCase(),
       questionSource:'auto',
       sectionIds,                              // Batch 11: multi-section
       unitsBySection,                          // Batch 11: {sectionId:[unitIds]}
@@ -4787,17 +4796,19 @@ function _tlFlagField(id){
 }
 async function saveTeachingEntry(){
   const d=STATE.dashTeachingDraft;
-  // Batch 2: draft group is auto-prefilled from dashSelectedGroup, but we
-  // still validate defensively in case someone tabs directly to this action.
-  if(!d.groupCode)d.groupCode=STATE.dashSelectedGroup;
+  // Batch 22 (B22-01): same live-group fix as createLecture()/saveExam() --
+  // read the group from dashSelectedGroup at submit time, not the draft's
+  // cached groupCode, which can go stale if the instructor switches groups
+  // after opening this form.
+  const g=STATE.dashSelectedGroup;
   // S4-E: check required fields in order; on the first empty one show a
   // specific message and scroll+highlight that field instead of a generic toast.
-  if(!d.groupCode){showToast('No group selected.','warning');return;}
+  if(!g){showToast('No group selected.','warning');return;}
   if(!d.lectureNumber){showToast('Enter a lecture #.','warning');_tlFlagField('tl-lecno');return;}
   if(!d.date){showToast('Pick a date.','warning');_tlFlagField('tl-date');return;}
   if(!d.unitIds.length){showToast('Select at least one unit.','warning');_tlFlagField('tl-units');return;}
   try{
-    await db.collection('teaching-log').add({groupCode:d.groupCode.trim().toUpperCase(),lectureNumber:Number(d.lectureNumber),date:d.date,unitIds:d.unitIds.slice(),notes:d.notes.trim(),lectureId:d.lectureId||'',lectureTitle:d.lectureTitle||'',createdAt:new Date().toISOString(),createdBy:STATE.user.uid});
+    await db.collection('teaching-log').add({groupCode:g.trim().toUpperCase(),lectureNumber:Number(d.lectureNumber),date:d.date,unitIds:d.unitIds.slice(),notes:d.notes.trim(),lectureId:d.lectureId||'',lectureTitle:d.lectureTitle||'',createdAt:new Date().toISOString(),createdBy:STATE.user.uid});
     showToast('Teaching entry saved \u2705','success');
     // Reset draft but preserve group prefill for the next entry
     STATE.dashTeachingDraft={groupCode:STATE.dashSelectedGroup,lectureNumber:'',date:'',unitIds:[],notes:'',lectureId:'',lectureTitle:''};
@@ -5016,16 +5027,17 @@ async function loadLectureAttendance(lectureId){
 
 async function createLecture(){
   const d=STATE.dashLectureDraft;
-  // Batch 2: draft group is auto-prefilled from dashSelectedGroup by
-  // renderDashLectures. Fall back defensively if the user navigated in
-  // some other way.
-  if(!d.groupCode)d.groupCode=STATE.dashSelectedGroup;
+  // Batch 22 (B22-01): group is always read live from dashSelectedGroup at
+  // submit time -- never trust the draft's cached groupCode, which goes
+  // stale if the instructor switches the group chip after opening this
+  // form. This was silently creating lectures under the wrong group.
+  const g=STATE.dashSelectedGroup;
   if(!d.title||!d.title.trim()){showToast('Enter a lecture title.','warning');return;}
-  if(!d.groupCode){showToast('Pick a group first (chip strip above).','warning');return;}
+  if(!g){showToast('Pick a group first (chip strip above).','warning');return;}
   try{
     const entry={
       title:d.title.trim(),
-      groupCode:d.groupCode.toUpperCase(),
+      groupCode:g.toUpperCase(),
       date:d.date||new Date().toISOString().slice(0,10),
       status:'scheduled',
       createdAt:new Date().toISOString(),
@@ -5524,130 +5536,12 @@ function renderDashTabEmpty(tabLabel,groupCode,cta){
   </div>`;
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// DASHBOARD SLIDES — presenter mode (instructor-only teaching aids)
-// ═══════════════════════════════════════════════════════════════════════════
-const DASH_SLIDES=[
-  {
-    id:'cost-behavior',
-    title:'Cost Classification by Behavior',
-    subtitle:'How does total cost react when activity volume changes?',
-    cards:[
-      {tag:'FC',tagBg:'#0C2D52',title:'Fixed Cost',desc:'Total stays constant regardless of volume',exColor:'#0C2D52',ex:'Factory rent'},
-      {tag:'VC',tagBg:'#177F73',title:'Variable Cost',desc:'Total changes in direct proportion to volume',exColor:'#177F73',ex:'Direct material cost'},
-      {tag:'MC',tagBg:'#C07A26',title:'Mixed Cost',desc:'Has both a fixed part and a variable part',exColor:'#C07A26',ex:'Electricity bill (base charge + usage)'}
-    ],
-    chart:{
-      title:'Total Cost vs. Volume',xLabel:'Volume (units)',xMax:5,yMax:700,yStep:100,
-      series:[
-        {label:'Fixed Cost (FC)',color:'#0C2D52',data:[500,500,500,500,500,500]},
-        {label:'Variable Cost (VC)',color:'#177F73',data:[0,100,200,300,400,500]},
-        {label:'Mixed Cost (MC)',color:'#C07A26',data:[200,280,360,440,520,600]}
-      ]
-    }
-  },
-  {
-    id:'cost-nature',
-    title:'Cost Classification by Nature',
-    subtitle:'Every product cost falls into one of three buckets',
-    cards:[
-      {tag:'DM',tagBg:'#0C2D52',title:'Direct Material',desc:'Raw materials directly traceable to the product',exColor:'#177F73',ex:'Wood used in a chair'},
-      {tag:'DL',tagBg:'#0C2D52',title:'Direct Labor',desc:'Wages of workers directly making the product',exColor:'#0C2D52',ex:'Carpenter\u2019s wages'},
-      {tag:'OH',tagBg:'#0C2D52',title:'Manufacturing Overhead',desc:'All other factory costs, not directly traceable',exColor:'#C07A26',ex:'Factory rent, utilities, supervisor salary'}
-    ],
-    banner:[
-      {label:'Prime Cost',labelColor:'#F0B361',formula:'DM + DL',desc:'Cost of the core inputs that go straight into the product'},
-      {label:'Conversion Cost',labelColor:'#5FC9BC',formula:'DL + OH',desc:'Cost of turning raw material into a finished product'}
-    ]
-  }
-];
-
-function renderSlideCard(c){
-  return `<div style="flex:1 1 240px;background:var(--surface-2);border-radius:14px;padding:20px;min-width:220px">
-    <div style="display:inline-block;background:${c.tagBg};color:#fff;font-weight:700;font-size:13px;padding:6px 14px;border-radius:8px;margin-bottom:14px">${esc(c.tag)}</div>
-    <div style="font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px">${esc(c.title)}</div>
-    <div style="font-size:14px;color:#555;line-height:1.5;margin-bottom:10px">${esc(c.desc)}</div>
-    <div style="font-size:13px;color:#333"><span style="font-weight:700;color:${c.exColor||'var(--ink)'}">Example: </span>${esc(c.ex)}</div>
-  </div>`;
-}
-
-function renderSlideBanner(items){
-  return `<div style="background:var(--brand);border-radius:14px;padding:24px;margin-top:20px;display:flex;flex-wrap:wrap;gap:24px">
-    ${items.map((b,i)=>`<div style="flex:1 1 260px;${i>0?'border-left:1px solid rgba(255,255,255,.25);padding-left:24px':''}">
-      <div style="font-size:16px;margin-bottom:8px"><span style="font-weight:700;color:${b.labelColor}">${esc(b.label)}</span><span style="color:#fff"> = ${esc(b.formula)}</span></div>
-      <div style="font-size:13px;color:rgba(255,255,255,.8)">${esc(b.desc)}</div>
-    </div>`).join('')}
-  </div>`;
-}
-
-function renderSlideChart(chart){
-  const W=640,H=280,padL=46,padR=16,padT=14,padB=34;
-  const plotW=W-padL-padR,plotH=H-padT-padB;
-  const xCount=chart.xMax+1;
-  const xStep=plotW/(xCount-1);
-  const yScale=v=>padT+plotH-(v/chart.yMax)*plotH;
-  const xScale=i=>padL+i*xStep;
-  let gridLines='';
-  for(let v=0;v<=chart.yMax;v+=chart.yStep){
-    const y=yScale(v);
-    gridLines+=`<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="#e5e5e0" stroke-width="1"/><text x="${padL-8}" y="${y+4}" font-size="11" fill="#666" text-anchor="end">${v}</text>`;
-  }
-  let xLabels='';
-  for(let i=0;i<xCount;i++){
-    xLabels+=`<text x="${xScale(i)}" y="${H-padB+18}" font-size="11" fill="#666" text-anchor="middle">${i}</text>`;
-  }
-  let seriesSvg='';
-  chart.series.forEach(s=>{
-    const pts=s.data.map((v,i)=>`${xScale(i)},${yScale(v)}`).join(' ');
-    const dots=s.data.map((v,i)=>`<circle cx="${xScale(i)}" cy="${yScale(v)}" r="3.5" fill="${s.color}"/>`).join('');
-    seriesSvg+=`<polyline points="${pts}" fill="none" stroke="${s.color}" stroke-width="2.5"/>${dots}`;
-  });
-  const legend=chart.series.map(s=>`<span style="display:inline-flex;align-items:center;gap:6px;margin-right:16px;font-size:12px;color:#333"><span style="width:14px;height:3px;background:${s.color};display:inline-block;border-radius:2px"></span>${esc(s.label)}</span>`).join('');
-  return `<div style="margin-top:6px">
-    <div style="font-weight:700;font-size:14px;color:var(--ink);margin-bottom:8px">${esc(chart.title)}</div>
-    <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block">
-      <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H-padB}" stroke="#ccc"/>
-      <line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="#ccc"/>
-      ${gridLines}${xLabels}${seriesSvg}
-    </svg>
-    <div style="margin-top:8px;text-align:center">${legend}</div>
-    <div style="text-align:center;font-size:11px;color:#888;margin-top:2px">${esc(chart.xLabel)}</div>
-  </div>`;
-}
-
-function dashSlideNav(dir){
-  const n=DASH_SLIDES.length;
-  STATE.dashSlideIdx=Math.min(n-1,Math.max(0,(STATE.dashSlideIdx||0)+dir));
-  render();
-}
-
-function renderDashSlides(){
-  const slides=DASH_SLIDES;
-  const idx=Math.min(Math.max(STATE.dashSlideIdx||0,0),slides.length-1);
-  const s=slides[idx];
-  const prevDisabled=idx===0,nextDisabled=idx===slides.length-1;
-  const cardsHtml=s.cards.map(renderSlideCard).join('');
-  const extra=s.chart?renderSlideChart(s.chart):(s.banner?renderSlideBanner(s.banner):'');
-  const dots=slides.map((_,i)=>`<button onclick="STATE.dashSlideIdx=${i};render()" style="width:9px;height:9px;border-radius:50%;border:none;padding:0;cursor:pointer;background:${i===idx?'var(--brand)':'#d8d8d2'}"></button>`).join('');
-  return `<div style="max-width:900px;margin:0 auto;padding:8px 4px 30px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
-      <button ${prevDisabled?'disabled':''} onclick="dashSlideNav(-1)" style="padding:8px 14px;border-radius:8px;border:.5px solid var(--border-4);background:#fff;font-size:14px;cursor:${prevDisabled?'default':'pointer'};opacity:${prevDisabled?'.35':'1'}">\u2190 Prev</button>
-      <div style="display:flex;gap:6px">${dots}</div>
-      <button ${nextDisabled?'disabled':''} onclick="dashSlideNav(1)" style="padding:8px 14px;border-radius:8px;border:.5px solid var(--border-4);background:#fff;font-size:14px;cursor:${nextDisabled?'default':'pointer'};opacity:${nextDisabled?'.35':'1'}">Next \u2192</button>
-    </div>
-    <h1 style="font-size:26px;font-weight:800;color:var(--ink);margin-bottom:6px">${esc(s.title)}</h1>
-    <p style="font-size:15px;color:#666;margin-bottom:22px">${esc(s.subtitle)}</p>
-    <div style="display:flex;flex-wrap:wrap;gap:14px">${cardsHtml}</div>
-    ${extra}
-  </div>`;
-}
 
 function renderDashboard(){
   if(!isInstructor())return renderIntro();
   if(!STATE.dashLoaded&&!STATE.dashLoading&&!STATE.dashGroupsLoaded)loadDashboardP1();
   const _pendingApprovalsCount=(STATE.dashApprovals&&STATE.dashApprovals.rows||[]).filter(r=>r.status==='pending').length;
   const SUB_DASH=[
-    {id:'slides',      icon:'\u{1F4FD}\uFE0F', label:'Slides'},
     {id:'groups',      icon:'\u{1F465}', label:'Groups'},
     {id:'students',    icon:'\u{1F464}', label:'Students'},
     {id:'approvals',   icon:'\u2705', label:'Approvals'+(_pendingApprovalsCount?' \u00B7 '+_pendingApprovalsCount:'')},
@@ -5661,7 +5555,7 @@ function renderDashboard(){
     {id:'teaching-log',icon:'\u{1F4D3}', label:'Actual Teaching'},
     {id:'at-risk',     icon:'\u{1F6A8}', label:'At Risk'}
   ];
-  const _validTabs=['slides','groups','students','approvals','lectures','attendance','exams','results','progress','leader','plan','teaching-log','at-risk'];
+  const _validTabs=['groups','students','approvals','lectures','attendance','exams','results','progress','leader','plan','teaching-log','at-risk'];
   const tab=_validTabs.includes(STATE.dashTab)?STATE.dashTab:'groups';
   const subnav=`<div class="sub-nav">${SUB_DASH.map(it=>
     `<button class="sub-nav-btn${tab===it.id?' active':''}" onclick="STATE.dashTab='${it.id}';render()">${it.icon} ${it.label}</button>`
@@ -5689,9 +5583,6 @@ function renderDashboard(){
     }else{
       body=renderDashApprovals();
     }
-  }else if(tab==='slides'){
-    // Presenter mode: static teaching aids, no group/data dependency.
-    body=renderDashSlides();
   }else if(!STATE.dashSelectedGroup){
     // Scoped tab but no group picked → empty state
     body=renderDashPickGroupEmpty(scopedTabs[tab]||'items');
@@ -9640,6 +9531,12 @@ if('serviceWorker' in navigator){
 // cbq-data.js must be loaded BEFORE this script tag
 
 const CBQ_SEC_KEYS = ['A','B','C','D','E','F']; // Batch 6: alphabetical
+// Batch 22 (B22-02): CBQ_SEC_KEYS above is the canonical alphabetical order used for data iteration (e.g. the mock-exam CBQ pool builder). The tab buttons
+// in renderCBQ() are deliberately shown in a different order (C,D,A,B,E,F), so
+// secIdx must resolve through THIS array instead -- using CBQ_SEC_KEYS directly
+// was the bug: clicking the button labeled "Section C" (position 0) loaded
+// CBQ_SEC_KEYS[0] = 'A', silently showing Section A's CBQs under a C label.
+const CBQ_TAB_KEYS = ['C','D','A','B','E','F']; // must match the button order in renderCBQ()
 const CBQ_SEC_META = {
   C:{title:'Performance Management',color:'var(--accent-purple)'},
   D:{title:'Cost Management',color:'var(--warn-strong)'},
@@ -9710,7 +9607,7 @@ function cbqRenderList(){
   cbqSet('hTitle','🧩 CBQ Practice');
   cbqSet('hSub','Case-Based Questions — New 2026 Format');
 
-  const key=CBQ_SEC_KEYS[CBQ_S.secIdx];
+  const key=CBQ_TAB_KEYS[CBQ_S.secIdx];
   const meta=CBQ_SEC_META[key];
   const cbqs=CBQ_DATA[key];
 
@@ -9730,9 +9627,9 @@ function cbqRenderList(){
 function cbqOpen(i){CBQ_S.cbqIdx=i;CBQ_S.view='detail';CBQ_S.checked=false;CBQ_S.answers={};cbqRenderDetail();}
 
 function cbqRenderDetail(){
-  const cbq=CBQ_DATA[CBQ_SEC_KEYS[CBQ_S.secIdx]][CBQ_S.cbqIdx];
+  const cbq=CBQ_DATA[CBQ_TAB_KEYS[CBQ_S.secIdx]][CBQ_S.cbqIdx];
   cbqHide('listView');cbqHide('resultsView');cbqShow('detailView');cbqHide('secTabs');cbqShow('bottomBar');
-  cbqSet('hTitle',`CBQ ${cbq.num} / ${CBQ_DATA[CBQ_SEC_KEYS[CBQ_S.secIdx]].length}`);
+  cbqSet('hTitle',`CBQ ${cbq.num} / ${CBQ_DATA[CBQ_TAB_KEYS[CBQ_S.secIdx]].length}`);
   cbqSet('hSub',cbq.title);
   cbqSetBtn('Check Answers','cbq-btn cbq-btn-primary',cbqMainAction);
   cbqUpdatePill(cbq);
@@ -9798,7 +9695,7 @@ function cbqSetupDrag(){
       e.preventDefault();zone.classList.remove('over');
       if(!cbqDragItem)return;
       const parts=zone.id.split('_');parts.shift();parts.shift();
-      const q=CBQ_DATA[CBQ_SEC_KEYS[CBQ_S.secIdx]][CBQ_S.cbqIdx].questions.find(x=>x.id===cbqDragQid);
+      const q=CBQ_DATA[CBQ_TAB_KEYS[CBQ_S.secIdx]][CBQ_S.cbqIdx].questions.find(x=>x.id===cbqDragQid);
       const matchedZone=q?q.zones.find(z=>z.replace(/\W/g,'_')===parts.join('_')):null;
       if(!matchedZone)return;
       if(!CBQ_S.answers[cbqDragQid])CBQ_S.answers[cbqDragQid]={};
@@ -9817,7 +9714,7 @@ function cbqMainAction(){
 
 function cbqCheck(){
   CBQ_S.checked=true;
-  const cbq=CBQ_DATA[CBQ_SEC_KEYS[CBQ_S.secIdx]][CBQ_S.cbqIdx];
+  const cbq=CBQ_DATA[CBQ_TAB_KEYS[CBQ_S.secIdx]][CBQ_S.cbqIdx];
   let score=0;
   cbq.questions.forEach(q=>{
     let ok=false;
@@ -9855,12 +9752,12 @@ function cbqCheck(){
   CBQ_S.scores[cbq.id]={s:score,t:cbq.questions.length};
   cbqSaveScores(); // Batch 7 (B7-01)
   cbqUpdatePill(cbq);
-  const hasNext=CBQ_S.cbqIdx<CBQ_DATA[CBQ_SEC_KEYS[CBQ_S.secIdx]].length-1;
+  const hasNext=CBQ_S.cbqIdx<CBQ_DATA[CBQ_TAB_KEYS[CBQ_S.secIdx]].length-1;
   cbqSetBtn(hasNext?'Next Case →':'View Results',`cbq-btn ${score/cbq.questions.length>=0.7?'cbq-btn-success':'cbq-btn-primary'}`,cbqMainAction);
 }
 
 function cbqNextOrResults(){
-  const cbqs=CBQ_DATA[CBQ_SEC_KEYS[CBQ_S.secIdx]];
+  const cbqs=CBQ_DATA[CBQ_TAB_KEYS[CBQ_S.secIdx]];
   if(CBQ_S.cbqIdx<cbqs.length-1){CBQ_S.cbqIdx++;CBQ_S.checked=false;CBQ_S.answers={};cbqRenderDetail();}
   else cbqRenderResults();
 }
@@ -9874,8 +9771,8 @@ function cbqUpdatePill(cbq){
 function cbqRenderResults(){
   CBQ_S.view='results';
   cbqHide('listView');cbqHide('detailView');cbqShow('resultsView');cbqHide('secTabs');cbqShow('bottomBar');
-  cbqSet('hTitle','Results');cbqSet('hSub',CBQ_SEC_META[CBQ_SEC_KEYS[CBQ_S.secIdx]].title);
-  const key=CBQ_SEC_KEYS[CBQ_S.secIdx];const cbqs=CBQ_DATA[key];
+  cbqSet('hTitle','Results');cbqSet('hSub',CBQ_SEC_META[CBQ_TAB_KEYS[CBQ_S.secIdx]].title);
+  const key=CBQ_TAB_KEYS[CBQ_S.secIdx];const cbqs=CBQ_DATA[key];
   let ts=0,tt=0;
   cbqs.forEach(c=>{const sc=CBQ_S.scores[c.id];if(sc){ts+=sc.s;tt+=sc.t;}});
   const pct=tt?Math.round(ts/tt*100):0;
