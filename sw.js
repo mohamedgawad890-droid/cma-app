@@ -461,7 +461,22 @@
 // No data/JSON schema changes to the precached shell beyond app.js; app.js
 // changed, so CACHE_NAME bumps v43->v44 to invalidate stale copies and
 // trigger the clean SKIP_WAITING auto-reload.
-const CACHE_NAME = 'cma-prep-v44';
+// v45 (Batch 20 cont'd): Student Custom Practice Test builder (new "Custom
+// Test" tab under Practice). Students pick section(s), then unit(s) within
+// each, plus their own question count (3-50) and duration (3-240 min) —
+// mirrors the instructor's exam creator UI. Reuses buildDistributedExamPool
+// and the existing exam-runner (STATE.examSession) so the test itself looks
+// and behaves exactly like a real exam, but nothing is written to the
+// `exams` collection (ephemeral, single-student pool) and results go to a
+// new `custom-practice-results` collection — fully private to the student,
+// no instructor read access, deliberately excluded from Results/At Risk.
+// app.js changed; CACHE_NAME bumps v44->v45.
+const CACHE_NAME = 'cma-prep-v46';
+// Batch 21: Cost Management (Section 4) restructure — 4-14 removed, 4-16..4-21
+// merged into one unit, cross-topic content dedup (Product/Period Costs,
+// Over/Under Applied Overhead, Life-Cycle Costing), 4-11 intra-lesson dup fixed,
+// 4-9 overhead-variance detail trimmed to Section 3, all unit titles renamed
+// to be independent of source-book wording, 4-18 worked example added.
 const OFFLINE_URLS = [
   './',
   './index.html',
