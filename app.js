@@ -1161,6 +1161,103 @@ const TERM_DICT={
   'EOQ':'الكمية الاقتصادية للطلب',
   'VOH':'التكاليف الصناعية المتغيرة',
 
+  // ── Section D additions (Batch 22, item 8) — candidate terms from lesson content
+  // audit, cross-checked against the full dict to avoid duplicates ───────────────
+  'Cost Behavior':'سلوك التكلفة',
+  'High-Low Method':'طريقة أعلى وأقل نقطة',
+  'Prime Cost':'التكلفة الأولية',
+  'Conversion Cost':'تكلفة التحويل',
+  'Product Cost':'تكلفة المنتج',
+  'Period Cost':'تكلفة الفترة',
+  'Differential Cost':'التكلفة التفاضلية',
+  'Incremental Cost':'التكلفة الإضافية',
+  'Cost Object':'موضوع التكلفة',
+  'Cost Pool':'مجمع التكلفة',
+  'Allocation Base':'أساس التوزيع',
+  'Step Cost':'التكلفة المتدرجة',
+  'Relevant Range':'المدى الملائم',
+  'Costing Method':'طريقة التكليف',
+  'Cost Accumulation Decision':'قرار تجميع التكلفة',
+  'Cost Measurement Decision':'قرار قياس التكلفة',
+  'Job-Order Costing':'محاسبة تكاليف الأوامر',
+  'Cost of Quality':'تكلفة الجودة',
+  'CoQ':'تكلفة الجودة',
+  'Ideal Standard':'المعيار المثالي',
+  'Practical Standard':'المعيار العملي',
+  'Manufacturing Cost Flow':'تدفق تكلفة التصنيع',
+  'Direct Materials Used':'المواد المباشرة المستخدمة',
+  'Direct Materials':'المواد المباشرة',
+  'Joint Products':'المنتجات المشتركة',
+  'Physical Units Method':'طريقة الوحدات المادية',
+  'Sales Value at Split-off Method':'طريقة القيمة البيعية عند نقطة الانفصال',
+  'NRV Method':'طريقة صافي القيمة القابلة للتحقق',
+  'Constant Gross Margin % Method':'طريقة نسبة هامش الربح الإجمالي الثابتة',
+  'Average Cost Method':'طريقة متوسط التكلفة',
+  'Sell-or-Process-Further Decision':'قرار البيع أو المعالجة الإضافية',
+  'By-Product':'المنتج الثانوي',
+  'Production Method':'طريقة الإنتاج',
+  'Sales Method':'طريقة المبيعات',
+  'Predetermined Overhead Rate':'معدل التحميل المحدد مسبقاً',
+  'POHR':'معدل التحميل المحدد مسبقاً',
+  'Job Cost Sheet':'بطاقة تكلفة الأمر',
+  'Plant-wide Overhead Rate':'معدل التحميل الموحد على مستوى المصنع',
+  'Departmental Overhead Rate':'معدل التحميل على مستوى القسم',
+  'Cost Driver':'محرك التكلفة',
+  'Under-applied Overhead':'تكاليف غير مباشرة محملة بأقل من الفعلي',
+  'Over-applied Overhead':'تكاليف غير مباشرة محملة بأكثر من الفعلي',
+  'Proration Method':'طريقة التوزيع النسبي',
+  'Write-off to COGS':'الشطب على تكلفة البضاعة المباعة',
+  'Actual Overhead':'التكاليف غير المباشرة الفعلية',
+  'Applied Overhead':'التكاليف غير المباشرة المحملة',
+  'Activity Driver':'محرك النشاط',
+  'Cross-Subsidization':'الدعم التبادلي بين المنتجات',
+  'Unit-Level Activities':'أنشطة على مستوى الوحدة',
+  'Batch-Level Activities':'أنشطة على مستوى الدفعة',
+  'Product-Level Activities':'أنشطة على مستوى المنتج',
+  'Facility-Level Activities':'أنشطة على مستوى المنشأة',
+  'Throughput Costing':'محاسبة تكلفة الإنتاجية',
+  'Service Department Cost Allocation':'توزيع تكلفة أقسام الخدمات',
+  'Single-Rate Method':'طريقة المعدل الواحد',
+  'Dual-Rate Method':'طريقة المعدل المزدوج',
+  'Direct Method':'الطريقة المباشرة',
+  'Step-Down Method':'الطريقة التنازلية',
+  'Reciprocal Method':'الطريقة التبادلية',
+  'Cost Estimation':'تقدير التكلفة',
+  'Least-Squares Method':'طريقة المربعات الصغرى',
+  'Account Analysis':'تحليل الحسابات',
+  'Engineering Approach':'المدخل الهندسي',
+  'Coefficient of Determination':'معامل التحديد',
+  'Cumulative Average-Time Model':'نموذج متوسط الوقت التراكمي',
+  'Incremental Unit-Time Model':'نموذج وقت الوحدة الإضافية',
+  'Supply Chain Management':'إدارة سلسلة التوريد',
+  'Bullwhip Effect':'تأثير السوط',
+  'Lean Management':'الإدارة الرشيقة',
+  'TIMWOOD Waste Framework':'إطار الهدر TIMWOOD',
+  'MRP II':'تخطيط موارد التصنيع الثاني',
+  'Capacity':'الطاقة الإنتاجية',
+  'Theoretical Capacity':'الطاقة النظرية',
+  'Practical Capacity':'الطاقة العملية',
+  'Normal Capacity':'الطاقة العادية',
+  'Expected Capacity':'الطاقة المتوقعة',
+  'Primary Activities':'الأنشطة الأساسية',
+  'Support Activities':'الأنشطة المساندة',
+  'Value Chain Analysis':'تحليل سلسلة القيمة',
+  'Process Analysis':'تحليل العمليات',
+  'Business Process Reengineering':'إعادة هندسة العمليات',
+  'Process Map':'خريطة العملية',
+  'Value-Stream Mapping':'رسم خريطة تدفق القيمة',
+  'Takt Time':'وقت الإيقاع',
+  'Bottleneck':'عنق الزجاجة',
+  'TOC 5-Step Focusing Process':'عملية نظرية القيود ذات الخطوات الخمس',
+  'Throughput Margin':'هامش الإنتاجية',
+  'Prevention Costs':'تكاليف الوقاية',
+  'Appraisal Costs':'تكاليف التقييم',
+  'Internal Failure Costs':'تكاليف الفشل الداخلي',
+  'External Failure Costs':'تكاليف الفشل الخارجي',
+  'Total Productive Maintenance':'الصيانة الإنتاجية الشاملة',
+  'Customer-Response Time':'زمن الاستجابة للعميل',
+  'Manufacturing Cycle Time':'زمن دورة التصنيع',
+  'ISO 9000 Family':'عائلة معايير الآيزو 9000',
   // ── Section E — Internal Controls ───────────────────────────────────
   'Segregation of Duties':'الفصل بين المهام',
   'Control Environment':'بيئة الرقابة',
@@ -5553,9 +5650,10 @@ function renderDashboard(){
     {id:'leader',      icon:'\u{1F3C5}', label:'Leader'},
     {id:'plan',        icon:'\u{1F5D3}\uFE0F', label:'Plan'},
     {id:'teaching-log',icon:'\u{1F4D3}', label:'Actual Teaching'},
+    {id:'schedule',    icon:'\u{1F4C5}', label:'Schedule'},
     {id:'at-risk',     icon:'\u{1F6A8}', label:'At Risk'}
   ];
-  const _validTabs=['groups','students','approvals','lectures','attendance','exams','results','progress','leader','plan','teaching-log','at-risk'];
+  const _validTabs=['groups','students','approvals','lectures','attendance','exams','results','progress','leader','plan','teaching-log','schedule','at-risk'];
   const tab=_validTabs.includes(STATE.dashTab)?STATE.dashTab:'groups';
   const subnav=`<div class="sub-nav">${SUB_DASH.map(it=>
     `<button class="sub-nav-btn${tab===it.id?' active':''}" onclick="STATE.dashTab='${it.id}';render()">${it.icon} ${it.label}</button>`
@@ -5565,7 +5663,7 @@ function renderDashboard(){
   const chipStrip=STATE.dashGroupsLoaded?renderGroupChipStrip():'';
 
   // ── Body dispatch ──
-  const scopedTabs={lectures:'Lectures',exams:'Exams','teaching-log':'Actual Teaching','at-risk':'At-Risk students',students:'Students',attendance:'Attendance',results:'Results',progress:'Progress',leader:'Leader',plan:'Weekly Plan'};
+  const scopedTabs={lectures:'Lectures',exams:'Exams','teaching-log':'Actual Teaching','at-risk':'At-Risk students',students:'Students',attendance:'Attendance',results:'Results',progress:'Progress',leader:'Leader',plan:'Weekly Plan',schedule:'Schedule'};
   let body;
   if(STATE.dashError){
     body=`<div style="text-align:center;padding:50px 20px"><div style="font-size:34px;margin-bottom:10px">\u26A0\uFE0F</div><div style="font-size:14px;color:#555;margin-bottom:14px">Couldn't load dashboard data.</div><button onclick="STATE.dashError=false;STATE.dashGroupsLoaded=false;STATE.dashLoaded=false;loadDashboardP1()" style="padding:9px 18px;border-radius:8px;border:.5px solid var(--border-4);background:#fff;font-size:13px;cursor:pointer;font-family:inherit">Retry</button></div>`;
@@ -5605,6 +5703,8 @@ function renderDashboard(){
     body=renderDashLeader();
   }else if(tab==='plan'){
     body=renderDashPlan();
+  }else if(tab==='schedule'){
+    body=renderDashSchedule();
   }else if(tab==='at-risk'){
     body=renderDashAtRisk();
   }else{
@@ -8423,6 +8523,279 @@ function renderStudentActivePlanBanner(){
   </div>`;
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+//  LECTURE SCHEDULE — Plan vs Actual (Batch 22, item 5)
+//  One doc per group at lecture-schedule/{groupCode}: {groupCode, rows:[...], updatedAt, updatedBy}.
+//  Each row is {id, lectureNumber, plannedDate, sectionId, unitIds, note}.
+//  The "Actual" side is never stored here — it's joined at render time against
+//  STATE.dashTeachingLog (already loaded per group by loadDashScopedData) by
+//  matching lectureNumber, so teaching-log stays the single source of truth
+//  for what was actually taught.
+// ═══════════════════════════════════════════════════════════════════════════
+STATE.dashScheduleByGroup={};   // {groupCode: {loaded, loading, rows}}
+STATE.dashScheduleDraft={lectureNumber:'',plannedDate:'',sectionId:'',unitIds:[],note:''};
+STATE.dashScheduleEditingId=null;
+
+async function loadDashSchedule(g){
+  STATE.dashScheduleByGroup[g]={loading:true,loaded:false,rows:[]};
+  render();
+  try{
+    const doc=await db.collection('lecture-schedule').doc(g).get();
+    const rows=doc.exists?(doc.data().rows||[]):[];
+    rows.sort((a,b)=>Number(a.lectureNumber)-Number(b.lectureNumber));
+    STATE.dashScheduleByGroup[g]={loading:false,loaded:true,rows};
+    if(STATE.tab==='dashboard'&&STATE.dashTab==='schedule')render();
+  }catch(e){
+    console.warn('[loadDashSchedule]',e);
+    STATE.dashScheduleByGroup[g]={loading:false,loaded:true,rows:[],error:e.message};
+    if(STATE.tab==='dashboard'&&STATE.dashTab==='schedule')render();
+  }
+}
+
+async function _writeSchedule(g,rows){
+  await db.collection('lecture-schedule').doc(g).set({
+    groupCode:g,
+    rows,
+    updatedAt:new Date().toISOString(),
+    updatedBy:STATE.user.uid
+  });
+}
+
+function onScheduleSectionChange(v){
+  STATE.dashScheduleDraft.sectionId=v;
+  STATE.dashScheduleDraft.unitIds=[];
+  render();
+}
+function toggleScheduleUnit(uid){
+  const arr=STATE.dashScheduleDraft.unitIds||[];
+  const i=arr.indexOf(uid);
+  if(i>=0)arr.splice(i,1);else arr.push(uid);
+  STATE.dashScheduleDraft.unitIds=arr.slice();
+  render();
+}
+
+function editScheduleRow(id){
+  const g=STATE.dashSelectedGroup;
+  const cache=STATE.dashScheduleByGroup[g];
+  if(!cache)return;
+  const row=cache.rows.find(r=>r.id===id);
+  if(!row)return;
+  STATE.dashScheduleEditingId=id;
+  STATE.dashScheduleDraft={
+    lectureNumber:String(row.lectureNumber),
+    plannedDate:row.plannedDate||'',
+    sectionId:String(row.sectionId||''),
+    unitIds:(row.unitIds||[]).slice(),
+    note:row.note||''
+  };
+  render();
+}
+function cancelScheduleEdit(){
+  STATE.dashScheduleEditingId=null;
+  STATE.dashScheduleDraft={lectureNumber:'',plannedDate:'',sectionId:'',unitIds:[],note:''};
+  render();
+}
+
+async function saveScheduleRow(){
+  if(!isInstructor()){showToast('Not authorized.','error');return;}
+  const g=STATE.dashSelectedGroup;
+  if(!g){showToast('Pick a group first.','warning');return;}
+  const d=STATE.dashScheduleDraft;
+  const lectureNumber=parseInt(d.lectureNumber);
+  if(!lectureNumber||lectureNumber<1){showToast('Enter a valid lecture #.','warning');return;}
+  if(!d.plannedDate){showToast('Pick a planned date.','warning');return;}
+  if(!d.sectionId){showToast('Pick a section.','warning');return;}
+  try{
+    const cache=STATE.dashScheduleByGroup[g]||{rows:[]};
+    let rows=(cache.rows||[]).slice();
+    const editingId=STATE.dashScheduleEditingId;
+    const dupe=rows.find(r=>Number(r.lectureNumber)===lectureNumber&&r.id!==editingId);
+    if(dupe){showToast('Lecture #'+lectureNumber+' already exists in the schedule.','warning');return;}
+    const rowData={
+      id:editingId||('r'+Date.now()),
+      lectureNumber,
+      plannedDate:d.plannedDate,
+      sectionId:parseInt(d.sectionId),
+      unitIds:(d.unitIds||[]).map(String).filter(Boolean),
+      note:(d.note||'').trim().slice(0,500)
+    };
+    if(editingId){
+      rows=rows.map(r=>r.id===editingId?rowData:r);
+    }else{
+      rows.push(rowData);
+    }
+    rows.sort((a,b)=>Number(a.lectureNumber)-Number(b.lectureNumber));
+    await _writeSchedule(g,rows);
+    STATE.dashScheduleByGroup[g]={loading:false,loaded:true,rows};
+    STATE.dashScheduleEditingId=null;
+    STATE.dashScheduleDraft={lectureNumber:'',plannedDate:'',sectionId:'',unitIds:[],note:''};
+    showToast(editingId?'Schedule row updated \u2705':'Schedule row added \u2705','success');
+    render();
+  }catch(e){console.warn('[saveScheduleRow]',e);showToast('Error: '+e.message,'error');}
+}
+
+async function deleteScheduleRow(id){
+  if(!isInstructor()){showToast('Not authorized.','error');return;}
+  const ok=await showModal({icon:'\u{1F5D1}\uFE0F',title:'Delete Row?',body:'This removes the row from the published schedule.',type:'danger',confirmText:'Delete',cancelText:'Cancel'});
+  if(!ok)return;
+  const g=STATE.dashSelectedGroup;
+  const cache=STATE.dashScheduleByGroup[g];
+  if(!cache)return;
+  try{
+    const rows=cache.rows.filter(r=>r.id!==id);
+    await _writeSchedule(g,rows);
+    STATE.dashScheduleByGroup[g]={loading:false,loaded:true,rows};
+    showToast('Row deleted.','info');
+    render();
+  }catch(e){console.warn('[deleteScheduleRow]',e);showToast('Error: '+e.message,'error');}
+}
+
+// Finds the teaching-log entry (already loaded per group) matching a planned
+// lecture number, so the Actual column reflects what really happened.
+function _actualForLecture(lectureNumber){
+  return (STATE.dashTeachingLog||[]).find(t=>Number(t.lectureNumber)===Number(lectureNumber))||null;
+}
+
+function renderDashSchedule(){
+  const g=STATE.dashSelectedGroup;
+  const cache=STATE.dashScheduleByGroup[g];
+  if(!cache||!cache.loaded){
+    if(!cache||!cache.loading)loadDashSchedule(g);
+    return `<div style="padding:14px">${renderDashSkeleton()}</div>`;
+  }
+  const rows=cache.rows||[];
+  const d=STATE.dashScheduleDraft;
+  const editing=STATE.dashScheduleEditingId;
+  const secOpts=S.map(s=>`<option value="${s.id}" ${String(d.sectionId)===String(s.id)?'selected':''}>Sec ${s.id} \u2014 ${esc(s.title)}</option>`).join('');
+  const secId=d.sectionId?parseInt(d.sectionId):0;
+  const sec=secId?S.find(s=>s.id===secId):null;
+  const selected=new Set((d.unitIds||[]).map(String));
+  const unitChips=sec?sec.lessons.map(l=>{
+    const on=selected.has(String(l.id));
+    return `<button type="button" onclick="toggleScheduleUnit('${l.id}')" style="padding:6px 10px;border-radius:14px;border:1px solid ${on?'var(--brand)':'var(--border-4)'};background:${on?'var(--brand)':'#fff'};color:${on?'#fff':'#555'};font-size:11px;font-weight:${on?'600':'500'};cursor:pointer;font-family:inherit;white-space:nowrap">${esc(l.title.length>26?l.title.slice(0,24)+'\u2026':l.title)}</button>`;
+  }).join(''):'<div style="font-size:11px;color:#aaa;padding:8px">Pick a section to select units.</div>';
+
+  const rowsHtml=rows.length?rows.map(r=>{
+    const rsec=S.find(s=>s.id===Number(r.sectionId));
+    const _ut=unitTitles(r.sectionId,r.unitIds,{max:2});
+    const units=(r.unitIds||[]).length?(_ut?esc(_ut):(r.unitIds.length+' units')):'\u2014';
+    const actual=_actualForLecture(r.lectureNumber);
+    const actualHtml=actual
+      ?`<div style="font-size:11px;color:var(--ok-strong)">\u2713 Taught ${esc(actual.date||'')}${actual.unitIds&&actual.unitIds.length?' \u00B7 '+esc(unitTitles(r.sectionId,actual.unitIds,{max:2})||actual.unitIds.length+' units'):''}</div>`
+      :`<div style="font-size:11px;color:#aaa">Not yet taught</div>`;
+    return `<div style="background:#fff;border:.5px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600;color:var(--ink)">L${r.lectureNumber} \u00B7 ${r.plannedDate?esc(new Date(r.plannedDate).toLocaleDateString('en-GB',{day:'numeric',month:'short'})):'\u2014'}</div>
+          <div style="font-size:12px;color:#666;margin-top:2px">${rsec?esc(rsec.emoji+' '+rsec.title):'Section '+r.sectionId} \u00B7 ${units}</div>
+          ${r.note?`<div style="font-size:12px;color:#555;margin-top:6px;background:var(--surface);border-radius:6px;padding:6px 9px;white-space:pre-wrap">${esc(r.note)}</div>`:''}
+          <div style="margin-top:6px">${actualHtml}</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0">
+          <button onclick="editScheduleRow('${r.id}')" style="background:none;border:none;cursor:pointer;font-size:16px;padding:4px" title="Edit">\u270F\uFE0F</button>
+          <button onclick="deleteScheduleRow('${r.id}')" style="background:none;border:none;cursor:pointer;font-size:16px;padding:4px" title="Delete">\U0001F5D1\uFE0F</button>
+        </div>
+      </div>
+    </div>`;
+  }).join(''):'<div style="text-align:center;padding:30px 12px;color:#aaa;font-size:13px">No schedule rows yet. Add the first lecture below.</div>';
+
+  return `<div style="padding:14px">
+    <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:10px">\U0001F4C5 Schedule (${rows.length} lectures)</div>
+    ${rowsHtml}
+    <div style="font-size:13px;font-weight:600;color:var(--ink);margin:18px 0 10px">${editing?'\u2795 Edit Row':'\u2795 Add Lecture'}</div>
+    <div style="background:#fff;border:.5px solid var(--border);border-radius:12px;padding:14px">
+      <div style="display:flex;gap:10px;margin-bottom:10px">
+        <div style="flex:1">
+          <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Lecture # *</label>
+          <input type="number" min="1" value="${esc(String(d.lectureNumber||''))}" oninput="STATE.dashScheduleDraft.lectureNumber=this.value"
+            style="width:100%;padding:9px 12px;border-radius:8px;border:.5px solid var(--border-4);font-size:14px;font-family:inherit;outline:none;color:var(--ink);background:var(--surface);box-sizing:border-box">
+        </div>
+        <div style="flex:1">
+          <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Planned Date *</label>
+          <input type="date" value="${esc(d.plannedDate||'')}" oninput="STATE.dashScheduleDraft.plannedDate=this.value"
+            style="width:100%;padding:9px;border-radius:8px;border:.5px solid var(--border-4);font-size:13px;font-family:inherit;outline:none;background:#fff;color:var(--ink);box-sizing:border-box">
+        </div>
+      </div>
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Section *</label>
+        <select onchange="onScheduleSectionChange(this.value)"
+          style="width:100%;padding:9px;border-radius:8px;border:.5px solid var(--border-4);font-size:13px;font-family:inherit;background:#fff;color:var(--ink);box-sizing:border-box">
+          <option value="">Select...</option>${secOpts}
+        </select>
+      </div>
+      <div style="margin-bottom:10px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <label style="font-size:11px;color:#888">Units <span style="font-weight:600;color:var(--brand)">${d.unitIds&&d.unitIds.length?d.unitIds.length+' selected':'None'}</span></label>
+          <button type="button" onclick="STATE.dashScheduleDraft.unitIds=[];render()" style="background:none;border:none;color:var(--brand);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">Clear</button>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;padding:8px;background:var(--surface);border:.5px solid var(--border);border-radius:8px;max-height:150px;overflow-y:auto">${unitChips}</div>
+      </div>
+      <div style="margin-bottom:14px">
+        <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Note (optional)</label>
+        <textarea rows="2" oninput="STATE.dashScheduleDraft.note=this.value" placeholder="e.g. Bring calculator. Review ABC costing before class."
+          style="width:100%;padding:9px 12px;border-radius:8px;border:.5px solid var(--border-4);font-size:13px;font-family:inherit;outline:none;color:var(--ink);background:var(--surface);box-sizing:border-box;resize:vertical">${esc(d.note||'')}</textarea>
+      </div>
+      <div style="display:flex;gap:8px">
+        ${editing?`<button onclick="cancelScheduleEdit()" style="flex:1;padding:11px;border-radius:10px;border:.5px solid var(--border-4);background:#fff;color:#555;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Cancel</button>`:''}
+        <button onclick="saveScheduleRow()" style="flex:2;padding:11px;border-radius:10px;border:none;background:var(--brand);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">${editing?'Save Changes':'Add to Schedule'}</button>
+      </div>
+    </div>
+    <div style="height:30px"></div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  STUDENT-SIDE — read-only Plan/Actual table, shown on the Study tab
+// ═══════════════════════════════════════════════════════════════════════════
+STATE.studentSchedule=null;
+STATE.studentScheduleLoaded=false;
+
+async function ensureStudentSchedule(){
+  if(STATE.studentScheduleLoaded)return;
+  STATE.studentScheduleLoaded=true;
+  const st=loadStudent();
+  const g=st&&st.groupCode?st.groupCode.toUpperCase():'';
+  if(!g||!db||!STATE.user)return;
+  try{
+    const doc=await db.collection('lecture-schedule').doc(g).get();
+    if(doc.exists){
+      const rows=(doc.data().rows||[]).slice().sort((a,b)=>Number(a.lectureNumber)-Number(b.lectureNumber));
+      STATE.studentSchedule=rows;
+      if(STATE.tab==='study')render();
+    }
+  }catch(e){console.warn('[ensureStudentSchedule]',e);}
+}
+
+function renderStudentScheduleSection(){
+  const rows=STATE.studentSchedule;
+  if(!rows||!rows.length)return '';
+  const items=rows.map(r=>{
+    const rsec=S.find(s=>s.id===Number(r.sectionId));
+    const _ut=unitTitles(r.sectionId,r.unitIds,{max:2});
+    const units=(r.unitIds||[]).length?(_ut?esc(_ut):(r.unitIds.length+' units')):'\u2014';
+    // Students don't have dashTeachingLog loaded (that's an instructor-only
+    // fetch), so status here is inferred from whether the planned date has
+    // passed rather than joined against actual teaching-log entries.
+    const passed=r.plannedDate&&new Date(r.plannedDate)<new Date(new Date().toDateString());
+    const statusHtml=passed
+      ?`<span style="font-size:11px;color:var(--ok-strong)">\u2713 Should be covered</span>`
+      :`<span style="font-size:11px;color:#aaa">Upcoming</span>`;
+    return `<div style="border-bottom:.5px solid var(--border);padding:10px 0">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-size:13px;font-weight:600;color:var(--ink)">L${r.lectureNumber} \u00B7 ${r.plannedDate?esc(new Date(r.plannedDate).toLocaleDateString('en-GB',{day:'numeric',month:'short'})):'\u2014'}</div>
+        ${statusHtml}
+      </div>
+      <div style="font-size:12px;color:#666;margin-top:2px">${rsec?esc(rsec.emoji+' '+rsec.title):'Section '+r.sectionId} \u00B7 ${units}</div>
+      ${r.note?`<div style="font-size:12px;color:#555;margin-top:6px;background:var(--surface);border-radius:6px;padding:6px 9px;white-space:pre-wrap">${esc(r.note)}</div>`:''}
+    </div>`;
+  }).join('');
+  return `<div style="background:#fff;border:.5px solid var(--border);border-radius:14px;padding:14px 16px;margin:0 0 14px">
+    <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px">\U0001F4C5 Lecture Schedule</div>
+    <div>${items}</div>
+  </div>`;
+}
+
+
 function setResultsSort(mode){
   STATE.dashResultsSort=mode;
   render();
@@ -8966,6 +9339,20 @@ function render(){
     }catch(e){}
   }
 
+  // Batch 22 (item 5): lecture schedule (plan vs actual) — floats above
+  // content on Study tab, same insertion pattern as the weekly plan banner.
+  if(STATE.tab==='study' && STATE.studentSchedule && STATE.studentSchedule.length){
+    try{
+      const _schedHTML=renderStudentScheduleSection();
+      if(_schedHTML){
+        const _wrap2=document.createElement('div');
+        _wrap2.style.cssText='margin:10px 12px 0;flex-shrink:0';
+        _wrap2.innerHTML=_schedHTML;
+        content.insertBefore(_wrap2,content.firstChild);
+      }
+    }catch(e){}
+  }
+
   // Batch 5: lecture feedback prompt — appears when instructor opens feedback
   // AND student attended AND hasn't submitted yet. Non-blocking floating card.
   try{ maybeShowFeedbackPrompt(); }catch(e){}
@@ -9012,7 +9399,7 @@ function render(){
   try{applyFontSize();}catch(e){}
   if(STATE.tab==='flashcards'&&(!STATE.flashcards||!STATE.flashcards.length)){ensureFlashcards().then(()=>{if(STATE.tab==='flashcards')render();});}
   if(STATE.tab==='intro'&&STATE.user){setTimeout(()=>{try{ensureQotd();}catch(e){}try{ensureStudentPlan();}catch(e){}},0);}
-  if(STATE.tab==='study'&&STATE.user){setTimeout(()=>{try{ensureStudentPlan();}catch(e){}},0);}
+  if(STATE.tab==='study'&&STATE.user){setTimeout(()=>{try{ensureStudentPlan();}catch(e){}try{ensureStudentSchedule();}catch(e){}},0);}
   if(STATE.tab==='search'){setTimeout(()=>{const inp=document.getElementById('search-input');if(inp){inp.focus();if(STATE.searchQ)updateSearchResults();}},50);}
   if(STATE.tab==='dictionary'){if(!STATE.dictLoaded)setTimeout(ensureDictionary,0);setTimeout(()=>{const i=document.getElementById('dict-input');if(i)i.focus();},50);}
   content.style.display='flex';content.style.flexDirection='column';content.style.overflow=STATE.tab==='cbq'||STATE.tab==='mock-exam'?'hidden':'auto';
