@@ -1051,6 +1051,28 @@ const TERM_DICT={
   'CAPM':'نموذج تسعير الأصول الرأسمالية',
   'FCF':'التدفق النقدي الحر',
 
+  // ── Section B additions (Batch 23) — candidate terms from lesson content
+  // audit, cross-checked against the full dict to avoid duplicates ───────────
+  'Standard Price':'السعر المعياري',
+  'Standard Rate':'المعدل المعياري',
+  'Standard Quantity':'الكمية المعيارية',
+  'Standard Hours':'الساعات المعيارية',
+  'Expected Value':'القيمة المتوقعة',
+  'Standard Deviation':'الانحراف المعياري',
+  'Budgeted Income Statement':'قائمة الدخل التقديرية',
+  'Budgeted Balance Sheet':'الميزانية التقديرية',
+  'Capital Expenditure Budget':'موازنة الإنفاق الرأسمالي',
+  'Cash Cow':'البقرة الحلوب',
+  'Competitive Advantage':'الميزة التنافسية',
+  'Cost Leadership':'ريادة التكلفة',
+  'Ratchet Effect':'تأثير الترس',
+  'Linear Regression':'الانحدار الخطي',
+  'Cumulative Average Model':'نموذج المتوسط التراكمي',
+  'Pro Forma Financial Statements':'القوائم المالية الاسترشادية',
+  'Gross Profit':'إجمالي الربح',
+  'Operating Income':'الدخل التشغيلي',
+  'Sales Revenue':'إيرادات المبيعات',
+
   // ── Section C — Performance Management ──────────────────────────────
   'Key Performance Indicator':'مؤشر الأداء الرئيسي',
   'Economic Value Added':'القيمة الاقتصادية المضافة',
@@ -1090,6 +1112,25 @@ const TERM_DICT={
   'DSO':'متوسط فترة تحصيل الذمم',
   'DPO':'متوسط فترة سداد الموردين',
   'CCC':'دورة التحويل النقدي',
+
+  // ── Section C additions (Batch 23) — candidate terms from lesson content
+  // audit, cross-checked against the full dict to avoid duplicates ───────────
+  'VOH Spending Variance':'انحراف إنفاق التكاليف الصناعية المتغيرة غير المباشرة',
+  'VOH Efficiency Variance':'انحراف كفاءة التكاليف الصناعية المتغيرة غير المباشرة',
+  'FOH Spending Variance':'انحراف إنفاق التكاليف الصناعية الثابتة غير المباشرة',
+  'FOH Volume Variance':'انحراف حجم التكاليف الصناعية الثابتة غير المباشرة',
+  'Mix Variance':'انحراف المزيج',
+  'Yield Variance':'انحراف الإنتاجية',
+  'Sales Quantity Variance':'انحراف كمية المبيعات',
+  'Market Size Variance':'انحراف حجم السوق',
+  'Market Share Variance':'انحراف حصة السوق',
+  'Flexible Budget Variance':'انحراف الموازنة المرنة',
+  'Static Budget Variance':'انحراف الموازنة الثابتة',
+  'Controllable Margin':'الهامش القابل للتحكم',
+  'Invested Capital':'رأس المال المستثمر',
+  'Segment Margin':'هامش القطاع',
+  'Common Costs':'التكاليف المشتركة',
+  'Outlay Cost':'تكلفة الإنفاق الفعلي',
 
   // ── Section D — Cost Management ─────────────────────────────────────
   'Activity-Based Costing':'محاسبة التكاليف على أساس الأنشطة',
