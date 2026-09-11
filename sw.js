@@ -471,7 +471,7 @@
 // new `custom-practice-results` collection — fully private to the student,
 // no instructor read access, deliberately excluded from Results/At Risk.
 // app.js changed; CACHE_NAME bumps v44->v45.
-const CACHE_NAME = 'cma-prep-v46';
+const CACHE_NAME = 'cma-prep-v47';
 // Batch 21: Cost Management (Section 4) restructure — 4-14 removed, 4-16..4-21
 // merged into one unit, cross-topic content dedup (Product/Period Costs,
 // Over/Under Applied Overhead, Life-Cycle Costing), 4-11 intra-lesson dup fixed,
