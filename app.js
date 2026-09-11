@@ -116,30 +116,30 @@ const S=[
     ]},
   {id:2,title:"Planning, Budgeting & Forecasting",weight:20,emoji:"📊",bar:"var(--ok)",bg:"var(--ok-tint)",text:"#4A7A1A",strong:"var(--ok-strong)",
     lessons:[
-      {id:"2-1",imaRef:"B.1",title:"Strategic Planning: Overview, Mission & Goals",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"2-2",imaRef:"B.1",title:"Analyzing External & Internal Environments",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"2-3",imaRef:"B.1",title:"Formulating & Implementing Strategies",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"2-4",imaRef:"B.1",title:"Other Planning Tools",dur:"20 min",blocks:[],quizzes:[]},
-      {id:"2-5",imaRef:"B.2",title:"Budgeting Concepts",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"2-6",imaRef:"B.2",title:"Establishing Standards",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"2-7",imaRef:"B.3",title:"Forecasting Techniques & Regression Analysis",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"2-8",imaRef:"B.3",title:"Learning Curves",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"2-9",imaRef:"B.3",title:"Probability",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"2-10",imaRef:"B.4",title:"Budget Methodologies",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"2-11",imaRef:"B.4",title:"Annual Profit Plan & Supporting Schedules",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"2-12",imaRef:"B.4",title:"Preparing the Budget",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"2-14",imaRef:"B.5",title:"Answering Budgeting Calculation Questions",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"2-15",imaRef:"B.6",title:"Top-Level Planning and Analysis",dur:"25 min",blocks:[],quizzes:[]}
+      {id:"2-1",imaRef:"B.1",title:"The Strategic Planning Foundation",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"2-2",imaRef:"B.1",title:"Scanning the Business Environment",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"2-3",imaRef:"B.1",title:"From Strategy to Execution",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"2-4",imaRef:"B.1",title:"Supplementary Strategic Tools",dur:"20 min",blocks:[],quizzes:[]},
+      {id:"2-5",imaRef:"B.2",title:"Budgeting Fundamentals",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"2-6",imaRef:"B.2",title:"Building Standard Costs",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"2-7",imaRef:"B.3",title:"Quantitative Forecasting Methods",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"2-8",imaRef:"B.3",title:"The Learning Curve Effect",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"2-9",imaRef:"B.3",title:"Probability & Expected Value",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"2-10",imaRef:"B.4",title:"Comparing Budget Systems",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"2-11",imaRef:"B.4",title:"Building the Master Budget",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"2-12",imaRef:"B.4",title:"Financial & Cash Budgeting",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"2-14",imaRef:"B.5",title:"Budget Calculation Drills",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"2-15",imaRef:"B.6",title:"Executive-Level Financial Planning",dur:"25 min",blocks:[],quizzes:[]}
     ]},
   {id:3,title:"Performance Management",weight:20,emoji:"🎯",bar:"var(--accent-purple)",bg:"#F3E8FF",text:"#6A2E8F",strong:"#4A1F70",
     lessons:[
-      {id:"3-1",imaRef:"C.1",title:"Introduction to Cost and Variance Measures",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"3-2",imaRef:"C.1",title:"Direct Material Variances",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"3-3",imaRef:"C.1",title:"Direct Labor Variances",dur:"25 min",blocks:[],quizzes:[]},
-      {id:"3-4",imaRef:"C.1",title:"Multiple Input or Multiple Class Variances",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"3-5",imaRef:"C.1",title:"Overhead Variances",dur:"35 min",blocks:[],quizzes:[]},
-      {id:"3-6",imaRef:"C.1",title:"Sales Variances",dur:"30 min",blocks:[],quizzes:[]},
-      {id:"3-7",imaRef:"C.1",title:"Market Variances",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"3-1",imaRef:"C.1",title:"Variance Analysis Foundations",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"3-2",imaRef:"C.1",title:"Materials Cost Variances",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"3-3",imaRef:"C.1",title:"Labor Cost Variances",dur:"25 min",blocks:[],quizzes:[]},
+      {id:"3-4",imaRef:"C.1",title:"Mix & Yield Variances",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"3-5",imaRef:"C.1",title:"Manufacturing Overhead Variances",dur:"35 min",blocks:[],quizzes:[]},
+      {id:"3-6",imaRef:"C.1",title:"Revenue & Sales Variances",dur:"30 min",blocks:[],quizzes:[]},
+      {id:"3-7",imaRef:"C.1",title:"Market Size & Share Variances",dur:"25 min",blocks:[],quizzes:[]},
       {id:"3-8",imaRef:"C.2",title:"Responsibility Centers",dur:"30 min",blocks:[],quizzes:[]},
       {id:"3-9",imaRef:"C.2",title:"Contribution Income Statement for Evaluation",dur:"30 min",blocks:[],quizzes:[]},
       {id:"3-10",imaRef:"C.2",title:"Transfer Pricing",dur:"35 min",blocks:[],quizzes:[]},
@@ -3167,7 +3167,7 @@ function renderOnboarding(){
       <div style="font-size:14px;opacity:.85;margin-bottom:20px">Your complete CMA Part 1 study companion</div>
       <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap">
         <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px">${TOTAL_LESSONS} Lessons</div>
-        <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px">2,603 MCQs</div>
+        <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px">2,602 MCQs</div>
         <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px">6 Sections</div>
         <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px">Free Access</div>
       </div>
@@ -3197,7 +3197,7 @@ function renderOnboarding(){
         <div style="display:flex;flex-direction:column;gap:10px">
           ${[
             ['📚','Study',`6 sections · ${TOTAL_LESSONS} lessons covering all CMA Part 1 topics with detailed, structured content`],
-            ['❓','Quizzes','2,603 MCQs — exam-style questions with full explanations after each answer'],
+            ['❓','Quizzes','2,602 MCQs — exam-style questions with full explanations after each answer'],
             ['📊','Progress','Track your completed lessons and quiz scores across all sections'],
             ['📌','Tracker','Mark lessons as Good or Bad to know what to review'],
             ['🌐','Community','Ask questions and get answers from fellow CMA candidates'],
