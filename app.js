@@ -1011,14 +1011,7 @@ const TERM_DICT={
   'DTL':'التزام ضريبي مؤجل',
 
   // ── Section B — Planning, Budgeting & Forecasting ───────────────────
-  'Net Present Value':'صافي القيمة الحالية',
-  'Internal Rate of Return':'معدل العائد الداخلي',
-  'Time Value of Money':'القيمة الزمنية للنقود',
-  'Discounted Cash Flow':'التدفقات النقدية المخصومة',
-  'Unfavorable Variance':'انحراف غير ملائم',
-  'Favorable Variance':'انحراف ملائم',
   'Variance Analysis':'تحليل الانحرافات',
-  'Opportunity Cost':'تكلفة الفرصة البديلة',
   'Production Budget':'موازنة الإنتاج',
   'Capital Budget':'الموازنة الرأسمالية',
   'Flexible Budget':'الموازنة المرنة',
@@ -1026,30 +1019,14 @@ const TERM_DICT={
   'Master Budget':'الموازنة الرئيسية',
   'Sales Budget':'موازنة المبيعات',
   'Cash Budget':'الموازنة النقدية',
-  'Payback Period':'فترة الاسترداد',
-  'Relevant Cost':'التكلفة الملاءمة',
-  'Working Capital':'رأس المال العامل',
-  'Discount Rate':'معدل الخصم',
-  'Sunk Cost':'التكلفة الغارقة',
   'Zero-Based Budgeting':'الموازنة الصفرية',
-  'Incremental Budgeting':'الموازنة التزايدية',
-  'Continuous Budget':'الموازنة المستمرة',
   'Rolling Budget':'الموازنة المتحركة',
-  'Regression Analysis':'تحليل الانحدار',
   'Learning Curve':'منحنى التعلم',
   'Sensitivity Analysis':'تحليل الحساسية',
   'Scenario Analysis':'تحليل السيناريو',
   'SWOT Analysis':'تحليل نقاط القوة والضعف',
   'PESTLE Analysis':'تحليل بيستل',
-  'Porters Five Forces':'قوى بورتر الخمس',
-  'Value Chain':'سلسلة القيمة',
   'Strategic Planning':'التخطيط الاستراتيجي',
-  'NPV':'صافي القيمة الحالية',
-  'IRR':'معدل العائد الداخلي',
-  'DCF':'التدفقات النقدية المخصومة',
-  'WACC':'المتوسط المرجح لتكلفة رأس المال',
-  'CAPM':'نموذج تسعير الأصول الرأسمالية',
-  'FCF':'التدفق النقدي الحر',
 
   // ── Section B additions (Batch 23) — candidate terms from lesson content
   // audit, cross-checked against the full dict to avoid duplicates ───────────
@@ -1069,8 +1046,6 @@ const TERM_DICT={
   'Linear Regression':'الانحدار الخطي',
   'Cumulative Average Model':'نموذج المتوسط التراكمي',
   'Pro Forma Financial Statements':'القوائم المالية الاسترشادية',
-  'Gross Profit':'إجمالي الربح',
-  'Operating Income':'الدخل التشغيلي',
   'Sales Revenue':'إيرادات المبيعات',
 
   // ── Section C — Performance Management ──────────────────────────────
@@ -1144,9 +1119,7 @@ const TERM_DICT={
   'Actual Costing':'المحاسبة على أساس التكلفة الفعلية',
   'Normal Costing':'المحاسبة على أساس التكلفة العادية',
   'Contribution Margin':'هامش المساهمة',
-  'Contribution Margin Ratio':'نسبة هامش المساهمة',
   'Equivalent Units':'الوحدات المكافئة',
-  'Break-Even Point':'نقطة التعادل',
   'Weighted Average':'المتوسط المرجح',
   'Direct Material':'المواد المباشرة',
   'Direct Labor':'العمالة المباشرة',
@@ -1163,9 +1136,6 @@ const TERM_DICT={
   'Variable MOH':'التكاليف الصناعية المتغيرة',
   'Cost of Goods Sold':'تكلفة البضاعة المباعة',
   'Cost of Goods Manufactured':'تكلفة البضاعة المصنعة',
-  'CVP Analysis':'تحليل التكلفة-الحجم-الربح',
-  'Cost-Volume-Profit':'التكلفة-الحجم-الربح',
-  'Margin of Safety':'هامش الأمان',
   'Operating Leverage':'الرافعة التشغيلية',
   'DM Variance':'انحراف المواد المباشرة',
   'DL Variance':'انحراف العمالة المباشرة',
@@ -3352,14 +3322,6 @@ function renderIntro(){
         <span class="cred-badge">20 Years Experience</span>
       </div>
       <div style="display:flex;gap:10px;justify-content:center;margin-top:16px">
-        <a href="tel:+201019641390" style="display:flex;flex-direction:column;align-items:center;gap:5px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);border-radius:12px;padding:10px 18px;text-decoration:none;color:#fff;min-width:80px">
-          <span style="font-size:22px">📞</span>
-          <span style="font-size:11px;font-weight:500">Call</span>
-        </a>
-        <a href="https://wa.me/201019641390" target="_blank" style="display:flex;flex-direction:column;align-items:center;gap:5px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);border-radius:12px;padding:10px 18px;text-decoration:none;color:#fff;min-width:80px">
-          <span style="font-size:22px">💬</span>
-          <span style="font-size:11px;font-weight:500">WhatsApp</span>
-        </a>
         <a href="mailto:Mohamed.Gawad890@gmail.com" style="display:flex;flex-direction:column;align-items:center;gap:5px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);border-radius:12px;padding:10px 18px;text-decoration:none;color:#fff;min-width:80px">
           <span style="font-size:22px">✉️</span>
           <span style="font-size:11px;font-weight:500">Email</span>
