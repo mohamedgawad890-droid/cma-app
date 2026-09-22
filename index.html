@@ -43,11 +43,14 @@ window.addEventListener('beforeinstallprompt', e => {
 <link rel="apple-touch-icon" href="./icon-192.png">
 <meta name="msapplication-TileColor" content="#0C447C">
 <meta name="msapplication-TileImage" content="./icon-192.png">
-<link rel="stylesheet" href="./app.css">
+<!-- Minified build output (batch item 1) — source files (app.css, app.js,
+     cbq-data.js) are unchanged and still what Gawad edits via GitHub;
+     dist/ is rebuilt automatically by .github/workflows/minify.yml on push. -->
+<link rel="stylesheet" href="./dist/app.min.css">
 <!-- Batch 6: inline style blocks moved to app.css (batch-overrides, ported-features, dashboard-p1) -->
 <!-- Batch 8: modal-system + toast inline styles moved to app.css -->
 <!-- CBQ data file — must load before main script -->
-<script src="./cbq-data.js" defer></script>
+<script src="./dist/cbq-data.min.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -113,6 +116,6 @@ window.addEventListener('beforeinstallprompt', e => {
   <!-- ── TOAST CONTAINER ──────────────────────────────────────── -->
   <div id="toast-container"></div>
 </div>
-<script src="./app.js" defer></script>	
+<script src="./dist/app.min.js" defer></script>	
 </body>
 </html>
