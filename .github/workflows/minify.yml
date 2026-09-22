@@ -1,0 +1,54 @@
+name: Minify build
+
+# Batch item 1 (2026-09): minify-only build, no bundling, no module changes.
+# Source files (app.js, cbq-data.js, app.css) stay the files Gawad edits via
+# the GitHub web editor. This Action rebuilds dist/ on every push and commits
+# the output back with [skip-build-loop] so it doesn't re-trigger itself.
+#
+# index.html and sw.js were updated once (this same batch) to load the
+# dist/*.min.* files instead of the source files directly.
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'dist/**'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install esbuild
+        run: npm install esbuild@0.24.0 --no-save
+
+      - name: Minify app.js
+        run: npx esbuild app.js --minify --outfile=dist/app.min.js
+
+      - name: Minify cbq-data.js
+        run: npx esbuild cbq-data.js --minify --outfile=dist/cbq-data.min.js
+
+      - name: Minify app.css
+        run: npx esbuild app.css --minify --outfile=dist/app.min.css
+
+      - name: Validate minified JS parses
+        run: |
+          node --check dist/app.min.js
+          node --check dist/cbq-data.min.js
+
+      - name: Commit dist/ if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add dist/
+          git diff --cached --quiet && echo "No changes to dist/" && exit 0
+          git commit -m "chore: rebuild dist/ [skip-build-loop]"
+          git push
