@@ -471,7 +471,12 @@
 // new `custom-practice-results` collection — fully private to the student,
 // no instructor read access, deliberately excluded from Results/At Risk.
 // app.js changed; CACHE_NAME bumps v44->v45.
-const CACHE_NAME = 'cma-prep-v47';
+// v48 (Batch item 1 — minify pipeline): OFFLINE_URLS now points at the
+// minified dist/app.min.js, dist/app.min.css, dist/cbq-data.min.js instead
+// of the raw source files. These are precached shell files, so CACHE_NAME
+// bumps v47->v48 to drop stale copies of app.js/app.css/cbq-data.js and
+// pick up the dist/ build.
+const CACHE_NAME = 'cma-prep-v48';
 // Batch 21: Cost Management (Section 4) restructure — 4-14 removed, 4-16..4-21
 // merged into one unit, cross-topic content dedup (Product/Period Costs,
 // Over/Under Applied Overhead, Life-Cycle Costing), 4-11 intra-lesson dup fixed,
@@ -480,9 +485,9 @@ const CACHE_NAME = 'cma-prep-v47';
 const OFFLINE_URLS = [
   './',
   './index.html',
-  './app.js',
-  './app.css',
-  './cbq-data.js',
+  './dist/app.min.js',
+  './dist/app.min.css',
+  './dist/cbq-data.min.js',
   './lessons/lesson-s1.json',
   './lessons/lesson-s2.json',
   './lessons/lesson-s3.json',
