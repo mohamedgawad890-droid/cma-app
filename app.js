@@ -930,6 +930,14 @@ const STATE={tab:'loading',searchQ:'',dictQ:'',dictData:[],dictLoaded:false,lead
 //   'Term': { ar: '…', en?: '…', lessonId?: '…' }  — enriched shape
 // highlightTerms() and _termData() handle both shapes transparently.
 const TERM_DICT={
+  'Value Chain':'سلسلة القيمة',
+  'Gross Profit':'إجمالي الربح',
+  'Operating Income':'الدخل التشغيلي',
+  'DM Variance':'انحراف المواد المباشرة',
+  'Price Variance':'انحراف السعر',
+  'Quantity Variance':'انحراف الكمية',
+  'Rate Variance':'انحراف المعدل',
+  'Efficiency Variance':'انحراف الكفاءة',
   // ── Section A — Financial Accounting & Reporting ────────────────────
   'Other Comprehensive Income':'الدخل الشامل الآخر',
   'Comprehensive Income':'الدخل الشامل',
