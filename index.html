@@ -21,18 +21,22 @@ window.addEventListener('beforeinstallprompt', e => {
 <meta property="og:type" content="website">
 <meta property="og:title" content="CMA Prep — with Mohamed Abdelgawad">
 <meta property="og:description" content="Free bilingual (Arabic/English) CMA Part 1 exam prep. Lessons, quizzes, CBQ practice, mock exams, and personalized progress tracking.">
-<meta property="og:image" content="./icon-192.png">
+<!-- Batch 23 (B23-10): crawlers need an ABSOLUTE image URL; 1200x630 is the
+     size WhatsApp/Facebook/LinkedIn render as a large preview. -->
+<meta property="og:url" content="https://mohamedgawad890-droid.github.io/cma-app/">
+<meta property="og:image" content="https://mohamedgawad890-droid.github.io/cma-app/og-image.png">
 <meta property="og:image:type" content="image/png">
-<meta property="og:image:width" content="192">
-<meta property="og:image:height" content="192">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="CMA Part 1 Prep with Dr. Mohamed Abdelgawad">
 <meta property="og:locale" content="ar_EG">
 <meta property="og:locale:alternate" content="en_US">
 <meta property="og:site_name" content="CMA Prep">
 <!-- Twitter card -->
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="CMA Prep — with Mohamed Abdelgawad">
 <meta name="twitter:description" content="Free bilingual (Arabic/English) CMA Part 1 exam prep.">
-<meta name="twitter:image" content="./icon-192.png">
+<meta name="twitter:image" content="https://mohamedgawad890-droid.github.io/cma-app/og-image.png">
 <!-- PWA -->
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#0C447C">
@@ -51,9 +55,13 @@ window.addEventListener('beforeinstallprompt', e => {
 <!-- Batch 8: modal-system + toast inline styles moved to app.css -->
 <!-- CBQ data file — must load before main script -->
 <script src="./dist/cbq-data.min.js" defer></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<!-- Batch 23 (B23-02 + B23-07): Firebase SDK self-hosted (identical 9.23.0
+     compat builds, precached by sw.js → offline cold start works) and
+     deferred (no longer blocks first paint). Deferred scripts execute in
+     document order: cbq-data → firebase app → auth → firestore → app.min.js. -->
+<script src="./vendor/firebase-9.23.0/firebase-app-compat.js" defer></script>
+<script src="./vendor/firebase-9.23.0/firebase-auth-compat.js" defer></script>
+<script src="./vendor/firebase-9.23.0/firebase-firestore-compat.js" defer></script>
 </head>
 <body>
 <div id="app">
