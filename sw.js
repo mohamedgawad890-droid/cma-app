@@ -7,14 +7,12 @@
 // stale-while-revalidate from the versioned cache; the bump is what makes
 // every student pick up the new files on the next open.
 
-const CACHE_NAME = 'cma-prep-v50';
+const CACHE_NAME = 'cma-prep-v51';
 
-// Batch 23 (B23-02): Firebase SDK self-hosted so the app can cold-start offline.
-const VENDOR_URLS = [
-  './vendor/firebase-9.23.0/firebase-app-compat.js',
-  './vendor/firebase-9.23.0/firebase-auth-compat.js',
-  './vendor/firebase-9.23.0/firebase-firestore-compat.js'
-];
+// EMERGENCY (v51): vendor/ returned 404 on Pages — Firebase is temporarily
+// loaded from gstatic in index.html. Once vendor/firebase-9.23.0/ is deployed,
+// restore the 3 './vendor/firebase-9.23.0/...' paths here and in index.html.
+const VENDOR_URLS = [];
 
 const OFFLINE_URLS = [
   './',

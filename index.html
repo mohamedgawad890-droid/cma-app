@@ -59,9 +59,11 @@ window.addEventListener('beforeinstallprompt', e => {
      compat builds, precached by sw.js → offline cold start works) and
      deferred (no longer blocks first paint). Deferred scripts execute in
      document order: cbq-data → firebase app → auth → firestore → app.min.js. -->
-<script src="./vendor/firebase-9.23.0/firebase-app-compat.js" defer></script>
-<script src="./vendor/firebase-9.23.0/firebase-auth-compat.js" defer></script>
-<script src="./vendor/firebase-9.23.0/firebase-firestore-compat.js" defer></script>
+<!-- EMERGENCY (sw v51): vendor/ returned 404 on Pages — Firebase loaded from
+     gstatic until vendor/firebase-9.23.0/ is deployed. Restore the ./vendor paths then. -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js" defer></script>
 </head>
 <body>
 <div id="app">
