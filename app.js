@@ -1332,6 +1332,155 @@ const TERM_DICT={
   'API':'واجهة برمجة التطبيقات',
 };
 
+// ── Batch 23 (B23-15): Arabic tooltip coverage for Sections 2, 3 & 4 ─────
+// Curated CMA-technical terms only (generic words such as Budget, Cash,
+// Business are deliberately excluded — they would underline most sentences).
+// Arabic aligned with dictionary/terms.json where that entry was accurate.
+// Merged BEFORE _termIndex / the matcher are built, so both see these keys.
+Object.assign(TERM_DICT,{
+  'Operating Budget':'الموازنة التشغيلية',
+  'Financial Budget':'الموازنة المالية',
+  'Direct Materials Budget':'موازنة المواد المباشرة',
+  'Direct Labor Budget':'موازنة الأجور المباشرة',
+  'Manufacturing Overhead Budget':'موازنة التكاليف الصناعية غير المباشرة',
+  'Overhead Budget':'موازنة التكاليف غير المباشرة',
+  'Project Budget':'موازنة المشروع',
+  'Activity-Based Budgeting':'الموازنة على أساس الأنشطة',
+  'Participative Budgeting':'الموازنة بالمشاركة',
+  'Budget Slack':'الاحتياطي المُضمَّن في الموازنة (التراخي)',
+  'Budget Committee':'لجنة الموازنة',
+  'Top-Down':'من أعلى إلى أسفل',
+  'Bottom-Up':'من أسفل إلى أعلى',
+  'Pro Forma':'تقديري / افتراضي',
+  'Pro Forma Statements':'القوائم المالية التقديرية',
+  'Capital Budgeting':'الموازنة الرأسمالية',
+  'Exponential Smoothing':'التمهيد الأُسّي',
+  'Moving Average':'المتوسط المتحرك',
+  'Weighted Moving Average':'المتوسط المتحرك المرجّح',
+  'Time Series':'السلاسل الزمنية',
+  'Regression Analysis':'تحليل الانحدار',
+  'Regression Equation':'معادلة الانحدار',
+  'Simple Regression':'الانحدار البسيط',
+  'Multiple Regression':'الانحدار المتعدد',
+  'Correlation Coefficient':'معامل الارتباط',
+  'Coefficient of Variation':'معامل الاختلاف',
+  'Standard Error':'الخطأ المعياري',
+  'Delphi Method':'طريقة دلفي',
+  'Scenario Planning':'التخطيط بالسيناريوهات',
+  'Contingency Planning':'التخطيط للطوارئ',
+  'SWOT':'تحليل نقاط القوة والضعف والفرص والتهديدات',
+  'Strategic Plan':'الخطة الاستراتيجية',
+  'Goal Congruence':'توافق الأهداف',
+  'Profit Plan':'خطة الربح',
+  'Economies of Scale':'وفورات الحجم',
+  'Capital Investment':'الاستثمار الرأسمالي',
+  'Cash Flow':'التدفق النقدي',
+  'DM Price Variance':'انحراف سعر المواد المباشرة',
+  'DM Quantity Variance':'انحراف كمية المواد المباشرة',
+  'DL Rate Variance':'انحراف معدل الأجور المباشرة',
+  'DL Efficiency Variance':'انحراف كفاءة الأجور المباشرة',
+  'Materials Purchase Price Variance':'انحراف سعر شراء المواد',
+  'Purchase Price Variance':'انحراف سعر الشراء',
+  'Production Volume Variance':'انحراف حجم الإنتاج',
+  'Budget Variance':'انحراف الموازنة',
+  'Sales Price Variance':'انحراف سعر البيع',
+  'Favorable Variance':'انحراف ملائم',
+  'Unfavorable Variance':'انحراف غير ملائم',
+  'Favorable':'ملائم',
+  'Unfavorable':'غير ملائم',
+  'Standard Hours Allowed':'الساعات المعيارية المسموح بها',
+  'Management by Exception':'الإدارة بالاستثناء',
+  'Controllable Cost':'التكلفة القابلة للرقابة',
+  'Non-Controllable Cost':'التكلفة غير القابلة للرقابة',
+  'Traceable Fixed Cost':'التكلفة الثابتة القابلة للتتبع',
+  'Responsibility Accounting':'محاسبة المسؤولية',
+  'Hurdle Rate':'معدل العائد الأدنى المقبول',
+  'Required Rate of Return':'معدل العائد المطلوب',
+  'Rate of Return':'معدل العائد',
+  'Cost of Capital':'تكلفة رأس المال',
+  'Market Price':'سعر السوق',
+  'Net Income':'صافي الدخل',
+  'Operating Profit':'الربح التشغيلي',
+  'Sales Mix':'مزيج المبيعات',
+  'Manufacturing Contribution Margin':'هامش المساهمة الصناعي',
+  'Variable Manufacturing Cost':'التكلفة الصناعية المتغيرة',
+  'Contribution Margin Income Statement':'قائمة الدخل بصيغة هامش المساهمة',
+  'Performance Evaluation':'تقييم الأداء',
+  'Performance Measurement':'قياس الأداء',
+  'Profitability Analysis':'تحليل الربحية',
+  'Resource Allocation':'تخصيص الموارد',
+  'Denominator Level':'مستوى النشاط المستخدم في المقام',
+  'Actual Cost':'التكلفة الفعلية',
+  'Abnormal Spoilage':'التالف غير العادي',
+  'Normal Spoilage':'التالف العادي',
+  'Backflush Costing':'التكاليف بالتسجيل العكسي',
+  'Carrying Cost':'تكلفة الاحتفاظ بالمخزون',
+  'Safety Stock':'مخزون الأمان',
+  'Lead Time':'مهلة التوريد / التسليم',
+  'Kaizen Costing':'تكاليف التحسين المستمر',
+  'Operation Costing':'نظام تكاليف العمليات',
+  'Physical Units':'الوحدات المادية',
+  'Split-Off Point':'نقطة الانفصال',
+  'Separable Cost':'التكلفة القابلة للفصل',
+  'Sales Value at Split-Off':'القيمة البيعية عند نقطة الانفصال',
+  'Physical Measure Method':'طريقة القياس المادي',
+  'Constant Gross Margin':'ثبات نسبة مجمل الربح',
+  'Service Department':'قسم خدمي',
+  'Production Department':'قسم إنتاجي',
+  'Value Engineering':'هندسة القيمة',
+  'Theory of Constraints':'نظرية القيود',
+  'Throughput Contribution':'مساهمة الإنتاجية (الإيراد ناقص المواد المباشرة)',
+  'Cycle Time':'زمن الدورة',
+  'Reengineering':'إعادة الهندسة',
+  'Continuous Improvement':'التحسين المستمر',
+  'Critical Success Factors':'عوامل النجاح الحاسمة',
+  'Overhead Rate':'معدل تحميل التكاليف غير المباشرة',
+  'Departmental Overhead':'التكاليف غير المباشرة للقسم',
+  'Plant-Wide Overhead':'التكاليف غير المباشرة على مستوى المصنع',
+  'Factory Overhead':'التكاليف الصناعية غير المباشرة',
+  'Inventoriable Cost':'التكلفة القابلة للتخزين',
+  'Discretionary Cost':'التكلفة الاختيارية',
+  'Committed Cost':'التكلفة الملتزم بها',
+  'Sunk Cost':'التكلفة الغارقة',
+  'Opportunity Cost':'تكلفة الفرصة البديلة',
+  'Relevant Cost':'التكلفة الملائمة',
+  'Marginal Cost':'التكلفة الحدية',
+  'Unit Cost':'تكلفة الوحدة',
+  'Direct Cost':'التكلفة المباشرة',
+  'Indirect Cost':'التكلفة غير المباشرة',
+  'Direct Costing':'التكاليف المباشرة (المتغيرة)',
+  'Common Cost':'التكلفة المشتركة',
+  'Full Cost':'التكلفة الكاملة',
+  'Historical Cost':'التكلفة التاريخية',
+  'Cost Management':'إدارة التكلفة',
+  'Cost-Plus Pricing':'التسعير على أساس التكلفة زائد هامش',
+  'Product Mix':'مزيج المنتجات',
+  'Product Line':'خط المنتجات',
+  'Inventory Valuation':'تقييم المخزون',
+  'Accumulated Depreciation':'مجمع الإهلاك',
+  'Prorate':'التوزيع النسبي',
+  'Proration':'التوزيع النسبي',
+  'Quality Control':'مراقبة الجودة',
+  'Life-Cycle Cost':'تكلفة دورة الحياة',
+  'Customer Life-Cycle Costing':'تكاليف دورة الحياة من منظور العميل',
+  'Target Cost':'التكلفة المستهدفة',
+  'Target Price':'السعر المستهدف',
+  'Gap Analysis':'تحليل الفجوة',
+  'Activity Analysis':'تحليل الأنشطة',
+  'Cost Hierarchy':'التدرج الهرمي للتكاليف',
+  'Unit-Level':'مستوى الوحدة',
+  'Batch-Level':'مستوى الدفعة',
+  'Product-Level':'مستوى المنتج',
+  'Facility-Level':'مستوى المنشأة',
+  'Material Requirements Planning':'تخطيط احتياجات المواد',
+  'Manufacturing Resource Planning':'تخطيط موارد التصنيع',
+  'Capacity Planning':'تخطيط الطاقة',
+  'Direct Labor Hours':'ساعات العمل المباشر',
+  'Machine Hours':'ساعات تشغيل الآلات',
+  'Activity Base':'أساس النشاط',
+  'Cost Allocation':'تخصيص التكاليف'
+});
+
 // ── Case-normalization for lookup (Batch 7) ──────────────────────────
 // Terms are matched case-insensitively but a case-preserving display is kept.
 // _termIndex maps lowercased term → canonical key for O(1) lookup.
@@ -1350,30 +1499,50 @@ function _termData(termKey){
 }
 
 function escRx(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
-// Sorted term keys — cached because it's called on every render pass.
-let _sortedTerms=null;
-function _getSortedTerms(){
-  if(_sortedTerms)return _sortedTerms;
-  _sortedTerms=Object.keys(TERM_DICT).sort((a,b)=>b.length-a.length);
-  return _sortedTerms;
+// ── Batch 23 (B23-15): single-pass term matcher ──────────────────────
+// Replaces the per-term loop (one regex pass per term per block). All keys
+// are compiled ONCE into a single alternation, longest-first, so each text
+// block is scanned in one pass regardless of dictionary size.
+// Behaviour kept: case-insensitive match, original casing preserved, every
+// occurrence linked, alphanumeric-safe boundaries.
+// Deliberate improvements over the old loop:
+//   • no nested spans — "Fixed MOH" no longer gets a second "MOH" span inside
+//   • a trailing plural "s" also matches (Cost Pools → Cost Pool tooltip)
+//   • never matches inside an HTML entity produced by esc() (e.g. &lt;)
+let _termRx=null,_termRxMode='';
+function _getTermRx(){
+  if(_termRx)return _termRx;
+  const alts=Object.keys(TERM_DICT)
+    .map(k=>esc(k))                       // match against esc()'d text
+    .sort((a,b)=>b.length-a.length)       // longest first → "Fixed MOH" before "MOH"
+    .map(escRx).join('|');
+  try{
+    _termRx=new RegExp('(?<![A-Za-z0-9_&])('+alts+')(s?)(?![A-Za-z0-9_])','gi');
+    _termRxMode='lb';
+  }catch{
+    // Older engines without lookbehind: capture the boundary char and re-emit it.
+    _termRx=new RegExp('(^|[^A-Za-z0-9_&])('+alts+')(s?)(?![A-Za-z0-9_])','gi');
+    _termRxMode='pre';
+  }
+  return _termRx;
+}
+// esc()'d key (lowercased) → canonical TERM_DICT key
+const _termEscIndex=(function(){
+  const m=Object.create(null);
+  Object.keys(TERM_DICT).forEach(k=>{ m[esc(k).toLowerCase()]=k; });
+  return m;
+})();
+function _termSpan(matched,plural){
+  const key=_termEscIndex[matched.toLowerCase()];
+  if(!key)return matched+plural;
+  return `<span class="ar-term" data-term="${esc(key)}" onclick="toggleTip(event,this)">${matched}${plural}</span>`;
 }
 function highlightTerms(text){
-  let out=esc(text);
-  const terms=_getSortedTerms();
-  for(const term of terms){
-    // Case-insensitive match; case-preserving replacement (keeps original text).
-    // Boundary: alphanumeric-safe (?<![A-Za-z0-9_]) ... (?![A-Za-z0-9_]) so
-    // abbreviations like MOH inside "Fixed MOH" match, but "MOHawk" does not.
-    // Fallback for engines without lookbehind (older Safari): use \b.
-    let re;
-    try{
-      re=new RegExp('(?<![A-Za-z0-9_])('+escRx(term)+')(?![A-Za-z0-9_])(?![^<]*>)','gi');
-    }catch{
-      re=new RegExp('\\b('+escRx(term)+')\\b(?![^<]*>)','gi');
-    }
-    out=out.replace(re,(match)=>`<span class="ar-term" data-term="${esc(term)}" onclick="toggleTip(event,this)">${match}</span>`);
-  }
-  return out;
+  const out=esc(text==null?'':text);
+  const re=_getTermRx();
+  re.lastIndex=0;
+  if(_termRxMode==='lb')return out.replace(re,(m,t,pl)=>_termSpan(t,pl));
+  return out.replace(re,(m,pre,t,pl)=>pre+_termSpan(t,pl));
 }
 
 // ── Floating popover for term tooltips (Batch 7) ─────────────────────
@@ -1677,10 +1846,17 @@ function getStudyStreak(){return loadStreak().count||0;}
 // across all 6 sections now that every lesson has been confirmed to have
 // 2+ header blocks.
 function renderLessonBody(lesson,sec){
-  const blocks=lesson.blocks||[];
+  // Batch 23 (B23-14): 'arsum' (Arabic recap) blocks are lifted out and rendered
+  // as one dedicated card AFTER all topics — never inside the last topic body.
+  // They are appended at the END of each lesson's blocks array in the JSON, so
+  // flashcard ids (`${lessonId}:def:${index}`) of existing blocks never shift.
+  const allBlocks=lesson.blocks||[];
+  const arBlocks=allBlocks.filter(b=>b&&b.t==='arsum');
+  const blocks=arBlocks.length?allBlocks.filter(b=>!(b&&b.t==='arsum')):allBlocks;
+  const arHTML=arBlocks.map(b=>renderArSum(b,lesson,sec)).join('');
   const hIdx=[];
   blocks.forEach((b,i)=>{if(b&&b.t==='h')hIdx.push(i);});
-  if(hIdx.length<=1) return blocks.map(b=>renderBlock(b,sec)).join('');
+  if(hIdx.length<=1) return blocks.map(b=>renderBlock(b,sec)).join('')+arHTML;
   const introHTML=blocks.slice(0,hIdx[1]).map(b=>renderBlock(b,sec)).join('');
   let topicsHTML='';
   for(let t=1;t<hIdx.length;t++){
@@ -1705,7 +1881,37 @@ function renderLessonBody(lesson,sec){
     </div>
     <button type="button" class="lesson-expand-all" onclick="toggleAllLessonTopics('${lesson.id}')" id="expand-all-${lesson.id}" style="flex-shrink:0">Expand all</button>
   </div>`;
-  return introHTML+toolbarHTML+`<div id="topics-container-${lesson.id}">`+topicsHTML+`</div>`;
+  return introHTML+toolbarHTML+`<div id="topics-container-${lesson.id}">`+topicsHTML+arHTML+`</div>`;
+}
+
+// ─── ARABIC LESSON SUMMARY (Batch 23, B23-14) ──────────────────────────────
+// Block shape: {t:'arsum', topics:[{h, en, part?, pts?, f?, trap?}]}
+//   h    Arabic topic title          en   original English topic title
+//   part divider row (lesson 4-16 Parts) pts  Arabic key points
+//   f    formulas — rendered LTR     trap exam traps (⚠️ callout)
+// Reuses the .lesson-topic accordion markup, so Expand all, in-lesson search,
+// and the print stylesheet (forces .lesson-topic-body open) all work unchanged.
+// RTL is scoped to this card only — no global layout change.
+function renderArSum(block,lesson,sec){
+  const topics=Array.isArray(block&&block.topics)?block.topics:[];
+  if(!topics.length)return'';
+  const tx=sec.text,st=sec.strong,bg=sec.bg;
+  const topicId=lesson.id+'-ar';
+  const items=topics.map(t=>{
+    if(t.part)return`<div style="margin:18px 0 4px;padding:7px 12px;border-radius:8px;background:${bg};color:${st};font-size:13px;font-weight:600;line-height:1.6">${esc(t.h||'')}</div>`;
+    const pts=(t.pts||[]).map(p=>`<li style="display:flex;gap:8px;margin:5px 0"><span style="color:${tx};font-weight:600;flex-shrink:0">•</span><span>${esc(p)}</span></li>`).join('');
+    const f=(t.f&&t.f.length)?`<div dir="ltr" style="margin:8px 0;padding:8px 12px;border-radius:8px;background:${bg};border:1px solid ${tx}30;color:${st};font-size:12.5px;line-height:1.7;text-align:left;white-space:pre-wrap;overflow-x:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">${t.f.map(x=>esc(x)).join('\n')}</div>`:'';
+    const trap=(t.trap&&t.trap.length)?`<div style="margin:8px 0 2px;padding:8px 12px;border-radius:8px;background:rgba(201,162,39,.12);border-right:3px solid #c9a227;color:var(--ink);font-size:13px;line-height:1.8"><b>⚠️ انتبه في الامتحان:</b> ${t.trap.map(x=>esc(x)).join(' ')}</div>`:'';
+    const en=t.en?`<div dir="ltr" style="font-size:11px;color:#888;text-align:right;margin:1px 0 4px">${esc(t.en)}</div>`:'';
+    return`<div style="padding:10px 0;border-bottom:.5px solid var(--border)"><div style="font-size:15px;font-weight:600;color:${st};line-height:1.6">${esc(t.h||'')}</div>${en}<ul style="list-style:none;margin:4px 0;padding:0;font-size:14px;line-height:1.85;color:var(--ink)">${pts}</ul>${f}${trap}</div>`;
+  }).join('');
+  return`<div class="lesson-topic" id="topic-wrap-${topicId}">
+      <button type="button" class="lesson-topic-toggle" onclick="toggleLessonTopic('${topicId}')" id="topic-btn-${topicId}">
+        <span class="lesson-topic-title" dir="rtl" lang="ar">📝 ملخص الدرس بالعربي</span>
+        <span class="lesson-topic-chevron" id="topic-chevron-${topicId}">›</span>
+      </button>
+      <div class="lesson-topic-body" id="topic-body-${topicId}" style="display:none"><div dir="rtl" lang="ar" style="text-align:right">${items}</div></div>
+    </div>`;
 }
 
 // ─── IN-LESSON SEARCH (searches topic headers + body text within the
@@ -2368,9 +2574,14 @@ async function upvoteQuestion(qId,e){
   const q=STATE.communityQuestions.find(q=>q.id===qId);
   if(!q)return;
   const upvotes=q.upvotes||[];
-  const newUpvotes=upvotes.includes(uid)?upvotes.filter(u=>u!==uid):[...upvotes,uid];
+  const had=upvotes.includes(uid);
+  const newUpvotes=had?upvotes.filter(u=>u!==uid):[...upvotes,uid];
   try{
-    await db.collection('questions').doc(qId).update({upvotes:newUpvotes});
+    // Batch 23 (B23-06): server-side arrayUnion/arrayRemove — only ever touches
+    // this user's own uid, so a stale local list can't overwrite other votes
+    // (the rules now reject any upvotes change other than the caller's own uid).
+    const FV=firebase.firestore.FieldValue;
+    await db.collection('questions').doc(qId).update({upvotes:had?FV.arrayRemove(uid):FV.arrayUnion(uid)});
     q.upvotes=newUpvotes;render();
   }catch(e){console.log('Upvote error:',e);}
 }
@@ -2380,9 +2591,12 @@ async function upvoteReply(qId,rId){
   const r=STATE.questionReplies.find(r=>r.id===rId);
   if(!r)return;
   const upvotes=r.upvotes||[];
-  const newUpvotes=upvotes.includes(uid)?upvotes.filter(u=>u!==uid):[...upvotes,uid];
+  const had=upvotes.includes(uid);
+  const newUpvotes=had?upvotes.filter(u=>u!==uid):[...upvotes,uid];
   try{
-    await db.collection('questions').doc(qId).collection('replies').doc(rId).update({upvotes:newUpvotes});
+    // Batch 23 (B23-06): atomic toggle of the caller's own uid only.
+    const FV=firebase.firestore.FieldValue;
+    await db.collection('questions').doc(qId).collection('replies').doc(rId).update({upvotes:had?FV.arrayRemove(uid):FV.arrayUnion(uid)});
     r.upvotes=newUpvotes;render();
   }catch(e){console.log('Upvote reply error:',e);}
 }
@@ -2880,6 +3094,8 @@ function searchLessons(q){
     let score=0;
     if(l.title.toLowerCase().includes(ql))score+=3;
     const blockText=l.blocks.map(b=>{
+      // Batch 23 (B23-14): Arabic recap text is searchable from global search.
+      if(b.t==='arsum'&&Array.isArray(b.topics))return b.topics.map(t=>[t.h||'',...(t.pts||[]),...(t.trap||[])].join(' ')).join(' ');
       if(b.v&&typeof b.v==='string')return b.v;
       if(Array.isArray(b.v))return b.v.join(' ');
       if(b.h)return b.h;
@@ -8322,14 +8538,25 @@ async function loadDashLeader(g){
   render();
   try{
     const students=(STATE.dashStudents||[]).filter(s=>(s.groupCode||'').toUpperCase()===g.toUpperCase());
-    const rows=await Promise.all(students.map(async s=>{
+    // Batch 23 (B23-09): batched `documentId in [...]` queries (10 ids per
+    // query — the safe limit for SDK 9.23) instead of one get() per student.
+    // Same rows, same null-on-missing semantics, ~10× fewer round trips.
+    const uids=students.map(s=>s.uid).filter(Boolean);
+    const lbByUid=Object.create(null);
+    const idField=firebase.firestore.FieldPath.documentId();
+    const chunks=[];
+    for(let i=0;i<uids.length;i+=10)chunks.push(uids.slice(i,i+10));
+    await Promise.all(chunks.map(async ch=>{
       try{
-        const doc=await db.collection('leaderboard').doc(s.uid).get();
-        if(!doc.exists)return null;
-        const p=doc.data()||{};
-        return {uid:s.uid,name:p.name||s.name||'Student',accuracy:p.accuracy||0,lessons:p.lessons||0,mcqRight:p.mcqRight||0,mcqTotal:p.mcqTotal||0};
-      }catch(e){return null;}
+        const snap=await db.collection('leaderboard').where(idField,'in',ch).get();
+        snap.forEach(d=>{lbByUid[d.id]=d.data()||{};});
+      }catch(e){console.warn('[loadDashLeader] chunk failed',e);}
     }));
+    const rows=students.map(s=>{
+      const p=lbByUid[s.uid];
+      if(!p)return null;
+      return {uid:s.uid,name:p.name||s.name||'Student',accuracy:p.accuracy||0,lessons:p.lessons||0,mcqRight:p.mcqRight||0,mcqTotal:p.mcqTotal||0};
+    });
     const filtered=rows.filter(Boolean).sort((a,b)=>{
       if((b.accuracy||0)!==(a.accuracy||0))return (b.accuracy||0)-(a.accuracy||0);
       return (b.mcqRight||0)-(a.mcqRight||0);
