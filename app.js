@@ -20,13 +20,20 @@ const PHOTO_B64 = './instructor.webp';
 // ACTION REQUIRED: Replace the value below with your real Firebase UID.
 // Find it in Firebase Console → Authentication → Users → copy the User UID column.
 const INSTRUCTOR_UID = 'NI1nS2qCYehDnlwFHA5A01bxV8V2';
+// Batch 24 (B24-08): build label attached to remote error reports.
+const APP_BUILD='b24';
+const _errLog={sent:0,seen:{}}; // declared before window.onerror so boot errors can be queued
 window.onerror=function(msg,src,line,col,err){
-  // Full detail goes to the console (and is where remote logging would hook in later).
   try{ console.error('[App error]', msg, (src||'')+':'+line+':'+col, err); }catch(_){}
+  // Batch 24 (B24-08): remote error log (rate-limited, deduped — see logClientError).
+  try{ logClientError('error', msg, err&&err.stack, (src||'')+':'+line+':'+col); }catch(_){}
 
   // If the UI is already up, surface a gentle, dismissible notice and KEEP RUNNING —
   // a single non-fatal error should never blank the whole app.
-  if(typeof showToast==='function'){
+  // Batch 24 (B24-03): was `typeof showToast==='function'`, which is ALWAYS true
+  // (function declarations are hoisted), so a fatal boot error showed "the app is
+  // still running" over a blank screen. render() sets __uiReady after first paint.
+  if(window.__uiReady && typeof showToast==='function'){
     try{ showToast('Something went wrong, but the app is still running. Reload if anything looks off.','error',6000); }catch(_){}
     return true;
   }
@@ -45,6 +52,11 @@ window.onerror=function(msg,src,line,col,err){
   return true;
 };
 
+// Batch 24 (B24-08): unhandled promise rejections are logged too (same caps).
+window.addEventListener('unhandledrejection',function(ev){
+  try{ const r=ev&&ev.reason; logClientError('promise', (r&&r.message)||String(r), r&&r.stack, ''); }catch(_){}
+});
+
 firebase.initializeApp({
   apiKey:"AIzaSyCAF48hvYUxBdWY-xHFQZMUNKglV0gRhhE",
   authDomain:"cma-study-app.firebaseapp.com",
@@ -55,6 +67,54 @@ firebase.initializeApp({
 });
 const auth=firebase.auth();
 const db=firebase.firestore();
+// ─── BATCH 24 (B24-08): REMOTE ERROR LOG ──────────────────────────────────────
+// Writes to Firestore `client-errors` (instructor-only read, see rules). Caps:
+// max 5 reports per page session, each distinct message once. If Firebase or
+// the user isn't available yet (e.g. a boot failure), the report is queued in
+// localStorage (max 10) and sent after the next successful sign-in.
+function _errRecord(kind,msg,stack,src){
+  let tab='';try{tab=String(STATE.tab||'');}catch(_){}
+  return {
+    kind:String(kind||'error').slice(0,20),
+    msg:String(msg==null?'':msg).slice(0,500),
+    stack:String(stack==null?'':stack).slice(0,3000),
+    src:String(src==null?'':src).slice(0,300),
+    tab:tab.slice(0,40),
+    ua:String(navigator.userAgent||'').slice(0,300),
+    build:APP_BUILD,
+    at:new Date().toISOString()
+  };
+}
+function _errCanSend(){
+  try{return typeof firebase!=='undefined'&&firebase.apps&&firebase.apps.length&&!!firebase.auth().currentUser;}catch(_){return false;}
+}
+function _errSend(rec){
+  const u=firebase.auth().currentUser;
+  return firebase.firestore().collection('client-errors').add(Object.assign({},rec,{
+    userId:u.uid,createdAt:firebase.firestore.FieldValue.serverTimestamp()
+  }));
+}
+function logClientError(kind,msg,stack,src){
+  try{
+    const key=String(kind)+'|'+String(msg).slice(0,160);
+    if(_errLog.seen[key]||_errLog.sent>=5)return;
+    _errLog.seen[key]=1;_errLog.sent++;
+    const rec=_errRecord(kind,msg,stack,src);
+    if(_errCanSend()){_errSend(rec).catch(()=>{});return;}
+    const q=JSON.parse(localStorage.getItem('cma-err-queue-v1')||'[]');
+    q.push(rec);localStorage.setItem('cma-err-queue-v1',JSON.stringify(q.slice(-10)));
+  }catch(_){}
+}
+function flushQueuedClientErrors(){
+  try{
+    if(!_errCanSend())return;
+    const q=JSON.parse(localStorage.getItem('cma-err-queue-v1')||'[]');
+    if(!q.length)return;
+    localStorage.removeItem('cma-err-queue-v1');
+    q.forEach(rec=>{_errSend(rec).catch(()=>{});});
+  }catch(_){}
+}
+
 const CLD_CLOUD='dvr6ygjhe';
 const CLD_PRESET='cma_students';
 
@@ -568,6 +628,9 @@ async function maybeSendDigest(){
   const weekStart=_isoWeekStart();
   if(prefs.lastDigestSent===weekStart)return; // already sent this week
   const payload=buildDigestPayload(st);
+  // Batch 24 (B24-04): the Apps Script verifies this token and sends ONLY to the
+  // token's own email — the payload email is no longer trusted.
+  try{payload.idToken=await STATE.user.getIdToken();}catch(e){return;}
   const ok=await postDigest(payload);
   if(ok){
     const next={...(st.notifPrefs||{}),lastDigestSent:weekStart};
@@ -586,6 +649,8 @@ function buildDigestPayload(st){
     // Batch 4.1: capture the KEY of the lowest score, not just the value.
     const scores=p.lessonScores||{};let worst=101;
     Object.keys(scores).forEach(k=>{const v=scores[k];if(typeof v==='number'&&v<worst){worst=v;weakest=k;}});
+    // Batch 24 (B24-04): send the lesson TITLE — the email was showing a raw id like "4-11".
+    if(weakest){S.forEach(sec=>(sec.lessons||[]).forEach(l=>{if(l.id===weakest)weakest=l.title;}));}
   }catch(e){}
   const variant = (daysSince>=7 || last7===0) ? 'missed_you'
                 : (last7<60 ? 'returning' : 'engaged');
@@ -4693,13 +4758,16 @@ async function submitCheckIn(lectureId,groupCode,title,mode){
     const st=loadStudent()||{};
     // Batch 5: mode is now required at the UI layer; guard defensively.
     if(mode!=='online'&&mode!=='offline')mode='offline';
-    await db.collection('attendance').add({
+    // Batch 24 (B24-05): deterministic id (one check-in per student per lecture)
+    // + server timestamp. Rules also require the lecture to be the group's live one.
+    await db.collection('attendance').doc(lectureId+'_'+STATE.user.uid).set({
       lectureId,groupCode,title,
       mode,                                    // Batch 5: 'online' | 'offline'
       userId:STATE.user.uid,                   // MUST match rule: create if userId==request.auth.uid
       studentName:st.name||STATE.user.displayName||'Student',
       studentId:st.studentId||'',
-      checkedInAt:new Date().toISOString()
+      checkedInAt:new Date().toISOString(),
+      serverCheckedInAt:firebase.firestore.FieldValue.serverTimestamp()
     });
     const done=loadCheckedIn();done.push(lectureId);saveCheckedIn(done);
     const el=document.getElementById('checkin-overlay');if(el)el.remove();
@@ -4708,7 +4776,15 @@ async function submitCheckIn(lectureId,groupCode,title,mode){
   }catch(e){
     console.warn('[CheckIn] failed:',e);
     if(btn){btn.disabled=false;btn.textContent='\u2705 Check in';}
-    showToast('Check-in failed \u2014 tap again.','error');
+    // Batch 24 (B24-05): a rules rejection means already checked in, or the lecture closed.
+    if(e&&e.code==='permission-denied'){
+      const el=document.getElementById('checkin-overlay');if(el)el.remove();
+      const done=loadCheckedIn();if(!done.includes(lectureId)){done.push(lectureId);saveCheckedIn(done);}
+      _liveShownFor=null;
+      showToast('You\u2019re already checked in, or check-in for this lecture has closed.','info',3500);
+    }else{
+      showToast('Check-in failed \u2014 tap again.','error');
+    }
   }
 }
 
@@ -5872,9 +5948,10 @@ function renderDashboard(){
     {id:'plan',        icon:'\u{1F5D3}\uFE0F', label:'Plan'},
     {id:'teaching-log',icon:'\u{1F4D3}', label:'Actual Teaching'},
     {id:'schedule',    icon:'\u{1F4C5}', label:'Schedule'},
-    {id:'at-risk',     icon:'\u{1F6A8}', label:'At Risk'}
+    {id:'at-risk',     icon:'\u{1F6A8}', label:'At Risk'},
+    {id:'errors',      icon:'\u{1F41E}', label:'Errors'}   // Batch 24 (B24-08)
   ];
-  const _validTabs=['groups','students','approvals','lectures','attendance','exams','results','progress','leader','plan','teaching-log','schedule','at-risk'];
+  const _validTabs=['groups','students','approvals','lectures','attendance','exams','results','progress','leader','plan','teaching-log','schedule','at-risk','errors'];
   const tab=_validTabs.includes(STATE.dashTab)?STATE.dashTab:'groups';
   const subnav=`<div class="sub-nav">${SUB_DASH.map(it=>
     `<button class="sub-nav-btn${tab===it.id?' active':''}" onclick="STATE.dashTab='${it.id}';render()">${it.icon} ${it.label}</button>`
@@ -5902,6 +5979,9 @@ function renderDashboard(){
     }else{
       body=renderDashApprovals();
     }
+  }else if(tab==='errors'){
+    // Batch 24 (B24-08): unscoped — app errors reported by all students' devices.
+    body=renderDashErrors();
   }else if(!STATE.dashSelectedGroup){
     // Scoped tab but no group picked → empty state
     body=renderDashPickGroupEmpty(scopedTabs[tab]||'items');
@@ -5942,6 +6022,64 @@ function getNavTabs(){
 // ═══════════════════════════════════════════════════════════════════════════
 // BATCH 4 — PILLAR 4: At Risk instructor view
 // ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════
+//  BATCH 24 (B24-08) — ERRORS TAB (client-errors, newest 100, grouped)
+// ═══════════════════════════════════════════════════════════════════════════
+async function loadDashErrors(){
+  STATE.dashErrors={loading:true,loaded:false,rows:[]};
+  try{
+    const snap=await db.collection('client-errors').orderBy('createdAt','desc').limit(100).get();
+    const rows=[];snap.forEach(d=>rows.push(Object.assign({_id:d.id},d.data())));
+    STATE.dashErrors={loading:false,loaded:true,rows};
+  }catch(e){
+    STATE.dashErrors={loading:false,loaded:true,rows:[],error:e.message};
+  }
+  if(STATE.tab==='dashboard'&&STATE.dashTab==='errors')render();
+}
+async function clearDashErrors(){
+  const rows=(STATE.dashErrors&&STATE.dashErrors.rows)||[];
+  if(!rows.length)return;
+  const ok=await showModal({icon:'\u{1F5D1}\uFE0F',title:'Clear error log?',body:'Deletes the '+rows.length+' reports shown. New errors will still be recorded.',type:'warning',confirmText:'Clear',cancelText:'Cancel'});
+  if(!ok)return;
+  try{
+    for(let i=0;i<rows.length;i+=400){
+      const b=db.batch();rows.slice(i,i+400).forEach(r=>b.delete(db.collection('client-errors').doc(r._id)));await b.commit();
+    }
+    showToast('Error log cleared.','success');
+  }catch(e){showToast('Couldn\u2019t clear: '+e.message,'error');}
+  loadDashErrors();
+}
+function renderDashErrors(){
+  const st=STATE.dashErrors;
+  if(!st||(!st.loaded&&!st.loading)){loadDashErrors();return renderDashSkeleton();}
+  if(st.loading)return renderDashSkeleton();
+  if(st.error)return '<div class="card" style="margin:12px">Couldn\u2019t load errors: '+esc(st.error)+'</div>';
+  const groups={};
+  st.rows.forEach(r=>{
+    const k=(r.kind||'')+'|'+(r.msg||'');
+    if(!groups[k])groups[k]={kind:r.kind,msg:r.msg,count:0,users:{},last:r,builds:{}};
+    const g=groups[k];g.count++;g.users[r.userId]=1;g.builds[r.build||'?']=1;
+  });
+  const list=Object.values(groups).sort((a,b)=>b.count-a.count);
+  const head='<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 12px 8px">'
+    +'<div style="font-size:13px;color:var(--muted)">'+st.rows.length+' recent reports \u00B7 '+list.length+' distinct</div>'
+    +'<div style="display:flex;gap:6px"><button class="sub-nav-btn" onclick="loadDashErrors()">\u21BB Refresh</button>'
+    +(st.rows.length?'<button class="sub-nav-btn" onclick="clearDashErrors()">\u{1F5D1}\uFE0F Clear</button>':'')+'</div></div>';
+  if(!list.length)return head+'<div style="text-align:center;padding:40px 20px;color:var(--muted);font-size:14px">\u2705 No errors reported.</div>';
+  return head+list.map(g=>{
+    const r=g.last;
+    const when=r.at?new Date(r.at).toLocaleString():'';
+    return '<div class="card" style="margin:0 12px 10px">'
+      +'<div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start">'
+      +'<div style="font-size:13px;font-weight:600;color:var(--ink);word-break:break-word">'+esc(g.msg||'(no message)')+'</div>'
+      +'<div style="flex-shrink:0;font-size:12px;font-weight:600;color:var(--err)">\u00D7'+g.count+'</div></div>'
+      +'<div style="font-size:11px;color:var(--muted);margin-top:4px">'+esc(g.kind||'')+' \u00B7 '+Object.keys(g.users).length+' student(s) \u00B7 build '+esc(Object.keys(g.builds).join(', '))+' \u00B7 last: '+esc(when)+(r.tab?' \u00B7 screen: '+esc(r.tab):'')+'</div>'
+      +(r.src?'<div style="font-size:11px;color:var(--muted);margin-top:2px;word-break:break-all">'+esc(r.src)+'</div>':'')
+      +(r.stack?'<details style="margin-top:6px"><summary style="font-size:11px;cursor:pointer;color:var(--brand)">Stack</summary><pre style="font-size:10px;white-space:pre-wrap;word-break:break-word;margin:6px 0 0;color:var(--muted)">'+esc(r.stack)+'</pre></details>':'')
+      +'</div>';
+  }).join('');
+}
+
 async function loadDashAtRisk(groupCode){
   if(!isInstructor()||!db||!groupCode)return;
   STATE.dashAtRiskLoading=true;
@@ -9557,6 +9695,7 @@ function render(){
     html='<div class="scroll-area"><div class="pad" style="padding-top:40px"><div style="max-width:420px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 20px;text-align:center"><div style="font-size:40px;margin-bottom:10px">\u26A0\uFE0F</div><div style="font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px">Something went wrong</div><div style="font-size:13px;color:var(--muted);line-height:1.55;margin-bottom:14px">A screen failed to render. Your data is safe. Try reloading the app.</div><div style="background:var(--surface-3);border-radius:8px;padding:8px 10px;margin-bottom:14px;font-family:monospace;font-size:11px;color:var(--muted);text-align:left;word-break:break-word">Tab: '+_safeTab+'<br>'+_msg+'</div><div style="display:flex;gap:8px"><button onclick="location.reload()" style="flex:1;padding:11px;border-radius:10px;border:none;background:var(--brand);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">Reload</button><button onclick="STATE.tab=\'intro\';render();" style="flex:1;padding:11px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--ink);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">Go Home</button></div></div></div></div>';
   }
   content.innerHTML=html;
+  window.__uiReady=true; // Batch 24 (B24-03): UI is up — errors now toast instead of the boot-failure screen
 
   // Batch 5: weekly plan banner — floats above content on Study tab.
   if(STATE.tab==='study' && STATE.studentActivePlan){
@@ -9629,7 +9768,13 @@ function render(){
   if(STATE.tab==='mock-exam'){content.style.overflow='hidden';if(STATE.mockExam.status==='mcq')setTimeout(()=>renderMockMCQContent(),0);if(STATE.mockExam.status==='cbq')setTimeout(()=>mockSetupMockDrag(),0);}
   if(STATE.tab==='study'&&STATE.lessonId){setTimeout(()=>syncNoteFromCloud(STATE.lessonId),0);}
   try{applyFontSize();}catch(e){}
-  if(STATE.tab==='flashcards'&&(!STATE.flashcards||!STATE.flashcards.length)){ensureFlashcards().then(()=>{if(STATE.tab==='flashcards')render();});}
+  // Batch 24 (B24-14): was an endless render loop whenever the card list came back
+  // empty (e.g. offline with question files not cached): render → load → render…
+  // Now one attempt at a time, retried at most every 30 s.
+  if(STATE.tab==='flashcards'&&(!STATE.flashcards||!STATE.flashcards.length)&&!STATE._flashLoading&&Date.now()-(STATE._flashTriedAt||0)>30000){
+    STATE._flashLoading=true;STATE._flashTriedAt=Date.now();
+    ensureFlashcards().then(()=>{STATE._flashLoading=false;if(STATE.tab==='flashcards'&&STATE.flashcards&&STATE.flashcards.length)render();}).catch(()=>{STATE._flashLoading=false;});
+  }
   if(STATE.tab==='intro'&&STATE.user){setTimeout(()=>{try{ensureQotd();}catch(e){}try{ensureStudentPlan();}catch(e){}},0);}
   if(STATE.tab==='study'&&STATE.user){setTimeout(()=>{try{ensureStudentPlan();}catch(e){}try{ensureStudentSchedule();}catch(e){}},0);}
   if(STATE.tab==='search'){setTimeout(()=>{const inp=document.getElementById('search-input');if(inp){inp.focus();if(STATE.searchQ)updateSearchResults();}},50);}
@@ -10906,6 +11051,7 @@ function renderMockResults(){
 
 auth.onAuthStateChanged(async(user)=>{
   try{ if(user){ setTimeout(startLivePolling,3000); } else { stopLivePolling(); } }catch(e){}
+  try{ if(user){ setTimeout(flushQueuedClientErrors,5000); } }catch(e){} // Batch 24 (B24-08)
   if(user){
     STATE.user=user;
     STATE.authLoading=false;

@@ -3,16 +3,20 @@
 // byte-compare this file on every update check, so it is kept small).
 //
 // RULE: any deploy that changes a precached file (app, css, lesson/question
-// JSON, dictionary) MUST bump CACHE_NAME. Static assets are served
+// JSON, dictionary) MUST bump CACHE_NAME. (Batch 24: the Action rebuilds dist/
+// on every push, so any change to src/, app.css or cbq-data.js counts too.) Static assets are served
 // stale-while-revalidate from the versioned cache; the bump is what makes
 // every student pick up the new files on the next open.
 
-const CACHE_NAME = 'cma-prep-v51';
+const CACHE_NAME = 'cma-prep-v52';
 
-// EMERGENCY (v51): vendor/ returned 404 on Pages — Firebase is temporarily
-// loaded from gstatic in index.html. Once vendor/firebase-9.23.0/ is deployed,
-// restore the 3 './vendor/firebase-9.23.0/...' paths here and in index.html.
-const VENDOR_URLS = [];
+// Batch 23 (B23-02): Firebase SDK self-hosted so the app can cold-start offline.
+// Batch 24 (B24-09): restored after the v51 emergency fallback.
+const VENDOR_URLS = [
+  './vendor/firebase-9.23.0/firebase-app-compat.js',
+  './vendor/firebase-9.23.0/firebase-auth-compat.js',
+  './vendor/firebase-9.23.0/firebase-firestore-compat.js'
+];
 
 const OFFLINE_URLS = [
   './',

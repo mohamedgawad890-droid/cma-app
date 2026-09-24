@@ -45,11 +45,12 @@ window.addEventListener('beforeinstallprompt', e => {
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="CMA Prep">
 <link rel="apple-touch-icon" href="./icon-192.png">
+<!-- Batch 24 (B24-10): explicit favicon (browsers were requesting a missing /favicon.ico) -->
+<link rel="icon" type="image/png" href="./icon-192.png">
 <meta name="msapplication-TileColor" content="#0C447C">
 <meta name="msapplication-TileImage" content="./icon-192.png">
-<!-- Minified build output (batch item 1) — source files (app.css, app.js,
-     cbq-data.js) are unchanged and still what Gawad edits via GitHub;
-     dist/ is rebuilt automatically by .github/workflows/minify.yml on push. -->
+<!-- Minified build output. Batch 24: dist/ is built by the GitHub Action on
+     every push and deployed directly to Pages (it is no longer committed). -->
 <link rel="stylesheet" href="./dist/app.min.css">
 <!-- Batch 6: inline style blocks moved to app.css (batch-overrides, ported-features, dashboard-p1) -->
 <!-- Batch 8: modal-system + toast inline styles moved to app.css -->
@@ -58,12 +59,12 @@ window.addEventListener('beforeinstallprompt', e => {
 <!-- Batch 23 (B23-02 + B23-07): Firebase SDK self-hosted (identical 9.23.0
      compat builds, precached by sw.js → offline cold start works) and
      deferred (no longer blocks first paint). Deferred scripts execute in
-     document order: cbq-data → firebase app → auth → firestore → app.min.js. -->
-<!-- EMERGENCY (sw v51): vendor/ returned 404 on Pages — Firebase loaded from
-     gstatic until vendor/firebase-9.23.0/ is deployed. Restore the ./vendor paths then. -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js" defer></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js" defer></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js" defer></script>
+     document order: cbq-data → firebase app → auth → firestore → app.min.js.
+     Batch 24 (B24-09): restored after the v51 emergency CDN fallback. The CI
+     deploy guard now blocks any deploy where these files are missing. -->
+<script src="./vendor/firebase-9.23.0/firebase-app-compat.js" defer></script>
+<script src="./vendor/firebase-9.23.0/firebase-auth-compat.js" defer></script>
+<script src="./vendor/firebase-9.23.0/firebase-firestore-compat.js" defer></script>
 </head>
 <body>
 <div id="app">
@@ -126,6 +127,6 @@ window.addEventListener('beforeinstallprompt', e => {
   <!-- ── TOAST CONTAINER ──────────────────────────────────────── -->
   <div id="toast-container"></div>
 </div>
-<script src="./dist/app.min.js" defer></script>	
+<script src="./dist/app.min.js" defer></script>
 </body>
 </html>
