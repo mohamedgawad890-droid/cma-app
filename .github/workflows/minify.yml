@@ -1,21 +1,29 @@
-name: Minify build
+name: Build & deploy
 
-# Batch item 1 (2026-09): minify-only build, no bundling, no module changes.
-# Source files (app.js, cbq-data.js, app.css) stay the files Gawad edits via
-# the GitHub web editor. This Action rebuilds dist/ on every push and commits
-# the output back with [skip-build-loop] so it doesn't re-trigger itself.
-#
-# index.html and sw.js were updated once (this same batch) to load the
-# dist/*.min.* files instead of the source files directly.
+# Batch 24 (B24-01/02): replaces the old "minify, commit dist/ back" flow.
+#   • Builds dist/ fresh on every push (never committed — no bot commits, no
+#     push races, no stale dist/).
+#   • Runs a deploy guard: if index.html, sw.js, manifest.json or the app
+#     reference a file that doesn't exist, the deploy is cancelled and the
+#     live site stays on the last good version.
+#   • Deploys straight to GitHub Pages.
+# REQUIRES (one time): Settings → Pages → Build and deployment → Source:
+# "GitHub Actions".
 
 on:
   push:
     branches: [main]
-    paths-ignore:
-      - 'dist/**'
+  workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time; a newer push waits instead of racing.
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -28,27 +36,26 @@ jobs:
           node-version: '20'
 
       - name: Install esbuild
-        run: npm install esbuild@0.24.0 --no-save
+        run: npm install esbuild@0.24.0 --no-save --no-audit --no-fund
 
-      - name: Minify app.js
-        run: npx esbuild app.js --minify --outfile=dist/app.min.js
+      - name: Build site
+        run: node .github/scripts/build.mjs
 
-      - name: Minify cbq-data.js
-        run: npx esbuild cbq-data.js --minify --outfile=dist/cbq-data.min.js
+      - name: Deploy guard
+        run: node .github/scripts/check-refs.mjs
 
-      - name: Minify app.css
-        run: npx esbuild app.css --minify --outfile=dist/app.min.css
+      - uses: actions/configure-pages@v5
 
-      - name: Validate minified JS parses
-        run: |
-          node --check dist/app.min.js
-          node --check dist/cbq-data.min.js
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
 
-      - name: Commit dist/ if changed
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add dist/
-          git diff --cached --quiet && echo "No changes to dist/" && exit 0
-          git commit -m "chore: rebuild dist/ [skip-build-loop]"
-          git push
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
