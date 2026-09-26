@@ -8,7 +8,7 @@
 // stale-while-revalidate from the versioned cache; the bump is what makes
 // every student pick up the new files on the next open.
 
-const CACHE_NAME = 'cma-prep-v52';
+const CACHE_NAME = 'cma-prep-v53';
 
 // Batch 23 (B23-02): Firebase SDK self-hosted so the app can cold-start offline.
 // Batch 24 (B24-09): restored after the v51 emergency fallback.
@@ -23,7 +23,9 @@ const OFFLINE_URLS = [
   './index.html',
   './dist/app.min.js',
   './dist/app.min.css',
-  './dist/cbq-data.min.js',
+  './dist/cbq-data.min.js',        // Batch 24: lazy-loaded by the app, still precached for offline
+  // dist/dashboard.min.js is deliberately NOT precached (instructor-only); it is
+  // cached on first use by the stale-while-revalidate rule for dist/.
   ...VENDOR_URLS,
   './lessons/lesson-s1.json',
   './lessons/lesson-s2.json',

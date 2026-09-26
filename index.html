@@ -54,12 +54,12 @@ window.addEventListener('beforeinstallprompt', e => {
 <link rel="stylesheet" href="./dist/app.min.css">
 <!-- Batch 6: inline style blocks moved to app.css (batch-overrides, ported-features, dashboard-p1) -->
 <!-- Batch 8: modal-system + toast inline styles moved to app.css -->
-<!-- CBQ data file — must load before main script -->
-<script src="./dist/cbq-data.min.js" defer></script>
+<!-- Batch 24 (B24-12): CBQ data (cbq-data.min.js) is no longer loaded here —
+     the app loads it on first CBQ / mock-exam use. sw.js still precaches it. -->
 <!-- Batch 23 (B23-02 + B23-07): Firebase SDK self-hosted (identical 9.23.0
      compat builds, precached by sw.js → offline cold start works) and
      deferred (no longer blocks first paint). Deferred scripts execute in
-     document order: cbq-data → firebase app → auth → firestore → app.min.js.
+     document order: firebase app → auth → firestore → app.min.js.
      Batch 24 (B24-09): restored after the v51 emergency CDN fallback. The CI
      deploy guard now blocks any deploy where these files are missing. -->
 <script src="./vendor/firebase-9.23.0/firebase-app-compat.js" defer></script>
