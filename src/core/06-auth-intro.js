@@ -58,7 +58,7 @@ function renderOnboarding(){
       <div style="font-size:14px;opacity:.85;margin-bottom:20px">Your complete CMA Part 1 study companion</div>
       <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap">
         <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px">${TOTAL_LESSONS} Lessons</div>
-        <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px">2,981 MCQs</div>
+        <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px">2,980 MCQs</div>
         <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px">6 Sections</div>
         <div style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 14px;font-size:12px">Free Access</div>
       </div>
@@ -88,7 +88,7 @@ function renderOnboarding(){
         <div style="display:flex;flex-direction:column;gap:10px">
           ${[
             ['📚','Study',`6 sections · ${TOTAL_LESSONS} lessons covering all CMA Part 1 topics with detailed, structured content`],
-            ['❓','Quizzes','2,981 MCQs — exam-style questions with full explanations after each answer'],
+            ['❓','Quizzes','2,980 MCQs — exam-style questions with full explanations after each answer'],
             ['📊','Progress','Track your completed lessons and quiz scores across all sections'],
             ['📌','Tracker','Mark lessons as Good or Bad to know what to review'],
             ['🌐','Community','Ask questions and get answers from fellow CMA candidates'],
