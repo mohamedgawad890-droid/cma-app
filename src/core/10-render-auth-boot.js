@@ -456,13 +456,19 @@ function handlePhoto(input){
   reader.readAsDataURL(file);
 }
 
+// Batch 26: the sheet receiver now requires a signed-in student. The Firebase ID
+// token travels in the body (no-cors POSTs cannot set an Authorization header);
+// the Apps Script verifies it with Google before writing a row. No user, no send.
+const SHEET_WEBHOOK_URL='https://script.google.com/macros/s/AKfycbyeGFiRduo3JsRQz-tMxR23ZqAE2kxNzUJA9BKwB1Dnm4XSEfUqNq5kqNGkeSOVLtpMpw/exec';
 async function sendToSheet(data){
   try{
-    await fetch('https://script.google.com/macros/s/AKfycbwwfDLTcBC70-zpLM0bySnOZN7XzReVVLXbE-_nJr_jFmIoRNRnBa2hw1P93iCI_tMscg/exec',{
+    if(!STATE.user)return;
+    const idToken=await STATE.user.getIdToken();
+    await fetch(SHEET_WEBHOOK_URL,{
       method:'POST',
       mode:'no-cors',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(data)
+      body:JSON.stringify(Object.assign({},data,{idToken}))
     });
   }catch(e){console.log('Sheet sync error:',e);}
 }
