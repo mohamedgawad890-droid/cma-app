@@ -21,6 +21,7 @@ function renderLessonBody(lesson,sec){
   blocks.forEach((b,i)=>{if(b&&b.t==='h')hIdx.push(i);});
   if(hIdx.length<=1) return blocks.map(b=>renderBlock(b,sec)).join('')+arHTML;
   const introHTML=blocks.slice(0,hIdx[1]).map(b=>renderBlock(b,sec)).join('');
+  const partNavHTML=_lessonPartNav(lesson,blocks,hIdx,sec);
   let topicsHTML='';
   for(let t=1;t<hIdx.length;t++){
     const start=hIdx[t];
@@ -44,7 +45,46 @@ function renderLessonBody(lesson,sec){
     </div>
     <button type="button" class="lesson-expand-all" onclick="toggleAllLessonTopics('${lesson.id}')" id="expand-all-${lesson.id}" style="flex-shrink:0">Expand all</button>
   </div>`;
-  return introHTML+toolbarHTML+`<div id="topics-container-${lesson.id}">`+topicsHTML+arHTML+`</div>`;
+  return introHTML+partNavHTML+toolbarHTML+`<div id="topics-container-${lesson.id}">`+topicsHTML+arHTML+`</div>`;
+}
+
+// ── PART JUMP-NAV (Batch 26) ──
+// Lessons whose headings include "Part N — Title" dividers (today: 4-16, six
+// Parts) get a "Jump to" chip row above the search box. Tapping a chip scrolls to
+// that Part's divider and opens the first topic under it, so a 200-block lesson
+// no longer needs endless scrolling. Lessons without 2+ Part dividers get
+// nothing (returns ''). Not printed. Lives in renderLessonBody(), which every
+// lesson render path (Study list and single-lesson view) already goes through.
+function _lessonPartNav(lesson,blocks,hIdx,sec){
+  const parts=[];
+  hIdx.forEach((bi,t)=>{
+    const m=/^Part\s+(\d+)\s*[\u2014\u2013-]\s*(.+)$/.exec(String((blocks[bi]&&blocks[bi].v)||''));
+    if(!m)return;
+    // t===0 is the lesson's opening heading (rendered as intro, not an accordion):
+    // target the first accordion topic instead. For later Parts the divider is
+    // itself accordion topic #t and the first real topic is #t+1.
+    const scrollT=t===0?1:t;
+    const openT=t===0?1:t+1;
+    if(openT>=hIdx.length)return;
+    parts.push({n:m[1],title:m[2].trim(),scrollT,openT});
+  });
+  if(parts.length<2)return'';
+  const chips=parts.map(p=>`<button type="button" onclick="jumpToLessonPart('${lesson.id}',${p.scrollT},${p.openT})" title="${esc('Part '+p.n+' \u2014 '+p.title)}" style="flex:0 0 auto;max-width:180px;text-align:left;padding:6px 10px;border-radius:10px;border:.5px solid ${sec.text}40;background:${sec.bg};color:${sec.strong};font-family:inherit;cursor:pointer">
+      <div style="font-size:11px;font-weight:700;color:${sec.text};letter-spacing:.3px">Part ${esc(p.n)}</div>
+      <div class="ellipsis" style="font-size:11.5px;line-height:1.35">${esc(p.title)}</div>
+    </button>`).join('');
+  return`<div class="no-print" style="margin:0 0 10px">
+    <div style="font-size:11px;font-weight:600;letter-spacing:.5px;color:#888;margin-bottom:6px">JUMP TO</div>
+    <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch">${chips}</div>
+  </div>`;
+}
+function jumpToLessonPart(lessonId,scrollT,openT){
+  const wrap=document.getElementById('topic-wrap-'+lessonId+'-t'+scrollT);
+  if(!wrap)return;
+  const body=document.getElementById('topic-body-'+lessonId+'-t'+openT);
+  if(body&&body.style.display==='none')toggleLessonTopic(lessonId+'-t'+openT);
+  wrap.style.scrollMarginTop='72px';   // keep the divider clear of the top bar
+  wrap.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 // ─── ARABIC LESSON SUMMARY (Batch 23, B23-14) ──────────────────────────────
