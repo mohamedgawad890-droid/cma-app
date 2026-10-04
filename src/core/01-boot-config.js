@@ -63,10 +63,45 @@ firebase.initializeApp({
   projectId:"cma-study-app",
   storageBucket:"cma-study-app.firebasestorage.app",
   messagingSenderId:"722553543693",
-  appId:"1:722553543693:web:75abdb4cbf49f888e2c944"
+  appId:"1:722553543693:web:75abdb4cbf49f888e2c944",
+  measurementId:"G-52GF6MEH32"   // Batch 28: Google Analytics (GA4)
 });
 const auth=firebase.auth();
 const db=firebase.firestore();
+
+// ─── BATCH 28: GOOGLE ANALYTICS (GA4) ─────────────────────────────────────────
+// Optional by design: if the analytics SDK is missing, blocked by an ad blocker,
+// or unsupported (private mode, old browser), the app runs exactly as before.
+// Privacy: only the Firebase UID is attached to events — never names or emails.
+// The instructor account is excluded so testing doesn't inflate student stats.
+let _ga=null,_gaUid=null;
+function _gaApplyUser(){
+  if(!_ga)return;
+  try{
+    if(_gaUid===INSTRUCTOR_UID){_ga.setAnalyticsCollectionEnabled(false);return;}
+    _ga.setAnalyticsCollectionEnabled(true);
+    _ga.setUserId(_gaUid||null);
+  }catch(_){}
+}
+(function initAnalytics(){
+  try{
+    if(!firebase.analytics||typeof firebase.analytics.isSupported!=='function')return;
+    firebase.analytics.isSupported().then(function(ok){
+      if(!ok)return;
+      _ga=firebase.analytics();
+      _gaApplyUser();
+    }).catch(function(){});
+  }catch(_){}
+})();
+// Safe event helper — call track('event_name',{param:value}) from anywhere.
+function track(name,params){
+  try{ if(_ga)_ga.logEvent(String(name),params||{}); }catch(_){}
+}
+auth.onAuthStateChanged(function(u){
+  _gaUid=u?u.uid:null;
+  _gaApplyUser();
+});
+
 // ─── BATCH 24 (B24-08): REMOTE ERROR LOG ──────────────────────────────────────
 // Writes to Firestore `client-errors` (instructor-only read, see rules). Caps:
 // max 5 reports per page session, each distinct message once. If Firebase or
@@ -298,5 +333,3 @@ const S=[
     ]}
 ];
 const TOTAL_LESSONS=S.reduce((acc,s)=>acc+s.lessons.length,0);
-
-
