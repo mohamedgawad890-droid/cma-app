@@ -8,7 +8,7 @@
 // stale-while-revalidate from the versioned cache; the bump is what makes
 // every student pick up the new files on the next open.
 
-const CACHE_NAME = 'cma-prep-v63';
+const CACHE_NAME = 'cma-prep-v64';
 
 // Batch 23 (B23-02): Firebase SDK self-hosted so the app can cold-start offline.
 // Batch 24 (B24-09): restored after the v51 emergency fallback.

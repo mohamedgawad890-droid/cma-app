@@ -694,7 +694,8 @@ html[dir="rtl"] .case-insight{border-left:none;border-right:3px solid var(--bran
 .field-error{border-color:var(--err)!important;box-shadow:0 0 0 2px var(--err-tint,rgba(220,53,69,.18))!important;outline:none}
 
 /* ── Batch 28: quiz navigation row ───────────────────────────────────────
-   .btn is width:100%, so inside the quiz's Back / Next row the "Back" button
+   .btn is width:100%, so inside the quiz's Back / Next row (lesson quiz and Quiz Mode) the "Back" button
    took the whole line and pushed Next / Skip / Finish off-screen. Scoped to
-   the quiz nav wrapper only (#qs-next-wrap, see renderQuizSession). */
-#qs-next-wrap .btn{width:auto}
+   the quiz nav wrappers only (#qs-next-wrap in renderQuizSession, #qm-next-wrap in renderQuizMode). */
+#qs-next-wrap .btn,
+#qm-next-wrap .btn{width:auto}
