@@ -21,6 +21,7 @@
 //   mock_exam_start  {}                                              full mock exam started
 //   mock_exam_finish {mcq_pct, cbq_pct, weighted_pct, passed}
 //   cbq_check        {section_key, case_id, correct, total, score_pct}
+//   quiz_mode_finish {quiz_type, section_id, questions, correct, score_pct}   Practice > MCQ Quiz (section / full mix / streak-grace review)
 // Defined in 01-boot-config.js: track(name, params), _ga.
 
 (function(){
@@ -203,6 +204,28 @@
           correct:sc.s,
           total:sc.t,
           score_pct:sc.t?Math.round(sc.s/sc.t*100):0
+        });
+      });
+      return out;
+    };
+  }
+  // ── 9) Practice > MCQ Quiz (Quiz Mode) finished ──
+  if(typeof finishQuizMode==='function'){
+    const _finishQuizMode=finishQuizMode;
+    finishQuizMode=async function(){
+      const before=!!(STATE.quizMode&&STATE.quizMode.done);
+      const out=await _finishQuizMode.apply(this,arguments);
+      safe(function(){
+        const qm=STATE.quizMode;
+        if(!qm||!qm.done||before||!Array.isArray(qm.answers)||!Array.isArray(qm.questions))return;
+        const total=qm.questions.length;
+        const right=qm.answers.filter(function(a){return a&&a.correct;}).length;
+        track('quiz_mode_finish',{
+          quiz_type:qm.isGrace?'streak_grace':(qm.sectionId?'section_quiz':'full_mix'),
+          section_id:Number(qm.sectionId)||0,   // 0 = all sections
+          questions:total,
+          correct:right,
+          score_pct:total?Math.round(right/total*100):0
         });
       });
       return out;
