@@ -15,6 +15,12 @@
 //   lesson_open      {lesson_id, section_id}           lesson reader opened
 //   lesson_complete  {lesson_id, section_id}           "Mark as Complete" (first time only)
 //   quiz_finish      {quiz_type, lesson_id, section_id, questions, correct, score_pct}
+//   exam_start       {exam_id, attempt_number}                       instructor group exam started/resumed
+//   exam_submit      {exam_id, exam_title, section_id, attempt_number, score, total, score_pct, passed, auto_submitted, time_min}
+//   practice_finish  {sections, total, auto_submitted, time_min}     student custom practice test (no score: private)
+//   mock_exam_start  {}                                              full mock exam started
+//   mock_exam_finish {mcq_pct, cbq_pct, weighted_pct, passed}
+//   cbq_check        {section_key, case_id, correct, total, score_pct}
 // Defined in 01-boot-config.js: track(name, params), _ga.
 
 (function(){
@@ -84,6 +90,119 @@
           questions:total,
           correct:right,
           score_pct:total?Math.round(right/total*100):0
+        });
+      });
+      return out;
+    };
+  }
+  // ── 5) Group exam started (also fires on resume) ──
+  if(typeof startExam==='function'){
+    const _startExam=startExam;
+    startExam=async function(examId){
+      const before=STATE.examSession;
+      const out=await _startExam.apply(this,arguments);
+      safe(function(){
+        const s=STATE.examSession;
+        if(s&&s!==before&&!s.submitted&&!s.isPractice){
+          track('exam_start',{exam_id:String(examId),attempt_number:Number(s.attemptNumber)||1});
+        }
+      });
+      return out;
+    };
+  }
+
+  // ── 6) Exam / custom practice test submitted (graded exam OR student practice) ──
+  if(typeof submitExam==='function'){
+    const _submitExam=submitExam;
+    submitExam=async function(){
+      const sess=STATE.examSession;
+      const wasSubmitted=!!(sess&&sess.submitted);
+      const out=await _submitExam.apply(this,arguments);
+      safe(function(){
+        const s=STATE.examSession;
+        if(!s||!s.submitted||wasSubmitted||!s.results||s.results._tracked)return;
+        s.results._tracked=true;
+        const r=s.results;
+        const base={
+          score:Number(r.score)||0,
+          total:Number(r.total)||0,
+          score_pct:Number(r.percentage)||0,
+          passed:r.passed?1:0,
+          auto_submitted:r.autoSubmitted?1:0,
+          time_min:r.timeMs?Math.round(r.timeMs/60000):0
+        };
+        if(s.isPractice){
+          // Privacy: custom practice results are private to the student, so no score
+          // or pass/fail is sent here — only that a test was completed.
+          track('practice_finish',{
+            sections:Array.isArray(s.exam&&s.exam.sectionIds)?s.exam.sectionIds.length:0,
+            total:base.total,
+            auto_submitted:base.auto_submitted,
+            time_min:base.time_min
+          });
+        }else{
+          track('exam_submit',Object.assign({
+            exam_id:String(s.examId||''),
+            exam_title:String((s.exam&&s.exam.title)||'').slice(0,80),
+            section_id:Number(s.exam&&s.exam.sectionId)||0,
+            attempt_number:Number(s.attemptNumber)||1
+          },base));
+        }
+      });
+      return out;
+    };
+  }
+
+  // ── 7) Full mock exam: start + finish ──
+  if(typeof startMockExam==='function'){
+    const _startMock=startMockExam;
+    startMockExam=async function(){
+      const out=await _startMock.apply(this,arguments);
+      safe(function(){
+        if(STATE.mockExam&&STATE.mockExam.status==='mcq')track('mock_exam_start',{});
+      });
+      return out;
+    };
+  }
+  if(typeof mockSubmitCBQ==='function'){
+    const _mockSubmitCBQ=mockSubmitCBQ;
+    mockSubmitCBQ=function(){
+      const wasStatus=STATE.mockExam&&STATE.mockExam.status;
+      const out=_mockSubmitCBQ.apply(this,arguments);
+      safe(function(){
+        const me=STATE.mockExam;
+        if(!me||me.status!=='results'||wasStatus==='results'||!me.results)return;
+        const r=me.results;
+        const mcqPct=Math.round(r.mcqCorrect/r.mcqTotal*100);
+        const cbqPct=r.cbqTotal?Math.round(r.cbqCorrect/r.cbqTotal*100):0;
+        const weighted=Math.round(mcqPct*0.75+(r.cbqTotal?cbqPct:mcqPct)*0.25);
+        track('mock_exam_finish',{
+          mcq_pct:mcqPct,
+          cbq_pct:r.cbqTotal?cbqPct:-1,   // -1 = CBQ phase not attempted
+          weighted_pct:weighted,
+          passed:weighted>=70?1:0
+        });
+      });
+      return out;
+    };
+  }
+
+  // ── 8) CBQ practice: a case was graded ──
+  if(typeof cbqCheck==='function'){
+    const _cbqCheck=cbqCheck;
+    cbqCheck=function(){
+      const out=_cbqCheck.apply(this,arguments);
+      safe(function(){
+        const key=CBQ_TAB_KEYS[CBQ_S.secIdx];
+        const cbq=CBQ_DATA[key][CBQ_S.cbqIdx];
+        const sc=CBQ_S.scores[cbq.id];
+        if(!sc)return;
+        track('cbq_check',{
+          section_key:String(key),
+          case_id:String(cbq.id),
+          correct:sc.s,
+          total:sc.t,
+          score_pct:sc.t?Math.round(sc.s/sc.t*100):0
         });
       });
       return out;
