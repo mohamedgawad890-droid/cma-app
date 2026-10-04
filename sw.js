@@ -8,14 +8,15 @@
 // stale-while-revalidate from the versioned cache; the bump is what makes
 // every student pick up the new files on the next open.
 
-const CACHE_NAME = 'cma-prep-v59';
+const CACHE_NAME = 'cma-prep-v60';
 
 // Batch 23 (B23-02): Firebase SDK self-hosted so the app can cold-start offline.
 // Batch 24 (B24-09): restored after the v51 emergency fallback.
 const VENDOR_URLS = [
   './vendor/firebase-9.23.0/firebase-app-compat.js',
   './vendor/firebase-9.23.0/firebase-auth-compat.js',
-  './vendor/firebase-9.23.0/firebase-firestore-compat.js'
+  './vendor/firebase-9.23.0/firebase-firestore-compat.js',
+  './vendor/firebase-9.23.0/firebase-analytics-compat.js'   // Batch 28: Google Analytics
 ];
 
 const OFFLINE_URLS = [
@@ -51,7 +52,10 @@ const BYPASS_HOSTS = [
   'googleapis.com',
   'cloudinary.com',
   'script.google.com',
-  'youtube.com'
+  'youtube.com',
+  'googletagmanager.com',          // Batch 28: Analytics (gtag.js + beacons)
+  'google-analytics.com',
+  'analytics.google.com'
 ];
 
 // Same-origin paths served stale-while-revalidate (versioned by CACHE_NAME).
