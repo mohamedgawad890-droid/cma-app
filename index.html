@@ -59,12 +59,14 @@ window.addEventListener('beforeinstallprompt', e => {
 <!-- Batch 23 (B23-02 + B23-07): Firebase SDK self-hosted (identical 9.23.0
      compat builds, precached by sw.js → offline cold start works) and
      deferred (no longer blocks first paint). Deferred scripts execute in
-     document order: firebase app → auth → firestore → app.min.js.
+     document order: firebase app → auth → firestore → analytics → app.min.js.
      Batch 24 (B24-09): restored after the v51 emergency CDN fallback. The CI
      deploy guard now blocks any deploy where these files are missing. -->
 <script src="./vendor/firebase-9.23.0/firebase-app-compat.js" defer></script>
 <script src="./vendor/firebase-9.23.0/firebase-auth-compat.js" defer></script>
 <script src="./vendor/firebase-9.23.0/firebase-firestore-compat.js" defer></script>
+<!-- Batch 28: Google Analytics (GA4). Optional — the app runs normally if this file is missing or blocked. -->
+<script src="./vendor/firebase-9.23.0/firebase-analytics-compat.js" defer></script>
 </head>
 <body>
 <div id="app">
