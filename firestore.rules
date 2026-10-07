@@ -1,0 +1,442 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+    function signedIn()     { return request.auth != null; }
+    function isOwner(uid)    { return signedIn() && request.auth.uid == uid; }
+    // CMA instructor (Mohamed Abdelgawad) — corrected UID for this project
+    function isInstructor()  { return signedIn() && request.auth.uid == 'NI1nS2qCYehDnlwFHA5A01bxV8V2'; }
+
+    // Batch 6 helper — the set of fields a student is allowed to touch on their
+    // own doc after creation. Used by attendance and lecture-feedback below.
+    function onlyStudentEditableKeys(allowed) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(allowed);
+    }
+
+    // Batch 12 helper — the signed-in student's own groupCode, read from their
+    // students/{uid} doc. Used to scope lecture reads to the student's own
+    // group instead of every group in the app.
+    function myGroupCode() {
+      return get(/databases/$(database)/documents/students/$(request.auth.uid)).data.groupCode;
+    }
+
+    // Batch 23 (B23-06) helpers — community votes/counters.
+    // An upvotes update may only add or remove the CALLER's own uid. The app
+    // uses arrayUnion/arrayRemove, so concurrent votes by others never collide.
+    function ownVoteToggleOnly() {
+      let before = resource.data.get('upvotes', []).toSet();
+      let after  = request.resource.data.upvotes;
+      return after is list
+        && after.toSet().difference(before).union(before.difference(after.toSet()))
+             .hasOnly([request.auth.uid]);
+    }
+    // replyCount may only move by exactly one step (FieldValue.increment(±1)).
+    function replyCountStepOnly() {
+      let before = resource.data.get('replyCount', 0);
+      let after  = request.resource.data.replyCount;
+      return after is int && (after == before + 1 || after == before - 1);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    //  STUDENT DATA — matches the collection names the CMA app actually uses
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    // Progress: owner read/write; instructor read-only
+    match /progress/{userId} {
+      allow read:  if isOwner(userId) || isInstructor();
+      // Batch 25 (B25-04): light shape/size check. The app writes
+      // {done[], lessonScores{}, mcqTotal, mcqRight}; every field is read with a
+      // default so older/partial docs still save. Ceilings match the leaderboard.
+      allow write: if isOwner(userId)
+        && request.resource.data.keys().size() <= 20
+        && request.resource.data.get('done', []) is list
+        && request.resource.data.get('done', []).size() <= 500
+        && request.resource.data.get('lessonScores', {}) is map
+        && request.resource.data.get('mcqTotal', 0) is number
+        && request.resource.data.get('mcqTotal', 0) >= 0
+        && request.resource.data.get('mcqTotal', 0) <= 50000
+        && request.resource.data.get('mcqRight', 0) is number
+        && request.resource.data.get('mcqRight', 0) >= 0
+        && request.resource.data.get('mcqRight', 0) <= 50000;
+    }
+
+    // Student profiles: owner read/write; instructor read (for dashboard list/search)
+    // Batch 11: students can freely edit their own profile fields, but
+    // groupCode can only ever move to '' (leaving) or stay unchanged from the
+    // client — it can never be self-assigned to a new non-empty value. Real
+    // group membership only changes via the instructor's Approvals action
+    // (isInstructor branch below, scoped to just groupCode/pendingGroupCode).
+    match /students/{userId} {
+      allow read: if isOwner(userId) || isInstructor();
+
+      allow create: if isOwner(userId)
+        && (!('groupCode' in request.resource.data) || request.resource.data.groupCode == '');
+
+      allow update: if (isOwner(userId)
+            && (request.resource.data.groupCode == resource.data.groupCode
+                || request.resource.data.groupCode == ''))
+          || (isInstructor()
+              && request.resource.data.diff(resource.data).affectedKeys()
+                   .hasOnly(['groupCode','pendingGroupCode']));
+
+      allow delete: if isOwner(userId);
+    }
+
+    // Tracker (easy/difficult flags): owner read/write; instructor read-only
+    match /tracker/{userId} {
+      allow read:  if isOwner(userId) || isInstructor();
+      allow write: if isOwner(userId);
+    }
+
+    // Feedback: owner read/write; instructor read-only
+    match /feedback/{userId} {
+      allow read:  if isOwner(userId) || isInstructor();
+      allow write: if isOwner(userId);
+    }
+
+    // Notes: PRIVATE — owner only. Instructor CANNOT read student notes.
+    // Path matches app: notes/{uid}/lessons/{lessonId}
+    match /notes/{userId}/lessons/{lessonId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Leaderboard — Batch 6 anti-spoof hardening.
+    // Client-writable is still spoofable at the app-code level, but rules now
+    // enforce ceilings that a naive tamperer will hit before submitting garbage:
+    //  • lessons  ≤ 113   (safety ceiling, kept above TOTAL_LESSONS on purpose so it never
+    //    needs editing on ordinary content changes — TOTAL_LESSONS is 103 as of Batch 21;
+    //    only raise this ceiling if lesson count ever approaches it)
+    //  • mcqTotal ≤ 50000 (well above any realistic single-student total)
+    //  • accuracy already bounded 0–100 pre-Batch-6
+    // The real fix (server-side scoring via Cloud Function) waits for Batch 3-A.
+    // ─────────────────────────────────────────────────────────────────────────
+    match /leaderboard/{userId} {
+      allow read: if signedIn();
+      allow write: if isOwner(userId)
+        && request.resource.data.name is string
+        && request.resource.data.lessons is number  && request.resource.data.lessons >= 0  && request.resource.data.lessons <= 113
+        && request.resource.data.accuracy is number && request.resource.data.accuracy >= 0 && request.resource.data.accuracy <= 100
+        && request.resource.data.mcqTotal is number && request.resource.data.mcqTotal >= 0  && request.resource.data.mcqTotal <= 50000
+        && request.resource.data.mcqRight is number && request.resource.data.mcqRight >= 0
+        && request.resource.data.mcqRight <= request.resource.data.mcqTotal;
+    }
+
+    // Lessons: shared content. Signed-in users read; only instructor writes.
+    match /lessons/{lessonId} {
+      allow read:  if signedIn();
+      allow write: if isInstructor();
+    }
+
+    // Community questions: signed-in read; author creates; content-protected updates.
+    // App updates `upvotes` and `replyCount` in SEPARATE calls, so each key is
+    // allowed independently (not a combined hasOnly of both).
+    match /questions/{questionId} {
+      allow read:   if signedIn();
+      // Batch 23 (B23-06): new questions must start with no votes and 0 replies.
+      allow create: if signedIn() && request.resource.data.authorId == request.auth.uid
+        && request.resource.data.get('upvotes', []).size() == 0
+        && request.resource.data.get('replyCount', 0) == 0;
+      // Batch 23 (B23-06): was "any signed-in user may rewrite upvotes/replyCount
+      // to anything" — could wipe other students' votes or fake counts.
+      allow update: if signedIn() && (
+           (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['upvotes'])
+              && ownVoteToggleOnly())
+        || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['replyCount'])
+              && replyCountStepOnly())
+      );
+      allow delete: if signedIn()
+        && (resource.data.authorId == request.auth.uid || isInstructor());
+
+      // Replies sub-collection
+      match /replies/{replyId} {
+        allow read:   if signedIn();
+        // Batch 23 (B23-06): replies start with no votes and not marked best.
+        allow create: if signedIn() && request.resource.data.authorId == request.auth.uid
+          && request.resource.data.get('upvotes', []).size() == 0
+          && request.resource.data.get('isBestAnswer', false) == false;
+        // Batch 20 (security pass, MEDIUM): was open to any signed-in user
+        // for both keys — any student could mark any reply (on any question)
+        // as the best answer via a direct write, bypassing the app's
+        // instructor-only UI gate. `upvotes` alone stays open to anyone;
+        // `isBestAnswer` now requires being the question's own author or
+        // the instructor.
+        // Batch 23 (B23-06): upvotes limited to the caller's own uid.
+        allow update: if signedIn() && (
+             (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['upvotes'])
+                && ownVoteToggleOnly())
+          || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['isBestAnswer'])
+                && (isInstructor()
+                    || get(/databases/$(database)/documents/questions/$(questionId)).data.authorId == request.auth.uid))
+        );
+        allow delete: if signedIn()
+          && (resource.data.authorId == request.auth.uid || isInstructor());
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    //  INSTRUCTOR DASHBOARD — new collections (needed before dashboard deploy)
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    // Instructor-owned content: only the instructor writes; any signed-in student
+    // reads (they need to see their group's lectures, plans, exams, QoD source).
+    match /groups/{docId}       { allow read: if signedIn(); allow write: if isInstructor(); }
+    // Batch 12: scoped to the student's own group (was: any signed-in user could
+    // read every group's lecture docs). Instructor always has full read access.
+    match /lectures/{docId}     { allow read: if isInstructor() || (signedIn() && resource.data.groupCode == myGroupCode()); allow write: if isInstructor(); }
+    match /teaching-log/{docId} { allow read: if signedIn(); allow write: if isInstructor(); }
+    // Batch 20 (security pass, HIGH): was `signedIn()` — any student could
+    // read exam docs (incl. frozen questionIds) for every group, including
+    // exams not assigned to them and exams not yet open. Scoped to the
+    // student's own group, matching the `lectures` pattern above.
+    match /exams/{docId}        { allow read: if isInstructor() || (signedIn() && resource.data.groupCode == myGroupCode()); allow write: if isInstructor(); }
+
+    // Batch 5: Weekly Plans — instructor publishes; students read active plan for
+    // their group. One-active-per-group is enforced client-side via a batched
+    // write that archives the previous active plan and creates the new one.
+    match /weekly-plans/{docId} {
+      allow read:  if signedIn();
+      allow write: if isInstructor();
+    }
+
+    // Batch 25 (B25-01): Lecture Schedule (Plan vs Actual, shipped in Batch 22).
+    // One doc per group, doc id = group code. It had NO rule, so default-deny
+    // made every save/load fail. A student reads only their own group's doc
+    // (matched on the doc id, so a group that has no schedule yet reads as
+    // "not found" instead of a permission error); only the instructor writes.
+    match /lecture-schedule/{groupCode} {
+      allow read:  if isInstructor()
+        || (signedIn() && groupCode.upper() == myGroupCode().upper());
+      allow write: if isInstructor();
+    }
+
+    // Live lecture pointer — one doc per group code (key IS the group code, so a
+    // group can only ever have ONE live lecture). Instructor opens/closes it;
+    // any signed-in student reads it (Phase 2b poller detects a live session).
+    match /live/{groupCode} {
+      allow read:  if signedIn();
+      allow write: if isInstructor();
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Attendance — Batch 6 hardening.
+    // Before: a student could rewrite any field on their own attendance doc
+    // (timestamp, mode, groupCode). Now the student can only toggle a fixed
+    // set of session-related fields; instructor retains full control.
+    // Allowed student-editable keys: mode (online|offline), note (optional).
+    // ─────────────────────────────────────────────────────────────────────────
+    match /attendance/{docId} {
+      // Batch 20 (security pass, HIGH): was `signedIn()` — any student could
+      // read every other student's attendance doc (timestamps, mode, notes).
+      // Scoped to owner or instructor, matching lecture-feedback below.
+      allow read:   if isInstructor()
+        || (signedIn() && resource.data.userId == request.auth.uid);
+      // Batch 24 (B24-05): was "any signed-in student may create any attendance
+      // doc" — any lecture, any time, repeatedly, with a client-set timestamp.
+      // Now: one doc per student per lecture (id = lectureId_uid), for the
+      // student's own group, only while that lecture is the group's live one,
+      // stamped with the server time.
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && docId == request.resource.data.lectureId + '_' + request.auth.uid
+        && request.resource.data.groupCode == myGroupCode()
+        && get(/databases/$(database)/documents/live/$(request.resource.data.groupCode)).data.get('lectureId', null)
+             == request.resource.data.lectureId
+        && request.resource.data.serverCheckedInAt == request.time;
+      allow update: if isInstructor()
+        || (signedIn()
+            && resource.data.userId == request.auth.uid
+            && onlyStudentEditableKeys(['mode','note']));
+      allow delete: if isInstructor();
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Lecture feedback — Batch 6 hardening.
+    // Student may edit their own feedback content fields only; can't rewrite
+    // ownership or lecture linkage. Instructor retains full control.
+    // Allowed student-editable keys: rating, comment, tags.
+    // ─────────────────────────────────────────────────────────────────────────
+    match /lecture-feedback/{docId} {
+      allow read:   if isInstructor()
+        || (signedIn() && resource.data.userId == request.auth.uid);
+      allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if isInstructor()
+        || (signedIn()
+            && resource.data.userId == request.auth.uid
+            && onlyStudentEditableKeys(['rating','comment','tags']));
+      allow delete: if isInstructor();
+    }
+
+    // Exam results: student writes own result doc; instructor reads all.
+    // Batch 2 / Watchlist #6: once `submitted:true` is on the doc, it becomes
+    // immutable to the client — prevents a determined student from rewriting
+    // their own score via devtools after submission. Server-side (Cloud
+    // Functions in Batch 3) can still update; instructor still only reads.
+    match /exam-results/{docId} {
+      allow read:   if isInstructor()
+        || (signedIn() && resource.data.userId == request.auth.uid);
+      // Batch 23 (B23-01): create was unchecked — a student could create a doc
+      // already marked submitted:true with any score, any attempt number, and
+      // bypass the attempt cap. Now a create must: start unsubmitted (score
+      // bounds are then enforced by the update rule below), use the app's own
+      // doc id pattern, and stay within the exam's maxAttempts (default 3).
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.get('submitted', false) == false
+        && request.resource.data.examId is string
+        && request.resource.data.attemptNumber is int
+        && request.resource.data.attemptNumber >= 1
+        && docId == request.resource.data.examId + '_' + request.auth.uid + '_a'
+                    + string(request.resource.data.attemptNumber)
+        && request.resource.data.attemptNumber
+             <= get(/databases/$(database)/documents/exams/$(request.resource.data.examId)).data.get('maxAttempts', 3);
+      // Batch 20 (security pass, MEDIUM): added score/total/percentage bounds
+      // on the write that sets submitted:true — was previously unchecked, so
+      // a student could fabricate any score before submitting (leaderboard
+      // already had equivalent bounds; exam-results did not). In-progress
+      // saves that don't touch `submitted` are unaffected. Full server-side
+      // scoring (Cloud Function) is still the real fix — this is a cheap
+      // client-rules mitigation until that lands.
+      // Batch 24 (B24-06): `total` was client-chosen, so 1/1 = 100%. On submit,
+      // one answer per question is required and total must cover at least 80%
+      // of the exam's frozen question set (80% tolerates questions later removed
+      // from the bank that can no longer be hydrated).
+      allow update: if signedIn()
+        && resource.data.userId == request.auth.uid
+        && resource.data.submitted != true
+        && (
+             request.resource.data.submitted != true
+             || (
+                  request.resource.data.total is number && request.resource.data.total > 0
+                  && request.resource.data.score is number && request.resource.data.score >= 0
+                  && request.resource.data.score <= request.resource.data.total
+                  && request.resource.data.percentage is number
+                  && request.resource.data.percentage >= 0 && request.resource.data.percentage <= 100
+                  && request.resource.data.answers is list
+                  && request.resource.data.answers.size() == request.resource.data.total
+                  && request.resource.data.total * 10
+                       >= get(/databases/$(database)/documents/exams/$(resource.data.examId)).data.get('questionIds', []).size() * 8
+                )
+           );
+      allow delete: if isInstructor();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    //  BATCH 20 — STUDENT CUSTOM PRACTICE TESTS (Item 9)
+    // ═══════════════════════════════════════════════════════════════════════════
+    // Student-built practice tests (pick section(s)/unit(s), own question count
+    // and duration). Deliberately kept SEPARATE from exam-results and fully
+    // private — the instructor has no read access here, by design: these are
+    // self-selected, non-comparable tests (different scope/length per student)
+    // and must never leak into Results or At Risk aggregates, which assume a
+    // shared, comparable assignment. Same submitted-lock pattern as exam-results.
+    match /custom-practice-results/{docId} {
+      allow read:   if signedIn() && resource.data.userId == request.auth.uid;
+      allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if signedIn()
+        && resource.data.userId == request.auth.uid
+        && resource.data.submitted != true;
+      allow delete: if signedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    //  BATCH 4 — RETENTION INFRASTRUCTURE
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    // Batch 4 / Watchlist #11: student-analytics — rolling engagement summary.
+    // Student writes own doc (debounced, one per session end via syncStudentAnalytics).
+    // Instructor reads for the "At Risk" dashboard view (scoped by group).
+    // Instructor may delete (e.g. graduated students being cleared from list).
+    // Doc is a single overwrite-on-update shape — no historical accumulation
+    // client-side, which keeps write cost bounded.
+    match /student-analytics/{userId} {
+      allow read:   if isOwner(userId) || isInstructor();
+      // Batch 25 (B25-04): the owner may only write a doc that is really theirs
+      // (userId == their uid) with sane field types/sizes. The app sends these
+      // fields on every sync (merge:true), so the merged result always has them.
+      allow create, update: if isOwner(userId)
+        && request.resource.data.keys().size() <= 30
+        && request.resource.data.userId == userId
+        && request.resource.data.groupCode is string
+        && request.resource.data.groupCode.size() <= 20
+        && request.resource.data.displayName is string
+        && request.resource.data.displayName.size() <= 120;
+      allow delete: if isOwner(userId) || isInstructor();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    //  BATCH 6 — INSTRUCTOR-ONLY: PRIVATE NOTES ON STUDENTS (Item G.5)
+    // ═══════════════════════════════════════════════════════════════════════════
+    // Instructor-authored private annotations about a student (e.g. "Needs extra
+    // help with Section 4"). Students CANNOT read or write these — this is an
+    // instructor-only tool for coaching notes. Doc id = student uid.
+    match /instructor-notes/{studentUid} {
+      allow read, write: if isInstructor();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    //  BATCH 11 — GROUP JOIN/SWITCH APPROVAL WORKFLOW
+    // ═══════════════════════════════════════════════════════════════════════════
+    // A student entering a new or different group code creates a pending
+    // request here instead of joining instantly. Only the instructor can read,
+    // approve (update), or reject (update) requests — students cannot see
+    // anyone else's requests, and cannot approve their own. Kept (not deleted)
+    // on rejection for an audit trail, per Batch 11 design.
+    // ═══════════════════════════════════════════════════════════════════════════
+    //  BATCH 24 (B24-08) — CLIENT ERROR LOG
+    // ═══════════════════════════════════════════════════════════════════════════
+    // Signed-in devices report app errors (app caps: 5 per session). Fixed shape
+    // and size limits keep a tampered client from storing arbitrary data here.
+    // Only the instructor reads (Dashboard → Errors) or deletes.
+    match /client-errors/{docId} {
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.keys().hasOnly(['kind','msg','stack','src','tab','ua','build','at','userId','createdAt'])
+        && request.resource.data.kind is string  && request.resource.data.kind.size()  <= 20
+        && request.resource.data.msg is string   && request.resource.data.msg.size()   <= 500
+        && request.resource.data.stack is string && request.resource.data.stack.size() <= 3000
+        && request.resource.data.src is string   && request.resource.data.src.size()   <= 300
+        && request.resource.data.tab is string   && request.resource.data.tab.size()   <= 40
+        && request.resource.data.ua is string    && request.resource.data.ua.size()    <= 300
+        && request.resource.data.build is string && request.resource.data.build.size() <= 20
+        && request.resource.data.at is string    && request.resource.data.at.size()    <= 40
+        && request.resource.data.createdAt == request.time;
+      allow read, delete: if isInstructor();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    //  BATCH 29 — STUDENT FEEDBACK & REQUESTS (share / feedback popup)
+    // ═══════════════════════════════════════════════════════════════════════════
+    // A signed-in student sends a note, feature request or problem report from
+    // the popup. Create only: fixed field set, size limits, server timestamp.
+    // Students cannot read, edit or delete anything here (not even their own);
+    // only the instructor reads, marks as read (update) and deletes.
+    match /app-feedback/{docId} {
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['userId','name','type','message','status','tab','build','createdAt'])
+        && request.resource.data.keys().hasAll(['userId','type','message','status','createdAt'])
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.type in ['note','request','problem']
+        && request.resource.data.message is string
+        && request.resource.data.message.size() >= 3
+        && request.resource.data.message.size() <= 1000
+        && request.resource.data.get('name', '') is string
+        && request.resource.data.get('name', '').size() <= 80
+        && request.resource.data.status == 'new'
+        && request.resource.data.get('tab', '') is string
+        && request.resource.data.get('tab', '').size() <= 40
+        && request.resource.data.get('build', '') is string
+        && request.resource.data.get('build', '').size() <= 20
+        && request.resource.data.createdAt == request.time;
+      allow read, update, delete: if isInstructor();
+    }
+
+    match /group-requests/{requestId} {
+      allow read, update, delete: if isInstructor();
+      allow create: if signedIn()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.status == 'pending';
+    }
+  }
+}

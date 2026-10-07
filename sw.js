@@ -2,13 +2,16 @@
 // Version history lives in CHANGELOG.md (moved out in Batch 23 — browsers
 // byte-compare this file on every update check, so it is kept small).
 //
-// RULE: any deploy that changes a precached file (app, css, lesson/question
-// JSON, dictionary) MUST bump CACHE_NAME. (Batch 24: the Action rebuilds dist/
-// on every push, so any change to src/, app.css or cbq-data.js counts too.) Static assets are served
-// stale-while-revalidate from the versioned cache; the bump is what makes
-// every student pick up the new files on the next open.
+// CACHE VERSION IS AUTOMATIC (Batch 29): the deploy workflow runs
+// .github/scripts/version-sw.mjs, which replaces CACHE_NAME in the BUILT copy of
+// this file with 'cma-prep-' + a hash of every other site file. Any change to
+// the app, lessons, questions, CSS, JSON or images therefore gives every student
+// a fresh cache on their next open — no manual bump. The value below is only a
+// fallback label; do NOT edit it for deploys, but keep that line's exact format
+// (the script looks for the one line that starts with the CACHE_NAME declaration).
+// Static assets are served stale-while-revalidate from the versioned cache.
 
-const CACHE_NAME = 'cma-prep-v65';
+const CACHE_NAME = 'cma-prep-v66';
 
 // Batch 23 (B23-02): Firebase SDK self-hosted so the app can cold-start offline.
 // Batch 24 (B24-09): restored after the v51 emergency fallback.
