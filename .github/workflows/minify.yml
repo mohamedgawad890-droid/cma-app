@@ -41,6 +41,11 @@ jobs:
       - name: Build site
         run: node .github/scripts/build.mjs
 
+      # Batch 29: stamps a content-hash cache name into _site/sw.js, so the
+      # CACHE_NAME in the repo's sw.js never needs a manual bump again.
+      - name: Version service worker
+        run: node .github/scripts/version-sw.mjs
+
       - name: Deploy guard
         run: node .github/scripts/check-refs.mjs
 
