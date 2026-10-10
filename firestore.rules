@@ -21,6 +21,17 @@ service cloud.firestore {
       return get(/databases/$(database)/documents/students/$(request.auth.uid)).data.groupCode;
     }
 
+    // Batch 30 helper — paid-content access. True only when the signed-in user
+    // has an entitlements/{uid} doc with paid == true and locked != true.
+    // Students WITHOUT an entitlements doc are simply "free" (exists() is false),
+    // so no migration of existing students is needed.
+    function hasPaid() {
+      let p = /databases/$(database)/documents/entitlements/$(request.auth.uid);
+      return signedIn() && exists(p)
+        && get(p).data.get('paid', false) == true
+        && get(p).data.get('locked', false) == false;
+    }
+
     // Batch 23 (B23-06) helpers — community votes/counters.
     // An upvotes update may only add or remove the CALLER's own uid. The app
     // uses arrayUnion/arrayRemove, so concurrent votes by others never collide.
@@ -437,6 +448,31 @@ service cloud.firestore {
       allow create: if signedIn()
         && request.resource.data.uid == request.auth.uid
         && request.resource.data.status == 'pending';
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    //  BATCH 30 — PAID CONTENT (videos first)
+    // ═══════════════════════════════════════════════════════════════════════════
+    // entitlements/{uid}: who has paid. Fields: paid (bool), locked (bool),
+    // devices (list), blockedAttempts (number), plan (string, optional).
+    // The student may READ their own doc (so the app can show lock/unlock state);
+    // ONLY the instructor writes it (activate from Firebase Console or the
+    // future admin page). A student can never grant themselves access.
+    match /entitlements/{userId} {
+      allow read:  if isOwner(userId) || isInstructor();
+      allow write: if isInstructor();
+    }
+
+    // videos/{lessonId}: doc id = lesson id (e.g. "1-1").
+    // Shape: { free: bool, items: [ { l: 'label', id: 'YouTubeVideoId' }, ... ] }
+    // free == true  -> any signed-in student can read (free units).
+    // otherwise     -> only students where hasPaid() is true.
+    // The YouTube IDs live ONLY here (never in the public repo/JSON), so the
+    // protection is enforced by Firestore, not by the frontend.
+    match /videos/{lessonId} {
+      allow read:  if isInstructor()
+        || (signedIn() && (resource.data.get('free', false) == true || hasPaid()));
+      allow write: if isInstructor();
     }
   }
 }
