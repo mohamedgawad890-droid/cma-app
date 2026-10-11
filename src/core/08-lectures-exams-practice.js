@@ -432,7 +432,8 @@ function _examSaveLocal(sess){
       examId:sess.examId,attemptNumber:sess.attemptNumber||1,docId:sess.docId,
       answers:sess.answers,currentIdx:sess.currentIdx,
       startedAt:sess.startedAt,deadlineAt:sess.deadlineAt,submitted:sess.submitted,
-      flagged:sess.flagged||{}   // Batch 11: mark-for-review, survives reload/resume
+      flagged:sess.flagged||{},  // Batch 11: mark-for-review, survives reload/resume
+      savedAt:Date.now()         // Batch 30: lets resume pick the newer of local vs server draft
     }));
   }catch{}
 }
@@ -440,6 +441,58 @@ function _examLoadLocal(examId,attemptNumber){
   try{const d=localStorage.getItem(_examLocalKey(examId,attemptNumber||1));return d?JSON.parse(d):null;}catch{return null;}
 }
 function _examClearLocal(examId,attemptNumber){try{localStorage.removeItem(_examLocalKey(examId,attemptNumber||1));}catch{}}
+
+// ── Batch 30: server-side draft of in-progress exam answers ────────────
+// Why: answers used to live only in this browser's localStorage, so a device
+// switch, cleared site data or a private window lost them on resume.
+// Cost control (Firebase Spark plan = 20k writes/day): the draft is flushed
+// only every EXAM_DRAFT_EVERY changes or EXAM_DRAFT_MS (whichever comes
+// first), when the tab is hidden/closed, and when the connection returns —
+// never per click. It lives in exam-results/{docId}.draft, separate from
+// `answers` (which stays a list written only at submit), so submit rules and
+// the instructor Results views are unaffected. Group exams only; custom
+// practice has no server doc.
+const EXAM_DRAFT_EVERY=5;
+const EXAM_DRAFT_MS=90000;
+let _examDraftTimer=null,_examDraftDirty=0,_examDraftBusy=false,_examDraftHooked=false;
+function _examDraftEligible(sess){return !!(sess&&sess.docId&&!sess.isPractice&&!sess.submitted&&!sess.submitting&&STATE.user);}
+function _examDraftCancel(){if(_examDraftTimer){clearTimeout(_examDraftTimer);_examDraftTimer=null;}_examDraftDirty=0;}
+async function _examDraftFlush(){
+  const sess=STATE.examSession;
+  if(_examDraftBusy||!_examDraftDirty||!_examDraftEligible(sess))return;
+  if(_examDraftTimer){clearTimeout(_examDraftTimer);_examDraftTimer=null;}
+  _examDraftBusy=true;
+  const sent=_examDraftDirty;
+  try{
+    await db.collection('exam-results').doc(sess.docId).update({draft:{
+      a:Object.assign({},sess.answers),
+      f:Object.assign({},sess.flagged||{}),
+      i:sess.currentIdx||0,
+      t:Date.now()
+    }});
+    _examDraftDirty=Math.max(0,_examDraftDirty-sent);
+  }catch(e){
+    // offline / transient failure: local copy is intact, retry later
+    if(!_examDraftTimer)_examDraftTimer=setTimeout(_examDraftFlush,EXAM_DRAFT_MS);
+  }
+  _examDraftBusy=false;
+  if(_examDraftDirty&&!_examDraftTimer&&_examDraftEligible(STATE.examSession))
+    _examDraftTimer=setTimeout(_examDraftFlush,EXAM_DRAFT_MS);
+}
+function _examDraftMark(){
+  if(!_examDraftEligible(STATE.examSession))return;
+  _examDraftDirty++;
+  if(_examDraftDirty>=EXAM_DRAFT_EVERY){_examDraftFlush();return;}
+  if(!_examDraftTimer)_examDraftTimer=setTimeout(_examDraftFlush,EXAM_DRAFT_MS);
+}
+function _examDraftHook(){
+  if(_examDraftHooked)return;
+  _examDraftHooked=true;
+  const kick=()=>{if(_examDraftDirty)_examDraftFlush();};
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')kick();});
+  window.addEventListener('pagehide',kick);
+  window.addEventListener('online',kick);
+}
 
 // ── Load student's group exams (lazy, cached in STATE) ────────────────
 // Batch 20: an exam can now have MULTIPLE exam-results docs for the same
@@ -595,9 +648,24 @@ async function startExam(examId){
     startedAt=inProgress.startedAt;
     deadlineAt=inProgress.deadlineAt;
     const local=_examLoadLocal(examId,attemptNumber);
-    answers=(local&&local.answers)||{};
-    currentIdx=(local&&local.currentIdx)||0;
-    flagged=(local&&local.flagged)||{};   // Batch 11: restore flags on resume
+    // Batch 30: fetch the attempt doc fresh (1 read) so a draft saved from
+    // another device is seen even if this tab's cached results are older.
+    let dr=inProgress.draft||null;
+    try{
+      const fs=await db.collection('exam-results').doc(docId).get();
+      const fd=fs.exists?fs.data():null;
+      if(fd&&fd.submitted){
+        showToast('This attempt was already submitted on another device.','warning',4000);
+        STATE.studentExamsLoaded=false;loadStudentExams();
+        return;
+      }
+      if(fd&&fd.draft)dr=fd.draft;
+    }catch(e){}
+    // Newest copy wins: this device's local save or the server draft.
+    const useDraft=!!(dr&&dr.a&&(!local||(dr.t||0)>(local.savedAt||0)));
+    answers=useDraft?Object.assign({},dr.a):((local&&local.answers)||{});
+    currentIdx=useDraft?(dr.i||0):((local&&local.currentIdx)||0);
+    flagged=useDraft?Object.assign({},dr.f||{}):((local&&local.flagged)||{});   // Batch 11: restore flags on resume
   }else{
     startedAt=new Date().toISOString();
     const byDur=Date.now()+exam.durationMinutes*60000;
@@ -624,6 +692,7 @@ async function startExam(examId){
     startedAt,deadlineAt,submitting:false,submitted:false,results:null,navOpen:false
   };
   _examSaveLocal(STATE.examSession);
+  _examDraftCancel();_examDraftHook();   // Batch 30: fresh draft state for this attempt
   STATE.tab='exam';render();
   _examStartTimer();
 }
@@ -651,16 +720,19 @@ function examAnswer(qIdx,optIdx){
   if(!STATE.examSession||STATE.examSession.submitted)return;
   STATE.examSession.answers[qIdx]=optIdx;
   _examSaveLocal(STATE.examSession);
+  _examDraftMark();   // Batch 30: throttled server draft
   _examRenderRunner();
 }
-// Batch 11: personal navigation aid only — never sent to Firestore, cleared
-// with the rest of local exam state on submit (_examClearLocal).
+// Batch 11: personal navigation aid, cleared with the rest of local exam
+// state on submit (_examClearLocal). Batch 30: also rides along in the
+// throttled server draft so flags survive a device switch.
 function examToggleFlag(qIdx){
   if(!STATE.examSession||STATE.examSession.submitted)return;
   STATE.examSession.flagged=STATE.examSession.flagged||{};
   if(STATE.examSession.flagged[qIdx])delete STATE.examSession.flagged[qIdx];
   else STATE.examSession.flagged[qIdx]=true;
   _examSaveLocal(STATE.examSession);
+  _examDraftMark();
   _examRenderRunner();
 }
 function examGoTo(idx){
@@ -694,7 +766,7 @@ async function submitExam(auto){
     });
     if(!ok)return;
   }
-  sess.submitting=true;_examStopTimer();
+  sess.submitting=true;_examStopTimer();_examDraftCancel();
   let score=0;
   let unanswered=0;
   const answersOut=[];
@@ -770,7 +842,8 @@ async function submitExam(auto){
       groupCode:sess.exam.groupCode,sectionId:sess.exam.sectionId,attemptNumber,
       startedAt:sess.startedAt,deadlineAt:sess.deadlineAt,
       answers:answersOut,questionSnapshot,score,total,percentage,
-      submitted:true,submittedAt,autoSubmitted:!!auto
+      submitted:true,submittedAt,autoSubmitted:!!auto,
+      draft:firebase.firestore.FieldValue.delete()   // Batch 30: drop the in-progress draft
     },{merge:true});
     sess.submitted=true;
     sess.results={
@@ -880,7 +953,7 @@ function renderExamsStrip(){
       }
       btn=reviewBtn+secondBtn;
     }else if(st==='active'){
-      const inProgress=_examLoadLocal(ex.id,1);
+      const inProgress=_examLoadLocal(ex.id,1)||((STATE.studentExamResults||{})[ex.id]||{}).inProgress;   // Batch 30: also true when the draft is only on the server
       banner={bg:'linear-gradient(135deg,var(--brand),var(--brand-2))',label:inProgress?'\u25B6\uFE0F RESUME':'\u{1F7E2} ACTIVE'};
       body='<b>'+ex.count+'</b> Qs \u00B7 <b>'+ex.durationMinutes+'</b> min \u00B7 closes '+fmtCountdown(ex.closesAt);
       btn='<button onclick="startExam(\''+ex.id+'\')" style="background:#fff;color:var(--brand);border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">'+(inProgress?'Resume \u2192':'Start Exam \u2192')+'</button>';
@@ -1516,5 +1589,4 @@ async function openPracticeReview(docId){
     STATE.tab='exam';render();
   }catch(e){showToast('Could not load review: '+e.message,'error');}
 }
-
 
