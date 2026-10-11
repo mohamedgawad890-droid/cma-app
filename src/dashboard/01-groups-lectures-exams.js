@@ -65,7 +65,7 @@ async function saveExam(){
   const sectionIds=Array.isArray(d.sectionIds)?d.sectionIds.map(Number).filter(Boolean):[];
   if(!sectionIds.length){showToast('Choose at least one section.','warning');return;}
   const count=parseInt(d.count);
-  if(!count||count<3||count>50){showToast('Question count must be 3–50.','warning');return;}
+  if(!count||count<3||count>100){showToast('Question count must be 3–100.','warning');return;}
   const dur=parseInt(d.durationMinutes);
   if(!dur||dur<3||dur>240){showToast('Duration must be 3–240 minutes.','warning');return;}
   // Batch 20: retake cap, instructor-configurable per exam. Defaults to 3
@@ -712,8 +712,8 @@ function renderDashExams(){
       ${unitPickers}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
         <div>
-          <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Questions (3\u201350) *</label>
-          <input type="number" min="3" max="50" value="${esc(String(d.count||20))}"
+          <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Questions (3\u2013100) *</label>
+          <input type="number" min="3" max="100" value="${esc(String(d.count||20))}"
                  oninput="STATE.dashExamDraft.count=this.value"
                  style="width:100%;padding:9px;border-radius:8px;border:.5px solid var(--border-4);font-size:13px;font-family:inherit;outline:none;background:#fff;color:var(--ink);box-sizing:border-box">
         </div>
