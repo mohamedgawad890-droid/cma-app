@@ -443,7 +443,7 @@ function renderStudy(){
         <div style="font-size:11px;color:#888;margin-bottom:10px">${sec.emoji} ${esc(sec.title)} · Lesson ${lessonIdx+1} of ${sec.lessons.length}</div>
         <div style="font-size:19px;font-weight:700;margin-bottom:14px;color:#111">${esc(lesson.title)}</div>
       </div>
-      ${renderLessonBody(lesson,sec)}${videoPlaceholder}</div>
+      ${renderLessonBody(lesson,sec)}${paidVideoSlot(lesson.id,videoPlaceholder,hasVideo)}</div>
     <button class="btn no-print" data-markdone="${lesson.id}" onclick="markDone('${lesson.id}')" style="margin-top:14px;background:${done?'var(--ok-tint)':sec.bar};color:${done?'var(--ok-strong)':'#fff'}">${done?'✓ Completed — Back':'Mark as Complete ✓'}</button>
     ${(()=>{const pv=getPrevLesson(sec.id,lesson.id);const nx=getNextLesson(sec.id,lesson.id);if(!pv&&!nx)return'';return`<div style="display:flex;gap:8px;margin-top:8px">
       ${pv?`<button class="btn btn-outline no-print" onclick="studyGo(${pv.sec.id},'${pv.lesson.id}')" style="flex:1;border-color:var(--brand-2)20;color:var(--brand-2)">← Previous: ${esc(pv.lesson.title)}</button>`:'<div style="flex:1"></div>'}
