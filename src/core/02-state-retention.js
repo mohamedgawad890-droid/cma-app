@@ -391,9 +391,8 @@ function buildDigestPayload(st){
                 : (last7<60 ? 'returning' : 'engaged');
   // Batch 4.1: honest payload — dropped hardcoded 0s (mcqsThisWeek, accuracyDelta),
   // renamed accuracyThisWeek → accuracyOverall (it IS lifetime, not weekly),
-  // added minutesLast7Days (real data), and secret for endpoint auth.
+  // added minutesLast7Days (real data). Batch 29: no shared secret — the endpoint verifies idToken.
   return{
-    secret:DIGEST_SECRET,
     email:st.email,name:st.name||'',language:st.language||'ar',variant,
     streakCount:streak.count||0,
     accuracyOverall:acc,
@@ -580,4 +579,3 @@ function installApp(){
   // No native prompt available — show guide modal
   openInstallModal();
 }
-
