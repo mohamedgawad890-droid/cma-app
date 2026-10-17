@@ -568,7 +568,7 @@ function renderLeaderboard(){
         <div style="font-size:${i<3?'20':'14'}px;font-weight:500;min-width:28px;text-align:center">${medal}</div>
         <div style="flex:1;min-width:0">
           <div style="font-size:13px;font-weight:500;color:var(--ink)${isMe?';color:var(--warn-strong)':''}">${esc(entry.name||'Student')}${isMe?' (You)':''}</div>
-          <div style="font-size:11px;color:#888">${entry.country||''}</div>
+          <div style="font-size:11px;color:#888">${esc(entry.country||'')}</div>
         </div>
         <div style="text-align:right;flex-shrink:0">
           <div style="font-size:13px;font-weight:500;color:var(--brand)">${entry.lessons||0} lessons</div>
@@ -737,7 +737,7 @@ function renderQuizModeSelect(){
   <div class="scroll-area pad" style="padding-top:14px">
     <div class="card" style="margin-bottom:14px">
       <div style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:4px">🎯 Full CMA Mix</div>
-      <div style="font-size:12px;color:#888;margin-bottom:12px">50 random questions from ALL sections — exam simulation</div>
+      <div style="font-size:12px;color:#888;margin-bottom:12px">100 random questions from ALL sections — exam simulation</div>
       <button onclick="startQuizMode(null)" class="btn" style="background:var(--brand);color:#fff;font-size:14px">Start Full CMA Quiz (100 MCQs)</button>
     </div>
     <div style="font-size:12px;font-weight:500;color:#888;letter-spacing:.5px;margin-bottom:10px">BY SECTION</div>
