@@ -193,10 +193,7 @@ const CLD_PRESET='cma_students';
 // ─── BATCH 4: RETENTION CONFIG ───────────────────────────────────────────────
 // Apps Script webhook that sends the weekly email digest. Deployed separately.
 const EMAIL_DIGEST_URL='https://script.google.com/macros/s/AKfycbyNL4KbrnRPHOjmM9IKI4_-lXP6jrJmdbh9o1hypTB1ytklyt4LG3lwCblZlHj9itoT/exec';
-// Batch 4.1: shared secret prevents anonymous flooding of the Apps Script quota.
-// The Apps Script side must be updated to reject payloads where secret !== this value.
-// (Inert until the Apps Script is updated — old requests still succeed.)
-const DIGEST_SECRET='cma-digest-v1-8f3a2c9d1e';
+// Batch 29: DIGEST_SECRET removed — the Apps Script authenticates via the Firebase ID token.
 // Rotating notification copy — never references new lessons (content-slow phase).
 const NOTIFICATION_VARIANTS=[
   {id:'qod',   body:'\u2753 Question of the Day is ready \u2014 30s to keep your streak.', link:'intro'},
