@@ -658,7 +658,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
      page so lessons don't visually run into each other mid-page. */
   .section-lesson-print{page-break-before:always}
   .section-lesson-print:first-of-type{page-break-before:avoid}
+  /* Batch 30 (root cause of the cut-off PDFs): #app and .content are flex
+     containers with overflow:hidden. Chrome clips a printed flex container at a
+     fixed number of pages, so long lessons lost everything after it (the Arabic
+     recap, always last, vanished). In print both must be plain visible blocks. */
   #app{
+    display:block !important;
+    overflow:visible !important;
     box-shadow:none !important;
     max-width:100% !important;
     height:auto !important;
@@ -666,6 +672,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     margin:0 !important;
   }
   .content{
+    display:block !important;
     overflow:visible !important;
     transform:none !important;
     width:100% !important;
