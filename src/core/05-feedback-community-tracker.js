@@ -596,7 +596,7 @@ function buildQuizModeQuestions(sectionId){
   });
   // Shuffle
   for(let i=allQ.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[allQ[i],allQ[j]]=[allQ[j],allQ[i]];}
-  return allQ.slice(0,sectionId?Math.min(allQ.length,50):Math.min(allQ.length,100));
+  return allQ.slice(0,sectionId?Math.min(allQ.length,50):Math.min(allQ.length,100)).map(practiceShuffleQ);   // Batch 31: option shuffle
 }
 
 async function startQuizMode(sectionId){

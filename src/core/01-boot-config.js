@@ -21,8 +21,45 @@ const PHOTO_B64 = './instructor.webp';
 // Find it in Firebase Console → Authentication → Users → copy the User UID column.
 const INSTRUCTOR_UID = 'NI1nS2qCYehDnlwFHA5A01bxV8V2';
 // Batch 24 (B24-08): build label attached to remote error reports.
-const APP_BUILD='b24';
+// Batch 31: the value below is a placeholder. .github/scripts/build.mjs replaces it
+// at build time with a hash of the app source ("b" + 7 hex), so every report in the
+// Errors panel can be tied to the exact version that produced it. 'dev' = unbuilt.
+const APP_BUILD='dev';
 const _errLog={sent:0,seen:{}}; // declared before window.onerror so boot errors can be queued
+// Batch 31: (declared up here, before window.onerror, so even a boot failure is filtered/queued correctly)
+// Known browser/network noise that a student's app cannot fix and that only
+// buries real bugs in the Errors panel (still printed to the console).
+const _ERR_NOISE=[
+  /^Script error\.?$/i,                                   // cross-origin script, no detail
+  /transaction was aborted|in-progress transaction/i,      // browser IndexedDB glitches (low storage, private mode)
+  /Failed to update a ServiceWorker/i,                     // student was offline during the update check
+  /ResizeObserver loop/i,
+  /Non-Error promise rejection captured/i
+];
+function _errIsNoise(msg,src){
+  const m=String(msg==null?'':msg), s=String(src==null?'':src);
+  if(_ERR_NOISE.some(function(re){return re.test(m);})) return true;
+  if(/Unexpected token '<'/.test(m) && /apis\.google\.com|gstatic\.com|googletagmanager\.com/.test(s)) return true; // a blocked network returned a web page instead of the script
+  return false;
+}
+// Batch 31: last-resort repair for a broken/stale cached copy of the app (for example
+// when the Firebase library files did not load). Removes the service worker and its
+// caches, then reloads, so the next start downloads everything fresh. Student data
+// (progress, notes) lives in Firestore and localStorage and is NOT touched.
+function _repairAndReload(){
+  const done=function(){ try{ location.reload(); }catch(_){} };
+  try{
+    const jobs=[];
+    if(navigator.serviceWorker&&navigator.serviceWorker.getRegistrations){
+      jobs.push(navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister();}));}));
+    }
+    if(window.caches&&caches.keys){
+      jobs.push(caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k);}));}));
+    }
+    Promise.all(jobs).then(done,done);
+    setTimeout(done,2500);
+  }catch(_){ done(); }
+}
 window.onerror=function(msg,src,line,col,err){
   try{ console.error('[App error]', msg, (src||'')+':'+line+':'+col, err); }catch(_){}
   // Batch 24 (B24-08): remote error log (rate-limited, deduped — see logClientError).
@@ -47,6 +84,7 @@ window.onerror=function(msg,src,line,col,err){
       +'<div style="font-size:17px;font-weight:600;margin-bottom:6px">Couldn\'t start the app</div>'
       +'<div style="font-size:14px;color:#888;margin-bottom:20px">Please check your connection and try again.</div>'
       +'<button onclick="location.reload()" style="padding:11px 24px;border:none;border-radius:10px;background:var(--brand);color:#fff;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit">Reload</button>'
+      +'<div style="margin-top:14px"><button onclick="_repairAndReload()" style="padding:9px 18px;border:.5px solid #ccc;border-radius:10px;background:transparent;color:#666;font-size:13px;cursor:pointer;font-family:inherit">Still not working? Repair and reload</button></div>'
       +'</div>';
   }catch(_){}
   return true;
@@ -56,6 +94,22 @@ window.onerror=function(msg,src,line,col,err){
 window.addEventListener('unhandledrejection',function(ev){
   try{ const r=ev&&ev.reason; logClientError('promise', (r&&r.message)||String(r), r&&r.stack, ''); }catch(_){}
 });
+
+// Batch 31: Firebase SDK guard. Reports in the Errors panel ("firebase is not defined",
+// "firebase.firestore is not a function") come from students whose copy of the
+// Firebase library files did not load (stale cache, blocked or very poor network).
+// First time: repair the cache and reload automatically, once per session.
+// If it still fails: the recovery screen below appears (with a manual Repair button).
+if(typeof firebase==='undefined'||!firebase.initializeApp||!firebase.auth||!firebase.firestore){
+  let _tried=false;
+  try{ _tried=sessionStorage.getItem('cma-fb-repair')==='1'; }catch(_){}
+  if(!_tried){
+    try{ sessionStorage.setItem('cma-fb-repair','1'); }catch(_){}
+    _repairAndReload();
+  }
+  throw new Error('Firebase SDK did not load');   // stops this bundle; window.onerror shows the recovery screen
+}
+try{ sessionStorage.removeItem('cma-fb-repair'); }catch(_){}
 
 firebase.initializeApp({
   apiKey:"AIzaSyCAF48hvYUxBdWY-xHFQZMUNKglV0gRhhE",
@@ -131,6 +185,7 @@ function _errSend(rec){
 }
 function logClientError(kind,msg,stack,src){
   try{
+    if(_errIsNoise(msg,src)) return;
     const key=String(kind)+'|'+String(msg).slice(0,160);
     if(_errLog.seen[key]||_errLog.sent>=5)return;
     _errLog.seen[key]=1;_errLog.sent++;

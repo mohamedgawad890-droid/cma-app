@@ -55,13 +55,15 @@ function renderQuizSession(){
     :(_answered
       ?`<button class="btn btn-primary" onclick="quizNav(1)" style="flex:1;background:${_accent}">Next →</button>`
       :`<button class="btn btn-outline" onclick="quizNav(1)" style="flex:1">Skip →</button>`);
-  const navRow=`<div style="display:flex;gap:10px">${_backBtn}${_rightBtn}</div>`;
+  const navRow=`<div style="display:flex;gap:10px">${_backBtn}${_rightBtn}</div>`
+    // Batch 31: Submit is always available (not only on the last question) and a quiz can be restarted.
+    +`<div style="display:flex;gap:10px;margin-top:10px">${_isLast?'':`<button class="btn btn-outline" onclick="finishQuiz()" style="flex:1;border-color:${_accent};color:${_accent}">Submit quiz ✓</button>`}<button class="btn btn-outline" onclick="quizRestart()" style="flex:${_isLast?'1':'0 0 auto'};font-size:12px;color:#888">↺ Restart</button></div>`;
   const quizDots=dotStripHTML(qs.questions, qs.idx, qs.answers, 'quizJump');
   const timerBadge=timerBadgeHTML(qs.qTimerElapsed,sel!==null);
   const headerTitle=qs.isRetry?'Wrong Answer Retry':lessonTitle;
   const headerSub=qs.isRetry?`Question ${qs.idx+1} of ${qs.questions.length} · Mixed sections`:`Question ${qs.idx+1} of ${qs.questions.length}`;
   const _crumb=quizBreadcrumb(qs.isRetry?q._secId:qs.sId, qs.isRetry?q._lessonId:qs.lessonId, q.topic, q.concept);
-  return`<div class="bh"><button class="bh-back" onclick="STATE.tab=${qs.isRetry?`'wrong-answers'`:`'study'`};STATE.quizState=null;render()">‹</button><div style="flex:1"><div style="font-size:11px;font-weight:500;color:${sec.text}">${esc(_crumb||headerTitle)}</div><div style="font-size:14px;font-weight:500">${headerSub}</div></div>${timerBadge}</div>
+  return`<div class="bh"><button class="bh-back" onclick="quizPause()" title="Pause (your answers are saved)">‹</button><div style="flex:1"><div style="font-size:11px;font-weight:500;color:${sec.text}">${esc(_crumb||headerTitle)}</div><div style="font-size:14px;font-weight:500">${headerSub}</div></div>${timerBadge}</div>
   <div style="height:5px;background:var(--surface-4);flex-shrink:0"><div style="height:100%;width:${barW}%;background:${qs.isRetry?'var(--err)':sec.bar};transition:width .4s;border-radius:0 3px 3px 0"></div></div>
   ${quizDots}<div class="scroll-area pad" style="padding-top:16px"><div class="card" id="qs-question-card"><p style="font-size:15px;font-weight:500;line-height:1.55;margin-bottom:18px">${stemHTML(q.q)}</p>${dataTableHTML(q)}${askHTML(q)}${opts}${explanation}</div><div style="margin-top:12px" id="qs-next-wrap">${navRow}</div><div style="height:20px"></div></div>`;
 }
@@ -83,7 +85,7 @@ function renderQuizResults(){
       </div>`
     :`${reviewBtn}<div style="display:flex;gap:10px;margin-bottom:12px">
         <button class="btn btn-outline" onclick="STATE.tab='study';STATE.quizState=null;render()">Back to Study</button>
-        <button class="btn" onclick="startQuiz('${qs.lessonId}')" style="background:${sec.bar};color:#fff">Retake Quiz</button>
+        <button class="btn" onclick="startQuiz('${qs.lessonId}',true)" style="background:${sec.bar};color:#fff">Retake Quiz</button>
       </div>
       `;
   return`<div class="scroll-area" style="padding:30px 16px 20px;text-align:center">
@@ -333,17 +335,32 @@ function renderFormulaBank(){
 // Collects all incorrectly-answered questions from lessonScores, shuffles them,
 // and launches them in the existing quiz-session screen with isRetry=true.
 // Does NOT overwrite lessonScores on completion — only updates aggregate mcqTotal/mcqRight.
-async function startWrongAnswersRetry(){
+async function startWrongAnswersRetry(forceNew){
+  // Batch 31: resume a paused retry quiz unless a fresh one was asked for.
+  if(!forceNew){
+    const _d=qdRead('retry');
+    if(_d){
+      const _ids=[...new Set(_d.items.map(it=>parseInt(String(it.l).split('-')[0])).filter(n=>n>0))];
+      await Promise.all(_ids.map(id=>ensureQuizzes(id)));
+      const _st=qdRestore(_d,'retry');
+      if(_st){
+        STATE.quizState=_st;STATE.tab='quiz-session';
+        showToast('Resuming your retry \u00B7 '+_st.answers.filter(Boolean).length+'/'+_st.questions.length+' answered','info',3000);
+        render();return;
+      }
+      qdClear('retry');
+    }
+  } else { qdClear('retry'); }
   const scores=STATE.progress.lessonScores||{};
   const wrongQs=[];
   for(const sec of S){
     for(const l of sec.lessons){
       const sc=scores[l.id];
-      if(sc&&sc.answers){
+      if(sc&&sc.answers&&sc.v===2){   // Batch 31: only entries saved in lesson order are reliable
         sc.answers.forEach((ans,idx)=>{
           const q=l.quizzes[idx];
           // Store _ansIdx so we can update the exact record when answered correctly
-          if(q&&ans!==q.a) wrongQs.push({...q,_secId:sec.id,_lessonId:l.id,_ansIdx:idx});
+          if(q&&ans!=null&&ans!==q.a) wrongQs.push({...q,_secId:sec.id,_lessonId:l.id,_ansIdx:idx,_qi:idx});
         });
       }
     }
@@ -354,10 +371,11 @@ async function startWrongAnswersRetry(){
   await Promise.all(secIds.map(id=>ensureQuizzes(id)));
   // Shuffle
   for(let i=wrongQs.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[wrongQs[i],wrongQs[j]]=[wrongQs[j],wrongQs[i]];}
+  const _retryQs=wrongQs.map(practiceShuffleQ);   // Batch 31: new option order each time
   STATE.quizState={
     lessonId:null,
-    sId:wrongQs[0]._secId,  // use first question's section for color only
-    questions:wrongQs,
+    sId:_retryQs[0]._secId,  // use first question's section for color only
+    questions:_retryQs,
     idx:0,selected:null,answers:[],
     questionTimes:[],quizStartTime:Date.now(),qTimerStart:Date.now(),qTimerElapsed:null,
     isRetry:true
@@ -373,10 +391,10 @@ function renderWrongAnswers(){
   for(const sec of S){
     for(const l of sec.lessons){
       const sc=scores[l.id];
-      if(sc&&sc.answers){
+      if(sc&&sc.answers&&sc.v===2){   // Batch 31: only entries saved in lesson order are reliable
         sc.answers.forEach((ans,idx)=>{
           const q=l.quizzes[idx];
-          if(q&&ans!==q.a) wrongItems.push({sec,lesson:l,q,chosen:ans,correct:q.a});
+          if(q&&ans!=null&&ans!==q.a) wrongItems.push({sec,lesson:l,q,chosen:ans,correct:q.a});
         });
       }
     }
@@ -387,7 +405,7 @@ function renderWrongAnswers(){
     <div class="scroll-area pad" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:60px;text-align:center">
       <div style="font-size:48px;margin-bottom:16px">🎉</div>
       <div style="font-size:17px;font-weight:500;color:var(--ink);margin-bottom:8px">No wrong answers yet!</div>
-      <div style="font-size:14px;color:#888;line-height:1.6">Take some quizzes and your incorrect answers will appear here for review.</div>
+      <div style="font-size:14px;color:#888;line-height:1.6">Take some quizzes and your incorrect answers will appear here for review.</div>${Object.values(scores).some(e=>e&&e.answers&&e.v!==2)?'<div style="font-size:12px;color:#aaa;line-height:1.6;margin-top:10px;max-width:280px">Quizzes taken before this update are not listed here. Retake a unit and its wrong answers will appear.</div>':''}
     </div>`;
   }
   const items=wrongItems.map((item,i)=>{
@@ -494,17 +512,32 @@ function markDone(lid){
 function getNextLesson(sectId,lessonId){const sec=sect(sectId);if(!sec)return null;const idx=sec.lessons.findIndex(l=>l.id===lessonId);if(idx===-1||idx>=sec.lessons.length-1){const sIdx=S.findIndex(s=>s.id===sectId);if(sIdx===-1||sIdx>=S.length-1)return null;return{sec:S[sIdx+1],lesson:S[sIdx+1].lessons[0]};}return{sec,lesson:sec.lessons[idx+1]};}
 function getPrevLesson(sectId,lessonId){const sec=sect(sectId);if(!sec)return null;const idx=sec.lessons.findIndex(l=>l.id===lessonId);if(idx<=0){const sIdx=S.findIndex(s=>s.id===sectId);if(sIdx<=0)return null;const prevSec=S[sIdx-1];return{sec:prevSec,lesson:prevSec.lessons[prevSec.lessons.length-1]};}return{sec,lesson:sec.lessons[idx-1]};}
 function doLessonQuiz(lid){startQuiz(lid);}
-async function startQuiz(lessonId){
+async function startQuiz(lessonId,forceNew){
   startStudyTimer('quiz-'+lessonId);
   const secId=lessonId.split('-')[0];
   if(!QUIZ_CACHE[secId]){STATE.tab='loading';render();await ensureQuizzes(secId);}
   let foundLesson=null,foundSect=null;
   for(const sec of S){for(const l of sec.lessons){if(l.id===lessonId){foundLesson=l;foundSect=sec;break;}}}
   if(!foundLesson){console.log('Lesson not found:',lessonId);return;}
-  // Shuffle and pick 20 random questions
-  const allQ=[...foundLesson.quizzes];
+  // Batch 31: a saved draft (paused quiz) is resumed unless a fresh start was asked for.
+  if(!forceNew){
+    const _d=qdRead('unit',lessonId);
+    if(_d){
+      const _st=qdRestore(_d,'unit');
+      if(_st){
+        STATE.quizState=_st;STATE.tab='quiz-session';
+        const _n=_st.answers.filter(Boolean).length;
+        showToast('Resuming your quiz \u00B7 '+_n+'/'+_st.questions.length+' answered','info',3000);
+        render();return;
+      }
+      qdClear('unit',lessonId);   // bank changed since the draft was saved -> start fresh
+    }
+  } else { qdClear('unit',lessonId); }
+  // Shuffle and pick 20 random questions. _qi = the question's position in the lesson
+  // (needed to save answers in lesson order); options are shuffled per question (practiceShuffleQ).
+  const allQ=foundLesson.quizzes.map((q,i)=>({...q,_qi:i}));
   for(let i=allQ.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[allQ[i],allQ[j]]=[allQ[j],allQ[i]];}
-  const questions=allQ.slice(0,Math.min(20,allQ.length));
+  const questions=allQ.slice(0,Math.min(20,allQ.length)).map(practiceShuffleQ);
   STATE.quizState={lessonId,sId:foundSect.id,questions,idx:0,selected:null,answers:[],questionTimes:[],quizStartTime:Date.now(),qTimerStart:Date.now(),qTimerElapsed:null};
   STATE.tab='quiz-session';render();
 }
@@ -522,6 +555,7 @@ function selectAnswer(i){
   const q=qs.questions[qs.idx];
   qs.answers[qs.idx]={selected:i,correct:i===q.a};
   qs.selected=i;
+  qdSave();   // Batch 31: autosave so the quiz can be resumed
   render();
 }
 
@@ -532,6 +566,7 @@ function quizGoto(i){
   const a=qs.answers[i];
   qs.selected=a?a.selected:null;
   if(a){ qs.qTimerElapsed=qs.questionTimes[i]||0; } else { qs.qTimerStart=Date.now(); qs.qTimerElapsed=null; }
+  qdSave();   // Batch 31: remember the question the student is on
   render();
 }
 function quizNav(dir){ const qs=STATE.quizState; if(qs) quizGoto(qs.idx+dir); }
@@ -561,14 +596,15 @@ function _finalizeQuiz(){
   const rightCount=finalAnswers.filter(a=>a.correct).length;
   const p=STATE.progress;
   endStudyTimer();
+  qdClear(qs.isRetry?'retry':'unit',qs.lessonId);   // Batch 31: submitted -> the paused draft is done
   if(qs.isRetry){
     const ls={...(p.lessonScores||{})};
     qs.questions.forEach((q,i)=>{
       if(finalAnswers[i]&&finalAnswers[i].correct && q._lessonId!=null && q._ansIdx!=null){
         const entry=ls[q._lessonId];
-        if(entry&&entry.answers){
+        if(entry&&entry.answers&&entry.v===2){   // Batch 31: only entries saved in lesson order can be corrected
           const updatedAnswers=[...entry.answers];
-          updatedAnswers[q._ansIdx]=q.a;
+          updatedAnswers[q._ansIdx]=qCanonAnswer(q);
           const newCorrect=updatedAnswers.filter((a,idx)=>{
             const qz=S.flatMap(s=>s.lessons).find(l=>l.id===q._lessonId)?.quizzes?.[idx];
             return qz&&a===qz.a;
@@ -579,8 +615,19 @@ function _finalizeQuiz(){
     });
     saveProg({...p,lessonScores:ls,mcqTotal:p.mcqTotal+n,mcqRight:p.mcqRight+rightCount});
   } else {
-    const ls=p.lessonScores||{};const ansArr=finalAnswers.map(a=>a.selected);
-    saveProg({...p,lessonScores:{...ls,[qs.lessonId]:{correct:rightCount,total:n,answers:ansArr}},mcqTotal:p.mcqTotal+n,mcqRight:p.mcqRight+rightCount});
+    // Batch 31: answers are stored in LESSON order (position = the question's place in
+    // lesson.quizzes) with the bank's own option numbers (null = not in this attempt,
+    // -1 = skipped). Before, they were saved in the shuffled order of the 20 questions
+    // while the Wrong Answers screen read them in lesson order, so that list was wrong.
+    // v:2 marks entries saved this way; older entries cannot be repaired and are ignored there.
+    const ls=p.lessonScores||{};
+    const _lf=_qdFindLesson(qs.lessonId);
+    const ansArr=new Array(_lf?_lf.lesson.quizzes.length:0).fill(null);
+    qs.questions.forEach((q,i)=>{
+      const a=finalAnswers[i];
+      if(q._qi!=null&&q._qi<ansArr.length)ansArr[q._qi]=(a&&a.selected!=null)?qCanonIdx(q,a.selected):-1;
+    });
+    saveProg({...p,lessonScores:{...ls,[qs.lessonId]:{correct:rightCount,total:n,answers:ansArr,v:2}},mcqTotal:p.mcqTotal+n,mcqRight:p.mcqRight+rightCount});
   }
   STATE.quizState={...qs,answers:finalAnswers,questionTimes:finalTimes,done:true,quizEndTime:Date.now()};
   updateStreak();STATE.tab='quiz-results';render();

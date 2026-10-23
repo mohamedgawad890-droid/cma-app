@@ -1101,9 +1101,10 @@ function dotStripHTML(questions, curIdx, answers, jumpFn){
     if(a){ if(a.correct){bg='var(--ok-tint)';bd='.5px solid var(--ok)';col='var(--ok-strong)';}
            else {bg='var(--err-tint)';bd='.5px solid var(--err)';col='var(--err-2)';} }
     var ring=(i===curIdx)?'box-shadow:0 0 0 2px var(--brand);':'';
-    return '<button onclick="'+jumpFn+'('+i+')" title="Question '+(i+1)+'" style="'+ring+'width:26px;height:26px;flex:0 0 auto;border-radius:50%;border:'+bd+';background:'+bg+';color:'+col+';font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;padding:0">'+(i+1)+'</button>';
+    return '<button onclick="'+jumpFn+'('+i+')"'+(i===curIdx?' data-cur="1"':'')+' title="Question '+(i+1)+'" style="'+ring+'width:26px;height:26px;flex:0 0 auto;border-radius:50%;border:'+bd+';background:'+bg+';color:'+col+';font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;padding:0">'+(i+1)+'</button>';
   }).join('');
-  return '<div style="display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px;max-height:76px;overflow-y:auto;background:var(--surface-3);border-bottom:1px solid var(--border);flex-shrink:0">'+dots+'</div>';
+  // Batch 31: id lets render() keep this box's scroll position across re-renders.
+  return '<div id="q-dotstrip" style="display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px;max-height:76px;overflow-y:auto;background:var(--surface-3);border-bottom:1px solid var(--border);flex-shrink:0">'+dots+'</div>';
 }
 
 // ─── PER-QUESTION LIVE TIMER ──────────────────────────────────────────────────
@@ -1223,6 +1224,8 @@ function _stemSplitPlain(raw){
 // Roman-numeral sub-list marker, e.g. "I. ", "II. ", ... "X. " followed by a
 // capital letter (the start of that list item's text).
 const _STEM_ROMAN_RE=/\b(?:I|II|III|IV|V|VI|VII|VIII|IX|X)\.\s+[A-Z]/g;
+// Batch 31: "(1) text" / "(a) text" point markers inside a stem.
+const _STEM_PAREN_RE=/\((?:[1-9]|[a-e])\)\s+(?=[A-Za-z$0-9])/g;
 function stemHTML(text){
   const raw=String(text==null?'':text);
   // Batch 11: "which of the following... I. ... II. ... III. ..." style stems.
@@ -1240,6 +1243,18 @@ function stemHTML(text){
     const all=[...prefixLines,...listLines];
     if(all.length<=1) return esc(raw);
     return all.map(s=>`<span class="stem-line">${esc(s)}</span>`).join('');
+  }
+  // Batch 31: inline numbered / lettered points "(1) ... and (2) ..." (or "(a) ... (b) ...").
+  // Each point goes on its own line; a sentence after the last point (e.g. the actual
+  // question) is split off by the generic splitter. Needs >=2 markers and must start at
+  // (1) or (a), so a stray "(2)" or a formula such as "(1) + (2)" is left alone.
+  const parenMatches=raw.match(_STEM_PAREN_RE)||[];
+  if(parenMatches.length>=2 && /^\((?:1|a)\)/.test(parenMatches[0])){
+    const firstIdx=raw.search(_STEM_PAREN_RE);
+    const prefix=raw.slice(0,firstIdx).trim();
+    const items=raw.slice(firstIdx).split(/(?=\((?:[1-9]|[a-e])\)\s+[A-Za-z$0-9])/).map(s=>s.trim()).filter(Boolean);
+    const all=[...(prefix?_stemSplitPlain(prefix):[]),...items.flatMap(_stemSplitPlain)];
+    if(all.length>1) return all.map(s=>`<span class="stem-line">${esc(s)}</span>`).join('');
   }
   const clean=_stemSplitPlain(raw);
   if(clean.length<=1) return esc(raw);

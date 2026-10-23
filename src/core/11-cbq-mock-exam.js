@@ -335,7 +335,7 @@ function mockSelectMCQ(){
     pool=mockShuffle(pool);
     qs.push(...pool.slice(0,sec.weight));
   });
-  return mockShuffle(qs);
+  return mockShuffle(qs).map(practiceShuffleQ);   // Batch 31: option shuffle (bank data unchanged)
 }
 
 function mockSelectCBQ(){

@@ -455,12 +455,23 @@ service cloud.firestore {
     // ═══════════════════════════════════════════════════════════════════════════
     // entitlements/{uid}: who has paid. Fields: paid (bool), locked (bool),
     // devices (list), blockedAttempts (number), plan (string, optional).
-    // The student may READ their own doc (so the app can show lock/unlock state);
-    // ONLY the instructor writes it (activate from Firebase Console or the
-    // future admin page). A student can never grant themselves access.
+    // The student may READ their own doc (so the app can show lock/unlock state).
+    // The instructor creates/changes it (Firebase Console or a future admin page);
+    // a student can never grant themselves access.
+    // Batch 31 — 2-device limit: a PAID student may UPDATE only the `devices`
+    // list of their own doc, add-only, never above 2 entries. To let a student
+    // switch phones, the instructor clears the list in the Console.
     match /entitlements/{userId} {
       allow read:  if isOwner(userId) || isInstructor();
-      allow write: if isInstructor();
+      allow create, delete: if isInstructor();
+      allow update: if isInstructor()
+        || (isOwner(userId) && hasPaid()
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['devices'])
+            && request.resource.data.devices is list
+            && request.resource.data.devices.size() <= 2
+            && request.resource.data.devices.size() >= resource.data.get('devices', []).size()
+            && resource.data.get('devices', []).toSet()
+                 .difference(request.resource.data.devices.toSet()).size() == 0);
     }
 
     // videos/{lessonId}: doc id = lesson id (e.g. "1-1").

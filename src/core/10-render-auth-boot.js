@@ -84,6 +84,9 @@ function render(){
   const _prevTab=render._lastTab;
   const _scrollArea=content.querySelector('.scroll-area');
   const _savedScroll=_scrollArea?_scrollArea.scrollTop:0;
+  // Batch 31: the question-number strip is its own scroll box; remember where it was.
+  const _stripOld=document.getElementById('q-dotstrip');
+  const _savedStrip=_stripOld?_stripOld.scrollTop:null;
 
   let html='';
   // Batch 6 · Item B — render error boundary. Any renderer that throws now
@@ -167,6 +170,19 @@ function render(){
     const newScrollArea=content.querySelector('.scroll-area');
     if(newScrollArea)newScrollArea.scrollTop=_savedScroll;
   }
+  // Batch 31: put the question-number strip back where it was, then make sure the
+  // current question's number is visible (only moves the strip, never the page).
+  try{
+    const st=document.getElementById('q-dotstrip');
+    if(st){
+      if(_savedStrip!=null&&STATE.tab===_prevTab)st.scrollTop=_savedStrip;
+      const cur=st.querySelector('[data-cur="1"]');
+      if(cur){
+        const cr=cur.getBoundingClientRect(),sr=st.getBoundingClientRect();
+        if(cr.top<sr.top||cr.bottom>sr.bottom)st.scrollTop+=(cr.top-sr.top)-(sr.height-cr.height)/2;
+      }
+    }
+  }catch(_){}
   render._lastTab=STATE.tab;
   if(STATE.tab==='cbq'){content.style.overflow='hidden';setTimeout(()=>cbqInit(),0);}
   if(STATE.tab==='mock-exam'){content.style.overflow='hidden';if(STATE.mockExam.status==='mcq')setTimeout(()=>renderMockMCQContent(),0);if(STATE.mockExam.status==='cbq')setTimeout(()=>mockSetupMockDrag(),0);}

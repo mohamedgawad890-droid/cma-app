@@ -358,11 +358,11 @@ function toggleSection(secId){
           <div style="width:28px;height:28px;border-radius:50%;background:${done?sec.bar:'var(--border-2)'};display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0;font-weight:600">${done?'✓':i+1}</div>
           <div style="flex:1;min-width:0">
             <div class="ellipsis" style="font-size:13px;font-weight:500;color:${done?sec.strong:'var(--ink)'}">${i+1}. ${esc(l.title)}</div>
-            <div style="font-size:11px;color:#888;margin-top:2px">${l.dur}${lsc?` · ${qpct>=70?'✅':'🔴'} ${lsc.correct}/${lsc.total} (${qpct}%)`+' ':' · Quiz not attempted'}</div>
+            <div style="font-size:11px;color:#888;margin-top:2px">${l.dur}${lsc?` · ${qpct>=70?'✅':'🔴'} ${lsc.correct}/${lsc.total} (${qpct}%)`+' ':' · Quiz not attempted'}${qdNote(l.id)}</div>
           </div>
           <div style="display:flex;gap:6px;flex-shrink:0">
             <button onclick="event.stopPropagation();studyGo(${sec.id},'${l.id}')" title="Study Lesson" style="width:36px;height:36px;border-radius:9px;border:.5px solid ${sec.text}30;background:${done?sec.bar:'#fff'};color:${done?'#fff':sec.strong};font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">📖</button>
-            <button onclick="event.stopPropagation();doLessonQuiz('${l.id}')" title="${lsc?'Retake Quiz':'Start Quiz'}" style="width:36px;height:36px;border-radius:9px;border:.5px solid ${lsc?(qpct>=70?'var(--ok)40':'var(--err)40'):'var(--brand-2)40'};background:${lsc?(qpct>=70?'var(--ok-tint)':'var(--err-tint)'):'var(--brand-tint)'};color:${lsc?(qpct>=70?'var(--ok-strong)':'var(--err-2)'):'var(--brand-2)'};font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">🎯</button>
+            <button onclick="event.stopPropagation();doLessonQuiz('${l.id}')" title="${qdPeek(l.id)?'Resume Quiz':(lsc?'Retake Quiz':'Start Quiz')}" style="width:36px;height:36px;border-radius:9px;border:.5px solid ${lsc?(qpct>=70?'var(--ok)40':'var(--err)40'):'var(--brand-2)40'};background:${lsc?(qpct>=70?'var(--ok-tint)':'var(--err-tint)'):'var(--brand-tint)'};color:${lsc?(qpct>=70?'var(--ok-strong)':'var(--err-2)'):'var(--brand-2)'};font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">🎯</button>
           </div>
         </div>
       </div>`;
@@ -474,11 +474,11 @@ function renderStudy(){
               <div style="width:28px;height:28px;border-radius:50%;background:${done?sec.bar:'var(--border-2)'};display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0;font-weight:600">${done?'✓':i+1}</div>
               <div style="flex:1;min-width:0">
                 <div class="ellipsis" style="font-size:13px;font-weight:500;color:${done?sec.strong:'var(--ink)'}">${i+1}. ${esc(l.title)}</div>
-                <div style="font-size:11px;color:#888;margin-top:2px">${l.dur}${lsc?` · ${qpct>=70?'✅':'🔴'} ${lsc.correct}/${lsc.total} (${qpct}%)`:' · Quiz not attempted'}</div>
+                <div style="font-size:11px;color:#888;margin-top:2px">${l.dur}${lsc?` · ${qpct>=70?'✅':'🔴'} ${lsc.correct}/${lsc.total} (${qpct}%)`:' · Quiz not attempted'}${qdNote(l.id)}</div>
               </div>
               <div style="display:flex;gap:6px;flex-shrink:0">
                 <button onclick="event.stopPropagation();studyGo(${sec.id},'${l.id}')" title="Study Lesson" style="width:36px;height:36px;border-radius:9px;border:.5px solid ${sec.text}30;background:${done?sec.bar:'#fff'};color:${done?'#fff':sec.strong};font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">📖</button>
-                <button onclick="event.stopPropagation();doLessonQuiz('${l.id}')" title="${lsc?'Retake Quiz':'Start Quiz'}" style="width:36px;height:36px;border-radius:9px;border:.5px solid ${lsc?(qpct>=70?'var(--ok)40':'var(--err)40'):'var(--brand-2)40'};background:${lsc?(qpct>=70?'var(--ok-tint)':'var(--err-tint)'):'var(--brand-tint)'};color:${lsc?(qpct>=70?'var(--ok-strong)':'var(--err-2)'):'var(--brand-2)'};font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">🎯</button>
+                <button onclick="event.stopPropagation();doLessonQuiz('${l.id}')" title="${qdPeek(l.id)?'Resume Quiz':(lsc?'Retake Quiz':'Start Quiz')}" style="width:36px;height:36px;border-radius:9px;border:.5px solid ${lsc?(qpct>=70?'var(--ok)40':'var(--err)40'):'var(--brand-2)40'};background:${lsc?(qpct>=70?'var(--ok-tint)':'var(--err-tint)'):'var(--brand-tint)'};color:${lsc?(qpct>=70?'var(--ok-strong)':'var(--err-2)'):'var(--brand-2)'};font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">🎯</button>
               </div>
             </div>
           </div>`}).join('')}

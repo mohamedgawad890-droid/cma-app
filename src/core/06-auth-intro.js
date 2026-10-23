@@ -635,3 +635,31 @@ function renderIntro(){
   </div>`;
 }
 
+
+// ─── LOGOUT (Batch 31) ────────────────────────────────────────────────────────
+// The intro screen's Logout button called logout(), which did not exist (it showed
+// up in the Errors panel as "logout is not defined"). Signing out also clears the
+// per-student copies kept in this browser, because the next sign-in MERGES local
+// progress with the cloud copy: without this, a second student on the same device
+// would inherit the first student's progress. The cloud data is untouched, and the
+// device id used by the paid-video device limit is deliberately kept.
+async function logout(){
+  const ok=await showModal({icon:'\u{1F44B}',type:'warning',
+    title:'Log out?',
+    body:'Your progress is saved to your account. You can sign in again any time.',
+    confirmText:'Log out',cancelText:'Stay signed in'});
+  if(!ok) return;
+  try{ endStudyTimer(); }catch(_){}
+  try{ if(window._qTimerInterval) clearInterval(window._qTimerInterval); }catch(_){}
+  try{ stopLivePolling(); }catch(_){}
+  try{
+    ['cma-html-v2','cma-student-v1','cma-tracker-v1','cma-streak-v1'].forEach(function(k){ localStorage.removeItem(k); });
+  }catch(_){}
+  try{
+    STATE.quizState=null;STATE.quizMode=null;
+    STATE.progress={done:[],lessonScores:{},mcqTotal:0,mcqRight:0};
+    if(typeof _invalidateDoneSet==='function') _invalidateDoneSet();
+  }catch(_){}
+  try{ await auth.signOut(); }
+  catch(e){ try{ showToast('Could not log out. Check your connection and try again.','error'); }catch(_){} }
+}
