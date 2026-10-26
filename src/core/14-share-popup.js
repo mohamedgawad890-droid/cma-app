@@ -13,19 +13,23 @@
 //
 // WHEN IT APPEARS (all conditions must hold):
 //   • signed-in student (never the instructor account)
-//   • right after a lesson is marked complete (≥ MIN_LESSONS done) or a lesson
-//     quiz / wrong-answer retry is finished with ≥ MIN_QUIZ_PCT %
+//   • right after the FIRST completion of any lesson (MIN_LESSONS = 1) or after
+//     any lesson quiz / wrong-answer retry is finished (MIN_QUIZ_PCT = 0)
 //   • not during an exam / quiz / mock exam / CBQ, and no other modal is open
 //   • not "Don't show again", and the snooze period has passed
 //     (30 days after close, 90 days after a share click)
 //   • at most once per app session
 //
 // FIRESTORE: writes to `app-feedback` (see firestore.rules). Fields:
-//   userId, name, type (note|request|problem), message, status ('new'),
-//   tab, build, createdAt (server time).
+//   userId, name, type (note|request|problem|rating), message, status ('new'),
+//   tab, build, createdAt (server time), rating ('up'|'down', rating docs only).
+//   A rating doc is created by ONE tap with message ''. The optional
+//   "What's missing?" text is added afterwards with a single update() of
+//   `message` on that same doc (allowed by firestore.rules for its owner).
 // GA4 events (ids/counts only, never message text):
 //   share_popup_view {source}, share_click {channel, source},
-//   feedback_sent {type, source}
+//   feedback_sent {type, source}  (type: note|request|problem|rating_note),
+//   rating_given {rating, source}
 // Manual open (e.g. from a future Settings button): openSharePopup('manual')
 
 (function(){
@@ -52,9 +56,9 @@
   var LS_FB_DAY       = 'cma-share-fb-day';  // {d:'YYYY-MM-DD', n:count}
   var SNOOZE_DAYS     = 30;
   var AFTER_SHARE_DAYS= 90;
-  var MIN_LESSONS     = 3;
-  var MIN_QUIZ_PCT    = 70;
-  var MIN_QUIZ_QS     = 5;
+  var MIN_LESSONS     = 1;
+  var MIN_QUIZ_PCT    = 0;
+  var MIN_QUIZ_QS     = 1;
   var FB_DAILY_CAP    = 5;
   var FB_MAX_CHARS    = 1000;
   var SHOW_DELAY_MS   = 1400;
@@ -65,6 +69,8 @@
   var _open = false;
   var _sending = false;
   var _type = 'note';
+  var _rating = null;      // 'up' | 'down' once tapped
+  var _ratingRef = null;   // Firestore doc ref of this popup's rating
 
   function safe(fn){ try{ return fn(); }catch(_){ return undefined; } }
 
@@ -148,13 +154,18 @@
       '.sp-chips{direction:rtl;display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}',
       '.sp-chip{font-size:12px;padding:5px 12px;border-radius:999px;border:.5px solid #c8ccd2;background:#fff;color:#555;cursor:pointer;font-family:inherit}',
       '.sp-chip.on{background:#0C447C;border-color:#0C447C;color:#fff}',
-      '#sp-fb{width:100%;box-sizing:border-box;resize:none;direction:rtl;text-align:right;font-size:14px;padding:9px 10px;border:.5px solid #c8ccd2;border-radius:10px;font-family:inherit;background:#fff;color:#222}',
-      '#sp-msg{font-size:13px;min-height:20px;margin:2px 0;direction:rtl;text-align:right}',
+      '#sp-fb,#sp-rt{width:100%;box-sizing:border-box;resize:none;direction:rtl;text-align:right;font-size:14px;padding:9px 10px;border:.5px solid #c8ccd2;border-radius:10px;font-family:inherit;background:#fff;color:#222}',
+      '#sp-msg,#sp-rmsg{font-size:13px;min-height:20px;margin:2px 0;direction:rtl;text-align:right}',
       '.sp-foot1{display:flex;align-items:center;justify-content:space-between;gap:8px}',
       '.sp-mail{font-size:12px;color:#666;text-decoration:underline}',
-      '#sp-send{background:#0C447C;color:#fff;border:none;border-radius:10px;padding:9px 20px;font-size:14px;cursor:pointer;font-family:inherit}',
+      '#sp-send,#sp-rsend{background:#0C447C;color:#fff;border:none;border-radius:10px;padding:9px 20px;font-size:14px;cursor:pointer;font-family:inherit}',
       '.sp-foot2{display:flex;justify-content:space-between;padding:10px 18px 14px;font-size:12px;color:#666}',
-      '.sp-foot2 span{cursor:pointer;padding:4px 0}'
+      '.sp-foot2 span{cursor:pointer;padding:4px 0}',
+      '.sp-rate{border-bottom:.5px solid #e2e5e9;padding-bottom:12px;margin-bottom:12px}',
+      '.sp-rate h4{direction:rtl;text-align:right;font-size:14px;font-weight:600;margin:0 0 8px;color:#222}',
+      '.sp-rb{font-size:15px}',
+      '.sp-rb.on{background:#0C447C;border-color:#0C447C;color:#fff}',
+      '#sp-rate2{margin-top:8px}'
     ].join('');
     var st = document.createElement('style');
     st.id = 'sp-style';
@@ -220,6 +231,67 @@
     });
   }
 
+  function setRMsg(text, kind){
+    var m = el('sp-rmsg'); if(!m) return;
+    m.textContent = text || '';
+    m.style.color = kind === 'ok' ? '#27500A' : '#A32D2D';
+  }
+  function paintRating(){
+    var up = el('sp-up'), dn = el('sp-dn');
+    if(up) up.classList.toggle('on', _rating === 'up');
+    if(dn) dn.classList.toggle('on', _rating === 'down');
+  }
+  // One tap: creates the rating doc straight away (message ''), then reveals the
+  // optional "What's missing?" box. Only one rating per popup.
+  function sendRating(r){
+    if(_rating) return;
+    if(!userOk() || typeof db === 'undefined' || typeof firebase === 'undefined'){ setRMsg('\u0645\u0642\u062F\u0631\u0646\u0627\u0634 \u0646\u0628\u0639\u062A \u0627\u0644\u0631\u0633\u0627\u0644\u0629. \u0627\u062A\u0623\u0643\u062F \u0645\u0646 \u0627\u0644\u0646\u062A \u0648\u062C\u0631\u0651\u0628 \u062A\u0627\u0646\u064A'); return; }
+    if(fbSentToday() >= FB_DAILY_CAP){ setRMsg('\u0648\u0635\u0644\u062A \u0644\u0644\u062D\u062F \u0627\u0644\u064A\u0648\u0645\u064A \u0644\u0644\u0631\u0633\u0627\u0626\u0644. \u062C\u0631\u0651\u0628 \u0628\u0643\u0631\u0629'); return; }
+    _rating = r; paintRating(); setRMsg('');
+    ga('rating_given', { rating: r, source: _source });
+    var doc = {
+      userId: STATE.user.uid,
+      name: String(STATE.user.displayName || '').slice(0, 80),
+      type: 'rating',
+      rating: r,
+      message: '',
+      status: 'new',
+      tab: String(STATE.tab || '').slice(0, 40),
+      build: (typeof APP_BUILD !== 'undefined') ? String(APP_BUILD).slice(0, 20) : '',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    db.collection('app-feedback').add(doc).then(function(ref){
+      _ratingRef = ref;
+      fbCount();
+      var box = el('sp-rate2'); if(box) box.style.display = 'block';
+      setRMsg('\u0634\u0643\u0631\u0627\u064B! \u0644\u0648 \u062D\u0627\u0628\u0628 \u062A\u0636\u064A\u0641 \u062A\u0641\u0627\u0635\u064A\u0644 \u0627\u0643\u062A\u0628\u0647\u0627 \u062A\u062D\u062A', 'ok');
+    }).catch(function(e){
+      _rating = null; paintRating();
+      setRMsg('\u0645\u0642\u062F\u0631\u0646\u0627\u0634 \u0646\u0628\u0639\u062A \u0627\u0644\u0631\u0633\u0627\u0644\u0629. \u0627\u062A\u0623\u0643\u062F \u0645\u0646 \u0627\u0644\u0646\u062A \u0648\u062C\u0631\u0651\u0628 \u062A\u0627\u0646\u064A');
+      safe(function(){ console.warn('[share-popup] rating failed', e); });
+    });
+  }
+  function sendRatingNote(){
+    if(_sending || !_ratingRef) return;
+    var ta = el('sp-rt');
+    var msg = ta ? ta.value.trim() : '';
+    if(msg.length < 3){ setRMsg('\u0627\u0643\u062A\u0628 \u0631\u0633\u0627\u0644\u062A\u0643 \u0627\u0644\u0623\u0648\u0644'); return; }
+    if(msg.length > FB_MAX_CHARS){ setRMsg('\u0627\u0644\u0631\u0633\u0627\u0644\u0629 \u0637\u0648\u064A\u0644\u0629 \u2014 \u0627\u0644\u062D\u062F \u0627\u0644\u0623\u0642\u0635\u0649 1000 \u062D\u0631\u0641'); return; }
+    _sending = true;
+    var btn = el('sp-rsend'); if(btn) btn.disabled = true;
+    _ratingRef.update({ message: msg }).then(function(){
+      _sending = false;
+      ga('feedback_sent', { type: 'rating_note', source: _source });
+      if(ta) ta.disabled = true;
+      setRMsg('\u0634\u0643\u0631\u0627\u064B\u060C \u0631\u0633\u0627\u0644\u062A\u0643 \u0648\u0635\u0644\u062A', 'ok');
+    }).catch(function(e){
+      _sending = false;
+      if(btn) btn.disabled = false;
+      setRMsg('\u0645\u0642\u062F\u0631\u0646\u0627\u0634 \u0646\u0628\u0639\u062A \u0627\u0644\u0631\u0633\u0627\u0644\u0629. \u0627\u062A\u0623\u0643\u062F \u0645\u0646 \u0627\u0644\u0646\u062A \u0648\u062C\u0631\u0651\u0628 \u062A\u0627\u0646\u064A');
+      safe(function(){ console.warn('[share-popup] rating note failed', e); });
+    });
+  }
+
   function closePopup(mode){
     var ov = el('sp-ov');
     if(ov && ov.parentNode) ov.parentNode.removeChild(ov);
@@ -275,6 +347,7 @@
       ensureStyles();
       _source = source || 'auto';
       _type = 'note';
+      _rating = null; _ratingRef = null;
       _open = true;
       _shownThisSession = true;
       writeState({ shown: (readState().shown || 0) + 1 });
@@ -286,6 +359,15 @@
           '<div class="sp-head"><div class="sp-ico">\u2197</div>',
             '<div class="sp-ttl"><b>\u0633\u0627\u0639\u062F \u0632\u0645\u0644\u0627\u0621\u0643 \u064A\u0648\u0635\u0644\u0648\u0627 \u0644\u0644\u062A\u0637\u0628\u064A\u0642</b><span>Help another CMA student find this app</span></div></div>',
           '<div class="sp-body">',
+            '<div class="sp-rate">',
+              '<h4>\u0627\u0644\u062A\u0637\u0628\u064A\u0642 \u0645\u0641\u064A\u062F \u0644\u064A\u0643\u061F</h4>',
+              '<div class="sp-row"><button class="sp-btn sp-rb" id="sp-up" type="button">\uD83D\uDC4D \u0623\u064A\u0648\u0647</button><button class="sp-btn sp-rb" id="sp-dn" type="button">\uD83D\uDC4E \u0644\u0633\u0647 \u0645\u062D\u062A\u0627\u062C \u062A\u062D\u0633\u064A\u0646</button></div>',
+              '<div id="sp-rate2" style="display:none">',
+                '<textarea id="sp-rt" rows="2" maxlength="' + FB_MAX_CHARS + '" placeholder="\u0625\u064A\u0647 \u0627\u0644\u0646\u0627\u0642\u0635\u061F (\u0627\u062E\u062A\u064A\u0627\u0631\u064A)"></textarea>',
+                '<div class="sp-foot1"><span></span><button id="sp-rsend" type="button">\u0625\u0631\u0633\u0627\u0644</button></div>',
+              '</div>',
+              '<div id="sp-rmsg"></div>',
+            '</div>',
             '<p class="sp-p">\u0627\u0644\u062A\u0637\u0628\u064A\u0642 \u0645\u062C\u0627\u0646\u064A \u0648\u0645\u062A\u0627\u062D \u0644\u0644\u062C\u0645\u064A\u0639. \u0644\u0648 \u0627\u0633\u062A\u0641\u062F\u062A \u0645\u0646\u0647\u060C \u0634\u0627\u0631\u0643 \u0627\u0644\u0631\u0627\u0628\u0637 \u0639\u0644\u0649 LinkedIn \u0623\u0648 Facebook \u0648\u0627\u0630\u0643\u0631\u0646\u064A \u0641\u064A \u0627\u0644\u0628\u0648\u0633\u062A\u060C \u0648\u062F\u0647 \u0647\u064A\u0633\u0627\u0639\u062F \u0637\u0644\u0627\u0628 \u062A\u0627\u0646\u064A\u0646 \u064A\u0644\u0627\u0642\u0648\u0647.</p>',
             '<div class="sp-post"><small>Ready-to-post text</small><div id="sp-post"></div></div>',
             '<div class="sp-row">',
@@ -326,6 +408,10 @@
       el('sp-li').addEventListener('click', function(){ doShare('linkedin'); });
       el('sp-fbk').addEventListener('click', function(){ doShare('facebook'); });
       if(canNative) el('sp-nat').addEventListener('click', doNative);
+      el('sp-up').addEventListener('click', function(){ sendRating('up'); });
+      el('sp-dn').addEventListener('click', function(){ sendRating('down'); });
+      el('sp-rsend').addEventListener('click', sendRatingNote);
+      el('sp-rt').addEventListener('input', function(){ setRMsg(''); });
       el('sp-send').addEventListener('click', sendFeedback);
       el('sp-fb').addEventListener('input', function(){ setMsg(''); });
       el('sp-never').addEventListener('click', function(){ closePopup('never'); });
