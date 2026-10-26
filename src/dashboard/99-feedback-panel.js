@@ -80,12 +80,14 @@ function renderDashInbox(){
   if(st.error)return '<div class="card" style="margin:12px">Couldn\u2019t load messages: '+esc(st.error)+'</div>';
 
   const f=st.filter||'all';
-  const FILTERS=[['all','All'],['new','New'],['request','Requests'],['problem','Problems'],['note','Notes']];
+  const FILTERS=[['all','All'],['new','New'],['rating','Ratings'],['request','Requests'],['problem','Problems'],['note','Notes']];
   const rows=st.rows.filter(r=>f==='all'?true:(f==='new'?r.status==='new':r.type===f));
   const newCount=st.rows.filter(r=>r.status==='new').length;
+  const ups=st.rows.filter(r=>r.type==='rating'&&r.rating==='up').length;
+  const downs=st.rows.filter(r=>r.type==='rating'&&r.rating==='down').length;
 
   const head='<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 12px 8px;flex-wrap:wrap">'
-    +'<div style="font-size:13px;color:var(--muted)">'+st.rows.length+' messages \u00B7 '+newCount+' new</div>'
+    +'<div style="font-size:13px;color:var(--muted)">'+st.rows.length+' messages \u00B7 '+newCount+' new'+((ups||downs)?' \u00B7 \u{1F44D} '+ups+' \u00B7 \u{1F44E} '+downs:'')+'</div>'
     +'<div style="display:flex;gap:6px"><button class="sub-nav-btn" onclick="loadDashInbox()">\u21BB Refresh</button>'
     +(newCount?'<button class="sub-nav-btn" onclick="inboxMarkAllRead()">\u2713 Mark all read</button>':'')+'</div></div>'
     +'<div style="display:flex;gap:6px;margin:0 12px 10px;flex-wrap:wrap">'
@@ -94,17 +96,18 @@ function renderDashInbox(){
 
   if(!rows.length)return head+'<div style="text-align:center;padding:40px 20px;color:var(--muted);font-size:14px">No messages here yet.</div>';
 
-  const TYPE={note:{l:'Note',bg:'var(--brand-tint,#e6f1fb)',c:'var(--brand,#0C447C)'},request:{l:'Request',bg:'var(--ok-tint,#eaf3de)',c:'var(--ok-strong,#27500A)'},problem:{l:'Problem',bg:'var(--err-tint,#fcebeb)',c:'var(--err-strong,#791F1F)'}};
+  const TYPE={note:{l:'Note',bg:'var(--brand-tint,#e6f1fb)',c:'var(--brand,#0C447C)'},request:{l:'Request',bg:'var(--ok-tint,#eaf3de)',c:'var(--ok-strong,#27500A)'},problem:{l:'Problem',bg:'var(--err-tint,#fcebeb)',c:'var(--err-strong,#791F1F)'},rating:{l:'Rating',bg:'var(--brand-tint,#e6f1fb)',c:'var(--brand,#0C447C)'}};
   return head+rows.map(r=>{
     const t=TYPE[r.type]||TYPE.note;
+    const tl=r.type==='rating'?(r.rating==='down'?'\u{1F44E} Rating':'\u{1F44D} Rating'):t.l;
     const when=(r.createdAt&&r.createdAt.toDate)?r.createdAt.toDate().toLocaleString():'';
     const who=(r.name||'Student')+(r.userId?' \u00B7 '+String(r.userId).slice(-6):'');
     const isNew=r.status==='new';
     return '<div class="card" style="margin:0 12px 10px;'+(isNew?'border-inline-start:3px solid var(--brand,#0C447C)':'')+'">'
       +'<div style="display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:6px">'
-      +'<span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:999px;background:'+t.bg+';color:'+t.c+'">'+t.l+(isNew?' \u00B7 new':'')+'</span>'
+      +'<span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:999px;background:'+t.bg+';color:'+t.c+'">'+tl+(isNew?' \u00B7 new':'')+'</span>'
       +'<span style="font-size:11px;color:var(--muted)">'+esc(when)+'</span></div>'
-      +'<div dir="auto" style="font-size:14px;line-height:1.7;color:var(--ink);white-space:pre-wrap;word-break:break-word">'+esc(r.message||'')+'</div>'
+      +'<div dir="auto" style="font-size:14px;line-height:1.7;color:var(--ink);white-space:pre-wrap;word-break:break-word">'+(r.message?esc(r.message):'<span style="color:var(--muted)">(no comment)</span>')+'</div>'
       +'<div style="font-size:11px;color:var(--muted);margin-top:6px">'+esc(who)+(r.tab?' \u00B7 screen: '+esc(r.tab):'')+(r.build?' \u00B7 build '+esc(r.build):'')+'</div>'
       +'<div style="display:flex;gap:6px;margin-top:8px">'
       +(isNew?'<button class="sub-nav-btn" onclick="inboxMarkRead(\''+esc(r._id)+'\')">\u2713 Mark read</button>':'')
