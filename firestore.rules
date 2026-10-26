@@ -421,17 +421,24 @@ service cloud.firestore {
     // ═══════════════════════════════════════════════════════════════════════════
     // A signed-in student sends a note, feature request or problem report from
     // the popup. Create only: fixed field set, size limits, server timestamp.
-    // Students cannot read, edit or delete anything here (not even their own);
-    // only the instructor reads, marks as read (update) and deletes.
+    // Students cannot read or delete anything here (not even their own).
+    // The instructor reads, marks as read (update) and deletes.
+    // Ratings (type 'rating', rating 'up'|'down') are created with an empty
+    // message; their owner may later add the optional "What's missing?" text
+    // with ONE update that touches only `message`.
     match /app-feedback/{docId} {
       allow create: if signedIn()
-        && request.resource.data.keys().hasOnly(['userId','name','type','message','status','tab','build','createdAt'])
+        && request.resource.data.keys().hasOnly(['userId','name','type','message','status','tab','build','createdAt','rating'])
         && request.resource.data.keys().hasAll(['userId','type','message','status','createdAt'])
         && request.resource.data.userId == request.auth.uid
-        && request.resource.data.type in ['note','request','problem']
+        && request.resource.data.type in ['note','request','problem','rating']
         && request.resource.data.message is string
-        && request.resource.data.message.size() >= 3
         && request.resource.data.message.size() <= 1000
+        && (request.resource.data.type == 'rating'
+              ? (request.resource.data.get('rating', '') in ['up','down']
+                  && request.resource.data.message.size() == 0)
+              : (request.resource.data.message.size() >= 3
+                  && !('rating' in request.resource.data.keys())))
         && request.resource.data.get('name', '') is string
         && request.resource.data.get('name', '').size() <= 80
         && request.resource.data.status == 'new'
@@ -440,7 +447,16 @@ service cloud.firestore {
         && request.resource.data.get('build', '') is string
         && request.resource.data.get('build', '').size() <= 20
         && request.resource.data.createdAt == request.time;
-      allow read, update, delete: if isInstructor();
+      allow read, delete: if isInstructor();
+      allow update: if isInstructor()
+        || (signedIn()
+            && resource.data.userId == request.auth.uid
+            && resource.data.type == 'rating'
+            && resource.data.message == ''
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['message'])
+            && request.resource.data.message is string
+            && request.resource.data.message.size() >= 3
+            && request.resource.data.message.size() <= 1000);
     }
 
     match /group-requests/{requestId} {
