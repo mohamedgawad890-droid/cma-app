@@ -146,9 +146,14 @@ service cloud.firestore {
     match /questions/{questionId} {
       allow read:   if signedIn();
       // Batch 23 (B23-06): new questions must start with no votes and 0 replies.
+      // Batch 33: size limits (title 200, body 5000, names 100, photo URL 500).
       allow create: if signedIn() && request.resource.data.authorId == request.auth.uid
         && request.resource.data.get('upvotes', []).size() == 0
-        && request.resource.data.get('replyCount', 0) == 0;
+        && request.resource.data.get('replyCount', 0) == 0
+        && request.resource.data.get('title', '') is string && request.resource.data.get('title', '').size() <= 200
+        && request.resource.data.get('body', '') is string && request.resource.data.get('body', '').size() <= 5000
+        && request.resource.data.get('authorName', '') is string && request.resource.data.get('authorName', '').size() <= 100
+        && request.resource.data.get('authorPhoto', '') is string && request.resource.data.get('authorPhoto', '').size() <= 500;
       // Batch 23 (B23-06): was "any signed-in user may rewrite upvotes/replyCount
       // to anything" — could wipe other students' votes or fake counts.
       allow update: if signedIn() && (
@@ -166,7 +171,10 @@ service cloud.firestore {
         // Batch 23 (B23-06): replies start with no votes and not marked best.
         allow create: if signedIn() && request.resource.data.authorId == request.auth.uid
           && request.resource.data.get('upvotes', []).size() == 0
-          && request.resource.data.get('isBestAnswer', false) == false;
+          && request.resource.data.get('isBestAnswer', false) == false
+          && request.resource.data.get('body', '') is string && request.resource.data.get('body', '').size() <= 5000
+          && request.resource.data.get('authorName', '') is string && request.resource.data.get('authorName', '').size() <= 100
+          && request.resource.data.get('authorPhoto', '') is string && request.resource.data.get('authorPhoto', '').size() <= 500;
         // Batch 20 (security pass, MEDIUM): was open to any signed-in user
         // for both keys — any student could mark any reply (on any question)
         // as the best answer via a direct write, bypassing the app's
@@ -271,11 +279,16 @@ service cloud.firestore {
     match /lecture-feedback/{docId} {
       allow read:   if isInstructor()
         || (signedIn() && resource.data.userId == request.auth.uid);
-      allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
+      // Batch 33: size limits (comment 500 = the app's own cap).
+      allow create: if signedIn() && request.resource.data.userId == request.auth.uid
+        && request.resource.data.get('comment', '') is string && request.resource.data.get('comment', '').size() <= 500
+        && request.resource.data.get('title', '') is string && request.resource.data.get('title', '').size() <= 200
+        && request.resource.data.get('studentName', '') is string && request.resource.data.get('studentName', '').size() <= 100;
       allow update: if isInstructor()
         || (signedIn()
             && resource.data.userId == request.auth.uid
-            && onlyStudentEditableKeys(['rating','comment','tags']));
+            && onlyStudentEditableKeys(['rating','comment','tags'])
+            && request.resource.data.get('comment', '') is string && request.resource.data.get('comment', '').size() <= 500);
       allow delete: if isInstructor();
     }
 
@@ -463,7 +476,11 @@ service cloud.firestore {
       allow read, update, delete: if isInstructor();
       allow create: if signedIn()
         && request.resource.data.uid == request.auth.uid
-        && request.resource.data.status == 'pending';
+        && request.resource.data.status == 'pending'
+        && request.resource.data.get('studentName', '') is string && request.resource.data.get('studentName', '').size() <= 100
+        && request.resource.data.get('studentEmail', '') is string && request.resource.data.get('studentEmail', '').size() <= 200
+        && request.resource.data.get('studentMobile', '') is string && request.resource.data.get('studentMobile', '').size() <= 40
+        && request.resource.data.get('groupCode', '') is string && request.resource.data.get('groupCode', '').size() <= 40;
     }
 
     // ═══════════════════════════════════════════════════════════════════════════

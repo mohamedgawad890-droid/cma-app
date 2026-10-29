@@ -193,8 +193,8 @@ async function loadReplies(qId){
 }
 
 async function postQuestion(){
-  const title=STATE.draftTitle.trim();
-  const body=STATE.draftBody.trim();
+  const title=STATE.draftTitle.trim().slice(0,200);   // Batch 33: matches the firestore.rules size limit
+  const body=STATE.draftBody.trim().slice(0,5000);
   const section=STATE.draftSection||'General';
   if(!title||!body){showToast('Please enter both a title and description for your question.','warning');return;}
   const st=loadStudent();
@@ -205,8 +205,8 @@ async function postQuestion(){
     await db.collection('questions').add({
       title,body,section,
       authorId:STATE.user.uid,
-      authorName:st?.name||STATE.user.displayName||'Student',
-      authorPhoto:photoUrl,
+      authorName:String(st?.name||STATE.user.displayName||'Student').slice(0,100),
+      authorPhoto:photoUrl.slice(0,500),
       createdAt:new Date().toISOString(),
       replyCount:0,upvotes:[],
     });
@@ -217,7 +217,7 @@ async function postQuestion(){
 }
 
 async function postReply(qId){
-  const body=STATE.draftReply.trim();
+  const body=STATE.draftReply.trim().slice(0,5000);   // Batch 33: matches the firestore.rules size limit
   if(!body){showToast('Please write your reply first.','warning');return;}
   const st=loadStudent();
   const btn=document.getElementById('post-reply-btn');
@@ -227,8 +227,8 @@ async function postReply(qId){
     await db.collection('questions').doc(qId).collection('replies').add({
       body,
       authorId:STATE.user.uid,
-      authorName:st?.name||STATE.user.displayName||'Student',
-      authorPhoto:rPhotoUrl,
+      authorName:String(st?.name||STATE.user.displayName||'Student').slice(0,100),
+      authorPhoto:rPhotoUrl.slice(0,500),
       createdAt:new Date().toISOString(),
       isBestAnswer:false,
       upvotes:[],

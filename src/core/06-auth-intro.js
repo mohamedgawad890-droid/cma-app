@@ -187,6 +187,29 @@ function renderLogin(){
 }
 
 // ─── INTRO SCREEN ─────────────────────────────────────────────────────────────
+// Batch 33 (item 2): activation — the home screen was a profile page with no way
+// into learning (only 55 of 337 users opened a lesson). One primary card: "Start
+// your first lesson" for new users, "Continue" (next not-done lesson) afterwards.
+function renderStartLearningCard(){
+  if(!STATE.user||isInstructor())return '';
+  let next=null,anyDone=false;
+  for(const sec of S){
+    for(const l of sec.lessons){
+      if(lessonDone(l.id)){anyDone=true;continue;}
+      if(!next)next={sec,l};
+    }
+  }
+  if(!next)return '';
+  const title=anyDone?'Continue where you left off':'Start your first lesson';
+  return `<div onclick="try{track('start_card_click',{first:${anyDone?0:1},lesson_id:'${esc(next.l.id)}'})}catch(e){};STATE.tab='study';studyGo(${next.sec.id},'${esc(next.l.id)}')"
+    style="background:linear-gradient(135deg,var(--brand),var(--brand-2));border-radius:14px;padding:16px;margin-bottom:14px;cursor:pointer;color:#fff">
+    <div style="font-size:11px;opacity:.8;margin-bottom:4px">${next.sec.emoji||''} ${esc(next.sec.title)}</div>
+    <div style="font-size:16px;font-weight:600;margin-bottom:2px">${title}</div>
+    <div style="font-size:13px;opacity:.9">${esc(next.l.title)}${next.l.dur?' \u00B7 '+esc(next.l.dur):''}</div>
+    <div style="margin-top:10px;display:inline-block;background:#fff;color:var(--brand);font-weight:600;font-size:13px;padding:7px 16px;border-radius:999px">${anyDone?'Continue':'Start now'} \u203A</div>
+  </div>`;
+}
+
 function renderIntro(){
   return`${renderSubNav(SUB_ME,'intro')}<div class="scroll-area">
     <!-- PROFILE HERO -->
@@ -236,6 +259,8 @@ function renderIntro(){
     </div>
 
     <div class="pad" style="padding-top:16px">
+
+      ${renderStartLearningCard()}
 
       ${renderExamsStrip()}
 

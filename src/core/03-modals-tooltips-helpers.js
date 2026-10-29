@@ -124,7 +124,7 @@ const STATE={tab:'loading',searchQ:'',dictQ:'',dictData:[],dictLoaded:false,lead
     dashLectures:[],dashLive:{},dashLectureDraft:{title:'',groupCode:'',date:''},dashAttendance:[],
     dashExams:[],dashExamsLoaded:false,
     dashExamDraft:{title:'',groupCode:'',sectionIds:[],unitsBySection:{},count:20,durationMinutes:30,opensAt:'',closesAt:'',maxAttempts:3},
-    practiceDraft:{sectionIds:[],unitsBySection:{},count:20,durationMinutes:30},
+    practiceDraft:{sectionIds:[],unitsBySection:{},count:20,durationMinutes:30,hardOnly:false},
     practiceHistory:[],practiceHistoryLoaded:false,
     studentExams:[],studentExamsLoaded:false,studentExamResults:{},examSession:null,
     dashExamResults:{},dashExamViewingId:null,dashResultsSort:'score-desc',dashExamPreviewId:null,dashInstructorNotes:{},dashStudentDetailLoadedFor:null,dashStudentDetailLoading:false,dashAttendanceView:null,

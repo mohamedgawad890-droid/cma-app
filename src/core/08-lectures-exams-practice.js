@@ -65,11 +65,11 @@ async function submitLectureFeedback(lectureId,groupCode,title,rating,comment){
   try{
     const st=loadStudent()||{};
     await db.collection('lecture-feedback').add({
-      lectureId,groupCode,title,
+      lectureId,groupCode,title:String(title||'').slice(0,200),
       userId:STATE.user.uid,
-      studentName:st.name||STATE.user.displayName||'Student',
-      studentId:st.studentId||'',
-      rating,comment,
+      studentName:String(st.name||STATE.user.displayName||'Student').slice(0,100),
+      studentId:String(st.studentId||'').slice(0,40),
+      rating,comment:String(comment||'').slice(0,500),
       submittedAt:new Date().toISOString()
     });
     const done=loadFeedbackSubmitted();if(!done.includes(lectureId)){done.push(lectureId);saveFeedbackSubmitted(done);}
@@ -180,7 +180,31 @@ function _largestRemainderSplit(total,n){
 // never drifts between the two. sectionIds: array of section ids.
 // unitsBySection: {sectionId:[unitIds]} (empty/missing = whole section).
 // Returns {ok:true,questionIds:[...]} or {ok:false,message}.
-async function buildDistributedExamPool(sectionIds,unitsBySection,count){
+// Batch 33 (item 17): "hard" = imported difficulty `diffPct` (percent of test-takers
+// answering correctly) at or below this value, or questions the author flagged `hard:true`.
+// Questions with neither are never hard.
+const HARD_MAX_PCT=50;
+function isHardQ(q){return !!q&&((typeof q.diffPct==='number'&&q.diffPct<=HARD_MAX_PCT)||q.hard===true);}
+// Sync count of hard, in-scope questions for the current Custom Practice selection
+// (needs the sections' question files loaded — see QUIZ_CACHE).
+function countHardPractice(sectionIds,unitsBySection){
+  const out={};let total=0;
+  (sectionIds||[]).forEach(sid=>{
+    const sec=S.find(s=>s.id===Number(sid));let n=0;
+    if(sec){
+      const fu=Array.isArray((unitsBySection||{})[sid])&&unitsBySection[sid].length?unitsBySection[sid].map(String):null;
+      sec.lessons.forEach(l=>{
+        if(fu&&!fu.includes(String(l.id)))return;
+        (l.quizzes||[]).forEach(q=>{if(!isOutOfScopeQ(l,q)&&isHardQ(q))n++;});
+      });
+    }
+    out[sid]=n;total+=n;
+  });
+  return {bySection:out,total};
+}
+
+async function buildDistributedExamPool(sectionIds,unitsBySection,count,opts){
+  const hardOnly=!!(opts&&opts.hardOnly);
   await Promise.all(sectionIds.map(sid=>ensureQuizzes(sid)));
   const secPools={};   // sid -> {unitId -> [qid,...]}
   sectionIds.forEach(sid=>{
@@ -193,6 +217,7 @@ async function buildDistributedExamPool(sectionIds,unitsBySection,count){
       if(l.quizzes&&l.quizzes.length){
         l.quizzes.forEach((q,i)=>{
           if(isOutOfScopeQ(l,q))return;   // never freeze Part-2 content into a graded exam
+          if(hardOnly&&!isHardQ(q))return;
           const qid=l.id+':'+(q.id||i);
           (byUnit[l.id]=byUnit[l.id]||[]).push(qid);
         });
@@ -228,6 +253,7 @@ async function buildDistributedExamPool(sectionIds,unitsBySection,count){
     while(totalShortfall>0&&leftoverPool.length){picked.push(leftoverPool.pop());totalShortfall--;}
   }
   if(picked.length<count){
+    if(hardOnly)return {ok:false,message:'Only '+picked.length+' hard questions available in this selection (need '+count+'). Reduce the count or add more sections/units.'};
     return {ok:false,message:'Only '+picked.length+' in-scope questions available across your selection (need '+count+'). Reduce Question count or select more units/sections.'};
   }
   const finalShuffled=picked.slice();
@@ -1409,6 +1435,10 @@ function togglePracticeUnit(sectionId,uid){
   d.unitsBySection[sectionId]=arr.slice();
   render();
 }
+function togglePracticeHard(on){
+  STATE.practiceDraft.hardOnly=!!on;
+  render();
+}
 function clearPracticeUnits(sectionId){
   const d=STATE.practiceDraft;
   d.unitsBySection=d.unitsBySection||{};
@@ -1452,6 +1482,28 @@ function renderCustomPractice(){
   }).join('');
   const unitPickers=(d.sectionIds||[]).map(sid=>renderPracticeUnitPicker(d,sid)).join('');
 
+  // Batch 33 (item 17): "Hard questions only" mode + live availability count.
+  let hardBlock='';
+  if(d.sectionIds&&d.sectionIds.length){
+    const need=d.sectionIds.filter(sid=>!QUIZ_CACHE[String(sid)]);
+    if(d.hardOnly&&need.length&&!d._hardLoading){
+      d._hardLoading=true;
+      Promise.all(need.map(sid=>ensureQuizzes(sid))).then(()=>{d._hardLoading=false;if(STATE.tab==='custom-practice')render();});
+    }
+    let avail='';
+    if(d.hardOnly){
+      if(need.length)avail='<div style="font-size:11px;color:#888;margin-top:6px">Counting hard questions\u2026</div>';
+      else{
+        const hc=countHardPractice(d.sectionIds,d.unitsBySection);
+        avail='<div style="font-size:11px;color:#555;margin-top:6px">Available: <b>'+hc.total+'</b> hard questions'
+          +(d.sectionIds.length>1?' ('+d.sectionIds.map(sid=>'Sec '+sid+': '+hc.bySection[sid]).join(' \u00B7 ')+')':'')+'</div>';
+      }
+    }
+    hardBlock='<label style="display:flex;align-items:flex-start;gap:8px;margin-bottom:14px;cursor:pointer;font-size:13px;color:var(--ink)">'
+      +'<input type="checkbox" '+(d.hardOnly?'checked ':'')+'onchange="togglePracticeHard(this.checked)" style="margin-top:3px">'
+      +'<span><b>\u{1F525} Hard questions only</b><br><span style="font-size:11px;color:#888">Only questions that most test-takers get wrong (\u2264'+HARD_MAX_PCT+'% correct). Scores run lower in this mode.</span>'+avail+'</span></label>';
+  }
+
   if(!STATE.practiceHistoryLoaded)loadPracticeHistory();
   const history=STATE.practiceHistory||[];
   const historyHTML=history.length?`<div style="background:#fff;border:.5px solid var(--border);border-radius:12px;padding:14px;margin-top:16px">
@@ -1480,6 +1532,7 @@ function renderCustomPractice(){
         <div style="display:flex;flex-wrap:wrap;gap:6px;padding:8px;background:var(--surface);border:.5px solid var(--border);border-radius:8px">${sectionChips}</div>
       </div>
       ${unitPickers}
+      ${hardBlock}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
         <div>
           <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Questions (3\u201350) *</label>
@@ -1514,7 +1567,8 @@ async function startCustomPractice(){
   if(!dur||dur<3||dur>240){showToast('Duration must be 3\u2013240 minutes.','warning');return;}
 
   const unitsBySection=d.unitsBySection||{};
-  const result=await buildDistributedExamPool(sectionIds,unitsBySection,count);
+  const hardOnly=!!d.hardOnly;
+  const result=await buildDistributedExamPool(sectionIds,unitsBySection,count,{hardOnly});
   if(!result.ok){showToast(result.message,'warning');return;}
 
   // Ephemeral, personal-only pseudo-exam — never written to the `exams`
@@ -1522,9 +1576,9 @@ async function startCustomPractice(){
   // instructor). Reuses buildExamQuestions exactly as a real exam would.
   const practiceId='practice_'+Date.now();
   const pseudoExam={
-    id:practiceId,title:'Custom Practice \u2014 '+sectionIds.map(id=>'Sec '+id).join('+'),
+    id:practiceId,title:(hardOnly?'\u{1F525} Hard Practice \u2014 ':'Custom Practice \u2014 ')+sectionIds.map(id=>'Sec '+id).join('+'),
     sectionIds,unitsBySection,questionIds:result.questionIds,
-    count,durationMinutes:dur
+    count,durationMinutes:dur,hardOnly
   };
   const questions=await buildExamQuestions(pseudoExam,STATE.user.uid,1);
   if(!questions.length){showToast('No questions available for this selection.','error');return;}

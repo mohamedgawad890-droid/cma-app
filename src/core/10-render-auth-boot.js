@@ -583,8 +583,8 @@ async function submitProfile(){
         if(groupCode!==currentPending){
           await db.collection('group-requests').add({
             uid:STATE.user.uid,
-            studentName:name,studentEmail:email,studentMobile:mobile,
-            groupCode,status:'pending',
+            studentName:String(name).slice(0,100),studentEmail:String(email).slice(0,200),studentMobile:String(mobile).slice(0,40),
+            groupCode:String(groupCode).slice(0,40),status:'pending',
             requestedAt:new Date().toISOString(),resolvedAt:null,resolvedBy:null
           });
         }

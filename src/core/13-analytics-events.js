@@ -17,7 +17,7 @@
 //   quiz_finish      {quiz_type, lesson_id, section_id, questions, correct, score_pct}
 //   exam_start       {exam_id, attempt_number}                       instructor group exam started/resumed
 //   exam_submit      {exam_id, exam_title, section_id, attempt_number, score, total, score_pct, passed, auto_submitted, time_min}
-//   practice_finish  {sections, total, auto_submitted, time_min}     student custom practice test (no score: private)
+//   practice_finish  {sections, total, auto_submitted, time_min, hard}     student custom practice test (no score: private)
 //   mock_exam_start  {}                                              full mock exam started
 //   mock_exam_finish {mcq_pct, cbq_pct, weighted_pct, passed}
 //   cbq_check        {section_key, case_id, correct, total, score_pct}
@@ -139,7 +139,8 @@
             sections:Array.isArray(s.exam&&s.exam.sectionIds)?s.exam.sectionIds.length:0,
             total:base.total,
             auto_submitted:base.auto_submitted,
-            time_min:base.time_min
+            time_min:base.time_min,
+            hard:(s.exam&&s.exam.hardOnly)?1:0
           });
         }else{
           track('exam_submit',Object.assign({
