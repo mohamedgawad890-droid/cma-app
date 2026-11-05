@@ -360,7 +360,7 @@ function loadFlashReviewSet(){try{const d=localStorage.getItem('cma-flash-review
 function saveFlashReviewSet(arr){try{localStorage.setItem('cma-flash-review-v1',JSON.stringify(arr));}catch{}}
 function toggleFlashReview(cardId){const rs=loadFlashReviewSet();const i=rs.indexOf(cardId);if(i>=0)rs.splice(i,1);else rs.push(cardId);saveFlashReviewSet(rs);}
 async function ensureFlashcards(){if(STATE.flashcards&&STATE.flashcards.length)return;STATE.flashcards=await buildAllFlashcards();}
-function filteredFlashcards(){const all=STATE.flashcards||[];const f=STATE.flashcardsFilter;const mode=STATE.flashcardsMode;let out=all;if(f!=='all'){const sid=parseInt(f);out=out.filter(c=>c.sec&&c.sec.id===sid);}if(mode==='review'){const rs=new Set(loadFlashReviewSet());out=out.filter(c=>rs.has(c.id));}return out;}
+function filteredFlashcards(){const all=STATE.flashcards||[];const f=STATE.flashcardsFilter;const mode=STATE.flashcardsMode;let out=all;if(f!=='all'){const sid=parseInt(f);out=out.filter(c=>c.sec&&c.sec.id===sid);}if(mode==='review'){const rs=new Set(loadFlashReviewSet());out=out.filter(c=>rs.has(c.id));}if(mode==='due'&&typeof srDueFlashSet==='function'){const ds=srDueFlashSet();out=out.filter(c=>ds.has(c.id));}return out;}
 function flashNext(){const list=filteredFlashcards();if(!list.length)return;STATE.flashcardsIdx=(STATE.flashcardsIdx+1)%list.length;STATE.flashcardsFlipped=false;render();}
 function flashPrev(){const list=filteredFlashcards();if(!list.length)return;STATE.flashcardsIdx=(STATE.flashcardsIdx-1+list.length)%list.length;STATE.flashcardsFlipped=false;render();}
 function flashFlip(){STATE.flashcardsFlipped=!STATE.flashcardsFlipped;render();}

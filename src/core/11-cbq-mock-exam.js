@@ -307,7 +307,10 @@ function mockFmtTime(s){
 }
 
 // ── State ─────────────────────────────────────────────────────
-if(!STATE.mockExam)STATE.mockExam={status:'idle',mcqQ:[],mcqA:{},mcqFlagged:[],mcqCurr:0,mcqTime:10800,mcqInterval:null,cbqCases:[],cbqA:{},cbqScores:{},cbqCurr:0,cbqTime:3600,cbqInterval:null,results:null,navOpen:false};
+// Batch 34: one place that builds the idle state (the "Try Again" button used to repeat this literal).
+function mockFreshState(){return {status:'idle',half:false,mcqQ:[],mcqA:{},mcqFlagged:[],mcqCurr:0,mcqTime:10800,mcqInterval:null,cbqCases:[],cbqA:{},cbqScores:{},cbqCurr:0,cbqTime:3600,cbqInterval:null,results:null,navOpen:false};}
+function mockResetState(){mockClearTimers();STATE.mockExam=mockFreshState();if(typeof mockDraftClear==='function')mockDraftClear();render();}
+if(!STATE.mockExam)STATE.mockExam=mockFreshState();
 
 function mockClearTimers(){
   if(STATE.mockExam.mcqInterval){clearInterval(STATE.mockExam.mcqInterval);STATE.mockExam.mcqInterval=null;}
@@ -327,44 +330,80 @@ function mockClearTimers(){
 function isOutOfScopeQ(lesson,q){
   return !!(lesson.outOfScope || (q&&q.outOfScope));
 }
-function mockSelectMCQ(){
+// Batch 34: questions per section for a mock of `total` MCQs (100 = the section weights exactly;
+// 50 = half of each, largest-remainder so the total is always exact).
+function mockQuotas(total){
+  if(!total||total===100)return S.map(sec=>sec.weight);
+  const raw=S.map(sec=>sec.weight*total/100),q=raw.map(Math.floor);
+  let rem=total-q.reduce((a,b)=>a+b,0);
+  raw.map((r,i)=>[r-Math.floor(r),i]).sort((a,b)=>b[0]-a[0]).forEach(pair=>{if(rem>0){q[pair[1]]++;rem--;}});
+  return q;
+}
+function mockSelectMCQ(total){
   const qs=[];
-  S.forEach(sec=>{
+  const quotas=mockQuotas(total);
+  S.forEach((sec,si)=>{
     let pool=[];
     sec.lessons.forEach(l=>{if(l.outOfScope)return;if(l.quizzes&&l.quizzes.length)l.quizzes.forEach(q=>{if(isOutOfScopeQ(l,q))return;pool.push({...q,sid:sec.id,stitle:sec.title,sbar:sec.bar,sweight:sec.weight});});});
     pool=mockShuffle(pool);
-    qs.push(...pool.slice(0,sec.weight));
+    qs.push(...pool.slice(0,quotas[si]));
   });
   return mockShuffle(qs).map(practiceShuffleQ);   // Batch 31: option shuffle (bank data unchanged)
 }
 
-function mockSelectCBQ(){
+function mockSelectCBQ(n){
   if(typeof CBQ_DATA==='undefined')return []; // Batch 24 (B24-12): data unavailable (offline, never cached)
   let pool=[];
   CBQ_SEC_KEYS.forEach(k=>{if(CBQ_DATA[k])CBQ_DATA[k].forEach(c=>pool.push({...c,sk:k}));});
-  return mockShuffle(pool).slice(0,2);
+  return mockShuffle(pool).slice(0,n||2);
 }
 
 // ── Start ──────────────────────────────────────────────────────
-async function startMockExam(){
+// Batch 34: startMockExam(half) — half = 50 MCQs / 90 min + 1 CBQ / 30 min (exactly half of the real exam).
+async function startMockExam(half){
   STATE.mockExam.status='loading';render();
   for(let i=1;i<=6;i++)await ensureQuizzes(i);
   try{await ensureCBQData();}catch(e){} // Batch 24 (B24-12): CBQ data is lazy-loaded now
   STATE.mockExam={
-    status:'mcq',
-    mcqQ:mockSelectMCQ(),mcqA:{},mcqFlagged:[],mcqCurr:0,mcqTime:10800,mcqInterval:null,
-    cbqCases:mockSelectCBQ(),cbqA:{},cbqScores:{},cbqCurr:0,cbqTime:3600,cbqInterval:null,
+    status:'mcq',half:!!half,
+    mcqQ:mockSelectMCQ(half?50:100),mcqA:{},mcqFlagged:[],mcqCurr:0,mcqTime:half?5400:10800,mcqInterval:null,
+    cbqCases:mockSelectCBQ(half?1:2),cbqA:{},cbqScores:{},cbqCurr:0,cbqTime:half?1800:3600,cbqInterval:null,
     results:null,navOpen:false
   };
+  if(typeof mockDraftSaveBase==='function'){mockDraftSaveBase();mockDraftSave();}
   render();
-  STATE.mockExam.mcqInterval=setInterval(()=>{
-    if(STATE.tab!=='mock-exam'){mockClearTimers();return;}
-    STATE.mockExam.mcqTime--;
+  mockStartMcqTimer();
+}
+// Batch 34: timers are start/stop-able so leaving the page pauses the exam and returning resumes it.
+function mockStartMcqTimer(){
+  const me=STATE.mockExam;if(me.mcqInterval)return;
+  me.mcqInterval=setInterval(()=>{
+    if(STATE.tab!=='mock-exam'){if(typeof mockDraftSave==='function')mockDraftSave();mockClearTimers();return;}
+    const m=STATE.mockExam;m.mcqTime--;
     const tel=document.getElementById('mock-timer');
-    if(tel){tel.textContent=mockFmtTime(STATE.mockExam.mcqTime);tel.style.color=STATE.mockExam.mcqTime<300?'var(--err)':'var(--ink)';}
+    if(tel){tel.textContent=mockFmtTime(m.mcqTime);tel.style.color=m.mcqTime<300?'var(--err)':'var(--ink)';}
     mockUpdateNav();
-    if(STATE.mockExam.mcqTime<=0){clearInterval(STATE.mockExam.mcqInterval);STATE.mockExam.mcqInterval=null;mockSubmitMCQ(true);}
+    if(m.mcqTime%10===0&&typeof mockDraftSave==='function')mockDraftSave();
+    if(m.mcqTime<=0){clearInterval(m.mcqInterval);m.mcqInterval=null;mockSubmitMCQ(true);}
   },1000);
+}
+function mockStartCbqTimer(){
+  const me=STATE.mockExam;if(me.cbqInterval)return;
+  me.cbqInterval=setInterval(()=>{
+    if(STATE.tab!=='mock-exam'){if(typeof mockDraftSave==='function')mockDraftSave();mockClearTimers();return;}
+    const m=STATE.mockExam;m.cbqTime--;
+    const tel=document.getElementById('mock-timer');
+    if(tel){tel.textContent=mockFmtTime(m.cbqTime);tel.style.color=m.cbqTime<300?'var(--err)':'var(--ink)';}
+    if(m.cbqTime%10===0&&typeof mockDraftSave==='function')mockDraftSave();
+    if(m.cbqTime<=0){clearInterval(m.cbqInterval);m.cbqInterval=null;mockSubmitCBQ();}
+  },1000);
+}
+// Called on every render of the exam screen: an exam that is mid-way but has no running clock
+// (the student left and came back) gets its clock restarted where it stopped.
+function mockEnsureTimers(){
+  const me=STATE.mockExam;if(!me)return;
+  if(me.status==='mcq')mockStartMcqTimer();
+  else if(me.status==='cbq')mockStartCbqTimer();
 }
 
 // ── MCQ Interactions ───────────────────────────────────────────
@@ -373,6 +412,7 @@ function mockAnswerQ(idx,opt){
   else STATE.mockExam.mcqA[idx]=opt;
   // Re-render the question content so inline styles reflect the new selection
   renderMockMCQContent();
+  if(typeof mockDraftSave==='function')mockDraftSave();
 }
 
 function mockFlagQ(idx){
@@ -382,12 +422,14 @@ function mockFlagQ(idx){
   const btn=document.getElementById('mock-flag-btn');
   if(btn){btn.textContent=STATE.mockExam.mcqFlagged.includes(idx)?'🚩 Flagged':'⚑ Flag';}
   mockUpdateNav();
+  if(typeof mockDraftSave==='function')mockDraftSave();
 }
 
 function mockGoToQ(idx){
   STATE.mockExam.mcqCurr=idx;
   STATE.mockExam.navOpen=false;
   renderMockMCQContent();
+  if(typeof mockDraftSave==='function')mockDraftSave();
 }
 
 function mockNavToggle(){STATE.mockExam.navOpen=!STATE.mockExam.navOpen;renderMockMCQContent();}
@@ -404,7 +446,7 @@ function mockUpdateNav(){
   }).join('');
   const answered=Object.keys(mcqA).length;
   const prog=document.getElementById('mock-prog');
-  if(prog)prog.textContent=`${answered}/100 answered · ${mcqFlagged.length} flagged`;
+  if(prog)prog.textContent=`${answered}/${mcqQ.length} answered · ${mcqFlagged.length} flagged`;
 }
 
 function renderMockMCQContent(){
@@ -447,8 +489,8 @@ function renderMockMCQContent(){
   </div>
   <div style="padding:12px 16px;border-top:.5px solid var(--border);background:#fff;flex-shrink:0;display:flex;gap:10px;align-items:center">
     <button onclick="mockGoToQ(${Math.max(0,mcqCurr-1)})" ${mcqCurr===0?'disabled':''} style="padding:10px 16px;border-radius:10px;border:.5px solid var(--border-3);background:#fff;cursor:pointer;font-size:14px;font-family:inherit;opacity:${mcqCurr===0?'.4':'1'}">← Prev</button>
-    <button onclick="mockNavToggle()" style="flex:1;padding:10px;border-radius:10px;border:.5px solid var(--border-3);background:var(--surface-3);cursor:pointer;font-size:13px;font-weight:500;font-family:inherit"># ${mcqCurr+1}/100</button>
-    ${mcqCurr<99?`<button onclick="mockGoToQ(${mcqCurr+1})" style="padding:10px 16px;border-radius:10px;border:none;background:var(--brand-2);color:#fff;cursor:pointer;font-size:14px;font-family:inherit;font-weight:500">Next →</button>`
+    <button onclick="mockNavToggle()" style="flex:1;padding:10px;border-radius:10px;border:.5px solid var(--border-3);background:var(--surface-3);cursor:pointer;font-size:13px;font-weight:500;font-family:inherit"># ${mcqCurr+1}/${mcqQ.length}</button>
+    ${mcqCurr<mcqQ.length-1?`<button onclick="mockGoToQ(${mcqCurr+1})" style="padding:10px 16px;border-radius:10px;border:none;background:var(--brand-2);color:#fff;cursor:pointer;font-size:14px;font-family:inherit;font-weight:500">Next →</button>`
     :`<button onclick="mockConfirmSubmitMCQ()" style="padding:10px 16px;border-radius:10px;border:none;background:var(--ok);color:#fff;cursor:pointer;font-size:14px;font-family:inherit;font-weight:600">Submit ✓</button>`}
   </div>`;
   mockUpdateNav();
@@ -456,11 +498,11 @@ function renderMockMCQContent(){
 
 async function mockConfirmSubmitMCQ(){
   const answered=Object.keys(STATE.mockExam.mcqA).length;
-  const unanswered=100-answered;
+  const unanswered=STATE.mockExam.mcqQ.length-answered;
   const _submitOk=await showModal({
     icon: unanswered>0?'⚠️':'📋',
     title: unanswered>0?`${unanswered} Question${unanswered>1?'s':''} Unanswered`:'Submit MCQ Phase?',
-    body: unanswered>0?`You have ${unanswered} unanswered question${unanswered>1?'s':''}. You can still submit — unanswered questions count as wrong.`:'Submit all 100 answers and move to the CBQ phase?',
+    body: unanswered>0?`You have ${unanswered} unanswered question${unanswered>1?'s':''}. You can still submit — unanswered questions count as wrong.`:'Submit all '+STATE.mockExam.mcqQ.length+' answers and move to the CBQ phase?',
     type: unanswered>0?'warning':'info',
     confirmText:'Submit',
     cancelText:'Go Back'
@@ -472,13 +514,8 @@ function mockSubmitMCQ(autoSubmit){
   mockClearTimers();
   STATE.mockExam.status='cbq';
   render();
-  STATE.mockExam.cbqInterval=setInterval(()=>{
-    if(STATE.tab!=='mock-exam'){mockClearTimers();return;}
-    STATE.mockExam.cbqTime--;
-    const tel=document.getElementById('mock-timer');
-    if(tel){tel.textContent=mockFmtTime(STATE.mockExam.cbqTime);tel.style.color=STATE.mockExam.cbqTime<300?'var(--err)':'var(--ink)';}
-    if(STATE.mockExam.cbqTime<=0){clearInterval(STATE.mockExam.cbqInterval);STATE.mockExam.cbqInterval=null;mockSubmitCBQ();}
-  },1000);
+  if(typeof mockDraftSave==='function')mockDraftSave();
+  mockStartCbqTimer();
 }
 
 // ── CBQ Interactions in Mock ────────────────────────────────────
@@ -486,12 +523,14 @@ function mockCBQPickOpt(caseIdx,qid,i){
   if(!STATE.mockExam.cbqA[caseIdx])STATE.mockExam.cbqA[caseIdx]={};
   STATE.mockExam.cbqA[caseIdx][qid]=i;
   document.querySelectorAll(`[id^="mso_${caseIdx}_${qid}_"]`).forEach((el,j)=>el.classList.toggle('selected',j===i));
+  if(typeof mockDraftSave==='function')mockDraftSave();
 }
 
 function mockCBQSetBlank(caseIdx,qid,bid,val){
   if(!STATE.mockExam.cbqA[caseIdx])STATE.mockExam.cbqA[caseIdx]={};
   if(!STATE.mockExam.cbqA[caseIdx][qid])STATE.mockExam.cbqA[caseIdx][qid]={};
   STATE.mockExam.cbqA[caseIdx][qid][bid]=val;
+  if(typeof mockDraftSave==='function')mockDraftSave();
 }
 
 function mockCBQCheck(caseIdx){
@@ -510,6 +549,7 @@ function mockCBQCheck(caseIdx){
     if(fb){fb.textContent=(ok?'✅ Correct! ':'❌ Incorrect. ')+q.fb;fb.className=`q-fb show ${ok?'ok':'no'}`;}
   });
   STATE.mockExam.cbqScores[caseIdx]={s:score,t:cbq.questions.length};
+  if(typeof mockDraftSave==='function')mockDraftSave();
   const btn=document.getElementById(`mock-cbq-check-${caseIdx}`);
   if(btn){btn.textContent='✓ Checked';btn.disabled=true;btn.style.background='var(--ok)';}
   const scoreEl=document.getElementById(`mock-cbq-score-${caseIdx}`);
@@ -583,6 +623,7 @@ async function confirmSubmitCBQ(){
 
 function mockSubmitCBQ(){
   mockClearTimers();
+  if(typeof mockDraftClear==='function')mockDraftClear();   // Batch 34: submitted -> the paused draft is finished
   // Calculate MCQ score
   const{mcqQ,mcqA}=STATE.mockExam;
   let mcqCorrect=0;
@@ -595,10 +636,10 @@ function mockSubmitCBQ(){
   // CBQ score
   let cbqTotal=0,cbqCorrect=0;
   Object.values(STATE.mockExam.cbqScores).forEach(sc=>{cbqTotal+=sc.t;cbqCorrect+=sc.s;});
-  const mcqPct=Math.round(mcqCorrect/100*100);
+  const mcqPct=Math.round(mcqCorrect/Math.max(1,mcqQ.length)*100);
   const cbqPct=cbqTotal?Math.round(cbqCorrect/cbqTotal*100):0;
   const weighted=Math.round(mcqPct*0.75+(cbqTotal?cbqPct:mcqPct)*0.25);
-  STATE.mockExam.results={mcqCorrect,mcqTotal:100,secScores,cbqCorrect,cbqTotal};
+  STATE.mockExam.results={mcqCorrect,mcqTotal:mcqQ.length,secScores,cbqCorrect,cbqTotal};
   STATE.mockExam.status='results';
   // Item 2: Persist result to localStorage — students can track improvement over time
   saveMockResult({
@@ -606,6 +647,7 @@ function mockSubmitCBQ(){
     dateTs:Date.now(),
     weighted,mcqPct,cbqPct:cbqTotal?cbqPct:null,
     mcqCorrect,cbqCorrect,cbqTotal,
+    half:!!STATE.mockExam.half,
     pass:weighted>=70
   });
   render();
@@ -614,6 +656,7 @@ function mockSubmitCBQ(){
 // ── RENDER FUNCTIONS ───────────────────────────────────────────
 function renderMockExamScreen(){
   const me=STATE.mockExam;
+  mockEnsureTimers();   // Batch 34
   if(me.status==='idle'||me.status==='loading') return renderMockIntro();
   if(me.status==='mcq') return renderMockMCQ();
   if(me.status==='cbq') return renderMockCBQScreen();
@@ -633,7 +676,7 @@ function renderMockIntro(){
         return`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:${i<history.length-1?'.5px solid var(--bg)':'none'}">
           <div style="width:46px;height:46px;border-radius:10px;background:${bg};display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;color:${col};flex-shrink:0">${r.weighted}%</div>
           <div style="flex:1;min-width:0">
-            <div style="font-size:13px;font-weight:500;color:var(--ink)">${r.pass?'✅ Pass estimate':'❌ Needs work'}</div>
+            <div style="font-size:13px;font-weight:500;color:var(--ink)">${r.pass?'✅ Pass estimate':'❌ Needs work'}${r.half?' · Half mock':''}</div>
             <div style="font-size:11px;color:#888;margin-top:2px">MCQ ${r.mcqPct}%${r.cbqPct!=null?` · CBQ ${r.cbqPct}%`:''} · ${r.date}</div>
           </div>
           ${i===0?`<span style="font-size:10px;background:var(--brand-tint);color:var(--brand);padding:2px 8px;border-radius:10px;font-weight:500">Latest</span>`:''}
@@ -671,13 +714,15 @@ function renderMockIntro(){
         <div style="font-size:13px;font-weight:700;color:${sec.bar}">${sec.weight} Qs</div>
       </div>`).join('')}
     </div>
+    ${typeof mockResumeCardHTML==='function'?mockResumeCardHTML():''}
     ${historyHTML}
     <div style="background:var(--warn-tint);border:.5px solid var(--warn);border-radius:12px;padding:12px;margin-bottom:16px;font-size:13px;color:#633806;line-height:1.6">
-      ⚠️ <strong>Rules:</strong> Once you start, the timer runs. You can flag questions and navigate freely within MCQ. After submitting MCQ, you move to CBQ — you cannot go back.
+      ⚠️ <strong>Rules:</strong> Once you start, the timer runs. You can flag questions and navigate freely within MCQ. After submitting MCQ, you move to CBQ — you cannot go back. If you leave this page the exam is <strong>paused</strong> (the clock stops) and you can resume it here.
     </div>
     <button onclick="startMockExam()" ${loading?'disabled':''} style="width:100%;padding:15px;border-radius:12px;border:none;background:${loading?'#888':'var(--brand)'};color:#fff;font-size:16px;font-weight:700;cursor:${loading?'default':'pointer'};font-family:inherit">
       ${loading?'⏳ Loading questions...':'🚀 Start Mock Exam'}
     </button>
+    ${typeof mockHalfButtonHTML==='function'?mockHalfButtonHTML(loading):''}
   </div>
   </div>`;
 }
@@ -689,7 +734,7 @@ function renderMockMCQ(){
   <div style="padding:10px 16px;border-bottom:.5px solid var(--border);flex-shrink:0;background:#fff;display:flex;align-items:center;justify-content:space-between">
     <div>
       <div style="font-size:12px;font-weight:700;color:#555;letter-spacing:.5px">MCQ PHASE</div>
-      <div style="font-size:11px;color:#888">Question ${STATE.mockExam.mcqCurr+1} of 100</div>
+      <div style="font-size:11px;color:#888">Question ${STATE.mockExam.mcqCurr+1} of ${STATE.mockExam.mcqQ.length}</div>
     </div>
     <div id="mock-timer" style="font-size:22px;font-weight:700;font-family:'Courier New',monospace;color:var(--ink)">${mockFmtTime(STATE.mockExam.mcqTime)}</div>
     <button onclick="mockConfirmSubmitMCQ()" style="padding:8px 14px;border-radius:8px;border:none;background:var(--ok);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">Submit</button>
@@ -741,7 +786,7 @@ function renderMockResults(){
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
       <div style="background:var(--surface-3);border-radius:12px;padding:14px;text-align:center">
         <div style="font-size:11px;color:#888;margin-bottom:4px">MCQ Score</div>
-        <div style="font-size:22px;font-weight:700;color:var(--brand-2)">${mcqCorrect}/100</div>
+        <div style="font-size:22px;font-weight:700;color:var(--brand-2)">${mcqCorrect}/${mcqTotal}</div>
         <div style="font-size:12px;color:#888">${mcqPct}%</div>
       </div>
       <div style="background:var(--surface-3);border-radius:12px;padding:14px;text-align:center">
@@ -767,7 +812,7 @@ function renderMockResults(){
       }).join('')}
     </div>
     <div style="display:flex;gap:10px">
-      <button onclick="STATE.mockExam={status:'idle',mcqQ:[],mcqA:{},mcqFlagged:[],mcqCurr:0,mcqTime:10800,mcqInterval:null,cbqCases:[],cbqA:{},cbqScores:{},cbqCurr:0,cbqTime:3600,cbqInterval:null,results:null,navOpen:false};render();" style="flex:1;padding:13px;border-radius:10px;border:.5px solid var(--border-3);background:#fff;cursor:pointer;font-size:14px;font-weight:500;font-family:inherit">Try Again</button>
+      <button onclick="mockResetState()" style="flex:1;padding:13px;border-radius:10px;border:.5px solid var(--border-3);background:#fff;cursor:pointer;font-size:14px;font-weight:500;font-family:inherit">Try Again</button>
       <button onclick="navTo('study')" style="flex:1;padding:13px;border-radius:10px;border:none;background:var(--brand);color:#fff;cursor:pointer;font-size:14px;font-weight:600;font-family:inherit">Back to Study</button>
     </div>
   </div>

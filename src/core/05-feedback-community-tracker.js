@@ -588,9 +588,9 @@ function buildQuizModeQuestions(sectionId){
   const sections=sectionId?S.filter(s=>s.id===sectionId):S;
   sections.forEach(sec=>{
     sec.lessons.forEach(l=>{
-      l.quizzes.forEach(q=>{
+      l.quizzes.forEach((q,_qi)=>{
         if(isOutOfScopeQ(l,q))return;   // Batch 10: exclude Part-2 content from Quiz Mode
-        allQ.push({...q,lessonId:l.id,sectionId:sec.id,lessonTitle:l.title,sectionTitle:sec.title,secEmoji:sec.emoji,secBar:sec.bar,secBg:sec.bg,secText:sec.text,secStrong:sec.strong});
+        allQ.push({...q,_qi,lessonId:l.id,sectionId:sec.id,lessonTitle:l.title,sectionTitle:sec.title,secEmoji:sec.emoji,secBar:sec.bar,secBg:sec.bg,secText:sec.text,secStrong:sec.strong});
       });
     });
   });
@@ -679,11 +679,11 @@ function renderQuizMode(){
       <div style="font-size:20px;font-weight:500;margin-top:10px">${label}</div>
       <div style="font-size:46px;font-weight:500;color:var(--brand-2);margin:6px 0 2px">${pct}%</div>
       <div style="font-size:14px;color:#888;margin-bottom:16px">${correct} of ${qm.questions.length} correct</div>
-      <div style="font-size:12px;color:#aaa;margin-bottom:16px">${qm.sectionId?S.find(s=>s.id===qm.sectionId)?.title+' Quiz':'Full CMA Quiz'}</div>
+      <div style="font-size:12px;color:#aaa;margin-bottom:16px">${qm.title||(qm.sectionId?S.find(s=>s.id===qm.sectionId)?.title+' Quiz':'Full CMA Quiz')}</div>
       ${qmTimeHTML}
       <div style="display:flex;gap:10px;margin-bottom:14px">
         <button class="btn btn-outline" onclick="STATE.tab='quiz-mode-select';render()" style="flex:1">← Back</button>
-        <button class="btn" onclick="startQuizMode(${qm.sectionId})" style="flex:1;background:var(--brand);color:#fff">Retake</button>
+        <button class="btn" onclick="${qm.scope==='weak'?'startWeakPractice()':qm.scope==='sr'?'srStartReview()':qm.scope==='bm'?'bmStartPractice()':'startQuizMode('+(qm.sectionId||'null')+')'}" style="flex:1;background:var(--brand);color:#fff">Retake</button>
       </div>
       <div class="card" style="text-align:left;margin-bottom:14px">
         <div style="font-size:13px;font-weight:500;color:#555;margin-bottom:12px">Question Review</div>
@@ -712,7 +712,10 @@ function renderQuizMode(){
     :(_qmAnswered
       ?`<button class="btn btn-primary" onclick="quizModeNav(1)" style="flex:1;background:var(--brand)">Next →</button>`
       :`<button class="btn btn-outline" onclick="quizModeNav(1)" style="flex:1">Skip →</button>`);
-  const qmNavRow=`<div style="display:flex;gap:10px">${_qmBack}${_qmRight}</div>`;
+  // Batch 34: Submit is always available (not only on the last question) and a quiz can be restarted;
+  // leaving by any route keeps an autosaved draft that the Quiz Mode page offers to resume.
+  const qmNavRow=`<div style="display:flex;gap:10px">${_qmBack}${_qmRight}</div>`
+    +`<div style="display:flex;gap:10px;margin-top:10px">${_qmLast?'':`<button class="btn btn-outline" onclick="finishQuizMode()" style="flex:1;border-color:var(--brand);color:var(--brand)">Submit quiz ✓</button>`}<button class="btn btn-outline" onclick="qmRestart()" style="flex:${_qmLast?'1':'0 0 auto'}">↺ Restart</button></div>`;
   const qmDots=dotStripHTML(qm.questions, qm.idx, qm.answers, 'quizModeJump');
   const qmTimerBadge=timerBadgeHTML(qm.qTimerElapsed,sel!==null);
   return`<div class="bh"><button class="bh-back" onclick="STATE.tab='quiz-mode-select';render()">‹</button>

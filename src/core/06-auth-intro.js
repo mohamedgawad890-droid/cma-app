@@ -177,7 +177,7 @@ function renderLogin(){
       ${STATE.authLoading?'⏳ Please wait...':(isReg?'Create Account →':'Login →')}
     </button>
 
-    ${!isReg?`<div style="text-align:center;margin-bottom:12px"><span onclick="sendPasswordReset()" style="font-size:13px;color:var(--brand-2);cursor:pointer">Forgot your password?</span></div>`:''}
+    ${!isReg?`<div style="text-align:center;margin-bottom:12px">${typeof pwResetLinkHTML==='function'?pwResetLinkHTML():'<span onclick="sendPasswordReset()" style="font-size:13px;color:var(--brand-2);cursor:pointer">Forgot your password?</span>'}</div>`:''}
 
     <div style="text-align:center;font-size:13px;color:#888">
       ${isReg?`Already have an account? <span onclick="STATE.authScreen='login';STATE.authError='';render()" style="color:var(--brand-2);cursor:pointer;font-weight:500">Login here</span>`:`New student? <span onclick="STATE.authScreen='register';STATE.authError='';render()" style="color:var(--brand-2);cursor:pointer;font-weight:500">Create account</span>`}

@@ -714,3 +714,91 @@ html[dir="rtl"] .case-insight{border-left:none;border-right:3px solid var(--bran
    the quiz nav wrappers only (#qs-next-wrap in renderQuizSession, #qm-next-wrap in renderQuizMode). */
 #qs-next-wrap .btn,
 #qm-next-wrap .btn{width:auto}
+
+
+/* ═══ Batch 34: dark mode ═══════════════════════════════════════════════════
+   The app colours almost everything through the variables above, so dark mode
+   swaps the variables, then patches the few places that hard-code white/grey. */
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --brand:#3B82C4;--brand-2:#5AA3E0;--brand-3:#7DB8EC;--brand-tint:#16293D;--brand-tint-2:#14222f;
+  --bg:#121214;--bg-desktop:#0b0b0c;--card:#1c1c1f;--surface:#1a1a1d;--surface-2:#19191c;--surface-3:#202024;--surface-4:#2a2a2f;
+  --ink:#ececec;--ink-2:#d6d6d6;--muted:#a8a8ad;--muted-2:#8f8f95;--muted-3:#6f6f75;
+  --border:#2f2f35;--border-2:#34343a;--border-3:#3d3d44;--border-4:#44444b;
+  --ok:#7DB83A;--ok-2:#4CAF78;--ok-strong:#A8D878;--ok-strong-2:#9ACD66;--ok-tint:#1d2a14;--ok-tint-2:#17301f;
+  --warn:#EF9F27;--warn-strong:#F0B65A;--warn-tint:#33280f;--warn-tint-2:#2e2710;
+  --err:#E5605F;--err-2:#F08A89;--err-strong:#F4A3A2;--err-tint:#35191a;
+  --accent-purple:#B07FD0;--accent-purple-tint:#2a1f33;--accent-purple-strong:#D2B0E8;
+}
+[data-theme="dark"] body{background:var(--bg);color:var(--ink)}
+[data-theme="dark"] #app{background:var(--card)}
+[data-theme="dark"] .bottom-nav,
+[data-theme="dark"] .bh,
+[data-theme="dark"] .card,
+[data-theme="dark"] .cbq-sec-tabs,
+[data-theme="dark"] .cbq-card,
+[data-theme="dark"] .calc-input:focus,
+[data-theme="dark"] .cbq-bottom-bar,
+[data-theme="dark"] .ar-tip-pop,
+[data-theme="dark"] .ar-tip-pop .ar-tip-arrow,
+[data-theme="dark"] .att-view-btn.active,
+[data-theme="dark"] .sub-nav,
+[data-theme="dark"] .install-banner-btn,
+[data-theme="dark"] .install-modal,
+[data-theme="dark"] .mobile-brand,
+[data-theme="dark"] .flash-card,
+[data-theme="dark"] .notes-item,
+[data-theme="dark"] .goal-ring-wrap,
+[data-theme="dark"] .teach-entry,
+[data-theme="dark"] .gs-strip,
+[data-theme="dark"] .gs-chip,
+[data-theme="dark"] .gs-skeleton-card,
+[data-theme="dark"] .gs-empty,
+[data-theme="dark"] .case-question,
+[data-theme="dark"] #modal-box{background:var(--card) !important}
+[data-theme="dark"] .info-p{color:var(--muted) !important},
+[data-theme="dark"] .btn-outline{color:var(--ink) !important},
+[data-theme="dark"] .cbq-sec-tab:not(.active){color:var(--muted) !important},
+[data-theme="dark"] .case-text{color:var(--muted) !important},
+[data-theme="dark"] .exhibit-tbl td{color:var(--muted) !important},
+[data-theme="dark"] .calc-prefix{color:var(--muted) !important},
+[data-theme="dark"] .select-opt{color:var(--muted) !important},
+[data-theme="dark"] .blank-sentence{color:var(--muted) !important},
+[data-theme="dark"] .lp{color:var(--muted) !important},
+[data-theme="dark"] .blist li{color:var(--muted) !important},
+[data-theme="dark"] .slist li{color:var(--muted) !important},
+[data-theme="dark"] .tbl td{color:var(--muted) !important},
+[data-theme="dark"] .q-circle{color:var(--muted) !important},
+[data-theme="dark"] .action-content p{color:var(--muted) !important},
+[data-theme="dark"] .sub-nav-btn:not(.active){color:var(--muted) !important},
+[data-theme="dark"] .install-os-tab{color:var(--muted) !important},
+[data-theme="dark"] .install-step-text{color:var(--ink) !important},
+[data-theme="dark"] .flash-btn-skip{color:var(--muted) !important},
+[data-theme="dark"] .notes-item-body{color:var(--ink) !important},
+[data-theme="dark"] .lesson-nav-btn{color:var(--muted) !important},
+[data-theme="dark"] .gs-empty-body{color:var(--muted) !important},
+[data-theme="dark"] .def-body{color:var(--ink) !important},
+[data-theme="dark"] .case-section-lbl{color:var(--muted) !important},
+[data-theme="dark"] .case-question{color:var(--ink) !important},
+[data-theme="dark"] #modal-title{color:var(--ink) !important},
+[data-theme="dark"] #modal-body{color:var(--muted) !important},
+[data-theme="dark"] #modal-list{color:var(--muted) !important},
+[data-theme="dark"] .q-data{color:var(--ink) !important}
+[data-theme="dark"] [style*="background:#fff"],[data-theme="dark"] [style*="background: #fff"],[data-theme="dark"] [style*="background:#FFF"],[data-theme="dark"] [style*="background:white"],[data-theme="dark"] [style*="background-color:#fff"]{background:var(--card) !important}
+[data-theme="dark"] [style*="color:#333"],[data-theme="dark"] [style*="color:#222"],[data-theme="dark"] [style*="color:#1a1a1a"],[data-theme="dark"] [style*="color:#444"]{color:var(--ink) !important}
+[data-theme="dark"] [style*="color:#555"],[data-theme="dark"] [style*="color:#666"]{color:var(--muted) !important}
+[data-theme="dark"] [style*="color:#633806"]{color:var(--warn-strong) !important}
+[data-theme="dark"] input,[data-theme="dark"] select,[data-theme="dark"] textarea{background:var(--surface-3);color:var(--ink);border-color:var(--border-3)}
+[data-theme="dark"] img.invert-dark{filter:invert(1)}
+
+/* ═══ Batch 34: bookmarks, saved-session cards, Formula Bank print ═════════ */
+.bm-host{position:relative}
+.bm-host>p{padding-right:34px}
+.bm-btn{position:absolute;top:8px;right:8px;width:32px;height:32px;border:none;background:transparent;font-size:22px;line-height:1;cursor:pointer;padding:0;font-family:inherit}
+.sd-card .btn{margin:0}
+@media print{
+  .formula-cat{break-inside:avoid;page-break-inside:avoid}
+  .formula-cat[style*="display:none"]{display:none !important}
+  .sub-nav{display:none !important}
+  @page{size:A4;margin:14mm}
+}
