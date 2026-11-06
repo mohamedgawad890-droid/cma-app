@@ -21,6 +21,17 @@ service cloud.firestore {
       return get(/databases/$(database)/documents/students/$(request.auth.uid)).data.groupCode;
     }
 
+    // Batch 35 helper — true when the signed-in student has an APPROVED group code on
+    // their own students/{uid} doc (groupCode can only be set by the instructor's
+    // Approvals action, see the students rules below). Students without a profile doc
+    // or with an empty groupCode are simply "not in a group".
+    function inGroup() {
+      let sp = /databases/$(database)/documents/students/$(request.auth.uid);
+      return signedIn() && exists(sp)
+        && get(sp).data.get('groupCode', '') is string
+        && get(sp).data.get('groupCode', '') != '';
+    }
+
     // Batch 30 helper — paid-content access. True only when the signed-in user
     // has an entitlements/{uid} doc with paid == true and locked != true.
     // Students WITHOUT an entitlements doc are simply "free" (exists() is false),
@@ -516,6 +527,14 @@ service cloud.firestore {
     match /videos/{lessonId} {
       allow read:  if isInstructor()
         || (signedIn() && (resource.data.get('free', false) == true || hasPaid()));
+      allow write: if isInstructor();
+    }
+
+    // Batch 35 — Case Study (Delta Oak Furniture Co.). Content lives here, not in the
+    // public repo. Readable by the instructor and by students in an approved group;
+    // only the instructor can publish or change it. Docs: _index and one per unit ("4-1").
+    match /case-study/{docId} {
+      allow read:  if isInstructor() || inGroup();
       allow write: if isInstructor();
     }
   }
