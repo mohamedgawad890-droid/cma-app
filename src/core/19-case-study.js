@@ -77,7 +77,7 @@ function _csBlock(b){
         '<div class="tbl-wrap"><table class="tbl"><thead><tr>'+(b.h||[]).map(function(h){return '<th style="background:var(--brand-tint);color:var(--brand);font-size:13px">'+esc(h)+'</th>';}).join('')+'</tr></thead><tbody>'+
         rows.map(function(row,ri){
           const last = b.total && ri===rows.length-1;
-          return '<tr>'+row.map(function(c){return '<td style="font-size:13px;'+(last?'font-weight:600;color:var(--ink)':'')+'">'+esc(c)+'</td>';}).join('')+'</tr>';
+          return '<tr>'+(Array.isArray(row)?row:(row.c||[])).map(function(c){return '<td style="font-size:13px;'+(last?'font-weight:600;color:var(--ink)':'')+'">'+esc(c)+'</td>';}).join('')+'</tr>';
         }).join('')+'</tbody></table></div>';
     }
   }
