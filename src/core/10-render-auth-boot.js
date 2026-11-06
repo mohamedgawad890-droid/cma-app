@@ -93,7 +93,7 @@ function render(){
   // yields a graceful recovery card instead of a blank screen.
   try{
     switch(STATE.tab){
-      case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'wrong-answers':html=renderWrongAnswers();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'quiz-review':html=renderQuizReview();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;case'formula-bank':html=renderFormulaBank();break;case'dictionary':html=renderDictionary();break;case'flashcards':html=renderFlashcards();break;case'my-notes':html=renderNotes();break;case'dashboard':html=renderDashboardLazy();break;case'cbq':html=renderCBQ();break;case'mock-exam':html=renderMockExamScreen();break;case'custom-practice':html=renderCustomPractice();break;case'exam':html=renderExam();break;default:html=renderIntro();
+      case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'wrong-answers':html=renderWrongAnswers();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'quiz-review':html=renderQuizReview();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;case'formula-bank':html=renderFormulaBank();break;case'dictionary':html=renderDictionary();break;case'flashcards':html=renderFlashcards();break;case'my-notes':html=renderNotes();break;case'dashboard':html=renderDashboardLazy();break;case'cbq':html=renderCBQ();break;case'mock-exam':html=renderMockExamScreen();break;case'custom-practice':html=renderCustomPractice();break;case'case-study':html=renderCaseStudy();break;case'exam':html=renderExam();break;default:html=renderIntro();
     }
   }catch(err){
     console.error('[render] Renderer threw for tab='+STATE.tab, err);
@@ -205,8 +205,10 @@ function render(){
   else{nav.style.display='flex';if(_mb)_mb.style.display='';
     const active=activeNavTab();
     // #7: Only rebuild nav DOM when active group changes — avoids layout thrash
-    if(active!==render._lastNavActive){
-      render._lastNavActive=active;
+    // Batch 35: also rebuild when the Case Study tab becomes (un)available (group approval / logout).
+    const _caseOn=(typeof caseStudyAllowed==='function'&&caseStudyAllowed());
+    if(active!==render._lastNavActive||_caseOn!==render._lastCaseOn){
+      render._lastNavActive=active;render._lastCaseOn=_caseOn;
       const brandHeader=`<div class="desktop-brand" style="display:flex;align-items:center;justify-content:space-between;gap:10px"><div style="display:flex;align-items:center;gap:10px;min-width:0"><img src="./gawad-avatar.webp" alt="Mohamed Abdelgawad" style="width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--brand-tint)"><div style="min-width:0"><div style="font-size:13px;font-weight:600;color:var(--brand);letter-spacing:.5px">CMA Part One Prep</div><div style="font-size:10px;color:#888;margin-top:1px">With Gawad</div></div></div>${!window.matchMedia("(display-mode: standalone)").matches?'<button onclick="installApp()" title="Install App" style="display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:8px;border:1px solid #d0d8e8;background:var(--brand-tint);color:var(--brand);cursor:pointer;font-size:12px;font-weight:500;font-family:inherit;flex-shrink:0"><span style="font-size:14px">⬇</span><span>Install App</span></button>':''}</div>`;
       nav.innerHTML=brandHeader+getNavTabs().map(t=>`<button class="nav-btn${t.id===active?' active':''}" onclick="navTo('${t.id}')" title="${t.label}"><span class="nav-icon">${t.icon}</span><span class="nav-label">${t.label}</span></button>`).join('')
         +'<button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()">&laquo;</button>'; // Batch 19
@@ -645,6 +647,9 @@ async function navTo(tab){
     STATE.tab='login';render();return;
   }
   STATE.showProfileWarning=false;
+  // Batch 35: Case Study is for the instructor and approved-group students only.
+  if(tab==='case-study'&&!(typeof caseStudyAllowed==='function'&&caseStudyAllowed())){tab='intro';}
+  if(tab==='case-study'&&typeof _cs!=='undefined')_cs.sel=null;
   if(tab==='lessons'&&tab!==STATE.tab){STATE.sectId=null;STATE.lessonId=null;}
   if(tab==='community'){STATE.communityLoaded=false;}
   STATE.tab=tab;render();

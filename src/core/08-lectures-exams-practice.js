@@ -334,7 +334,10 @@ function isFeedbackOpen(lec){
 
 // Instructor-only Dashboard tab appended to the student nav.
 function getNavTabs(){
-  return isInstructor() ? [...TABS,{id:'dashboard',label:'Dashboard',icon:'\u{1F6E1}\uFE0F'}] : TABS;
+  // Batch 35: the Case Study tab shows only to the instructor and to students in an approved group.
+  const base = (typeof caseStudyAllowed==='function' && caseStudyAllowed())
+    ? [...TABS,{id:'case-study',label:'Case',icon:'\u{1F4BC}'}] : TABS;
+  return isInstructor() ? [...base,{id:'dashboard',label:'Dashboard',icon:'\u{1F6E1}\uFE0F'}] : base;
 }
 
 
