@@ -262,6 +262,8 @@ function renderIntro(){
 
       ${renderStartLearningCard()}
 
+      ${renderGroupInterestCard()}
+
       ${renderExamsStrip()}
 
       <!-- WELCOME -->

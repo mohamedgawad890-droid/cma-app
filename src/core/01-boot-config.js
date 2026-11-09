@@ -39,6 +39,8 @@ const _ERR_NOISE=[
 function _errIsNoise(msg,src){
   const m=String(msg==null?'':msg), s=String(src==null?'':src);
   if(_ERR_NOISE.some(function(re){return re.test(m);})) return true;
+  // Batch 36: a dropped connection is not an app bug (Chrome: "Failed to fetch", Safari: "Load failed").
+  if(/^(TypeError: )?(Failed to fetch|Load failed|NetworkError when attempting to fetch resource\.?)$/i.test(m.trim()) && typeof navigator!=='undefined' && navigator.onLine===false) return true;
   if(/Unexpected token '<'/.test(m) && /apis\.google\.com|gstatic\.com|googletagmanager\.com/.test(s)) return true; // a blocked network returned a web page instead of the script
   return false;
 }
@@ -92,8 +94,27 @@ window.onerror=function(msg,src,line,col,err){
 
 // Batch 24 (B24-08): unhandled promise rejections are logged too (same caps).
 window.addEventListener('unhandledrejection',function(ev){
-  try{ const r=ev&&ev.reason; logClientError('promise', (r&&r.message)||String(r), r&&r.stack, ''); }catch(_){}
+  // Batch 36: r.cmaUrl (set by the fetch wrapper below) tells the Errors panel WHICH request failed.
+  try{ const r=ev&&ev.reason; logClientError('promise', (r&&r.message)||String(r), r&&r.stack, (r&&r.cmaUrl)||''); }catch(_){}
 });
+// Batch 36: remember the URL of any fetch() that fails at the network level, so a bare
+// "Failed to fetch" report says which request it was. Behaviour of fetch is unchanged.
+(function(){
+  try{
+    if(typeof window.fetch!=='function')return;
+    const _nativeFetch=window.fetch.bind(window);
+    window.fetch=function(input,init){
+      return _nativeFetch(input,init).catch(function(err){
+        try{
+          let u=typeof input==='string'?input:(input&&input.url)||'';
+          u=String(u).split('?')[0].slice(0,200);   // no query string (may carry tokens)
+          if(err&&typeof err==='object'&&!err.cmaUrl)err.cmaUrl='fetch '+u;
+        }catch(_){}
+        throw err;
+      });
+    };
+  }catch(_){}
+})();
 
 // Batch 31: Firebase SDK guard. Reports in the Errors panel ("firebase is not defined",
 // "firebase.firestore is not a function") come from students whose copy of the

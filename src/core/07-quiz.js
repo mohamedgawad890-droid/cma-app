@@ -515,7 +515,15 @@ function doLessonQuiz(lid){startQuiz(lid);}
 async function startQuiz(lessonId,forceNew){
   startStudyTimer('quiz-'+lessonId);
   const secId=lessonId.split('-')[0];
-  if(!QUIZ_CACHE[secId]){STATE.tab='loading';render();await ensureQuizzes(secId);}
+  if(!QUIZ_CACHE[secId]){
+    STATE.tab='loading';render();
+    const _ok=await ensureQuizzes(secId);
+    if(!_ok){ // Batch 36: connection problem → go back with a clear message instead of an empty quiz
+      STATE.tab='study';render();
+      try{showToast('Connection problem — the quiz could not be loaded. Check your internet and try again.','error',5000);}catch(_){}
+      return;
+    }
+  }
   let foundLesson=null,foundSect=null;
   for(const sec of S){for(const l of sec.lessons){if(l.id===lessonId){foundLesson=l;foundSect=sec;break;}}}
   if(!foundLesson){console.log('Lesson not found:',lessonId);return;}

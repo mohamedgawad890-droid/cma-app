@@ -416,6 +416,19 @@ function renderStudy(){
     const lesson=sec.lessons.find(l=>l.id===STATE.lessonId);
     // Lazy-load blocks if not yet fetched
     if(!lesson.blocks||lesson.blocks.length===0){
+      if(LESSON_FAIL[String(sec.id)]){
+        // Batch 36: connection problem → show a retry card instead of looping on the skeleton.
+        return`<div class="bh"><button class="bh-back" onclick="studyGo(STATE.sectId,null)">‹</button>
+          <div><div style="font-size:11px;font-weight:500;color:${sec.text}">${sec.emoji} ${esc(sec.title)}</div>
+          <div style="font-size:14px;font-weight:500">${esc(lesson.title)}</div></div></div>
+          <div class="scroll-area pad" style="padding-top:40px;text-align:center">
+            <div style="font-size:34px;margin-bottom:10px">\u26A0\uFE0F</div>
+            <div style="font-size:14px;font-weight:500;color:#555;margin-bottom:4px">Connection problem</div>
+            <div style="font-size:13px;color:#888;margin-bottom:6px">The lesson could not be loaded. Check your internet and try again.</div>
+            <div dir="rtl" lang="ar" style="font-size:13px;color:#888;margin-bottom:16px">تعذّر تحميل الدرس — تأكد من الإنترنت وحاول مرة أخرى</div>
+            <button onclick="retryLessons(${sec.id})" style="padding:10px 24px;border:none;border-radius:10px;background:var(--brand);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">Try again</button>
+          </div>`;
+      }
       if(!LESSON_CACHE[String(sec.id)]){
         ensureLessons(sec.id).then(()=>render());
         return`<div class="bh"><button class="bh-back" onclick="studyGo(STATE.sectId,null)">‹</button>

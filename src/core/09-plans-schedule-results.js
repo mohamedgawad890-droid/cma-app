@@ -278,18 +278,44 @@ function renderFlashcards(){
 // Blocks are loaded on-demand from ./lessons/lesson-sN.json files.
 // This reduces the initial HTML parse cost by ~508KB.
 const LESSON_CACHE={};
+const LESSON_FAIL={}; // Batch 36: section ids whose lesson file could not be fetched (drives the retry card)
+
+// Batch 36: one automatic retry (1.2s later) for a flaky connection, then a real error.
+async function _fetchJSONRetry(url){
+  let lastErr=null;
+  for(let i=0;i<2;i++){
+    try{
+      const res=await fetch(url);
+      if(!res.ok)throw new Error('HTTP '+res.status+' '+url);
+      return await res.json();
+    }catch(e){
+      lastErr=e;
+      if(i===0)await new Promise(r=>setTimeout(r,1200));
+    }
+  }
+  throw lastErr;
+}
 
 async function ensureLessons(sectionId){
   const sid=String(sectionId);
-  if(LESSON_CACHE[sid])return;
+  if(LESSON_CACHE[sid])return true;
   try{
-    const res=await fetch('./lessons/lesson-s'+sid+'.json');
-    if(!res.ok)throw new Error('HTTP '+res.status);
-    const data=await res.json();
+    const data=await _fetchJSONRetry('./lessons/lesson-s'+sid+'.json');
     const sec=S.find(s=>String(s.id)===sid);
     if(sec){sec.lessons.forEach(l=>{if(data[l.id])l.blocks=data[l.id];});}
     LESSON_CACHE[sid]=true;
-  }catch(e){console.error('Failed to load lessons for section '+sid,e);}
+    delete LESSON_FAIL[sid];
+    return true;
+  }catch(e){
+    LESSON_FAIL[sid]=true;
+    console.error('Failed to load lessons for section '+sid,e);
+    return false;
+  }
+}
+// Retry button on the lesson screen.
+function retryLessons(sectionId){
+  delete LESSON_FAIL[String(sectionId)];
+  render();
 }
 
 // Background pre-warm: silently load all sections 4s after app start
@@ -305,15 +331,17 @@ try{STATE.fontSize=loadFontSize();STATE.dailyGoalMinutes=loadDailyGoal();}catch(
 const QUIZ_CACHE={};
 async function ensureQuizzes(sectionId){
   const sid=String(sectionId);
-  if(QUIZ_CACHE[sid])return;
+  if(QUIZ_CACHE[sid])return true;
   try{
-    const res=await fetch('./questions/s'+sid+'.json');
-    if(!res.ok)throw new Error('HTTP '+res.status);
-    const data=await res.json();
+    const data=await _fetchJSONRetry('./questions/s'+sid+'.json');
     const sec=S.find(s=>String(s.id)===sid);
     if(sec){sec.lessons.forEach(l=>{if(data[l.id])l.quizzes=data[l.id];});}
     QUIZ_CACHE[sid]=true;
-  }catch(e){console.error('Failed to load quizzes for section '+sid,e);}
+    return true;
+  }catch(e){
+    console.error('Failed to load quizzes for section '+sid,e);
+    return false;
+  }
 }
 // ─────────────────────────────────────────────────────────────────────────────
 // ─── DATA INTEGRITY VALIDATOR ─────────────────────────────────────────────────

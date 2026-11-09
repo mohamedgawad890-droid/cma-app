@@ -14,6 +14,10 @@
 //
 // Firestore reads per student session: entitlements (1) + videos/_index (1),
 // then 1 per video-lesson opened. Everything is cached in memory for the session.
+// Batch 36: ALL videos are currently FREE. They come from the repo file ./videos.json
+// (lesson id -> YouTube links/IDs, see the guide in that file's Batch 36 notes) and need no
+// Firestore reads, no sign-in checks and no device limit. The paid code below stays dormant
+// (PAID_VIDEOS_ENABLED=false) so it can be switched on later without rebuilding it.
 const PAID_VIDEOS_ENABLED = false;               // ← flip to true to launch for students
 const PAID_CONTACT_EMAIL  = 'Mohamed.gawad890@gmail.com';
 
@@ -111,10 +115,38 @@ function _pvLoadDoc(lessonId){
   return _pv.docs[lessonId];
 }
 
+// ── Batch 36: free videos from ./videos.json ─────────────────────────────────
+// { "_playlist":"https://www.youtube.com/playlist?list=...",
+//   "4-1":[ {"l":"Part 1","id":"https://youtu.be/XXXXXXXXXXX"}, "XXXXXXXXXXX" ], ... }
+// Each entry may be a YouTube link, a bare 11-character ID, or {l,id}. Not a secret:
+// the videos are public, so the file lives in the public repo and is served network-first
+// by the service worker (a new video shows up on the next lesson open).
+let _fvP = null;
+function _fvLoad(){
+  if(_fvP) return _fvP;
+  _fvP = fetch('./videos.json', { cache: 'no-cache' })
+    .then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function(d){ return (d && typeof d === 'object') ? d : {}; })
+    .catch(function(){ _fvP = null; return {}; });   // offline/missing file → "coming soon" card stays
+  return _fvP;
+}
+function _fvId(x){
+  const m = String(x || '').trim().match(/(?:youtu\.be\/|[?&]v=|\/embed\/|\/shorts\/|\/live\/)?([A-Za-z0-9_-]{11})(?:[?&#/].*)?$/);
+  return m ? m[1] : null;
+}
+function _fvItems(list){
+  if(!Array.isArray(list)) return [];
+  const out = [];
+  list.forEach(function(e){
+    const id = _fvId(e && typeof e === 'object' ? e.id : e);
+    if(id) out.push({ l: (e && typeof e === 'object' && e.l) ? String(e.l) : '', id: id });
+  });
+  return out;
+}
+
 // Called from the lesson reader. Returns HTML synchronously; fills itself later.
 function paidVideoSlot(lessonId, fallbackHTML, hasInlineVideo){
   if(hasInlineVideo) return '';            // a legacy inline video block already shows
-  if(!_pvActive()) return fallbackHTML;    // students today: unchanged
   const slotId = 'pv-slot-' + lessonId;
   setTimeout(function(){ _pvFill(lessonId, fallbackHTML); }, 0);
   return '<div id="' + slotId + '">' + fallbackHTML + '</div>';
@@ -124,6 +156,19 @@ async function _pvFill(lessonId, fallbackHTML){
   const slot = document.getElementById('pv-slot-' + lessonId);
   if(!slot) return;
   try{
+    // Batch 36: free video from ./videos.json wins; otherwise fall through to the paid flow.
+    const fv = await _fvLoad();
+    const fvItems = _fvItems(fv[lessonId]);
+    if(fvItems.length){
+      _pvRender(slot, lessonId, { items: fvItems }, false);
+      const pl = String(fv._playlist || '');
+      if(/^https:\/\/(www\.)?youtube\.com\/playlist\?list=[A-Za-z0-9_-]+$/.test(pl)){
+        slot.insertAdjacentHTML('beforeend',
+          '<a href="' + pl + '" target="_blank" rel="noopener" style="display:inline-block;margin:6px 0 2px;font-size:12px;color:var(--brand-2);text-decoration:none">▶ All videos on YouTube</a>');
+      }
+      return;
+    }
+    if(!_pvActive()) return;                         // paid flow off for students → keep "coming soon"
     const idx = await _pvIndex();
     const isFree = idx.free.indexOf(lessonId) !== -1;
     const isPaid = idx.paid.indexOf(lessonId) !== -1;
