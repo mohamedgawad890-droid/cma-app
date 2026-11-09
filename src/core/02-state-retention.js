@@ -363,6 +363,8 @@ async function maybeSendDigest(){
   const weekStart=_isoWeekStart();
   if(prefs.lastDigestSent===weekStart)return; // already sent this week
   const payload=buildDigestPayload(st);
+  // Batch 37: add the exam-prep group invitation line only for students known to be unregistered.
+  try{ if(typeof giPendingForDigest==='function' && await giPendingForDigest()) payload.groupInterest=true; }catch(e){}
   // Batch 24 (B24-04): the Apps Script verifies this token and sends ONLY to the
   // token's own email — the payload email is no longer trusted.
   try{payload.idToken=await STATE.user.getIdToken();}catch(e){return;}

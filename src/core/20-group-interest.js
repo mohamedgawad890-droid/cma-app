@@ -190,3 +190,24 @@ function submitGroupInterest(){
     _giSafe(function(){ console.warn('[group-interest] save failed', e); });
   });
 }
+
+// Batch 37: used by the weekly digest. Resolves true only when this student is KNOWN to be
+// unregistered and has not hidden the invitation; waits up to 6s for the state to load and
+// resolves false on any doubt (loading, error, offline), so the email line is never wrong-way.
+function giPendingForDigest(){
+  return new Promise(function(resolve){
+    try{
+      if(!_giUserOk()){ resolve(false); return; }
+      var decide = function(){
+        var hide = _giLS().hideUntil;
+        resolve(_gi.state === 'none' && !(hide && Date.now() < hide));
+      };
+      if(_gi.state !== 'unknown'){ decide(); return; }
+      _giLoad();
+      var n = 0, t = setInterval(function(){
+        n++;
+        if(_gi.state !== 'unknown' || n >= 12){ clearInterval(t); decide(); }
+      }, 500);
+    }catch(_){ resolve(false); }
+  });
+}
