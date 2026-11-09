@@ -532,6 +532,7 @@ function renderStudy(){
       </div>
     </div>
 
+    ${typeof renderGroupInterestBanner==='function'?renderGroupInterestBanner():''}
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
       <div style="font-size:12px;font-weight:500;color:#888;letter-spacing:.5px">ALL SECTIONS</div>
     </div>
