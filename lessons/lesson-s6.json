@@ -32,7 +32,7 @@
         ],
         [
           "Production",
-          "Production order → materials → labour → costing",
+          "Production order → materials → labor → costing",
           "BOM, materials requisition, job cost sheet, production report"
         ],
         [
@@ -43,7 +43,7 @@
         [
           "Financing",
           "Issue debt/equity → record → service debt",
-          "Loan agreements, stock certificates, amortisation schedules"
+          "Loan agreements, stock certificates, amortization schedules"
         ]
       ]
     },
@@ -90,7 +90,7 @@
       "t": "b",
       "v": [
         "Production Planning: Master Production Schedule drives material and capacity planning",
-        "Materials Requisition: Raw materials released from storeroom to production (authorised document)",
+        "Materials Requisition: Raw materials released from storeroom to production (authorized document)",
         "Job Cost Sheet: Records DM, DL, and OH applied to each job or batch",
         "Completion: Finished goods transferred from WIP to Finished Goods inventory",
         "Costing: Standard vs actual costs compared; variances calculated",
@@ -104,12 +104,12 @@
     {
       "t": "b",
       "v": [
-        "Hire: Employment authorised by HR — separate from payroll processing",
+        "Hire: Employment authorized by HR — separate from payroll processing",
         "Time Recording: Timesheets or time clocks capture hours worked",
         "Payroll Calculation: Gross pay calculated; deductions applied (taxes, benefits)",
-        "Payroll Disbursement: Cheques or direct deposits issued",
+        "Payroll Disbursement: Checks or direct deposits issued",
         "Payroll Register: Complete record of all payroll transactions",
-        "Key controls: HR authorises hires (separate from payroll dept), supervisors approve timesheets, imprest payroll account, limit access to payroll master file"
+        "Key controls: HR authorizes hires (separate from payroll dept), supervisors approve timesheets, imprest payroll account, limit access to payroll master file"
       ]
     },
     {
@@ -119,11 +119,11 @@
     {
       "t": "b",
       "v": [
-        "Debt issuance: Board authorises borrowing; loan agreement executed; cash received",
+        "Debt issuance: Board authorizes borrowing; loan agreement executed; cash received",
         "Interest accrual and payment: Monthly interest expense recorded; payments made per schedule",
-        "Equity issuance: Board authorises share issuance; subscription and collection recorded",
+        "Equity issuance: Board authorizes share issuance; subscription and collection recorded",
         "Dividend payments: Board declares dividend; payments made to shareholders",
-        "Key controls: Board authorisation for all financing, independent confirmation with lenders, reconcile debt schedules to GL"
+        "Key controls: Board authorization for all financing, independent confirmation with lenders, reconcile debt schedules to GL"
       ]
     },
     {
@@ -165,7 +165,7 @@
     },
     {
       "t": "tip",
-      "v": "Exam Tips: 5 cycles — Revenue-to-Cash, Expenditure, Production, HR/Payroll, Financing. 3-Way Match = PO + Receiving Report + Vendor Invoice (MUST match before payment). Key control: SEPARATE the functions of ordering, receiving, and paying (SOD). Payroll: HR hires (separate from payroll); supervisors approve time. Production: materials requisition authorises release from storeroom. All cycles feed the General Ledger."
+      "v": "Exam Tips: 5 cycles — Revenue-to-Cash, Expenditure, Production, HR/Payroll, Financing. 3-Way Match = PO + Receiving Report + Vendor Invoice (MUST match before payment). Key control: SEPARATE the functions of ordering, receiving, and paying (SOD). Payroll: HR hires (separate from payroll); supervisors approve time. Production: materials requisition authorizes release from storeroom. All cycles feed the General Ledger."
     },
     {
       "t": "arsum",
@@ -2512,7 +2512,7 @@
         "Privacy by Design: Build privacy protections INTO systems and processes from the start — mandated by GDPR Art. 25",
         "Data Minimization: Collect only what you need for the stated purpose",
         "Storage Limitation: Keep data only as long as necessary",
-        "Financial records retention: SEC requires 7 years (public companies); IRS requires 3-7 years for tax records",
+        "Financial records retention: SEC requires 7 years (public companies); IRS requires 3–7 years for tax records",
         "Secure deletion: Physical destruction or cryptographic erasure"
       ]
     },

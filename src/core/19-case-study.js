@@ -62,22 +62,26 @@ function _csAllUnits(){
   return out;
 }
 
+// Batch 38: term tooltips (same Arabic popup as the lessons). highlightTerms()
+// escapes its input itself, so it is a drop-in replacement for esc() on body text.
+function HT(t){ return (typeof highlightTerms==='function') ? highlightTerms(t) : esc(t==null?'':t); }
+
 // ── Block renderer (all text escaped) ────────────────────────────────────────
 function _csBlock(b){
   if(!b || !b.t) return '';
   switch(b.t){
-    case 'h': return '<div style="font-size:14px;font-weight:600;color:var(--ink);margin:14px 0 6px">'+esc(b.v)+'</div>';
-    case 'p': return '<div style="font-size:14px;line-height:1.65;color:#444;margin:8px 0">'+esc(b.v)+'</div>';
-    case 'tip': return '<div style="background:var(--warn-tint);border-left:3px solid var(--warn);border-radius:8px;padding:10px 12px;margin:10px 0;font-size:13px;line-height:1.55;color:var(--warn-strong)">💡 '+esc(b.v)+'</div>';
-    case 'f': return '<div style="background:var(--brand-tint);border-radius:8px;padding:9px 12px;margin:10px 0;font-size:13px;color:var(--brand)"><b>'+esc(b.l)+':</b> '+esc(b.v)+'</div>';
-    case 'steps': return '<ol style="margin:8px 0 8px 20px;padding:0;font-size:14px;line-height:1.65;color:#444">'+(b.items||[]).map(function(x){return '<li style="margin-bottom:6px">'+esc(x)+'</li>';}).join('')+'</ol>';
+    case 'h': return '<div style="font-size:14px;font-weight:600;color:var(--ink);margin:14px 0 6px">'+HT(b.v)+'</div>';
+    case 'p': return '<div style="font-size:14px;line-height:1.65;color:#444;margin:8px 0">'+HT(b.v)+'</div>';
+    case 'tip': return '<div style="background:var(--warn-tint);border-left:3px solid var(--warn);border-radius:8px;padding:10px 12px;margin:10px 0;font-size:13px;line-height:1.55;color:var(--warn-strong)">💡 '+HT(b.v)+'</div>';
+    case 'f': return '<div style="background:var(--brand-tint);border-radius:8px;padding:9px 12px;margin:10px 0;font-size:13px;color:var(--brand)"><b>'+esc(b.l)+':</b> '+HT(b.v)+'</div>';
+    case 'steps': return '<ol style="margin:8px 0 8px 20px;padding:0;font-size:14px;line-height:1.65;color:#444">'+(b.items||[]).map(function(x){return '<li style="margin-bottom:6px">'+HT(x)+'</li>';}).join('')+'</ol>';
     case 'tbl': {
       const rows = b.r || [];
       return (b.cap?'<div style="font-size:12px;color:#888;margin:10px 0 -6px">'+esc(b.cap)+'</div>':'')+
-        '<div class="tbl-wrap"><table class="tbl"><thead><tr>'+(b.h||[]).map(function(h){return '<th style="background:var(--brand-tint);color:var(--brand);font-size:13px">'+esc(h)+'</th>';}).join('')+'</tr></thead><tbody>'+
+        '<div class="tbl-wrap"><table class="tbl"><thead><tr>'+(b.h||[]).map(function(h){return '<th style="background:var(--brand-tint);color:var(--brand);font-size:13px">'+HT(h)+'</th>';}).join('')+'</tr></thead><tbody>'+
         rows.map(function(row,ri){
           const last = b.total && ri===rows.length-1;
-          return '<tr>'+(Array.isArray(row)?row:(row.c||[])).map(function(c){return '<td style="font-size:13px;'+(last?'font-weight:600;color:var(--ink)':'')+'">'+esc(c)+'</td>';}).join('')+'</tr>';
+          return '<tr>'+(Array.isArray(row)?row:(row.c||[])).map(function(c){return '<td style="font-size:13px;'+(last?'font-weight:600;color:var(--ink)':'')+'">'+HT(c)+'</td>';}).join('')+'</tr>';
         }).join('')+'</tbody></table></div>';
     }
   }
@@ -125,7 +129,7 @@ function renderCaseList(head){
   }).join('');
   return head(co.name||'Delta Oak Furniture Co.')+
     '<div class="scroll-area pad" style="padding-top:14px">'+
-    '<div class="card" style="font-size:13px;line-height:1.6;color:#555">'+esc(co.blurb||'')+'</div>'+
+    '<div class="card" style="font-size:13px;line-height:1.6;color:#555">'+HT(co.blurb||'')+'</div>'+
     '<div style="font-size:12px;color:#888;margin:0 2px 14px">Teaching order: Cost → Budget → Variance. Try each task first, then tap <b>Show solution</b>.</div>'+
     secs+(isInstructor()?_csUploadPanel():'')+'<div style="height:24px"></div></div>';
 }
@@ -144,7 +148,7 @@ function renderCaseUnit(){
   const all = _csAllUnits(); const ix = all.findIndex(function(x){return x.id===id;});
   const prev = ix>0?all[ix-1]:null, next = ix>=0&&ix<all.length-1?all[ix+1]:null;
   const shown = !!_cs.shown[id];
-  const tasks = (u.tasks||[]).map(function(t,i){ return '<li style="margin-bottom:6px">'+esc(t)+'</li>'; }).join('');
+  const tasks = (u.tasks||[]).map(function(t,i){ return '<li style="margin-bottom:6px">'+HT(t)+'</li>'; }).join('');
   const sol = shown
     ? '<div class="card" style="border-color:var(--ok);margin-top:12px"><div style="font-size:12px;font-weight:600;color:var(--ok-strong);margin-bottom:4px">SOLUTION</div>'+(u.solution||[]).map(_csBlock).join('')+'</div>'
     : '<button onclick="caseToggle(\''+esc(id)+'\')" style="width:100%;margin-top:12px;padding:13px;border-radius:12px;border:none;background:var(--brand);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Show solution</button>';
@@ -154,11 +158,11 @@ function renderCaseUnit(){
   };
   return '<div class="sh">'+back+'<h2 style="margin-top:6px">'+esc(u.title||'')+'</h2><p>'+(m.emoji||'')+' '+esc(m.title||'')+' · Unit '+esc(u.id)+' · IMA '+esc(u.ref||'')+'</p></div>'+
     '<div class="scroll-area pad" style="padding-top:14px">'+
-    '<div class="card"><div style="font-size:12px;font-weight:600;color:var(--brand);margin-bottom:4px">THE SITUATION</div><div style="font-size:14px;line-height:1.65;color:#444">'+esc(u.scenario||'')+'</div></div>'+
+    '<div class="card"><div style="font-size:12px;font-weight:600;color:var(--brand);margin-bottom:4px">THE SITUATION</div><div style="font-size:14px;line-height:1.65;color:#444">'+HT(u.scenario||'')+'</div></div>'+
     (u.data&&u.data.length?'<div class="card">'+(u.data||[]).map(_csBlock).join('')+'</div>':'')+
     '<div class="card"><div style="font-size:12px;font-weight:600;color:var(--brand);margin-bottom:4px">YOUR TASK</div><ol style="margin:6px 0 0 20px;padding:0;font-size:14px;line-height:1.6;color:#444">'+tasks+'</ol></div>'+
     sol+
-    (shown?'<div class="card" style="background:var(--brand-tint);border-color:transparent;margin-top:12px"><div style="font-size:12px;font-weight:600;color:var(--brand);margin-bottom:6px">KEY TAKEAWAY</div><div style="font-size:14px;line-height:1.6;color:var(--ink)">'+esc(tk.en||'')+'</div><div dir="rtl" lang="ar" style="font-size:15px;line-height:1.9;color:var(--ink);margin-top:8px;text-align:right">'+esc(tk.ar||'')+'</div></div>':'')+
+    (shown?'<div class="card" style="background:var(--brand-tint);border-color:transparent;margin-top:12px"><div style="font-size:12px;font-weight:600;color:var(--brand);margin-bottom:6px">KEY TAKEAWAY</div><div style="font-size:14px;line-height:1.6;color:var(--ink)">'+HT(tk.en||'')+'</div><div dir="rtl" lang="ar" style="font-size:15px;line-height:1.9;color:var(--ink);margin-top:8px;text-align:right">'+esc(tk.ar||'')+'</div></div>':'')+
     '<div style="display:flex;gap:8px;margin:14px 0 8px">'+
       '<button onclick="studyGo('+Number(u.sec)+',\''+esc(u.lesson||u.id)+'\')" style="flex:1;padding:11px 8px;border-radius:10px;border:.5px solid var(--brand);background:#fff;color:var(--brand);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">📚 Open lesson '+esc(u.lesson||u.id)+'</button></div>'+
     '<div style="display:flex;gap:8px;margin-bottom:24px">'+

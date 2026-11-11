@@ -4440,7 +4440,7 @@
     },
     {
       "t": "p",
-      "v": "ASC 606 replaced dozens of industry-specific revenue standards with ONE unified 5-step model. The core principle: recognise revenue when (or as) goods or services are TRANSFERRED to the customer in an amount reflecting the consideration the entity EXPECTS TO RECEIVE."
+      "v": "ASC 606 replaced dozens of industry-specific revenue standards with ONE unified 5-step model. The core principle: recognize revenue when (or as) goods or services are TRANSFERRED to the customer in an amount reflecting the consideration the entity EXPECTS TO RECEIVE."
     },
     {
       "t": "h",
@@ -4476,7 +4476,7 @@
         ],
         [
           "5",
-          "RECOGNISE revenue when (or as) each PO is satisfied",
+          "RECOGNIZE revenue when (or as) each PO is satisfied",
           "Has control transferred to the customer?"
         ]
       ]
@@ -4535,7 +4535,7 @@
     },
     {
       "t": "h",
-      "v": "Step 5 — Recognising Revenue"
+      "v": "Step 5 — Recognizing Revenue"
     },
     {
       "t": "tbl",
@@ -4717,7 +4717,7 @@
         },
         {
           "h": "الخطوة 5: الاعتراف بالإيراد",
-          "en": "Step 5 — Recognising Revenue",
+          "en": "Step 5 — Recognizing Revenue",
           "pts": [
             "عند نقطة زمنية: تنتقل السيطرة في لحظة محددة، كتسليم المنتج أو نقل الملكية أو قبول العميل.",
             "على مدى زمني: يستلم العميل المنافع ويستهلكها في آن واحد، أو تنشئ المنشأة أصلًا يسيطر عليه العميل، أو لا يوجد استخدام بديل مع حق في الدفع. أمثلة: عقود الإنشاء طويلة الأجل واشتراكات SaaS وخدمات الصيانة."
@@ -4821,7 +4821,7 @@
         "Coupon Rate (Stated Rate): Rate used to calculate the cash interest payment",
         "Market Rate (Effective Rate/Yield): Rate investors require — used for present value calculations",
         "Issue Price: Present value of all future cash flows discounted at the MARKET rate",
-        "Carrying Value (Book Value): Face value ± unamortised premium or discount"
+        "Carrying Value (Book Value): Face value ± unamortized premium or discount"
       ]
     },
     {
@@ -4836,7 +4836,7 @@
     },
     {
       "t": "h",
-      "v": "Effective Interest Method — Amortisation"
+      "v": "Effective Interest Method — Amortization"
     },
     {
       "t": "p",
@@ -4849,7 +4849,7 @@
         "Beginning CV",
         "Interest Expense (CV × Market Rate)",
         "Cash Paid (Face × Coupon Rate)",
-        "Premium/Discount Amortised",
+        "Premium/Discount Amortized",
         "Ending CV"
       ],
       "r": [
@@ -4892,7 +4892,7 @@
       "v": [
         "ISSUE at discount: Dr. Cash (proceeds) / Dr. Discount on BP (difference) / Cr. Bonds Payable (face)",
         "ISSUE at premium: Dr. Cash (proceeds) / Cr. Premium on BP (difference) / Cr. Bonds Payable (face)",
-        "INTEREST PAYMENT: Dr. Interest Expense (effective) / Cr. Discount on BP (amortisation) / Cr. Cash (coupon) [for discount bond]",
+        "INTEREST PAYMENT: Dr. Interest Expense (effective) / Cr. Discount on BP (amortization) / Cr. Cash (coupon) [for discount bond]",
         "MATURITY: Dr. Bonds Payable (face) / Cr. Cash (face)"
       ]
     },
@@ -4911,7 +4911,7 @@
     },
     {
       "t": "tip",
-      "v": "Exam Tips: Coupon > Market Rate → Premium → CV decreases each period. Coupon < Market Rate → Discount → CV increases each period. Effective interest method = CV × market rate = interest expense. Amortisation = Interest Expense - Cash Paid (discount) OR Cash Paid - Interest Expense (premium). Early retirement: Gain if CV > price paid; Loss if price paid > CV. At maturity, CV ALWAYS equals face value."
+      "v": "Exam Tips: Coupon > Market Rate → Premium → CV decreases each period. Coupon < Market Rate → Discount → CV increases each period. Effective interest method = CV × market rate = interest expense. Amortization = Interest Expense - Cash Paid (discount) OR Cash Paid - Interest Expense (premium). Early retirement: Gain if CV > price paid; Loss if price paid > CV. At maturity, CV ALWAYS equals face value."
     },
     {
       "t": "arsum",
@@ -4944,7 +4944,7 @@
         },
         {
           "h": "طريقة الفائدة الفعلية: الإطفاء",
-          "en": "Effective Interest Method — Amortisation",
+          "en": "Effective Interest Method — Amortization",
           "pts": [
             "طريقة الفائدة الفعلية مطلوبة في GAAP وIFRS، وتنتج معدل فائدة ثابتًا كل فترة وليس مصروفًا ثابتًا بالقيمة.",
             "مثال: قيمة اسمية 100,000، قسيمة 8%، سوق 10%، إصدار بخصم، قيمة دفترية افتتاحية 95,000.",

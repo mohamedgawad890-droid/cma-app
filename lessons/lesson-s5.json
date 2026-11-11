@@ -2076,7 +2076,7 @@
     },
     {
       "t": "p",
-      "v": "Business Continuity Planning (BCP) ensures an organisation can continue CRITICAL OPERATIONS during and after a disaster or disruption. It is a key INTERNAL CONTROL over operational risk. Without BCP, even a short disruption can cause catastrophic financial and reputational damage."
+      "v": "Business Continuity Planning (BCP) ensures an organization can continue CRITICAL OPERATIONS during and after a disaster or disruption. It is a key INTERNAL CONTROL over operational risk. Without BCP, even a short disruption can cause catastrophic financial and reputational damage."
     },
     {
       "t": "h",
@@ -2092,7 +2092,7 @@
       "r": [
         [
           "Scope",
-          "ENTIRE organisation — all critical business functions",
+          "ENTIRE organization — all critical business functions",
           "Focused primarily on IT systems and data recovery"
         ],
         [
@@ -2130,7 +2130,7 @@
       "v": [
         "Identify critical processes: which functions are essential to operations and revenue?",
         "Determine Maximum Tolerable Downtime (MTD): how long can each function be interrupted before causing irreversible damage?",
-        "Prioritise recovery: functions with lower MTD must be restored first",
+        "Prioritize recovery: functions with lower MTD must be restored first",
         "Quantify impact: financial losses, regulatory penalties, reputational damage per hour/day of downtime"
       ]
     },
