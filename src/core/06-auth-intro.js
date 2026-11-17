@@ -70,7 +70,7 @@ function renderOnboarding(){
       <div style="margin-bottom:24px">
         <div style="font-size:17px;font-weight:500;color:var(--ink);margin-bottom:10px">🎬 Watch this first</div>
         <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;background:#000;box-shadow:0 4px 16px rgba(0,0,0,.12)">
-          <iframe src="https://www.youtube.com/embed/LWHyZxV5als?rel=0&modestbranding=1" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" allowfullscreen loading="lazy" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"></iframe>
+          <iframe src="https://www.youtube.com/embed/bpyeQFv3xI4?rel=0&modestbranding=1" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" allowfullscreen loading="lazy" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"></iframe>
         </div>
       </div>
 
