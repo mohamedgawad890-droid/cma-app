@@ -34,7 +34,8 @@ function renderIntroVideoCard(){
   try{
     if(!_ivUserOk()) return '';
     var ls = _ivLS();
-    var collapsed = (ls.dismissed || ls.watched) && !_iv.expanded;
+    var started = _ivSafe(function(){ return STATE.progress && STATE.progress.done && STATE.progress.done.length > 0; });
+    var collapsed = (ls.dismissed || ls.watched || started) && !_iv.expanded;
     if(collapsed){
       return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;font-size:13px">'
         + '<button onclick="ivExpand()" style="border:none;background:transparent;color:var(--brand-2);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;padding:4px 0">▶ Watch the intro video</button>'

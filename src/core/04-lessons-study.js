@@ -521,7 +521,7 @@ function renderStudy(){
       <div style="background:linear-gradient(135deg,var(--brand),var(--brand-3));border-radius:14px;padding:16px 18px;margin-bottom:14px">
         <h1 style="font-size:20px;font-weight:500;color:#fff;margin-bottom:2px">CMA Part 1</h1>
         <p style="font-size:12px;color:rgba(255,255,255,.75);margin-bottom:12px">Financial Planning, Performance & Analytics</p>
-        ${(()=>{const st=loadStudent();if(st&&st.examdate){const d=new Date(st.examdate+'-01');const today=new Date();const diff=Math.ceil((d-today)/(1000*60*60*24));return diff>0?`<div style="background:rgba(255,255,255,.15);border-radius:8px;padding:7px 12px;margin-bottom:10px;display:flex;align-items:center;gap:8px"><span style="font-size:14px">📅</span><span style="font-size:12px;color:#fff;font-weight:500">${diff} days to your exam — keep going!</span></div>`:'';}return '';})()}
+        ${(()=>{const st=loadStudent();if(st&&st.examdate){const diff=examDaysLeft(st);return diff>0?`<div style="background:rgba(255,255,255,.15);border-radius:8px;padding:7px 12px;margin-bottom:10px;display:flex;align-items:center;gap:8px"><span style="font-size:14px">📅</span><span style="font-size:12px;color:#fff;font-weight:500">${diff} days until your exam window opens — keep going!</span></div>`:'';}return '';})()}
         <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px">
           <span style="color:rgba(255,255,255,.85)">Overall Progress</span><span style="color:#fff;font-weight:500">${pct}%</span>
         </div>

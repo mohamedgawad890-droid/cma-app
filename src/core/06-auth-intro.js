@@ -78,7 +78,7 @@ function renderOnboarding(){
       <div style="margin-bottom:24px">
         <div style="font-size:17px;font-weight:500;color:var(--ink);margin-bottom:10px">📱 What is this app?</div>
         <div style="font-size:14px;color:#555;line-height:1.7">
-          This is your personal CMA Part 1 study app — built by <strong style="color:var(--brand)">Gawad</strong>, a CFO and CMA instructor with 20 years of experience. It covers everything you need to pass the exam: structured lessons, practice quizzes, progress tracking, and more.
+          This is your personal CMA Part 1 study app — built by <strong style="color:var(--brand)">Gawad</strong>, a CFO and CMA instructor with 17 years of experience. It covers everything you need to pass the exam: structured lessons, practice quizzes, progress tracking, and more.
         </div>
       </div>
 
@@ -210,55 +210,77 @@ function renderStartLearningCard(){
   </div>`;
 }
 
+// Batch 40: Home hero links — one array drives the icon row (edit here to add/remove a link).
+const HOME_HERO_LINKS=[
+  {i:'\u2709\uFE0F',l:'Email',h:'mailto:Mohamed.Gawad890@gmail.com'},
+  {i:'\u{1F4D8}',l:'Facebook',h:'https://www.facebook.com/profile.php?id=61550958763803'},
+  {i:'\u{1F465}',l:'Facebook Group',h:'https://www.facebook.com/share/1BSdcgufdL/?mibextid=wwXIfr'},
+  {i:'\u{1F4BC}',l:'LinkedIn',h:'https://www.linkedin.com/in/mohamed-abdelgawad890'},
+  {i:'\u{1F4F8}',l:'Instagram',h:'https://www.instagram.com/mohamed_abdelgawad_cma/'},
+  {i:'\u{1F3B5}',l:'TikTok',h:'https://www.tiktok.com/@mohamed.abdelgawa'},
+  {i:'\u25B6\uFE0F',l:'YouTube',h:'https://www.youtube.com/@mohamedabdelgawad5691'}
+];
+function homeHeroLinksHTML(){
+  return HOME_HERO_LINKS.map(x=>`<a class="hero-link" href="${x.h}" ${x.h.indexOf('mailto:')===0?'':'target="_blank" rel="noopener noreferrer"'} aria-label="${x.l}" title="${x.l}">${x.i}</a>`).join('');
+}
+// Batch 40: countdown to the exam WINDOW start + streak; students with no date see a "set your date" prompt.
+function homeCountdownHTML(){
+  const st=loadStudent();
+  const streak=getStudyStreak();
+  const streakCard=`<div style="flex:1;background:linear-gradient(135deg,var(--ok-strong-2),var(--ok));border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px">
+            <span style="font-size:24px">\u{1F525}</span>
+            <div><div style="font-size:11px;color:rgba(255,255,255,.75)">Study streak</div><div style="font-size:18px;font-weight:500;color:#fff">${streak} day${streak===1?'':'s'}</div></div>
+          </div>`;
+  const days=examDaysLeft(st);
+  if(days!==null&&days>0){
+    return `<div style="display:flex;gap:8px;margin-bottom:4px">
+          <div style="flex:1;background:linear-gradient(135deg,var(--brand),var(--brand-2));border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px">
+            <span style="font-size:24px">\u{1F4C5}</span>
+            <div><div style="font-size:11px;color:rgba(255,255,255,.75)">Exam window opens in</div><div style="font-size:18px;font-weight:500;color:#fff">${days} days</div></div>
+          </div>
+          ${streakCard}
+        </div>`;
+  }
+  if(days!==null)return '';   // window already open or passed: show nothing (same as before)
+  if(!STATE.user||isInstructor())return '';
+  return `<div style="display:flex;gap:8px;margin-bottom:4px">
+          <div onclick="homeSetExamDate()" role="button" style="flex:1;background:var(--brand-tint);border:1px dashed var(--brand-2);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer">
+            <span style="font-size:24px">\u{1F4C5}</span>
+            <div><div style="font-size:13px;font-weight:600;color:var(--brand)">Set your exam date</div><div style="font-size:11px;color:#666;margin-top:2px">Get a countdown and a daily study plan</div></div>
+          </div>
+          ${streakCard}
+        </div>`;
+}
+function homeSetExamDate(){
+  try{track('home_set_examdate_click',{});}catch(e){}
+  STATE.tab='register';render();
+  setTimeout(()=>{try{const el=document.getElementById('f-examdate');if(el){el.scrollIntoView({behavior:'smooth',block:'center'});el.focus();}}catch(e){}},120);
+}
+
 function renderIntro(){
   return`${renderSubNav(SUB_ME,'intro')}<div class="scroll-area">
-    <!-- PROFILE HERO -->
-    <div class="profile-hero">
-      <img src="${PHOTO_B64}" class="profile-img" alt="Mohamed Abdelgawad">
-      <div class="profile-name">Mohamed Abdelgawad</div>
-      <div class="profile-title">CFO | Finance Educator | CMA Instructor</div>
+    <!-- PROFILE HERO (compact, Batch 40) -->
+    <div class="profile-hero compact">
+      <div class="hero-row">
+        <img src="${PHOTO_B64}" class="profile-img sm" alt="Mohamed Abdelgawad">
+        <div class="hero-id">
+          <div class="profile-name">Mohamed Abdelgawad</div>
+          <div class="profile-title">CFO | Finance Educator | CMA Instructor</div>
+        </div>
+      </div>
       <div class="profile-creds">
         <span class="cred-badge">CMA</span>
-        <span class="cred-badge">DBA</span>
+        <span class="cred-badge">DBA Candidate</span>
         <span class="cred-badge">MBA</span>
         <span class="cred-badge">TOT</span>
-        <span class="cred-badge">20 Years Experience</span>
+        <span class="cred-badge">17 Years Experience</span>
       </div>
-      <div style="display:flex;gap:10px;justify-content:center;margin-top:16px">
-        <a href="mailto:Mohamed.Gawad890@gmail.com" style="display:flex;flex-direction:column;align-items:center;gap:5px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);border-radius:12px;padding:10px 18px;text-decoration:none;color:#fff;min-width:80px">
-          <span style="font-size:22px">✉️</span>
-          <span style="font-size:11px;font-weight:500">Email</span>
-        </a>
-      </div>
-      <div style="display:flex;gap:10px;justify-content:center;margin-top:10px;flex-wrap:wrap">
-        <a href="https://www.facebook.com/profile.php?id=61550958763803" target="_blank" style="display:flex;flex-direction:column;align-items:center;gap:5px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);border-radius:12px;padding:10px 18px;text-decoration:none;color:#fff;min-width:80px">
-          <span style="font-size:22px">📘</span>
-          <span style="font-size:11px;font-weight:500">Facebook</span>
-        </a>
-        <a href="https://www.facebook.com/share/1BSdcgufdL/?mibextid=wwXIfr" target="_blank" style="display:flex;flex-direction:column;align-items:center;gap:5px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);border-radius:12px;padding:10px 18px;text-decoration:none;color:#fff;min-width:80px">
-          <span style="font-size:22px">👥</span>
-          <span style="font-size:11px;font-weight:500">FB Group</span>
-        </a>
-        <a href="https://www.linkedin.com/in/mohamed-abdelgawad890" target="_blank" style="display:flex;flex-direction:column;align-items:center;gap:5px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);border-radius:12px;padding:10px 18px;text-decoration:none;color:#fff;min-width:80px">
-          <span style="font-size:22px">💼</span>
-          <span style="font-size:11px;font-weight:500">LinkedIn</span>
-        </a>
-        <a href="https://www.instagram.com/mohamed_abdelgawad_cma/" target="_blank" style="display:flex;flex-direction:column;align-items:center;gap:5px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);border-radius:12px;padding:10px 18px;text-decoration:none;color:#fff;min-width:80px">
-          <span style="font-size:22px">📸</span>
-          <span style="font-size:11px;font-weight:500">Instagram</span>
-        </a>
-        <a href="https://www.tiktok.com/@mohamed.abdelgawa" target="_blank" style="display:flex;flex-direction:column;align-items:center;gap:5px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);border-radius:12px;padding:10px 18px;text-decoration:none;color:#fff;min-width:80px">
-          <span style="font-size:22px">🎵</span>
-          <span style="font-size:11px;font-weight:500">TikTok</span>
-        </a>
-        <a href="https://www.youtube.com/@mohamedabdelgawad5691" target="_blank" style="display:flex;flex-direction:column;align-items:center;gap:5px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);border-radius:12px;padding:10px 18px;text-decoration:none;color:#fff;min-width:80px">
-          <span style="font-size:22px">▶️</span>
-          <span style="font-size:11px;font-weight:500">YouTube</span>
-        </a>
-      </div>
+      <div class="hero-links">${homeHeroLinksHTML()}</div>
     </div>
 
     <div class="pad" style="padding-top:16px">
+
+      ${renderExamsStrip()}
 
       ${renderStartLearningCard()}
 
@@ -266,25 +288,15 @@ function renderIntro(){
 
       ${renderGroupInterestCard()}
 
-      ${renderExamsStrip()}
-
       <!-- WELCOME -->
       <div class="info-section">
         <div class="welcome-box">
           <p>Welcome to CMA Prep! 🎓 Great to meet you! I'm your CMA instructor. I've helped candidates from fresh graduates to seasoned CFOs — and I know exactly what it takes to pass the CMA exam. Let's get you there together!</p>
+          <p dir="rtl" lang="ar" style="margin-top:8px;line-height:1.8">أهلاً بك في CMA Prep! 🎓 أنا مدرّسك للـ CMA، وساعدت دارسين من حديثي التخرج إلى المديرين الماليين، وأعرف تماماً ما يلزم لاجتياز الامتحان. هنوصل للنجاح مع بعض بإذن الله!</p>
         </div>
-        ${(()=>{const st=loadStudent();if(!st||!st.examdate)return'';const d=new Date(st.examdate+'-01');const today=new Date();const diff=Math.ceil((d-today)/(1000*60*60*24));if(diff<=0)return'';const streak=getStudyStreak();return`<div style="display:flex;gap:8px;margin-bottom:4px">
-          <div style="flex:1;background:linear-gradient(135deg,var(--brand),var(--brand-2));border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px">
-            <span style="font-size:24px">📅</span>
-            <div><div style="font-size:11px;color:rgba(255,255,255,.75)">Exam countdown</div><div style="font-size:18px;font-weight:500;color:#fff">${diff} days</div></div>
-          </div>
-          <div style="flex:1;background:linear-gradient(135deg,var(--ok-strong-2),var(--ok));border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px">
-            <span style="font-size:24px">🔥</span>
-            <div><div style="font-size:11px;color:rgba(255,255,255,.75)">Study streak</div><div style="font-size:18px;font-weight:500;color:#fff">${streak} day${streak===1?'':'s'}</div></div>
-          </div>
-        </div>`;})()}
+        ${homeCountdownHTML()}
         <div style="background:var(--surface-3);border-radius:10px;padding:14px 16px;font-size:13px;color:#555;line-height:1.6">
-          <strong style="color:var(--ink)">About me:</strong> I'm currently CFO, with 20 years of experience in Accounting, Inventory Management, Cost Accounting, Financial Planning & Controlling, Forecasting & Budgeting, Data Analysis.</div>
+          <strong style="color:var(--ink)">About me:</strong> I'm currently CFO, with 17 years of experience in Accounting, Inventory Management, Cost Accounting, Financial Planning & Controlling, Forecasting & Budgeting, Data Analysis.</div>
       </div>
 
       <!-- DAILY GOAL RING (ported) -->
@@ -292,6 +304,9 @@ function renderIntro(){
       <!-- QUESTION OF THE DAY (ported; no-ops until instructor logs a lecture) -->
       ${(()=>{const qs=STATE.qotdState;if(!qs||!qs.question)return '';const q=qs.question;const sel=qs.selected;const answered=qs.answered;const labels=['A','B','C','D'];const optsHTML=q.o.map((opt,i)=>{let cls='qod-opt';if(answered){if(i===q.a)cls+=' correct';else if(i===sel)cls+=' wrong';}return `<div class="${cls}" ${answered?'':`onclick="qotdAnswer(${i})"`}><div class="qod-opt-letter">${labels[i]}</div><div style="flex:1">${esc(opt)}</div></div>`;}).join('');const explanation=answered?`<div class="qod-exp"><strong>${sel===q.a?'✅ Correct!':'❌ Correct answer: '+labels[q.a]}</strong><div style="margin-top:4px">${expInner(q,sel)}</div></div>`:'';return `<div class="qod-card"><div class="qod-lbl">🎯 QUESTION OF THE DAY</div><div class="qod-meta">${esc(q.secTitle||'')} · ${esc(q.lessonTitle||'')}</div><div class="qod-title">${stemHTML(q.q)}</div>${optsHTML}${explanation}</div>`;})()}
 
+      <!-- ABOUT THE CMA EXAM (collapsible, Batch 40) -->
+      <details class="home-about" ${STATE.homeAboutOpen?'open':''} ontoggle="STATE.homeAboutOpen=this.open">
+        <summary>\u{1F4DA} About the CMA exam <span class="home-about-sub">IMA \u00B7 structure \u00B7 windows \u00B7 cost</span></summary>
       <!-- WHAT IS IMA -->
       <div class="info-section">
         <div class="info-title">🏛️ What is IMA?</div>
@@ -480,6 +495,8 @@ function renderIntro(){
           </div>
         </div>
       </div>
+
+      </details>
 
       <!-- STUDY PLAN -->
       <div class="info-section">

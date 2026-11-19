@@ -507,6 +507,19 @@ function _getExamWindows(){
   });
   return out;
 }
+// Batch 40: a stored window value 'YYYY-MM' is the LAST month of the window (02 = Jan/Feb,
+// 06 = May/Jun, 10 = Sep/Oct). The countdown must run to the FIRST day of the window
+// (the month before), not to the 1st of the stored month — which is the middle of the window.
+function examWindowStart(v){
+  const m=(typeof v==='string')?v.match(/^(\d{4})-(\d{2})$/):null;
+  if(!m)return null;
+  return new Date(parseInt(m[1],10),parseInt(m[2],10)-2,1);
+}
+// Whole days until the student's exam window opens; null if no/invalid date; <=0 once it has opened.
+function examDaysLeft(st){
+  const d=examWindowStart(st&&st.examdate);
+  return d?Math.ceil((d-new Date())/86400000):null;
+}
 // Migrate legacy invalid months → snap forward to next valid window.
 // Accepts 'YYYY-MM'. Returns valid 'YYYY-MM' or '' if input empty/invalid shape.
 function _normalizeExamWindow(v){

@@ -710,8 +710,7 @@ function studyPlanHTML(){
   try {
     const st = loadStudent();
     if (!st || !st.examdate) return '';
-    const d = new Date(st.examdate + '-01'), today = new Date();
-    const days = Math.ceil((d - today) / 86400000);
+    const days = examDaysLeft(st);
     if (!(days > 0)) return '';
     const left = Math.max(0, TOTAL_LESSONS - STATE.progress.done.length);
     if (!left) return '<div class="card" style="margin-bottom:12px"><div style="font-size:13px;font-weight:600;color:var(--ok-strong)">📅 Study plan</div><div style="font-size:12px;color:var(--muted);margin-top:3px">You have finished every lesson — spend the remaining ' + days + ' days on practice, mock exams and weak topics.</div></div>';
@@ -722,7 +721,7 @@ function studyPlanHTML(){
     const perDayTxt = perDay >= 1 ? Math.ceil(perDay * 10) / 10 + ' lessons a day' : perWeek + ' lessons a week';
     return '<div class="card" style="margin-bottom:12px;border-left:4px solid ' + tone + '">'
       + '<div style="font-size:13px;font-weight:600;color:var(--ink)">📅 Your study plan</div>'
-      + '<div style="font-size:13px;color:var(--ink);margin-top:4px"><b>' + left + '</b> lessons left · <b>' + days + '</b> days to your exam</div>'
+      + '<div style="font-size:13px;color:var(--ink);margin-top:4px"><b>' + left + '</b> lessons left · <b>' + days + '</b> days until your exam window</div>'
       + '<div style="font-size:15px;font-weight:600;color:' + tone + ';margin-top:4px">Aim for ' + perDayTxt + '</div>'
       + '<div style="font-size:11px;color:#888;margin-top:3px">' + (reserve ? 'Finishes ' + reserve + ' days before the exam, so the last two weeks are free for mocks and revision.' : 'Your exam is close — focus on practice questions and your weak topics.') + '</div></div>';
   } catch (_) { return ''; }

@@ -802,3 +802,23 @@ html[dir="rtl"] .case-insight{border-left:none;border-right:3px solid var(--bran
   .sub-nav{display:none !important}
   @page{size:A4;margin:14mm}
 }
+
+/* ── Batch 40: compact Home hero + collapsible "About the CMA exam" ── */
+.profile-hero.compact{padding:18px 16px 16px;text-align:left}
+.profile-hero.compact .hero-row{display:flex;align-items:center;gap:14px}
+.profile-hero.compact .profile-img.sm{width:64px;height:64px;margin:0;flex-shrink:0;border-width:2px}
+.profile-hero.compact .hero-id{min-width:0}
+.profile-hero.compact .profile-name{font-size:18px;margin-bottom:2px}
+.profile-hero.compact .profile-title{font-size:12px;margin-bottom:0}
+.profile-hero.compact .profile-creds{justify-content:flex-start;margin-top:12px}
+.profile-hero.compact .cred-badge{padding:3px 10px}
+.hero-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.hero-link{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;font-size:18px;text-decoration:none;color:#fff}
+.hero-link:active{background:rgba(255,255,255,.3)}
+.home-about{margin-bottom:16px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:0 14px}
+.home-about>summary{list-style:none;cursor:pointer;padding:14px 0;font-size:15px;font-weight:600;color:var(--ink);display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px}
+.home-about>summary::-webkit-details-marker{display:none}
+.home-about>summary::after{content:'\25BE';margin-left:auto;color:var(--muted);transition:transform .2s}
+.home-about[open]>summary::after{transform:rotate(180deg)}
+.home-about .home-about-sub{font-size:11px;font-weight:400;color:var(--muted)}
+.home-about[open]{padding-bottom:4px}
