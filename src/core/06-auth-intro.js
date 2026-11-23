@@ -69,9 +69,9 @@ function renderOnboarding(){
       <!-- INTRO VIDEO -->
       <div style="margin-bottom:24px">
         <div style="font-size:17px;font-weight:500;color:var(--ink);margin-bottom:10px">🎬 Watch this first</div>
-        <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;background:#000;box-shadow:0 4px 16px rgba(0,0,0,.12)">
+        <div class="vid-wrap"><div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;background:#000;box-shadow:0 4px 16px rgba(0,0,0,.12)">
           <iframe src="https://www.youtube.com/embed/bpyeQFv3xI4?rel=0&modestbranding=1" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" allowfullscreen loading="lazy" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"></iframe>
-        </div>
+        </div></div>
       </div>
 
       <!-- WHAT IS THIS APP -->
@@ -288,6 +288,10 @@ function renderIntro(){
 
       ${renderGroupInterestCard()}
 
+      <!-- Batch 41: everything between here and "About the CMA exam" is folded under "More" -->
+      <details class="home-more" ${STATE.homeMoreOpen?'open':''} ontoggle="STATE.homeMoreOpen=this.open">
+        <summary>\u{1F4CC} More on your Home <span class="home-more-sub">welcome \u00B7 streak \u00B7 daily goal</span></summary>
+        <div class="home-more-body">
       <!-- WELCOME -->
       <div class="info-section">
         <div class="welcome-box">
@@ -303,6 +307,9 @@ function renderIntro(){
     ${(()=>{const todayMins=todayStudyMinutes();const goal=STATE.dailyGoalMinutes||30;const pctGoal=Math.min(100,Math.round(todayMins/goal*100));const circ=2*Math.PI*26;const off=circ-(pctGoal/100)*circ;const col=pctGoal>=100?'#1E8449':pctGoal>=60?'var(--warn)':'#1A5276';return `<div class="goal-ring-wrap"><div class="goal-ring"><svg width="64" height="64"><circle cx="32" cy="32" r="26" stroke="var(--bg)" stroke-width="7" fill="none"/><circle cx="32" cy="32" r="26" stroke="${col}" stroke-width="7" fill="none" stroke-dasharray="${circ}" stroke-dashoffset="${off}" stroke-linecap="round" style="transition:stroke-dashoffset .5s"/></svg><div class="goal-ring-val">${pctGoal}%</div></div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--ink)">Today's study goal</div><div style="font-size:12px;color:#888;margin-top:2px">${todayMins} / ${goal} min · ${pctGoal>=100?'Goal reached! 🎉':(goal-todayMins)+' min to go'}</div></div></div>`;})()}
       <!-- QUESTION OF THE DAY (ported; no-ops until instructor logs a lecture) -->
       ${(()=>{const qs=STATE.qotdState;if(!qs||!qs.question)return '';const q=qs.question;const sel=qs.selected;const answered=qs.answered;const labels=['A','B','C','D'];const optsHTML=q.o.map((opt,i)=>{let cls='qod-opt';if(answered){if(i===q.a)cls+=' correct';else if(i===sel)cls+=' wrong';}return `<div class="${cls}" ${answered?'':`onclick="qotdAnswer(${i})"`}><div class="qod-opt-letter">${labels[i]}</div><div style="flex:1">${esc(opt)}</div></div>`;}).join('');const explanation=answered?`<div class="qod-exp"><strong>${sel===q.a?'✅ Correct!':'❌ Correct answer: '+labels[q.a]}</strong><div style="margin-top:4px">${expInner(q,sel)}</div></div>`:'';return `<div class="qod-card"><div class="qod-lbl">🎯 QUESTION OF THE DAY</div><div class="qod-meta">${esc(q.secTitle||'')} · ${esc(q.lessonTitle||'')}</div><div class="qod-title">${stemHTML(q.q)}</div>${optsHTML}${explanation}</div>`;})()}
+
+        </div>
+      </details>
 
       <!-- ABOUT THE CMA EXAM (collapsible, Batch 40) -->
       <details class="home-about" ${STATE.homeAboutOpen?'open':''} ontoggle="STATE.homeAboutOpen=this.open">

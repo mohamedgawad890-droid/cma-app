@@ -822,3 +822,18 @@ html[dir="rtl"] .case-insight{border-left:none;border-right:3px solid var(--bran
 .home-about[open]>summary::after{transform:rotate(180deg)}
 .home-about .home-about-sub{font-size:11px;font-weight:400;color:var(--muted)}
 .home-about[open]{padding-bottom:4px}
+
+/* Batch 41: video size cap — fits the screen on desktop, unchanged on phones */
+.vid-wrap{width:100%;max-width:min(720px,max(280px,calc((100vh - 240px)*1.7778)));margin-left:auto;margin-right:auto}
+/* Batch 41: Home "More" fold */
+.home-more{margin-bottom:16px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:0 14px}
+.home-more>summary{list-style:none;cursor:pointer;padding:14px 0;font-size:15px;font-weight:600;color:var(--ink);display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px}
+.home-more>summary::-webkit-details-marker{display:none}
+.home-more>summary::after{content:'\25BE';margin-left:auto;color:var(--muted);transition:transform .2s}
+.home-more[open]>summary::after{transform:rotate(180deg)}
+.home-more-sub{font-size:12px;font-weight:400;color:var(--muted)}
+.home-more>.home-more-body{padding-bottom:6px}
+.exam-pick{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.exam-pick button{border:1px solid var(--border-4);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 14px;font-size:13px;font-family:inherit;cursor:pointer}
+.exam-pick button.sel{background:var(--brand);color:#fff;border-color:var(--brand)}
+.exam-pick button.ghost{border-style:dashed;color:#666}

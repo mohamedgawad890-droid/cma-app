@@ -220,7 +220,7 @@ function renderBlock(block,sec){
     case'video':{
       const vid=block.v;
       const lbl=block.l?`<div class="formula-lbl" style="color:${tx};margin-bottom:8px">${esc(block.l)}</div>`:'';
-      return`<div style="margin:14px 0">${lbl}<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;background:#000"><iframe src="https://www.youtube.com/embed/${vid}?rel=0&modestbranding=1" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" allowfullscreen loading="lazy" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"></iframe></div></div>`;
+      return`<div class="vid-wrap" style="margin-top:14px;margin-bottom:14px">${lbl}<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;background:#000"><iframe src="https://www.youtube.com/embed/${vid}?rel=0&modestbranding=1" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" allowfullscreen loading="lazy" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"></iframe></div></div>`;
     }
     // ── Batch 6: pedagogical block types ─────────────────────────────────
     case'def':{
