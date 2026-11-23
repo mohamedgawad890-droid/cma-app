@@ -221,7 +221,7 @@ function _pvRender(slot, lessonId, doc, withWatermark){
   if(!items.length) return;                         // doc missing/empty → keep "coming soon"
   const cards = items.map(function(it, i){
     const label = it.l ? String(it.l) : (items.length > 1 ? 'Part ' + (i+1) : 'Video lesson');
-    return '<div id="pv-' + lessonId + '-' + i + '" style="margin:14px 0 4px">' +
+    return '<div id="pv-' + lessonId + '-' + i + '" class="vid-wrap" style="margin-top:14px;margin-bottom:4px">' +
       '<div class="formula-lbl" style="color:var(--brand-2);margin-bottom:8px">🎬 ' + esc(label) + '</div>' +
       '<button type="button" onclick="paidVideoPlay(\'' + lessonId + '\',' + i + ')" style="position:relative;width:100%;padding-bottom:56.25%;height:0;border:0;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand-3));cursor:pointer;overflow:hidden">' +
         '<span style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;gap:6px">' +
