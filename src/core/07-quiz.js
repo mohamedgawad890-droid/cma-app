@@ -504,10 +504,11 @@ function markDone(lid){
     setTimeout(syncLeaderboard,500);
     updateStreak();
   }
-  // Targeted: flip button appearance instantly before navigating back
-  const btn=document.querySelector('[data-markdone="'+lid+'"]');
-  if(btn){btn.textContent='✓ Saved!';btn.style.background='var(--ok-tint)';btn.style.color='var(--ok-strong)';}
-  setTimeout(()=>studyGo(STATE.sectId,null),180);
+  // Stay on the lesson and swap the button for the next steps (unit quiz / next lesson).
+  const box=document.getElementById('lesson-actions');
+  const sec=sect(STATE.sectId);const lesson=sec&&sec.lessons.find(l=>l.id===lid);
+  if(box&&lesson)box.innerHTML=lessonActionsHTML(sec,lesson);
+  else studyGo(STATE.sectId,null);
 }
 function getNextLesson(sectId,lessonId){const sec=sect(sectId);if(!sec)return null;const idx=sec.lessons.findIndex(l=>l.id===lessonId);if(idx===-1||idx>=sec.lessons.length-1){const sIdx=S.findIndex(s=>s.id===sectId);if(sIdx===-1||sIdx>=S.length-1)return null;return{sec:S[sIdx+1],lesson:S[sIdx+1].lessons[0]};}return{sec,lesson:sec.lessons[idx+1]};}
 function getPrevLesson(sectId,lessonId){const sec=sect(sectId);if(!sec)return null;const idx=sec.lessons.findIndex(l=>l.id===lessonId);if(idx<=0){const sIdx=S.findIndex(s=>s.id===sectId);if(sIdx<=0)return null;const prevSec=S[sIdx-1];return{sec:prevSec,lesson:prevSec.lessons[prevSec.lessons.length-1]};}return{sec,lesson:sec.lessons[idx-1]};}

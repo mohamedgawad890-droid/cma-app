@@ -960,3 +960,35 @@ html[dir="rtl"] .case-insight{border-left:none;border-right:3px solid var(--bran
 .dx-43.dx-43{font-size:11px;color:var(--muted-2);margin-top:8px;line-height:1.4}
 .dx-44.dx-44{display:flex;justify-content:flex-end;margin-bottom:10px}
 .dx-45.dx-45{flex:1}
+
+/* ═══ Student experience: lesson rows, after-lesson steps, phone tabs ═══════ */
+.clamp2{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;overflow-wrap:anywhere;line-height:1.35}
+.lesson-row{display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:8px;border-radius:10px;cursor:pointer}
+.lesson-row:active{filter:brightness(.97)}
+.lesson-quiz-btn{flex-shrink:0;min-width:70px;min-height:40px;padding:6px 8px;border-radius:9px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
+.lesson-next{margin-top:14px}
+.lesson-back-link{display:block;width:100%;margin-top:8px;padding:8px;border:none;background:none;font-family:inherit;font-size:12px;color:var(--muted);cursor:pointer}
+.plan-advice{margin-top:8px;padding:9px 11px;border-radius:8px;background:var(--warn-tint);color:var(--warn-strong);font-size:12px;line-height:1.5}
+.plan-advice button{display:block;margin-top:7px;padding:7px 12px;border-radius:8px;border:1px solid currentColor;background:var(--card);color:inherit;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer}
+.nav-more{display:none}
+#more-sheet{position:fixed;inset:0;z-index:9000;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.4)}
+.more-panel{width:100%;max-width:600px;max-height:80vh;overflow-y:auto;background:var(--card,#fff);border-radius:16px 16px 0 0;padding:10px 12px calc(12px + env(safe-area-inset-bottom))}
+.more-item{display:flex;align-items:center;gap:12px;width:100%;padding:13px 12px;border:none;border-radius:10px;background:none;font-family:inherit;font-size:15px;color:var(--ink);cursor:pointer;text-align:start}
+.more-item span{font-size:20px}
+.more-item.active{background:var(--brand-tint);color:var(--brand);font-weight:600}
+.more-close{width:100%;margin-top:6px;padding:12px;border:.5px solid var(--border-4);border-radius:10px;background:none;font-family:inherit;font-size:14px;color:var(--muted);cursor:pointer}
+
+@media(max-width:899px){
+  #bottom-nav{order:10;overflow-x:visible;border-bottom:none;border-top:.5px solid var(--border);padding-top:0;padding-bottom:env(safe-area-inset-bottom)}
+  #bottom-nav .nav-btn{display:none;min-width:0}
+  #bottom-nav .nav-btn.m-main{display:flex}
+  #bottom-nav .m-1{order:1}#bottom-nav .m-2{order:2}#bottom-nav .m-3{order:3}#bottom-nav .m-4{order:4}#bottom-nav .m-5{order:5}
+  #bottom-nav .nav-btn.active::after{bottom:auto;top:0}
+  #bottom-nav .nav-icon{font-size:22px}
+  .mobile-brand{padding-top:calc(8px + env(safe-area-inset-top));max-height:80px;overflow:hidden;transition:max-height .2s ease,padding .2s ease,opacity .2s ease}
+  #app.scrolled .mobile-brand{max-height:env(safe-area-inset-top);padding-top:0;padding-bottom:0;opacity:0;border-bottom:none}
+  #app.in-lesson .install-banner,#app.scrolled .install-banner{display:none}
+  #toast-container{bottom:calc(76px + env(safe-area-inset-bottom))}
+}
+@media(min-width:900px){#more-sheet{display:none}}
+@media print{#more-sheet{display:none!important}}

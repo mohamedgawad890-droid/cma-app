@@ -706,6 +706,22 @@ async function startWeakPractice(){
 // ═════════════════════════════════════════════════════════════════════════════
 // STUDY PLAN (Home) — a daily lesson target worked out from the exam date
 // ═════════════════════════════════════════════════════════════════════════════
+// Above this many new lessons a week (about one a day) the plan is flagged as unrealistic.
+// The general 7-month guide works out to about 4 lessons a week.
+const PLAN_MAX_PER_WEEK = 7;
+function studyPlanPerWeek(left, planDays){ return Math.ceil(left / planDays * 7); }
+// First later exam window where the remaining lessons fit a realistic pace.
+function studyPlanLaterWindow(left, current){
+  const cur = _normalizeExamWindow(current || '');
+  for (const w of _getExamWindows()) {
+    if (w.value <= cur) continue;
+    const days = examDaysLeft({ examdate: w.value });
+    if (!(days > 28)) continue;
+    const perWeek = studyPlanPerWeek(left, days - 14);
+    if (perWeek <= PLAN_MAX_PER_WEEK) return { value: w.value, label: w.label, perWeek: perWeek };
+  }
+  return null;
+}
 function studyPlanHTML(){
   try {
     const st = loadStudent();
@@ -716,14 +732,22 @@ function studyPlanHTML(){
     if (!left) return '<div class="card" style="margin-bottom:12px"><div style="font-size:13px;font-weight:600;color:var(--ok-strong)">📅 Study plan</div><div style="font-size:12px;color:var(--muted);margin-top:3px">You have finished every lesson — spend the remaining ' + days + ' days on practice, mock exams and weak topics.</div></div>';
     const reserve = days > 28 ? 14 : 0;                    // keep the last two weeks for revision and mocks
     const planDays = Math.max(1, days - reserve);
-    const perDay = left / planDays, perWeek = Math.ceil(perDay * 7);
-    const tone = perDay > 1.5 ? 'var(--err)' : perDay > 0.8 ? 'var(--warn)' : 'var(--ok)';
-    const perDayTxt = perDay >= 1 ? Math.ceil(perDay * 10) / 10 + ' lessons a day' : perWeek + ' lessons a week';
+    const perWeek = studyPlanPerWeek(left, planDays);
+    const tight = perWeek > PLAN_MAX_PER_WEEK;
+    const tone = tight ? 'var(--err)' : perWeek > PLAN_MAX_PER_WEEK / 2 ? 'var(--warn)' : 'var(--ok)';
+    const perWeekTxt = Math.min(perWeek, left) + (Math.min(perWeek, left) === 1 ? ' lesson' : ' lessons') + ' a week';
+    const later = tight ? studyPlanLaterWindow(left, st.examdate) : null;
+    const advice = tight
+      ? '<div class="plan-advice">This pace is very hard to keep.' + (later
+          ? ' If your date is flexible, <b>' + later.label + '</b> needs about <b>' + later.perWeek + '</b> lessons a week.'
+            + '<button type="button" onclick="homePickExamWindow(\'' + later.value + '\')">Plan for ' + later.label + '</button>'
+          : ' Focus on your weakest and highest-weight sections first.') + '</div>'
+      : '';
     return '<div class="card" style="margin-bottom:12px;border-left:4px solid ' + tone + '">'
       + '<div style="font-size:13px;font-weight:600;color:var(--ink)">📅 Your study plan</div>'
       + '<div style="font-size:13px;color:var(--ink);margin-top:4px"><b>' + left + '</b> lessons left · <b>' + days + '</b> days until your exam window</div>'
-      + '<div style="font-size:15px;font-weight:600;color:' + tone + ';margin-top:4px">Aim for ' + perDayTxt + '</div>'
-      + '<div style="font-size:11px;color:#888;margin-top:3px">' + (reserve ? 'Finishes ' + reserve + ' days before the exam, so the last two weeks are free for mocks and revision.' : 'Your exam is close — focus on practice questions and your weak topics.') + '</div></div>';
+      + '<div style="font-size:15px;font-weight:600;color:' + tone + ';margin-top:4px">' + (tight ? 'Needed: ' : 'Aim for ') + perWeekTxt + '</div>'
+      + '<div style="font-size:11px;color:#888;margin-top:3px">' + (reserve ? 'Finishes ' + reserve + ' days before the exam, so the last two weeks are free for mocks and revision.' : 'Your exam is close — focus on practice questions and your weak topics.') + '</div>' + advice + '</div>';
   } catch (_) { return ''; }
 }
 (function(){

@@ -24,6 +24,51 @@ function activeNavTab(){
   return t;
 }
 
+// ── Phone bottom tabs ────────────────────────────────────────────────────────
+// Below 900px the bar shows these (in this order) plus "More". Every other tab is
+// listed in the More sheet. The desktop sidebar still shows all tabs.
+// Slot 3 is Tools for now; My Group takes it for group members in the next upload.
+const MOBILE_TAB_ORDER={'study':1,'quiz-mode-select':2,'formula-bank':3,'progress':4};
+const MORE_LABELS={'intro':'Home & Profile'};
+function closeMoreSheet(){const el=document.getElementById('more-sheet');if(el)el.remove();}
+function openMoreSheet(){
+  closeMoreSheet();
+  const active=activeNavTab();
+  const items=getNavTabs().filter(t=>!MOBILE_TAB_ORDER[t.id]);
+  const wrap=document.createElement('div');
+  wrap.id='more-sheet';
+  wrap.onclick=e=>{if(e.target===wrap)closeMoreSheet();};
+  wrap.innerHTML='<div class="more-panel" role="dialog" aria-label="More">'
+    +items.map(t=>`<button class="more-item${t.id===active?' active':''}" onclick="closeMoreSheet();navTo('${t.id}')"><span>${t.icon}</span>${MORE_LABELS[t.id]||t.label}</button>`).join('')
+    +'<button class="more-close" onclick="closeMoreSheet()">Close</button></div>';
+  document.getElementById('app').appendChild(wrap);
+}
+
+// ── Phone screen space: no install banner inside a lesson, slim header on scroll ──
+function syncScreenSpace(){
+  const app=document.getElementById('app');if(!app)return;
+  const inLesson=STATE.tab==='study'&&!!STATE.lessonId;
+  app.classList.toggle('in-lesson',inLesson);
+}
+(function initScreenSpace(){
+  const content=document.getElementById('content-area');const app=document.getElementById('app');
+  if(!content||!app||typeof MutationObserver==='undefined')return;
+  let lastScreen='';
+  // Both render() and the fast study navigation replace the content, so watch the content itself.
+  new MutationObserver(()=>{
+    syncScreenSpace();
+    const screen=STATE.tab+'|'+(STATE.lessonId||'');
+    if(screen!==lastScreen){lastScreen=screen;app.classList.remove('scrolled');closeMoreSheet();}
+  }).observe(content,{childList:true});
+  content.addEventListener('scroll',e=>{
+    const el=e.target;
+    if(el!==content&&!(el.classList&&el.classList.contains('scroll-area'))&&el.parentElement!==content)return;
+    // Two thresholds and a minimum page length stop the header flickering on short screens.
+    if(el.scrollTop>100&&el.scrollHeight-el.clientHeight>240)app.classList.add('scrolled');
+    else if(el.scrollTop<10)app.classList.remove('scrolled');
+  },{capture:true,passive:true});
+})();
+
 // ── Sub-Navigation Renderer ───────────────────────────────────────────────────
 // items: [{id, label, icon}]  |  activeId: current STATE.tab
 function renderSubNav(items, activeId){
@@ -210,7 +255,8 @@ function render(){
     if(active!==render._lastNavActive||_caseOn!==render._lastCaseOn){
       render._lastNavActive=active;render._lastCaseOn=_caseOn;
       const brandHeader=`<div class="desktop-brand"><div style="display:flex;align-items:center;gap:10px;min-width:0"><img src="./gawad-avatar.webp" alt="Mohamed Abdelgawad" style="width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--brand-tint)"><div style="min-width:0"><div style="font-size:13px;font-weight:600;color:var(--brand);letter-spacing:.5px">CMA Part One Prep</div><div style="font-size:10px;color:#888;margin-top:1px">With Gawad</div></div></div>${!window.matchMedia("(display-mode: standalone)").matches?'<button onclick="installApp()" title="Install App" style="display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:8px;border:1px solid #d0d8e8;background:var(--brand-tint);color:var(--brand);cursor:pointer;font-size:12px;font-weight:500;font-family:inherit;flex-shrink:0"><span style="font-size:14px">⬇</span><span>Install App</span></button>':''}</div>`;
-      nav.innerHTML=brandHeader+getNavTabs().map(t=>`<button class="nav-btn${t.id===active?' active':''}" onclick="navTo('${t.id}')" title="${t.label}"><span class="nav-icon">${t.icon}</span><span class="nav-label">${t.label}</span></button>`).join('')
+      nav.innerHTML=brandHeader+getNavTabs().map(t=>`<button class="nav-btn${t.id===active?' active':''}${MOBILE_TAB_ORDER[t.id]?' m-main m-'+MOBILE_TAB_ORDER[t.id]:''}" onclick="navTo('${t.id}')" title="${t.label}"><span class="nav-icon">${t.icon}</span><span class="nav-label">${t.label}</span></button>`).join('')
+        +`<button class="nav-btn nav-more m-main m-5${MOBILE_TAB_ORDER[active]?'':' active'}" onclick="openMoreSheet()" aria-haspopup="dialog" title="More"><span class="nav-icon">☰</span><span class="nav-label">More</span></button>`
         +'<button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()">&laquo;</button>'; // Batch 19
       applySidebarState(); // Batch 19: nav DOM was just rebuilt — re-sync class + button glyph
     }}

@@ -509,6 +509,7 @@ function renderIntro(){
       <div class="info-section">
         <div class="info-title">📖 CMA Part 1 — Study Plan</div>
         <div class="card" style="margin-bottom:10px">
+          <div style="font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:10px">This is a general guide for a 7-month journey. Once you pick an exam window, your own weekly target on Home follows your date and progress.</div>
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">
             <div style="text-align:center;background:var(--surface-3);border-radius:8px;padding:10px">
               <div style="font-size:20px;font-weight:500;color:var(--brand-2)">7</div>
@@ -524,8 +525,8 @@ function renderIntro(){
             </div>
           </div>
           ${[["Month 1 & 2","Cost Management (15%)","Cost Classification, High-Low Method, Absorption vs. Variable Costing, Activity-Based Costing (ABC)"],
-             ["Month 3","Planning, Budgeting & Forecasting (20%)","Master Budget, Variance Analysis, Flexible Budgets, Forecasting Techniques"],
-             ["Month 4","Performance Management (20%)","CVP Analysis, Standard Costing, ROI, Residual Income, EVA, Balanced Scorecard"],
+             ["Month 3","Planning, Budgeting & Forecasting (20%)","Strategic Planning, Forecasting Methods, Learning Curves, Master Budget, Cash Budgeting"],
+             ["Month 4","Performance Management (20%)","Cost & Revenue Variances, Overhead Variances, Responsibility Centers, Transfer Pricing, ROI, Residual Income, Balanced Scorecard"],
              ["Month 5 & 6","External Financial Reporting (15%)","Financial Statements, ASC 606 Revenue Recognition, Inventory Methods, Leases & Bonds"],
              ["Month 7","Internal Controls + Technology & Analytics (30%)","COSO Framework, Segregation of Duties, ERP Systems, Data Analytics, IT Controls"]].map(([month,topic,details],i)=>`
           <div style="display:flex;gap:12px;margin-bottom:12px;padding-bottom:12px;border-bottom:${i<4?'.5px solid var(--border)':'none'}">

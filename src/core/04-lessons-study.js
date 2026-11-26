@@ -327,6 +327,36 @@ function studyGo(sectId, lessonId){
   if(lessonId){setTimeout(()=>syncNoteFromCloud(lessonId),0);}
 }
 
+// One lesson row, used by both list renderers (full render and accordion toggle).
+// The whole row opens the lesson; the labelled button starts the unit quiz.
+function lessonRowHTML(sec,l,i){
+  const done=lessonDone(l.id);const lsc=(STATE.progress.lessonScores||{})[l.id];const qpct=lsc?Math.round(lsc.correct/lsc.total*100):null;
+  const quizLabel=qdPeek(l.id)?'Resume':(lsc?'Retake':'Quiz');
+  const tone=lsc?(qpct>=70?['var(--ok)40','var(--ok-tint)','var(--ok-strong)']:['var(--err)40','var(--err-tint)','var(--err-2)']):['var(--brand-2)40','var(--brand-tint)','var(--brand-2)'];
+  return `<div class="lesson-row" role="button" onclick="event.stopPropagation();studyGo(${sec.id},'${l.id}')" style="background:${done?sec.bg:'var(--surface-2)'};border:.5px solid ${done?sec.text+'30':'var(--border)'}">
+    <div style="width:28px;height:28px;border-radius:50%;background:${done?sec.bar:'var(--border-2)'};display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0;font-weight:600">${done?'✓':i+1}</div>
+    <div style="flex:1;min-width:0">
+      <div class="clamp2" style="font-size:13px;font-weight:500;color:${done?sec.strong:'var(--ink)'}">${i+1}. ${esc(l.title)}</div>
+      <div style="font-size:11px;color:#888;margin-top:2px">${l.dur}${lsc?` · ${qpct>=70?'✅':'🔴'} ${lsc.correct}/${lsc.total} (${qpct}%)`:' · Quiz not attempted'}${qdNote(l.id)}</div>
+    </div>
+    <button class="lesson-quiz-btn" onclick="event.stopPropagation();doLessonQuiz('${l.id}')" style="border:.5px solid ${tone[0]};background:${tone[1]};color:${tone[2]}">🎯 ${quizLabel}</button>
+  </div>`;
+}
+
+// What the bottom of a lesson shows: "Mark as Complete", or the next steps once completed.
+function lessonActionsHTML(sec,lesson){
+  if(!lessonDone(lesson.id))return `<button class="btn no-print" data-markdone="${lesson.id}" onclick="markDone('${lesson.id}')" style="margin-top:14px;background:${sec.bar};color:#fff">Mark as Complete ✓</button>`;
+  const nx=getNextLesson(sec.id,lesson.id);const lsc=(STATE.progress.lessonScores||{})[lesson.id];
+  const quizText=qdPeek(lesson.id)?'Resume unit quiz':(lsc?'Retake unit quiz':'Start unit quiz');
+  return `<div class="card lesson-next no-print">
+    <div style="font-size:14px;font-weight:600;color:var(--ok-strong)">✓ Lesson completed</div>
+    <div style="font-size:12px;color:var(--muted);margin:3px 0 10px">${lsc?'Your last quiz score: '+lsc.correct+'/'+lsc.total+'. What next?':'Test yourself while it is fresh.'}</div>
+    <button class="btn" onclick="doLessonQuiz('${lesson.id}')" style="width:100%;margin:0;background:${sec.bar};color:#fff">🎯 ${quizText}</button>
+    ${nx?`<button class="btn btn-outline" onclick="studyGo(${nx.sec.id},'${nx.lesson.id}')" style="width:100%;margin:8px 0 0;color:var(--brand-2)">Next lesson: ${esc(nx.lesson.title)} →</button>`:''}
+    <button class="lesson-back-link" onclick="studyGo(${sec.id},null)">Back to lesson list</button>
+  </div>`;
+}
+
 // toggleSection(secId) — accordion expand/collapse with surgical DOM update.
 // Only touches the #sec-lessons-{id} div — zero full rebuilds.
 function toggleSection(secId){
@@ -348,25 +378,7 @@ function toggleSection(secId){
     // Expand — inject lesson list HTML
     const sec = S.find(s=>s.id===secId);
     if(!sec){render();return;}
-    const prog = STATE.progress;
-    const html = sec.lessons.map((l,i)=>{
-      const done = lessonDone(l.id);
-      const lsc  = (prog.lessonScores||{})[l.id];
-      const qpct = lsc ? Math.round(lsc.correct/lsc.total*100) : null;
-      return`<div style="background:${done?sec.bg:'var(--surface-2)'};margin-bottom:8px;border-radius:10px;border:.5px solid ${done?sec.text+'30':'var(--border)'}">
-        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px">
-          <div style="width:28px;height:28px;border-radius:50%;background:${done?sec.bar:'var(--border-2)'};display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0;font-weight:600">${done?'✓':i+1}</div>
-          <div style="flex:1;min-width:0">
-            <div class="ellipsis" style="font-size:13px;font-weight:500;color:${done?sec.strong:'var(--ink)'}">${i+1}. ${esc(l.title)}</div>
-            <div style="font-size:11px;color:#888;margin-top:2px">${l.dur}${lsc?` · ${qpct>=70?'✅':'🔴'} ${lsc.correct}/${lsc.total} (${qpct}%)`+' ':' · Quiz not attempted'}${qdNote(l.id)}</div>
-          </div>
-          <div style="display:flex;gap:6px;flex-shrink:0">
-            <button onclick="event.stopPropagation();studyGo(${sec.id},'${l.id}')" title="Study Lesson" style="width:36px;height:36px;border-radius:9px;border:.5px solid ${sec.text}30;background:${done?sec.bar:'#fff'};color:${done?'#fff':sec.strong};font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">📖</button>
-            <button onclick="event.stopPropagation();doLessonQuiz('${l.id}')" title="${qdPeek(l.id)?'Resume Quiz':(lsc?'Retake Quiz':'Start Quiz')}" style="width:36px;height:36px;border-radius:9px;border:.5px solid ${lsc?(qpct>=70?'var(--ok)40':'var(--err)40'):'var(--brand-2)40'};background:${lsc?(qpct>=70?'var(--ok-tint)':'var(--err-tint)'):'var(--brand-tint)'};color:${lsc?(qpct>=70?'var(--ok-strong)':'var(--err-2)'):'var(--brand-2)'};font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">🎯</button>
-          </div>
-        </div>
-      </div>`;
-    }).join('');
+    const html = sec.lessons.map((l,i)=>lessonRowHTML(sec,l,i)).join('');
     listEl.innerHTML = `<div style="margin-top:10px;border-top:.5px solid ${sec.text}20;padding-top:10px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
         <div style="font-size:11px;font-weight:500;color:${sec.text};letter-spacing:.5px">LESSONS & QUIZZES</div>
@@ -445,10 +457,10 @@ function renderStudy(){
     }
     const lessonIdx=sec.lessons.findIndex(l=>l.id===STATE.lessonId);const done=lessonDone(lesson.id);
     const hasVideo=lesson.blocks&&lesson.blocks.some(b=>b.t==='video');
-    const videoPlaceholder=hasVideo?'':`<div style="margin:14px 0 4px;background:var(--surface-3);border:.5px dashed #c0c0b8;border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px"><div style="width:36px;height:36px;background:var(--brand-tint);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px">🎬</div><div><div style="font-size:13px;font-weight:500;color:#555">Video lesson coming soon</div><div style="font-size:11px;color:#999;margin-top:2px">Gawad will record this lesson shortly</div></div></div>`;
+    const videoPlaceholder=''; // no "coming soon" box: the video area appears only when a video exists
     return`<div class="bh"><button class="bh-back" onclick="studyGo(STATE.sectId,null)">‹</button>
       <div style="min-width:0;flex:1"><div style="font-size:11px;font-weight:500;color:${sec.text}">${sec.emoji} ${esc(sec.title)}</div>
-      <div class="ellipsis" style="font-size:15px;font-weight:500;margin-top:1px">${lessonIdx+1}. ${esc(lesson.title)}</div></div>
+      <div class="clamp2" style="font-size:15px;font-weight:500;margin-top:1px">${lessonIdx+1}. ${esc(lesson.title)}</div></div>
       <button class="no-print" onclick="downloadLessonPDF()" title="Download this lesson as PDF" style="flex-shrink:0;width:36px;height:36px;border-radius:9px;border:.5px solid var(--border-4);background:var(--surface-3);color:${sec.text};font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">⬇️</button></div>
     <div class="scroll-area pad"><div class="card" id="lesson-print-area" style="margin-top:14px;padding:4px 16px 16px">
       <div class="print-only" style="display:none">
@@ -457,7 +469,7 @@ function renderStudy(){
         <div style="font-size:19px;font-weight:700;margin-bottom:14px;color:#111">${esc(lesson.title)}</div>
       </div>
       ${renderLessonBody(lesson,sec)}${paidVideoSlot(lesson.id,videoPlaceholder,hasVideo)}</div>
-    <button class="btn no-print" data-markdone="${lesson.id}" onclick="markDone('${lesson.id}')" style="margin-top:14px;background:${done?'var(--ok-tint)':sec.bar};color:${done?'var(--ok-strong)':'#fff'}">${done?'✓ Completed — Back':'Mark as Complete ✓'}</button>
+    <div id="lesson-actions">${lessonActionsHTML(sec,lesson)}</div>
     ${(()=>{const pv=getPrevLesson(sec.id,lesson.id);const nx=getNextLesson(sec.id,lesson.id);if(!pv&&!nx)return'';return`<div style="display:flex;gap:8px;margin-top:8px">
       ${pv?`<button class="btn btn-outline no-print" onclick="studyGo(${pv.sec.id},'${pv.lesson.id}')" style="flex:1;border-color:var(--brand-2)20;color:var(--brand-2)">← Previous: ${esc(pv.lesson.title)}</button>`:'<div style="flex:1"></div>'}
       ${nx?`<button class="btn btn-outline no-print" onclick="studyGo(${nx.sec.id},'${nx.lesson.id}')" style="flex:1;border-color:var(--brand-2)20;color:var(--brand-2)">Next: ${esc(nx.lesson.title)} →</button>`:''}
@@ -481,27 +493,14 @@ function renderStudy(){
           <div style="font-size:11px;font-weight:500;color:${sec.text};letter-spacing:.5px">LESSONS & QUIZZES</div>
           <button onclick="event.stopPropagation();downloadSectionPDF(${sec.id})" title="Download all ${sec.lessons.length} lessons in this section as one PDF" style="flex-shrink:0;display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:7px;border:.5px solid ${sec.text}30;background:#fff;color:${sec.strong};font-size:11px;font-weight:500;cursor:pointer">⬇️ Section PDF</button>
         </div>
-        ${sec.lessons.map((l,i)=>{const done=lessonDone(l.id);const lsc=(progress.lessonScores||{})[l.id];const qpct=lsc?Math.round(lsc.correct/lsc.total*100):null;return`
-          <div style="background:${done?sec.bg:'var(--surface-2)'};margin-bottom:8px;border-radius:10px;border:.5px solid ${done?sec.text+'30':'var(--border)'}">
-            <div style="display:flex;align-items:center;gap:10px;padding:10px 12px">
-              <div style="width:28px;height:28px;border-radius:50%;background:${done?sec.bar:'var(--border-2)'};display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0;font-weight:600">${done?'✓':i+1}</div>
-              <div style="flex:1;min-width:0">
-                <div class="ellipsis" style="font-size:13px;font-weight:500;color:${done?sec.strong:'var(--ink)'}">${i+1}. ${esc(l.title)}</div>
-                <div style="font-size:11px;color:#888;margin-top:2px">${l.dur}${lsc?` · ${qpct>=70?'✅':'🔴'} ${lsc.correct}/${lsc.total} (${qpct}%)`:' · Quiz not attempted'}${qdNote(l.id)}</div>
-              </div>
-              <div style="display:flex;gap:6px;flex-shrink:0">
-                <button onclick="event.stopPropagation();studyGo(${sec.id},'${l.id}')" title="Study Lesson" style="width:36px;height:36px;border-radius:9px;border:.5px solid ${sec.text}30;background:${done?sec.bar:'#fff'};color:${done?'#fff':sec.strong};font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">📖</button>
-                <button onclick="event.stopPropagation();doLessonQuiz('${l.id}')" title="${qdPeek(l.id)?'Resume Quiz':(lsc?'Retake Quiz':'Start Quiz')}" style="width:36px;height:36px;border-radius:9px;border:.5px solid ${lsc?(qpct>=70?'var(--ok)40':'var(--err)40'):'var(--brand-2)40'};background:${lsc?(qpct>=70?'var(--ok-tint)':'var(--err-tint)'):'var(--brand-tint)'};color:${lsc?(qpct>=70?'var(--ok-strong)':'var(--err-2)'):'var(--brand-2)'};font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">🎯</button>
-              </div>
-            </div>
-          </div>`}).join('')}
+        ${sec.lessons.map((l,i)=>lessonRowHTML(sec,l,i)).join('')}
 
       </div>`:'' ;
     return`<div id="sec-card-${sec.id}" class="card" style="cursor:pointer;border-color:${isOpen?sec.text+'60':'var(--border)'};border-width:${isOpen?'1px':'.5px'}" onclick="toggleSection(${sec.id})">
       <div style="display:flex;align-items:center;gap:10px">
         <div class="sect-icon" style="background:${sec.bg}">${sec.emoji}</div>
         <div style="flex:1;min-width:0">
-          <div class="ellipsis" style="font-size:14px;font-weight:500;color:var(--ink)">${esc(sec.title)}</div>
+          <div class="clamp2" style="font-size:14px;font-weight:500;color:var(--ink)">${esc(sec.title)}</div>
           <div style="font-size:11px;color:#888;margin-top:2px">${sec.weight}% of exam · ${lessonsDone}/${sec.lessons.length} lessons · ${secQuizDone}/${sec.lessons.length} quizzes done</div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
@@ -512,7 +511,7 @@ function renderStudy(){
       <div style="height:4px;background:var(--bg);border-radius:2px;margin-top:10px;overflow:hidden">
         <div style="height:100%;width:${sp}%;background:${sec.bar};border-radius:2px"></div>
       </div>
-      <div id="sec-lessons-${sec.id}" style="${isOpen?'':'display:none'}">${lessonList}</div>
+      <div id="sec-lessons-${sec.id}" onclick="event.stopPropagation()" style="cursor:default;${isOpen?'':'display:none'}">${lessonList}</div>
     </div>`;
   }).join('');
 
