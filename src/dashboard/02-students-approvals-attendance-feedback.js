@@ -15,18 +15,18 @@ function renderExamUnitPicker(d,sectionId){
     // Batch 10: flag out-of-scope units so instructors see why a unit
     // (e.g. 4-14 Variances) is excluded from auto-built exam pools.
     const badge=l.outOfScope==='part2'?' \u26A0\uFE0F Part 2':(l.outOfScope?' \u26A0\uFE0F \u2192 Sec.3':'');
-    return `<button type="button" onclick="toggleExamUnit(${secId},'${l.id}')" style="padding:6px 10px;border-radius:14px;border:1px solid ${on?'var(--brand)':'var(--border-4)'};background:${on?'var(--brand)':(l.outOfScope?'#fff7ed':'#fff')};color:${on?'#fff':(l.outOfScope?'#b45309':'#555')};font-size:11px;font-weight:${on?'600':'500'};cursor:pointer;font-family:inherit;white-space:nowrap">U${idx+1}: ${esc(l.title.length>28?l.title.slice(0,26)+'\u2026':l.title)}${badge}</button>`;
+    return `<button type="button" onclick="toggleExamUnit(${secId},'${l.id}')" style="padding:6px 10px;border-radius:14px;border:1px solid ${on?'var(--brand)':'var(--border-4)'};background:${on?'var(--brand)':(l.outOfScope?'var(--warn-tint)':'var(--card)')};color:${on?'#fff':(l.outOfScope?'var(--warn-strong)':'var(--ink-2)')};font-size:11px;font-weight:${on?'600':'500'};cursor:pointer;font-family:inherit;white-space:nowrap">U${idx+1}: ${esc(l.title.length>28?l.title.slice(0,26)+'\u2026':l.title)}${badge}</button>`;
   }).join('');
   const allCount=sec.lessons.length;
   const sel=selected.size;
   const label=sel===0?`All units (${allCount})`:`${sel} of ${allCount} units`;
-  return `<div style="margin-bottom:10px">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-      <label style="font-size:11px;color:#888">Sec ${secId} \u2014 ${esc(sec.title)} units <span style="font-weight:600;color:var(--brand)">${label}</span></label>
-      <button type="button" onclick="clearExamUnits(${secId})" style="background:none;border:none;color:var(--brand);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">Clear \u2192 all</button>
+  return `<div class="dx-03">
+    <div class="dx-27">
+      <label class="dx-11">Sec ${secId} \u2014 ${esc(sec.title)} units <span class="dx-28">${label}</span></label>
+      <button type="button" onclick="clearExamUnits(${secId})" class="dx-29">Clear \u2192 all</button>
     </div>
-    <div style="display:flex;flex-wrap:wrap;gap:6px;padding:8px;background:var(--surface);border:.5px solid var(--border);border-radius:8px;max-height:150px;overflow-y:auto">${chips}</div>
-    <div style="font-size:11px;color:#888;margin-top:4px">Leave empty to include the whole section.</div>
+    <div class="dx-30">${chips}</div>
+    <div class="dx-26">Leave empty to include the whole section.</div>
   </div>`;
 }
 
@@ -123,7 +123,7 @@ function renderDashStudents(){
   if(STATE.dashStudentDetailUid)return renderDashStudentDetail();
   const all=STATE.dashStudents||[];
   if(!all.length){
-    return `<div style="padding:14px">
+    return `<div class="dx-01">
       <div class="gs-empty">
         <div class="gs-empty-icon">\u{1F464}</div>
         <div class="gs-empty-title">No students yet</div>
@@ -161,26 +161,26 @@ async function loadDashApprovals(){
 function renderDashApprovals(){
   const rows=(STATE.dashApprovals&&STATE.dashApprovals.rows)||[];
   if(!rows.length){
-    return `<div style="padding:14px"><div class="gs-empty">
+    return `<div class="dx-01"><div class="gs-empty">
       <div class="gs-empty-icon">\u2705</div>
       <div class="gs-empty-title">No pending requests</div>
       <div class="gs-empty-body">When a student enters a new or different group code on their profile, their request to join shows up here for you to approve or reject.</div>
     </div></div>`;
   }
   const fmtDT=(iso)=>{if(!iso)return '';try{return new Date(iso).toLocaleDateString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});}catch{return iso;}};
-  const cards=rows.map(r=>`<div style="background:#fff;border:.5px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:10px">
-    <div style="font-size:14px;font-weight:600;color:var(--ink)">${esc(r.studentName||'Unnamed')}</div>
-    <div style="font-size:11px;color:#888;margin-top:2px">${esc(r.studentEmail||r.studentMobile||'')}</div>
-    <div style="font-size:12px;color:#555;margin-top:6px">Requesting group <b style="font-family:'Courier New',monospace">${esc(r.groupCode)}</b> \u00B7 ${fmtDT(r.requestedAt)}</div>
+  const cards=rows.map(r=>`<div style="background:var(--card);border:.5px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:10px">
+    <div class="dx-31">${esc(r.studentName||'Unnamed')}</div>
+    <div class="dx-07">${esc(r.studentEmail||r.studentMobile||'')}</div>
+    <div style="font-size:12px;color:var(--ink-2);margin-top:6px">Requesting group <b style="font-family:'Courier New',monospace">${esc(r.groupCode)}</b> \u00B7 ${fmtDT(r.requestedAt)}</div>
     <div style="display:flex;gap:8px;margin-top:10px">
       <button onclick="approveGroupRequest('${esc(r._docId)}')" style="flex:1;padding:9px;border-radius:8px;border:none;background:var(--ok-strong-2);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">\u2705 Approve</button>
       <button onclick="rejectGroupRequest('${esc(r._docId)}')" style="flex:1;padding:9px;border-radius:8px;border:.5px solid var(--err);background:var(--err-tint);color:var(--err-2);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">\u2716 Reject</button>
     </div>
   </div>`).join('');
-  return `<div style="padding:14px">
-    <div style="font-size:12px;color:#888;margin-bottom:10px">${rows.length} pending request${rows.length===1?'':'s'}.</div>
+  return `<div class="dx-01">
+    <div style="font-size:12px;color:var(--muted);margin-bottom:10px">${rows.length} pending request${rows.length===1?'':'s'}.</div>
     ${cards}
-    <div style="height:30px"></div>
+    <div class="dx-04"></div>
   </div>`;
 }
 
@@ -194,7 +194,7 @@ async function approveGroupRequest(requestId){
     STATE.dashApprovals.rows=(STATE.dashApprovals.rows||[]).filter(r=>r._docId!==requestId);
     // Keep the roster's cached copy in sync so Students tab reflects it immediately.
     const idx=(STATE.dashStudents||[]).findIndex(s=>s.uid===req.uid);
-    if(idx>=0){STATE.dashStudents[idx].groupCode=req.groupCode;STATE.dashStudents[idx].pendingGroupCode='';}
+    if(idx>=0){STATE.dashStudents[idx].groupCode=req.groupCode;STATE.dashStudents[idx].pendingGroupCode='';dashSaveRoster();}
     showToast('\u2705 Approved — '+(req.studentName||'Student')+' is now in '+req.groupCode,'success');
     render();
   }catch(e){console.warn('[approveGroupRequest]',e);showToast('Error: '+e.message,'error');}
@@ -212,7 +212,7 @@ async function rejectGroupRequest(requestId){
     await db.collection('group-requests').doc(requestId).update({status:'rejected',resolvedAt:new Date().toISOString(),resolvedBy:STATE.user.uid});
     STATE.dashApprovals.rows=(STATE.dashApprovals.rows||[]).filter(r=>r._docId!==requestId);
     const idx=(STATE.dashStudents||[]).findIndex(s=>s.uid===req.uid);
-    if(idx>=0){STATE.dashStudents[idx].pendingGroupCode='';}
+    if(idx>=0){STATE.dashStudents[idx].pendingGroupCode='';dashSaveRoster();}
     showToast('Request rejected.','info');
     render();
   }catch(e){console.warn('[rejectGroupRequest]',e);showToast('Error: '+e.message,'error');}
@@ -234,6 +234,7 @@ async function removeStudentFromGroup(uid){
   try{
     await db.collection('students').doc(uid).set({groupCode:'',pendingGroupCode:''},{merge:true});
     s.groupCode='';s.pendingGroupCode='';
+    dashSaveRoster();
     showToast('Removed from group.','success');
     render();
   }catch(e){console.warn('[removeStudentFromGroup]',e);showToast('Error: '+e.message,'error');}
@@ -253,6 +254,7 @@ async function loadStudentDetailFresh(uid){
       const idx=(STATE.dashStudents||[]).findIndex(x=>x.uid===uid);
       if(idx>=0){
         STATE.dashStudents[idx]={...STATE.dashStudents[idx],...fresh,uid};
+        dashSaveRoster();
       }
     }
     STATE.dashInstructorNotes=STATE.dashInstructorNotes||{};
@@ -300,26 +302,26 @@ function renderDashStudentDetail(){
   const anyContact=contactVals.some(v=>v);
   const anyEdu=eduVals.some(v=>v);
   const anyCma=cmaVals.some(v=>v);
-  const loading=STATE.dashStudentDetailLoading && STATE.dashStudentDetailLoadedFor!==uid;
+  const loading=STATE.dashStudentDetailLoadedFor!==uid;
   const loadingBadge=loading?`<div style="font-size:11px;color:var(--muted-2);text-align:center;margin-bottom:10px">\u21BB Loading latest\u2026</div>`:'';
   const noteText=(STATE.dashInstructorNotes&&STATE.dashInstructorNotes[uid])||'';
-  return `<div style="padding:14px">
-    <button onclick="STATE.dashStudentDetailUid=null;STATE.dashStudentDetailLoadedFor=null;render()" style="background:none;border:none;color:var(--brand);font-size:14px;cursor:pointer;font-family:inherit;padding:0 0 12px;font-weight:500">\u2039 Back to students</button>
+  return `<div class="dx-01">
+    <button onclick="STATE.dashStudentDetailUid=null;STATE.dashStudentDetailLoadedFor=null;render()" class="dx-22">\u2039 Back to students</button>
     <div style="background:linear-gradient(135deg,var(--brand),var(--brand-2));border-radius:16px;padding:22px;text-align:center;color:#fff;margin-bottom:16px">
       <div style="display:flex;justify-content:center;margin-bottom:12px">${avatar}</div>
       <div style="font-size:18px;font-weight:600;margin-bottom:4px">${esc(s.name||'Unnamed')}</div>
       <div style="font-size:12px;opacity:.85">${esc(s.groupCode||'\u2014 no group')}${s.country?' \u00B7 '+esc(s.country):''}</div>
     </div>
     ${loadingBadge}
-    ${anyContact?`<div style="background:var(--card);border:.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px">
-      <div style="font-size:12px;font-weight:600;color:var(--brand);margin-bottom:10px;letter-spacing:.5px">CONTACT</div>
+    ${anyContact?`<div class="dx-17">
+      <div class="dx-32">CONTACT</div>
       ${field('Email',s.email)}
       ${field('Mobile',s.mobile)}
       ${field('Country',s.country)}
       ${field('City',s.city)}
     </div>`:''}
-    ${anyEdu?`<div style="background:var(--card);border:.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px">
-      <div style="font-size:12px;font-weight:600;color:var(--brand);margin-bottom:10px;letter-spacing:.5px">EDUCATION & CAREER</div>
+    ${anyEdu?`<div class="dx-17">
+      <div class="dx-32">EDUCATION & CAREER</div>
       ${field('University',s.university)}
       ${field('Faculty',s.faculty)}
       ${field('Graduation Year',s.gradyear)}
@@ -327,8 +329,8 @@ function renderDashStudentDetail(){
       ${field('Company',s.company)}
       ${field('Years of Experience',s.experience)}
     </div>`:''}
-    ${anyCma?`<div style="background:var(--card);border:.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px">
-      <div style="font-size:12px;font-weight:600;color:var(--brand);margin-bottom:10px;letter-spacing:.5px">CMA STUDY PROFILE</div>
+    ${anyCma?`<div class="dx-17">
+      <div class="dx-32">CMA STUDY PROFILE</div>
       ${field('Accounting/Finance Level',s.level)}
       ${field('CMA Goal',s.goal)}
       ${field('Target Exam Date',examdate)}
@@ -338,7 +340,7 @@ function renderDashStudentDetail(){
     </div>`:''}
     ${(!anyContact&&!anyEdu&&!anyCma&&!loading)?`<div style="background:var(--warn-tint);border:1px solid var(--warn);border-radius:12px;padding:14px;margin-bottom:12px;font-size:13px;color:var(--warn-strong);line-height:1.5">\u26A0\uFE0F This student hasn't completed their profile yet. Only the basic account info is available.</div>`:''}
     <!-- Batch 6 · G.5 — private instructor notes (visible only to instructor per rules) -->
-    <div style="background:var(--card);border:.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px">
+    <div class="dx-17">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
         <div style="font-size:12px;font-weight:600;color:var(--accent-purple-strong);letter-spacing:.5px">\u{1F512} PRIVATE NOTES · INSTRUCTOR ONLY</div>
       </div>
@@ -348,7 +350,7 @@ function renderDashStudentDetail(){
     <button onclick="openStudentAttendanceHistory('${esc(s.uid)}')" style="width:100%;padding:12px;border-radius:10px;border:.5px solid var(--brand-2);background:var(--brand-tint);color:var(--brand);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:12px">\u{1F4C5} View attendance history</button>
     ${s.groupCode?`<button onclick="removeStudentFromGroup('${esc(s.uid)}')" style="width:100%;padding:12px;border-radius:10px;border:.5px solid var(--err);background:var(--err-tint);color:var(--err-2);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:12px">\u{1F6AA} Remove from group</button>`:''}
     ${registered?`<div style="text-align:center;font-size:11px;color:var(--muted-2);margin-bottom:8px">Registered ${esc(registered)}</div>`:''}
-    <div style="height:30px"></div>
+    <div class="dx-04"></div>
   </div>`;
 }
 
@@ -412,36 +414,36 @@ function renderDashStudentAttendanceHistory(){
     const isPresent=!!att;
     const mode=att?(att.mode||'—'):'';
     const modeIcon=mode==='online'?'🌐':(mode==='offline'?'🏫':'');
-    return `<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:#fff;border:.5px solid var(--border);border-radius:10px;margin-bottom:6px">
+    return `<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--card);border:.5px solid var(--border);border-radius:10px;margin-bottom:6px">
       <div style="width:38px;height:38px;border-radius:50%;background:${isPresent?'var(--ok-tint-2)':'var(--err-tint)'};display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">${isPresent?'✅':'❌'}</div>
-      <div style="flex:1;min-width:0">
+      <div class="dx-16">
         <div style="font-size:13px;font-weight:600;color:var(--ink);line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(l.title||'(untitled)')}</div>
-        <div style="font-size:11px;color:#888;margin-top:2px">${fmtDate(l.date||l.createdAt)}${mode?' · '+modeIcon+' '+esc(mode):''}</div>
+        <div class="dx-07">${fmtDate(l.date||l.createdAt)}${mode?' · '+modeIcon+' '+esc(mode):''}</div>
       </div>
       <div style="font-size:11px;font-weight:600;color:${isPresent?'var(--ok-2)':'var(--err-2)'};flex-shrink:0">${isPresent?'Present':'Absent'}</div>
     </div>`;
-  }).join(''):`<div style="text-align:center;padding:32px 20px;color:#888">
+  }).join(''):`<div style="text-align:center;padding:32px 20px;color:var(--muted)">
     <div style="font-size:36px;margin-bottom:10px">📅</div>
-    <div style="font-size:13px">No lectures found for this group yet.</div>
+    <div class="dx-06">No lectures found for this group yet.</div>
   </div>`;
 
-  const loadingHTML=loading?`<div style="text-align:center;padding:20px;color:#888"><div style="font-size:24px;margin-bottom:6px">⏳</div><div style="font-size:12px">Loading attendance history…</div></div>`:'';
+  const loadingHTML=loading?`<div style="text-align:center;padding:20px;color:var(--muted)"><div style="font-size:24px;margin-bottom:6px">⏳</div><div style="font-size:12px">Loading attendance history…</div></div>`:'';
 
-  return `<div style="padding:14px">
-    <button onclick="closeStudentAttendanceHistory()" style="background:none;border:none;color:var(--brand);font-size:14px;cursor:pointer;font-family:inherit;padding:0 0 12px;font-weight:500">‹ Back to student</button>
+  return `<div class="dx-01">
+    <button onclick="closeStudentAttendanceHistory()" class="dx-22">‹ Back to student</button>
     <div style="background:linear-gradient(135deg,var(--brand),var(--brand-2));border-radius:14px;padding:18px;color:#fff;margin-bottom:14px">
       <div style="font-size:10px;font-weight:700;letter-spacing:1px;opacity:.85;margin-bottom:4px">ATTENDANCE HISTORY</div>
       <div style="font-size:17px;font-weight:600;line-height:1.35;margin-bottom:2px">${esc(s.name||'Unnamed')}</div>
       <div style="font-size:12px;opacity:.85">${esc(s.groupCode||'—')} · ${total} lecture${total===1?'':'s'} in this group</div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">
-      <div style="background:#fff;border:.5px solid var(--border);border-radius:10px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:700;color:var(--ok-2)">${present}</div><div style="font-size:10px;color:#888;margin-top:2px">PRESENT</div></div>
-      <div style="background:#fff;border:.5px solid var(--border);border-radius:10px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:700;color:var(--err-2)">${total-present}</div><div style="font-size:10px;color:#888;margin-top:2px">ABSENT</div></div>
-      <div style="background:#fff;border:.5px solid var(--border);border-radius:10px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:700;color:${rateColor}">${attRate}%</div><div style="font-size:10px;color:#888;margin-top:2px">RATE</div></div>
+      <div class="dx-33"><div style="font-size:22px;font-weight:700;color:var(--ok-2)">${present}</div><div class="dx-18">PRESENT</div></div>
+      <div class="dx-33"><div style="font-size:22px;font-weight:700;color:var(--err-2)">${total-present}</div><div class="dx-18">ABSENT</div></div>
+      <div class="dx-33"><div style="font-size:22px;font-weight:700;color:${rateColor}">${attRate}%</div><div class="dx-18">RATE</div></div>
     </div>
     ${loadingHTML}
     ${rowsHTML}
-    <div style="height:40px"></div>
+    <div class="dx-15"></div>
   </div>`;
 }
 
@@ -478,7 +480,7 @@ function renderDashAttendanceMatrix(groupCode, lectures, students){
     }
   });
   if(missing>0){
-    return `<div style="text-align:center;padding:34px 20px;color:var(--muted-2)"><div style="font-size:26px;margin-bottom:8px">\u23F3</div><div style="font-size:13px">Loading attendance for ${missing} lecture${missing===1?'':'s'}\u2026</div></div>`;
+    return `<div class="dx-08"><div class="dx-34">\u23F3</div><div class="dx-06">Loading attendance for ${missing} lecture${missing===1?'':'s'}\u2026</div></div>`;
   }
   const att={};
   lecturesSorted.forEach(l=>{
@@ -490,7 +492,7 @@ function renderDashAttendanceMatrix(groupCode, lectures, students){
   });
   const studentsSorted=students.slice().sort((a,b)=>(a.name||'').localeCompare(b.name||''));
   if(!studentsSorted.length){
-    return `<div style="text-align:center;padding:34px 20px;color:var(--muted-2)"><div style="font-size:36px;margin-bottom:8px">\u{1F464}</div><div style="font-size:13px">No students in group ${esc(groupCode)}.</div></div>`;
+    return `<div class="dx-08"><div class="dx-35">\u{1F464}</div><div class="dx-06">No students in group ${esc(groupCode)}.</div></div>`;
   }
   const rowSummary={}, colSummary={};
   studentsSorted.forEach(s=>{
@@ -521,7 +523,7 @@ function renderDashAttendanceMatrix(groupCode, lectures, students){
     return `<th style="min-width:56px;max-width:56px;padding:6px 4px;background:var(--surface-3);border:1px solid var(--border);font-weight:600;font-size:10px;color:var(--ink-2);line-height:1.2;position:sticky;top:0;z-index:2" title="${esc(l.title||'')} - ${esc(dt)}">${esc(dt)}</th>`;
   }).join('');
   const headerRow=`<thead><tr>
-    <th style="min-width:150px;max-width:170px;padding:8px 10px;background:var(--surface-3);border:1px solid var(--border);font-weight:600;font-size:11px;color:var(--ink-2);text-align:left;position:sticky;left:0;top:0;z-index:3">Student</th>
+    <th class="dx-36">Student</th>
     ${headerCells}
     <th style="min-width:70px;max-width:70px;padding:6px 4px;background:var(--surface-3);border:1px solid var(--border);font-weight:600;font-size:10px;color:var(--ink-2);position:sticky;top:0;z-index:2">Rate</th>
   </tr></thead>`;
@@ -532,20 +534,20 @@ function renderDashAttendanceMatrix(groupCode, lectures, students){
     const sum=rowSummary[s.uid];
     const rateColor=sum.pct>=80?'var(--ok-2)':(sum.pct>=50?'var(--warn-strong)':'var(--err-2)');
     return `<tr>
-      <td onclick="STATE.dashStudentDetailUid='${esc(s.uid)}';render()" style="min-width:150px;max-width:170px;padding:8px 10px;background:var(--card);border:1px solid var(--border);font-size:12px;color:var(--ink);text-align:left;position:sticky;left:0;z-index:1;cursor:pointer;font-weight:500;white-space:normal;word-break:break-word;line-height:1.3" title="${esc(s.name||'')}">${esc(s.name||'Unnamed')}</td>
+      <td onclick="STATE.dashStudentDetailUid='${esc(s.uid)}';render()" class="dx-37" title="${esc(s.name||'')}">${esc(s.name||'Unnamed')}</td>
       ${cells}
-      <td style="min-width:70px;max-width:70px;padding:4px;border:1px solid var(--border);background:var(--card);text-align:center"><div style="font-size:12px;font-weight:700;color:${rateColor}">${sum.pct}%</div><div style="font-size:9px;color:var(--muted-2);margin-top:1px">${sum.attended}/${sum.total}</div></td>
+      <td style="min-width:70px;max-width:70px;padding:4px;border:1px solid var(--border);background:var(--card);text-align:center"><div style="font-size:12px;font-weight:700;color:${rateColor}">${sum.pct}%</div><div class="dx-09">${sum.attended}/${sum.total}</div></td>
     </tr>`;
   }).join('');
   const footerCells=lecturesSorted.map(l=>{
     const c=colSummary[l.id];
     const col=c.pct>=80?'var(--ok-2)':(c.pct>=50?'var(--warn-strong)':'var(--err-2)');
-    return `<td style="min-width:56px;max-width:56px;padding:4px;border:1px solid var(--border);background:var(--surface-3);text-align:center"><div style="font-size:11px;font-weight:700;color:${col}">${c.pct}%</div><div style="font-size:9px;color:var(--muted-2);margin-top:1px">${c.attended}/${studentsSorted.length}</div></td>`;
+    return `<td style="min-width:56px;max-width:56px;padding:4px;border:1px solid var(--border);background:var(--surface-3);text-align:center"><div style="font-size:11px;font-weight:700;color:${col}">${c.pct}%</div><div class="dx-09">${c.attended}/${studentsSorted.length}</div></td>`;
   }).join('');
   const footerRow=`<tfoot><tr>
-    <td style="min-width:150px;max-width:170px;padding:8px 10px;background:var(--surface-3);border:1px solid var(--border);font-size:11px;font-weight:600;color:var(--ink-2);text-align:left;position:sticky;left:0;z-index:1">Lecture rate</td>
+    <td class="dx-38">Lecture rate</td>
     ${footerCells}
-    <td style="background:var(--surface-3);border:1px solid var(--border)"></td>
+    <td class="dx-39"></td>
   </tr></tfoot>`;
   return `<div>
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px">
@@ -554,16 +556,16 @@ function renderDashAttendanceMatrix(groupCode, lectures, students){
         <span><span style="display:inline-block;width:14px;height:14px;background:var(--warn-tint);color:var(--warn-strong);text-align:center;line-height:14px;font-weight:700;font-size:10px;border-radius:3px;vertical-align:middle">F</span> In-person</span>
         <span><span style="display:inline-block;width:14px;height:14px;background:var(--err-tint);color:var(--err-2);text-align:center;line-height:14px;font-weight:700;font-size:10px;border-radius:3px;vertical-align:middle">\u2013</span> Absent</span>
       </div>
-      <button onclick="exportAttendanceMatrixCSV('${esc(groupCode)}')" style="padding:7px 12px;border-radius:8px;border:.5px solid var(--border);background:var(--card);color:var(--ink);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">\u{1F4E5} Export CSV</button>
+      <button onclick="exportAttendanceMatrixCSV('${esc(groupCode)}')" class="dx-40">\u{1F4E5} Export CSV</button>
     </div>
-    <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;max-height:70vh;border-radius:10px;border:1px solid var(--border);background:var(--card)">
-      <table style="border-collapse:collapse;font-family:inherit;width:auto">
+    <div class="dx-41">
+      <table class="dx-42">
         ${headerRow}
         <tbody>${bodyRows}</tbody>
         ${footerRow}
       </table>
     </div>
-    <div style="font-size:11px;color:var(--muted-2);margin-top:8px;line-height:1.4">Tap a student name to open their profile. Cells show mode: <b>O</b>nline, o<b>F</b>fline (in-person), or absent.</div>
+    <div class="dx-43">Tap a student name to open their profile. Cells show mode: <b>O</b>nline, o<b>F</b>fline (in-person), or absent.</div>
   </div>`;
 }
 
@@ -629,7 +631,7 @@ function renderDashFeedbackMatrix(groupCode,lectures,students){
   const cache=STATE.dashFeedbackByGroup[groupCode];
   if(!cache||!cache.loaded){
     loadGroupFeedback(groupCode);
-    return `<div style="text-align:center;padding:34px 20px;color:var(--muted-2)"><div style="font-size:26px;margin-bottom:8px">\u23F3</div><div style="font-size:13px">Loading feedback\u2026</div></div>`;
+    return `<div class="dx-08"><div class="dx-34">\u23F3</div><div class="dx-06">Loading feedback\u2026</div></div>`;
   }
   const lecturesSorted=lectures.slice().sort((a,b)=>{
     const da=a.date||a.createdAt||''; const dbb=b.date||b.createdAt||'';
@@ -637,7 +639,7 @@ function renderDashFeedbackMatrix(groupCode,lectures,students){
   });
   const studentsSorted=students.slice().sort((a,b)=>(a.name||'').localeCompare(b.name||''));
   if(!studentsSorted.length){
-    return `<div style="text-align:center;padding:34px 20px;color:var(--muted-2)"><div style="font-size:36px;margin-bottom:8px">\u{1F464}</div><div style="font-size:13px">No students in group ${esc(groupCode)}.</div></div>`;
+    return `<div class="dx-08"><div class="dx-35">\u{1F464}</div><div class="dx-06">No students in group ${esc(groupCode)}.</div></div>`;
   }
   // fb[userId][lectureId] = {rating,comment}
   const fb={};
@@ -675,7 +677,7 @@ function renderDashFeedbackMatrix(groupCode,lectures,students){
     return `<th style="min-width:56px;max-width:56px;padding:6px 4px;background:var(--surface-3);border:1px solid var(--border);font-weight:600;font-size:10px;color:var(--ink-2);line-height:1.2;position:sticky;top:0;z-index:2" title="${esc(l.title||'')} - ${esc(dt)}">${esc(dt)}</th>`;
   }).join('');
   const headerRow=`<thead><tr>
-    <th style="min-width:150px;max-width:170px;padding:8px 10px;background:var(--surface-3);border:1px solid var(--border);font-weight:600;font-size:11px;color:var(--ink-2);text-align:left;position:sticky;left:0;top:0;z-index:3">Student</th>
+    <th class="dx-36">Student</th>
     ${headerCells}
     <th style="min-width:70px;max-width:70px;padding:6px 4px;background:var(--surface-3);border:1px solid var(--border);font-weight:600;font-size:10px;color:var(--ink-2);position:sticky;top:0;z-index:2">Avg</th>
   </tr></thead>`;
@@ -684,33 +686,33 @@ function renderDashFeedbackMatrix(groupCode,lectures,students){
     const sum=rowSummary[s.uid];
     const rateColor=sum.avg>=4?'var(--ok-2)':(sum.avg>=3?'var(--warn-strong)':'var(--err-2)');
     return `<tr>
-      <td onclick="STATE.dashStudentDetailUid='${esc(s.uid)}';render()" style="min-width:150px;max-width:170px;padding:8px 10px;background:var(--card);border:1px solid var(--border);font-size:12px;color:var(--ink);text-align:left;position:sticky;left:0;z-index:1;cursor:pointer;font-weight:500;white-space:normal;word-break:break-word;line-height:1.3" title="${esc(s.name||'')}">${esc(s.name||'Unnamed')}</td>
+      <td onclick="STATE.dashStudentDetailUid='${esc(s.uid)}';render()" class="dx-37" title="${esc(s.name||'')}">${esc(s.name||'Unnamed')}</td>
       ${cells}
-      <td style="min-width:70px;max-width:70px;padding:4px;border:1px solid var(--border);background:var(--card);text-align:center"><div style="font-size:12px;font-weight:700;color:${sum.n?rateColor:'var(--muted-2)'}">${sum.n?sum.avg+'\u2605':'\u2014'}</div><div style="font-size:9px;color:var(--muted-2);margin-top:1px">${sum.n}/${sum.total}</div></td>
+      <td style="min-width:70px;max-width:70px;padding:4px;border:1px solid var(--border);background:var(--card);text-align:center"><div style="font-size:12px;font-weight:700;color:${sum.n?rateColor:'var(--muted-2)'}">${sum.n?sum.avg+'\u2605':'\u2014'}</div><div class="dx-09">${sum.n}/${sum.total}</div></td>
     </tr>`;
   }).join('');
   const footerCells=lecturesSorted.map(l=>{
     const c=colSummary[l.id];
     const col=c.avg>=4?'var(--ok-2)':(c.avg>=3?'var(--warn-strong)':'var(--err-2)');
-    return `<td style="min-width:56px;max-width:56px;padding:4px;border:1px solid var(--border);background:var(--surface-3);text-align:center"><div style="font-size:11px;font-weight:700;color:${c.n?col:'var(--muted-2)'}">${c.n?c.avg+'\u2605':'\u2014'}</div><div style="font-size:9px;color:var(--muted-2);margin-top:1px">${c.rate}%</div></td>`;
+    return `<td style="min-width:56px;max-width:56px;padding:4px;border:1px solid var(--border);background:var(--surface-3);text-align:center"><div style="font-size:11px;font-weight:700;color:${c.n?col:'var(--muted-2)'}">${c.n?c.avg+'\u2605':'\u2014'}</div><div class="dx-09">${c.rate}%</div></td>`;
   }).join('');
   const footerRow=`<tfoot><tr>
-    <td style="min-width:150px;max-width:170px;padding:8px 10px;background:var(--surface-3);border:1px solid var(--border);font-size:11px;font-weight:600;color:var(--ink-2);text-align:left;position:sticky;left:0;z-index:1">Lecture avg</td>
+    <td class="dx-38">Lecture avg</td>
     ${footerCells}
-    <td style="background:var(--surface-3);border:1px solid var(--border)"></td>
+    <td class="dx-39"></td>
   </tr></tfoot>`;
   return `<div>
-    <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
-      <button onclick="exportFeedbackMatrixCSV('${esc(groupCode)}')" style="padding:7px 12px;border-radius:8px;border:.5px solid var(--border);background:var(--card);color:var(--ink);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">\u{1F4E5} Export CSV</button>
+    <div class="dx-44">
+      <button onclick="exportFeedbackMatrixCSV('${esc(groupCode)}')" class="dx-40">\u{1F4E5} Export CSV</button>
     </div>
-    <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;max-height:70vh;border-radius:10px;border:1px solid var(--border);background:var(--card)">
-      <table style="border-collapse:collapse;font-family:inherit;width:auto">
+    <div class="dx-41">
+      <table class="dx-42">
         ${headerRow}
         <tbody>${bodyRows}</tbody>
         ${footerRow}
       </table>
     </div>
-    <div style="font-size:11px;color:var(--muted-2);margin-top:8px;line-height:1.4">Tap a student name to open their profile. Hover a cell to see the comment, if any.</div>
+    <div class="dx-43">Tap a student name to open their profile. Hover a cell to see the comment, if any.</div>
   </div>`;
 }
 
@@ -775,28 +777,28 @@ function renderDashAttendance(){
     <button class="att-view-btn${activeView==='feedback'?' active':''}" onclick="setAttendanceView('feedback')">\u2B50 Feedback Matrix</button>
   </div>`;
   if(!lectures.length){
-    return `<div style="padding:14px">${viewToggle}${renderDashTabEmpty('Attendance',g,{icon:'\u2705',body:'No lectures yet for this group. Create a lecture first, then attendance summaries will appear here.'})}</div>`;
+    return `<div class="dx-01">${viewToggle}${renderDashTabEmpty('Attendance',g,{icon:'\u2705',body:'No lectures yet for this group. Create a lecture first, then attendance summaries will appear here.'})}</div>`;
   }
   // Batch 7: Matrix view — render heatmap + CSV export button
   if(activeView==='matrix'){
-    const csvBtn=`<div style="display:flex;justify-content:flex-end;margin-bottom:10px">
+    const csvBtn=`<div class="dx-44">
       <button onclick="exportAttendanceMatrixCSV('${g}')" style="padding:8px 14px;border-radius:8px;border:.5px solid var(--brand-2)40;background:var(--brand-tint);color:var(--brand);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u2B07 Export CSV</button>
     </div>`;
-    return `<div style="padding:14px">
+    return `<div class="dx-01">
       ${viewToggle}
-      <div style="font-size:12px;color:var(--muted-2);margin-bottom:12px">Group has <b>${total}</b> student${total===1?'':'s'} \u00B7 ${lectures.length} lecture${lectures.length===1?'':'s'}</div>
+      <div class="dx-19">Group has <b>${total}</b> student${total===1?'':'s'} \u00B7 ${lectures.length} lecture${lectures.length===1?'':'s'}</div>
       ${csvBtn}
       ${renderDashAttendanceMatrix(g,lectures,students)}
-      <div style="height:30px"></div>
+      <div class="dx-04"></div>
     </div>`;
   }
   // Batch 11: Feedback Matrix view — one row per student, one column per lecture.
   if(activeView==='feedback'){
-    return `<div style="padding:14px">
+    return `<div class="dx-01">
       ${viewToggle}
-      <div style="font-size:12px;color:var(--muted-2);margin-bottom:12px">Group has <b>${total}</b> student${total===1?'':'s'} \u00B7 ${lectures.length} lecture${lectures.length===1?'':'s'}</div>
+      <div class="dx-19">Group has <b>${total}</b> student${total===1?'':'s'} \u00B7 ${lectures.length} lecture${lectures.length===1?'':'s'}</div>
       ${renderDashFeedbackMatrix(g,lectures,students)}
-      <div style="height:30px"></div>
+      <div class="dx-04"></div>
     </div>`;
   }
   const rows=lectures.map(l=>{
@@ -812,18 +814,18 @@ function renderDashAttendance(){
     const unk=cached.length-on-off;
     const absent=Math.max(0,total-cached.length);
     const dt=l.date?new Date(l.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
-    return `<div style="background:#fff;border:.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px">
+    return `<div style="background:var(--card);border:.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px">
-        <div style="min-width:0"><div style="font-size:14px;font-weight:600;color:var(--ink)">${esc(l.title)}</div>
-          <div style="font-size:11px;color:#888;margin-top:2px">${esc(dt)}</div></div>
+        <div style="min-width:0"><div class="dx-31">${esc(l.title)}</div>
+          <div class="dx-07">${esc(dt)}</div></div>
       </div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px">
-        <div style="background:#EBF3FA;border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--brand)">${cached.length}</div><div style="font-size:9px;font-weight:600;color:var(--brand);letter-spacing:.5px;text-transform:uppercase">Total</div></div>
-        <div style="background:#E8F5E9;border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--ok-2)">${on}</div><div style="font-size:9px;font-weight:600;color:var(--ok-2);letter-spacing:.5px;text-transform:uppercase">Online</div></div>
-        <div style="background:#FEF5E7;border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:700;color:#7D6608">${off}</div><div style="font-size:9px;font-weight:600;color:#7D6608;letter-spacing:.5px;text-transform:uppercase">In-person</div></div>
+        <div style="background:var(--brand-tint);border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--brand)">${cached.length}</div><div style="font-size:9px;font-weight:600;color:var(--brand);letter-spacing:.5px;text-transform:uppercase">Total</div></div>
+        <div style="background:var(--ok-tint);border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--ok-2)">${on}</div><div style="font-size:9px;font-weight:600;color:var(--ok-2);letter-spacing:.5px;text-transform:uppercase">Online</div></div>
+        <div style="background:var(--warn-tint);border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--warn-strong)">${off}</div><div style="font-size:9px;font-weight:600;color:var(--warn-strong);letter-spacing:.5px;text-transform:uppercase">In-person</div></div>
         <div style="background:var(--err-tint);border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--err-2)">${absent}</div><div style="font-size:9px;font-weight:600;color:var(--err-2);letter-spacing:.5px;text-transform:uppercase">Absent</div></div>
       </div>
-      ${unk?`<div style="font-size:11px;color:#888;margin-top:4px">${unk} legacy record${unk===1?'':'s'} with no mode.</div>`:''}
+      ${unk?`<div class="dx-26">${unk} legacy record${unk===1?'':'s'} with no mode.</div>`:''}
       <div style="display:flex;gap:6px;margin-top:10px">
         <button onclick="openAttendanceList('${l.id}')" style="flex:1;padding:8px;border-radius:8px;border:.5px solid var(--brand-2)40;background:var(--brand-tint);color:var(--brand);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u{1F465} View details</button>
         <button onclick="openLectureFeedback('${l.id}')" style="flex:1;padding:8px;border-radius:8px;border:.5px solid #7D3C9840;background:var(--accent-purple-tint);color:var(--accent-purple-strong);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u2B50 Feedback</button>
@@ -831,11 +833,11 @@ function renderDashAttendance(){
       </div>
     </div>`;
   }).join('');
-  return `<div style="padding:14px">
+  return `<div class="dx-01">
     ${viewToggle}
-    <div style="font-size:12px;color:var(--muted-2);margin-bottom:12px">Group has <b>${total}</b> student${total===1?'':'s'} \u00B7 attendance auto-refreshes when you open a lecture</div>
+    <div class="dx-19">Group has <b>${total}</b> student${total===1?'':'s'} \u00B7 attendance auto-refreshes when you open a lecture</div>
     ${rows}
-    <div style="height:30px"></div>
+    <div class="dx-04"></div>
   </div>`;
 }
 

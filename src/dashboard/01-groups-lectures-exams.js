@@ -235,25 +235,25 @@ function renderDashGroups(){
     return `<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 14px;border-bottom:.5px solid var(--bg)">`+
       `<div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0">`+
       `<span style="font-size:14px;font-weight:600;color:var(--brand);font-family:'Courier New',monospace;letter-spacing:.5px">${esc(g.code)}</span>`+
-      `<span style="font-size:11px;background:#EBF5FB;color:var(--brand);padding:2px 8px;border-radius:10px">${count} student${count!==1?'s':''}</span>`+
-      `${created?`<span style="font-size:11px;color:#aaa">${created}</span>`:''}`+
+      `<span style="font-size:11px;background:var(--brand-tint);color:var(--brand);padding:2px 8px;border-radius:10px">${count} student${count!==1?'s':''}</span>`+
+      `${created?`<span style="font-size:11px;color:var(--muted-2)">${created}</span>`:''}`+
       `</div>`+
       `<button onclick="deleteGroup('${g.id}','${esc(g.code)}')" style="padding:5px 10px;border-radius:6px;border:.5px solid var(--err)40;background:var(--err-tint);color:var(--err-2);font-size:11px;cursor:pointer;font-family:inherit;flex-shrink:0">\u{1F5D1}\uFE0F</button>`+
       `</div>`;
   }).join('');
-  return `<div style="padding:14px">`+
-    `<div style="font-size:13px;color:#555;line-height:1.6;margin-bottom:14px">Only codes listed here will be accepted when students enter a group code on their profile.</div>`+
-    `<div style="background:#fff;border:.5px solid var(--border);border-radius:12px;margin-bottom:16px;overflow:hidden">`+
-    `<div style="padding:10px 14px;background:#F4F6F7;border-bottom:.5px solid var(--border);font-size:11px;font-weight:600;color:#555;letter-spacing:.5px">ACTIVE GROUPS (${groups.length})</div>`+
-    (groups.length?rows:`<div style="padding:20px;text-align:center;font-size:13px;color:#aaa">No groups yet — add one below.</div>`)+
+  return `<div class="dx-01">`+
+    `<div style="font-size:13px;color:var(--ink-2);line-height:1.6;margin-bottom:14px">Only codes listed here will be accepted when students enter a group code on their profile.</div>`+
+    `<div style="background:var(--card);border:.5px solid var(--border);border-radius:12px;margin-bottom:16px;overflow:hidden">`+
+    `<div style="padding:10px 14px;background:var(--surface-3);border-bottom:.5px solid var(--border);font-size:11px;font-weight:600;color:var(--ink-2);letter-spacing:.5px">ACTIVE GROUPS (${groups.length})</div>`+
+    (groups.length?rows:`<div style="padding:20px;text-align:center;font-size:13px;color:var(--muted-2)">No groups yet — add one below.</div>`)+
     `</div>`+
-    `<div style="background:#fff;border:.5px solid var(--border);border-radius:12px;padding:14px">`+
-    `<div style="font-size:12px;font-weight:600;color:#555;letter-spacing:.5px;margin-bottom:10px">ADD NEW GROUP</div>`+
+    `<div style="background:var(--card);border:.5px solid var(--border);border-radius:12px;padding:14px">`+
+    `<div style="font-size:12px;font-weight:600;color:var(--ink-2);letter-spacing:.5px;margin-bottom:10px">ADD NEW GROUP</div>`+
     `<div style="display:flex;gap:8px;align-items:center">`+
     `<input id="new-group-input" type="text" placeholder="e.g. FC-JUN26" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9\x2D]/g,'')" maxlength="20" style="flex:1;padding:10px 12px;border-radius:8px;border:.5px solid var(--border-4);font-size:14px;font-family:'Courier New',monospace;outline:none;color:var(--ink);background:var(--surface);text-transform:uppercase" onkeydown="if(event.key==='Enter')saveGroup()">`+
     `<button onclick="saveGroup()" style="padding:10px 18px;border-radius:8px;border:none;background:var(--brand);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;flex-shrink:0">+ Add</button>`+
     `</div>`+
-    `<div style="font-size:11px;color:#888;margin-top:6px">Letters, numbers and hyphens only. Max 20 characters.</div>`+
+    `<div style="font-size:11px;color:var(--muted);margin-top:6px">Letters, numbers and hyphens only. Max 20 characters.</div>`+
     `</div></div>`;
 }
 
@@ -266,12 +266,17 @@ function saveDashGroup(code){try{localStorage.setItem('cma-dash-group-v1',code||
 async function loadDashGroupsList(){
   if(STATE.dashGroupsLoaded)return;
   try{
-    const [gsnap,ssnap]=await Promise.all([
+    // Groups are a handful of reads, so they are always fresh. The student list is cached.
+    const cached=dashReadRosterCache();
+    const [gsnap,students]=await Promise.all([
       db.collection('groups').get(),
-      db.collection('students').get()
+      cached?Promise.resolve(cached.students):dashFetchRoster()
     ]);
     STATE.dashGroups=gsnap.docs.map(d=>({id:d.id,...d.data()}));
-    STATE.dashStudents=ssnap.docs.map(d=>{const x=d.data();return {uid:d.id,groupCode:x.groupCode||'',name:x.name||'',...x};});
+    STATE.dashStudents=students;
+    STATE.dashRosterFromCache=!!cached;
+    STATE.dashRosterAt=cached?cached.at:Date.now();
+    if(!cached)dashSaveRoster();
     STATE.dashGroupsLoaded=true;
   }catch(e){
     console.warn('[Dashboard groups] load failed:',e);
@@ -496,19 +501,19 @@ function renderDashLectures(){
   // instructor never types the wrong code by mistake. Draft still overridable.
   if(selectedGroup&&!d.groupCode)d.groupCode=selectedGroup;
   const createCard=`
-    <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:10px">\u2795 Create a Lecture for <span style="font-family:'Courier New',monospace;color:var(--brand)">${esc(selectedGroup)}</span></div>
-    <div style="background:#fff;border:.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px">
-      <div style="margin-bottom:10px"><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Title *</label>
-        <input id="lec-title" type="text" value="${esc(d.title||'')}" oninput="STATE.dashLectureDraft.title=this.value" placeholder="e.g. Section A \u2014 Cost Behavior" style="width:100%;padding:9px 12px;border-radius:8px;border:.5px solid var(--border-4);font-size:14px;font-family:inherit;outline:none;color:var(--ink);background:var(--surface);box-sizing:border-box"></div>
+    <div class="dx-10">\u2795 Create a Lecture for <span style="font-family:'Courier New',monospace;color:var(--brand)">${esc(selectedGroup)}</span></div>
+    <div class="dx-21">
+      <div class="dx-03"><label class="dx-02">Title *</label>
+        <input id="lec-title" type="text" value="${esc(d.title||'')}" oninput="STATE.dashLectureDraft.title=this.value" placeholder="e.g. Section A \u2014 Cost Behavior" class="dx-13"></div>
       <div style="margin-bottom:12px">
-        <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Date</label>
-        <input id="lec-date" type="date" value="${esc(d.date||'')}" oninput="STATE.dashLectureDraft.date=this.value" style="width:100%;padding:9px;border-radius:8px;border:.5px solid var(--border-4);font-size:13px;font-family:inherit;outline:none;background:#fff;color:var(--ink);box-sizing:border-box">
+        <label class="dx-02">Date</label>
+        <input id="lec-date" type="date" value="${esc(d.date||'')}" oninput="STATE.dashLectureDraft.date=this.value" class="dx-05">
       </div>
-      <button onclick="createLecture()" style="width:100%;padding:11px;border-radius:10px;border:none;background:var(--brand);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Create Lecture</button>
+      <button onclick="createLecture()" class="dx-14">Create Lecture</button>
     </div>`;
   // Lecture rows — friendly empty state if none for this group
   if(lectures.length===0){
-    return `<div style="padding:14px">${createCard}${renderDashTabEmpty('Lectures',selectedGroup,{icon:'\u{1F3AC}',body:'This group has no lectures yet. Use the form above to create one.'})}</div>`;
+    return `<div class="dx-01">${createCard}${renderDashTabEmpty('Lectures',selectedGroup,{icon:'\u{1F3AC}',body:'This group has no lectures yet. Use the form above to create one.'})}</div>`;
   }
   const rows=lectures.map(l=>{
     const live=isLectureLive(l);
@@ -517,26 +522,26 @@ function renderDashLectures(){
     const autoEnded=!live&&_ptr&&_ptr.lectureId===l.id;  // pointed here but window passed
     if(autoEnded)_maybeBackfillCheckinClosedAt(l,_ptr);   // Batch 11: lazy-detect auto-close
     const badge=live
-      ?`<span style="font-size:10px;font-weight:700;padding:2px 9px;border-radius:10px;background:var(--err-tint);color:#C0392B">\u{1F534} LIVE</span>`
+      ?`<span style="font-size:10px;font-weight:700;padding:2px 9px;border-radius:10px;background:var(--err-tint);color:var(--err)">\u{1F534} LIVE</span>`
       :(autoEnded
-        ?`<span style="font-size:10px;font-weight:600;padding:2px 9px;border-radius:10px;background:#EAECEE;color:#566573">Ended (auto)</span>`
+        ?`<span style="font-size:10px;font-weight:600;padding:2px 9px;border-radius:10px;background:var(--surface-4);color:var(--muted)">Ended (auto)</span>`
         :(l.status==='ended'
-          ?`<span style="font-size:10px;font-weight:600;padding:2px 9px;border-radius:10px;background:#EAECEE;color:#566573">Ended</span>`
-          :`<span style="font-size:10px;font-weight:600;padding:2px 9px;border-radius:10px;background:var(--warn-tint-2);color:#9A7D0A">Scheduled</span>`));
+          ?`<span style="font-size:10px;font-weight:600;padding:2px 9px;border-radius:10px;background:var(--surface-4);color:var(--muted)">Ended</span>`
+          :`<span style="font-size:10px;font-weight:600;padding:2px 9px;border-radius:10px;background:var(--warn-tint-2);color:var(--warn-strong)">Scheduled</span>`));
     // Batch 2: attendance count comes from lazy cache. If not yet fetched,
     // show a neutral "View check-ins" prompt instead of a stale zero.
     const cached=STATE.dashAttendanceByLecture[l.id];
     const attBtn=cached
       ?`<button onclick="openAttendanceList('${l.id}')" style="padding:7px 12px;border-radius:8px;border:.5px solid var(--brand)30;background:var(--brand-tint);color:var(--brand);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u{1F465} ${cached.length} checked in</button>`
-      :`<button onclick="openAttendanceList('${l.id}')" style="padding:7px 12px;border-radius:8px;border:.5px solid var(--border-4);background:var(--surface);color:#555;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u{1F465} View check-ins</button>`;
+      :`<button onclick="openAttendanceList('${l.id}')" style="padding:7px 12px;border-radius:8px;border:.5px solid var(--border-4);background:var(--surface);color:var(--ink-2);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u{1F465} View check-ins</button>`;
     const action=live
-      ?`<button onclick="closeLecture('${l.id}')" style="padding:7px 14px;border-radius:8px;border:none;background:#C0392B;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u25A0 Close check-in</button>`
-      :`<button onclick="openLecture('${l.id}')" style="padding:7px 14px;border-radius:8px;border:none;background:#1E8449;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u25B6 Open check-in</button>`;
-    return `<div style="background:#fff;border:.5px solid ${live?'#C0392B40':'var(--border)'};border-radius:12px;padding:13px 14px;margin-bottom:10px">
+      ?`<button onclick="closeLecture('${l.id}')" style="padding:7px 14px;border-radius:8px;border:none;background:var(--err);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u25A0 Close check-in</button>`
+      :`<button onclick="openLecture('${l.id}')" style="padding:7px 14px;border-radius:8px;border:none;background:var(--ok-2);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u25B6 Open check-in</button>`;
+    return `<div style="background:var(--card);border:.5px solid ${live?'#C0392B40':'var(--border)'};border-radius:12px;padding:13px 14px;margin-bottom:10px">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px">
         <div style="min-width:0"><div style="font-size:14px;font-weight:600;color:var(--ink);line-height:1.3">${esc(l.title)}</div>
           <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:5px;align-items:center">
-            ${dt?`<span style="font-size:11px;color:#888">${dt}</span>`:''}${badge}</div></div>
+            ${dt?`<span class="dx-11">${dt}</span>`:''}${badge}</div></div>
       </div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
         ${action}
@@ -545,8 +550,8 @@ function renderDashLectures(){
       </div>
     </div>`;
   }).join('');
-  return `<div style="padding:14px">${createCard}
-    <div style="font-size:12px;font-weight:500;color:#888;letter-spacing:.5px;margin-bottom:8px">LECTURES (${lectures.length})</div>
+  return `<div class="dx-01">${createCard}
+    <div style="font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.5px;margin-bottom:8px">LECTURES (${lectures.length})</div>
     ${rows}</div>`;
 }
 
@@ -623,8 +628,8 @@ function renderDashExamPreview(){
     const wrongWhy=(q.wrongWhy!=null?q.wrongWhy:(q.wrong_why!=null?q.wrong_why:''));
     const optsHTML=opts.map((o,j)=>{
       const isCorrect=j===correctIdx;
-      return `<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 12px;margin-bottom:5px;border-radius:8px;background:${isCorrect?'var(--ok-tint-2)':'var(--surface)'};border:1px solid ${isCorrect?'#1E8449':'var(--border)'}">
-        <div style="width:22px;height:22px;border-radius:50%;background:${isCorrect?'#1E8449':'#fff'};color:${isCorrect?'#fff':'#666'};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;border:1px solid ${isCorrect?'#1E8449':'var(--border-4)'}">${letters[j]||(j+1)}</div>
+      return `<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 12px;margin-bottom:5px;border-radius:8px;background:${isCorrect?'var(--ok-tint-2)':'var(--surface)'};border:1px solid ${isCorrect?'var(--ok-2)':'var(--border)'}">
+        <div style="width:22px;height:22px;border-radius:50%;background:${isCorrect?'var(--ok-2)':'var(--card)'};color:${isCorrect?'#fff':'var(--muted)'};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;border:1px solid ${isCorrect?'var(--ok-2)':'var(--border-4)'}">${letters[j]||(j+1)}</div>
         <div style="font-size:13px;color:var(--ink);line-height:1.5;flex:1">${esc(o||'')}${isCorrect?' <span style="color:var(--ok-2);font-weight:600;font-size:11px">✓ correct</span>':''}</div>
       </div>`;
     }).join('');
@@ -635,15 +640,15 @@ function renderDashExamPreview(){
     let wrongHTML='';
     if(Array.isArray(wrongWhy)){
       const _wl=wrongWhy.map((w,j)=>(w&&j!==correctIdx)?`<div style="margin-top:3px"><b>${letters[j]||(j+1)}.</b> ${esc(w)}</div>`:'').filter(Boolean).join('');
-      if(_wl)wrongHTML=`<div style="background:var(--err-tint);border-left:3px solid var(--err);border-radius:6px;padding:8px 10px;margin-top:8px;font-size:12px;color:#7d1f1f;line-height:1.5"><b>Why wrong options fail:</b>${_wl}</div>`;
+      if(_wl)wrongHTML=`<div style="background:var(--err-tint);border-left:3px solid var(--err);border-radius:6px;padding:8px 10px;margin-top:8px;font-size:12px;color:var(--err-strong);line-height:1.5"><b>Why wrong options fail:</b>${_wl}</div>`;
     }else if(wrongWhy){
-      wrongHTML=`<div style="background:var(--err-tint);border-left:3px solid var(--err);border-radius:6px;padding:8px 10px;margin-top:8px;font-size:12px;color:#7d1f1f;line-height:1.5"><b>Why wrong options fail:</b> ${esc(wrongWhy)}</div>`;
+      wrongHTML=`<div style="background:var(--err-tint);border-left:3px solid var(--err);border-radius:6px;padding:8px 10px;margin-top:8px;font-size:12px;color:var(--err-strong);line-height:1.5"><b>Why wrong options fail:</b> ${esc(wrongWhy)}</div>`;
     }
     const meta=[unit?'Unit '+esc(unit):'',src?'Source: '+esc(src):''].filter(Boolean).join(' · ');
-    return `<div style="background:#fff;border:.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;page-break-inside:avoid">
+    return `<div style="background:var(--card);border:.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;page-break-inside:avoid">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px">
         <div style="font-size:12px;font-weight:600;color:var(--brand);letter-spacing:.5px">Q ${i+1} of ${qs.length}</div>
-        ${meta?`<div style="font-size:10px;color:#888">${meta}</div>`:''}
+        ${meta?`<div style="font-size:10px;color:var(--muted)">${meta}</div>`:''}
       </div>
       <div style="font-size:14px;color:var(--ink);line-height:1.55;margin-bottom:12px;font-weight:500">${esc(q.text||q.q||q.question||'(no text)')}</div>
       ${optsHTML}
@@ -656,21 +661,21 @@ function renderDashExamPreview(){
     <div style="font-size:12px;color:var(--muted-3);line-height:1.5">${(ex.questionIds&&ex.questionIds.length)?'One moment while we fetch the section content.':'This can happen if the section content changed after the exam was scheduled. Try Re-shuffle to rebuild the question set.'}</div>
   </div>`;
 
-  return `<div style="padding:14px" id="exam-preview-root">
-    <button onclick="closeExamPreview()" style="background:none;border:none;color:var(--brand);font-size:14px;cursor:pointer;font-family:inherit;padding:0 0 12px;font-weight:500">‹ Back to exams</button>
+  return `<div class="dx-01" id="exam-preview-root">
+    <button onclick="closeExamPreview()" class="dx-22">‹ Back to exams</button>
     <div style="background:linear-gradient(135deg,var(--brand),var(--brand-2));border-radius:14px;padding:18px;color:#fff;margin-bottom:14px">
       <div style="font-size:10px;font-weight:700;letter-spacing:1px;opacity:.85;margin-bottom:4px">EXAM PREVIEW · INSTRUCTOR VIEW</div>
       <div style="font-size:17px;font-weight:600;line-height:1.35;margin-bottom:8px">${esc(ex.title||'Untitled exam')}</div>
       <div style="font-size:12px;opacity:.85;line-height:1.6">${sectionsSummary}<br><b>${(ex.questionIds&&ex.questionIds.length)||qs.length||ex.count||0}</b> question${((ex.questionIds&&ex.questionIds.length)||qs.length||ex.count||0)===1?'':'s'} · <b>${ex.durationMinutes||0}</b> min · Group <b>${esc(ex.groupCode||'—')}</b></div>
     </div>
     <div style="display:flex;gap:8px;margin-bottom:14px">
-      <button onclick="window.print()" style="flex:1;padding:10px;border-radius:10px;border:.5px solid var(--border-4);background:var(--surface-3);color:#333;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">🖨️ Print / Save as PDF</button>
+      <button onclick="window.print()" style="flex:1;padding:10px;border-radius:10px;border:.5px solid var(--border-4);background:var(--surface-3);color:var(--ink);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">🖨️ Print / Save as PDF</button>
     </div>
-    <div style="background:var(--warn-tint-2);border:1px solid #F5CBA7;border-radius:10px;padding:10px 12px;margin-bottom:14px;font-size:12px;color:#7D6608;line-height:1.5">
+    <div style="background:var(--warn-tint-2);border:1px solid #F5CBA7;border-radius:10px;padding:10px 12px;margin-bottom:14px;font-size:12px;color:var(--warn-strong);line-height:1.5">
       ⚠️ This is the <b>frozen snapshot</b> shown to students. Correct answers are highlighted for your review — do not share this view with students.
     </div>
     ${questionsHTML}
-    <div style="height:40px"></div>
+    <div class="dx-15"></div>
   </div>`;
 }
 
@@ -691,61 +696,61 @@ function renderDashExams(){
   const selectedSections=new Set((d.sectionIds||[]).map(String));
   const sectionChips=S.map(s=>{
     const on=selectedSections.has(String(s.id));
-    return `<button type="button" onclick="toggleExamSection('${s.id}')" style="padding:7px 12px;border-radius:14px;border:1px solid ${on?'var(--brand)':'var(--border-4)'};background:${on?'var(--brand)':'#fff'};color:${on?'#fff':'#555'};font-size:12px;font-weight:${on?'600':'500'};cursor:pointer;font-family:inherit;white-space:nowrap">Sec ${s.id} \u2014 ${esc(s.title)}</button>`;
+    return `<button type="button" onclick="toggleExamSection('${s.id}')" style="padding:7px 12px;border-radius:14px;border:1px solid ${on?'var(--brand)':'var(--border-4)'};background:${on?'var(--brand)':'var(--card)'};color:${on?'#fff':'var(--ink-2)'};font-size:12px;font-weight:${on?'600':'500'};cursor:pointer;font-family:inherit;white-space:nowrap">Sec ${s.id} \u2014 ${esc(s.title)}</button>`;
   }).join('');
   const unitPickers=(d.sectionIds||[]).map(sid=>renderExamUnitPicker(d,sid)).join('');
 
   const createCard=`
-    <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:10px">\u2795 Create an Exam for <span style="font-family:'Courier New',monospace;color:var(--brand)">${esc(selectedGroup)}</span></div>
-    <div style="background:#fff;border:.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px">
-      <div style="margin-bottom:10px">
-        <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Title *</label>
+    <div class="dx-10">\u2795 Create an Exam for <span style="font-family:'Courier New',monospace;color:var(--brand)">${esc(selectedGroup)}</span></div>
+    <div class="dx-21">
+      <div class="dx-03">
+        <label class="dx-02">Title *</label>
         <input id="ex-title" type="text" value="${esc(d.title||'')}"
                oninput="STATE.dashExamDraft.title=this.value"
                placeholder="e.g. Section 1 Mid-Term Practice"
-               style="width:100%;padding:9px 12px;border-radius:8px;border:.5px solid var(--border-4);font-size:14px;font-family:inherit;outline:none;color:var(--ink);background:var(--surface);box-sizing:border-box">
+               class="dx-13">
       </div>
-      <div style="margin-bottom:10px">
-        <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Section(s) * <span style="font-weight:400">— pick one or more; questions split evenly across your picks</span></label>
+      <div class="dx-03">
+        <label class="dx-02">Section(s) * <span style="font-weight:400">— pick one or more; questions split evenly across your picks</span></label>
         <div style="display:flex;flex-wrap:wrap;gap:6px;padding:8px;background:var(--surface);border:.5px solid var(--border);border-radius:8px">${sectionChips}</div>
       </div>
       ${unitPickers}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
         <div>
-          <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Questions (3\u2013100) *</label>
+          <label class="dx-02">Questions (3\u2013100) *</label>
           <input type="number" min="3" max="100" value="${esc(String(d.count||20))}"
                  oninput="STATE.dashExamDraft.count=this.value"
-                 style="width:100%;padding:9px;border-radius:8px;border:.5px solid var(--border-4);font-size:13px;font-family:inherit;outline:none;background:#fff;color:var(--ink);box-sizing:border-box">
+                 class="dx-05">
         </div>
         <div>
-          <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Duration (min) *</label>
+          <label class="dx-02">Duration (min) *</label>
           <input type="number" min="3" max="240" value="${esc(String(d.durationMinutes||30))}"
                  oninput="STATE.dashExamDraft.durationMinutes=this.value"
-                 style="width:100%;padding:9px;border-radius:8px;border:.5px solid var(--border-4);font-size:13px;font-family:inherit;outline:none;background:#fff;color:var(--ink);box-sizing:border-box">
+                 class="dx-05">
         </div>
       </div>
-      <div style="margin-bottom:10px">
-        <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Max Attempts (1\u201310) <span style="font-weight:400">\u2014 students can retake up to this many times, in shuffled order</span></label>
+      <div class="dx-03">
+        <label class="dx-02">Max Attempts (1\u201310) <span style="font-weight:400">\u2014 students can retake up to this many times, in shuffled order</span></label>
         <input type="number" min="1" max="10" value="${esc(String(d.maxAttempts==null?3:d.maxAttempts))}"
                oninput="STATE.dashExamDraft.maxAttempts=this.value"
-               style="width:100%;padding:9px;border-radius:8px;border:.5px solid var(--border-4);font-size:13px;font-family:inherit;outline:none;background:#fff;color:var(--ink);box-sizing:border-box">
+               class="dx-05">
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
         <div>
-          <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Opens at *</label>
+          <label class="dx-02">Opens at *</label>
           <input type="datetime-local" value="${esc(d.opensAt||'')}"
                  oninput="STATE.dashExamDraft.opensAt=this.value"
-                 style="width:100%;padding:9px;border-radius:8px;border:.5px solid var(--border-4);font-size:13px;font-family:inherit;outline:none;background:#fff;color:var(--ink);box-sizing:border-box">
+                 class="dx-05">
         </div>
         <div>
-          <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Closes at *</label>
+          <label class="dx-02">Closes at *</label>
           <input type="datetime-local" value="${esc(d.closesAt||'')}"
                  oninput="STATE.dashExamDraft.closesAt=this.value"
-                 style="width:100%;padding:9px;border-radius:8px;border:.5px solid var(--border-4);font-size:13px;font-family:inherit;outline:none;background:#fff;color:var(--ink);box-sizing:border-box">
+                 class="dx-05">
         </div>
       </div>
       <button onclick="saveExam()"
-              style="width:100%;padding:11px;border-radius:10px;border:none;background:var(--brand);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">
+              class="dx-14">
         \u{1F4BE} Create Exam
       </button>
     </div>`;
@@ -763,8 +768,8 @@ function renderDashExams(){
 
   const badgeStyle={
     active:   'background:var(--ok-tint-2);color:var(--ok-2)',
-    scheduled:'background:var(--warn-tint-2);color:#9A7D0A',
-    closed:   'background:#EAECEE;color:#566573'
+    scheduled:'background:var(--warn-tint-2);color:var(--warn-strong)',
+    closed:   'background:var(--surface-4);color:var(--muted)'
   };
   const badgeLabel={active:'🟢 ACTIVE',scheduled:'⏳ SCHEDULED',closed:'⚫ CLOSED'};
 
@@ -779,12 +784,12 @@ function renderDashExams(){
       return 'Sec '+sid+(s?' — '+esc(s.title):'')+(u?' (Units: '+esc(u)+')':'');
     }).join('<br>');
     const canClose=status!=='closed';
-    return `<div style="background:#fff;border:.5px solid ${status==='active'?'#1E844940':'var(--border)'};border-radius:12px;padding:13px 14px;margin-bottom:10px">
+    return `<div style="background:var(--card);border:.5px solid ${status==='active'?'#1E844940':'var(--border)'};border-radius:12px;padding:13px 14px;margin-bottom:10px">
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">
         <span style="font-size:10px;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:.4px;${badgeStyle[status]}">${badgeLabel[status]}</span>
       </div>
       <div style="font-size:14px;font-weight:600;color:var(--ink);line-height:1.35;margin-bottom:6px">${esc(x.title)}</div>
-      <div style="font-size:11px;color:#666;line-height:1.7;margin-bottom:10px">
+      <div style="font-size:11px;color:var(--muted);line-height:1.7;margin-bottom:10px">
         ${sectionsLine}<br>
         <b>${x.count}</b> questions · <b>${x.durationMinutes}</b> min<br>
         Opens <b>${fmtDT(x.opensAt)}</b> · Closes <b>${fmtDT(x.closesAt)}</b>
@@ -793,27 +798,27 @@ function renderDashExams(){
         <button onclick="openExamPreview('${x.id}')" style="flex:1 1 28%;padding:7px 10px;border-radius:8px;border:.5px solid #1E844940;background:var(--ok-tint-2);color:var(--ok-2);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">👁️ Preview</button>
         <button onclick="openExamResults('${x.id}')" style="flex:1 1 28%;padding:7px 10px;border-radius:8px;border:.5px solid var(--brand-2)40;background:var(--brand-tint);color:var(--brand);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">📊 Results</button>
         ${status==='scheduled'?`<button onclick="reshuffleExam('${x.id}')" style="flex:1 1 28%;padding:7px 10px;border-radius:8px;border:.5px solid #7D3C9840;background:var(--accent-purple-tint);color:var(--accent-purple-strong);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">🔄 Re-shuffle</button>`:''}
-        ${canClose?`<button onclick="closeExamNow('${x.id}')" style="flex:1 1 28%;padding:7px 10px;border-radius:8px;border:.5px solid #D2691E40;background:#FEF5E7;color:#7D6608;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">🛑 Close</button>`:''}
+        ${canClose?`<button onclick="closeExamNow('${x.id}')" style="flex:1 1 28%;padding:7px 10px;border-radius:8px;border:.5px solid #D2691E40;background:var(--warn-tint);color:var(--warn-strong);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">🛑 Close</button>`:''}
         <button onclick="deleteExam('${x.id}')" style="flex:1 1 28%;padding:7px 10px;border-radius:8px;border:.5px solid var(--err)40;background:var(--err-tint);color:var(--err-2);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">🗑️ Delete</button>
       </div>
     </div>`;
   };
 
   const bucketHTML=(label,arr)=>arr.length
-    ? `<div style="font-size:12px;font-weight:500;color:#888;letter-spacing:.5px;margin:14px 0 8px">${label} (${arr.length})</div>${arr.map(examCard).join('')}`
+    ? `<div style="font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.5px;margin:14px 0 8px">${label} (${arr.length})</div>${arr.map(examCard).join('')}`
     : '';
 
   const emptyState=exams.length===0
     ? renderDashTabEmpty('Exams',STATE.dashSelectedGroup,{icon:'\u{1F4DD}',body:'This group has no exams yet. Use the form above to create one for a specific section.'})
     : '';
 
-  return `<div style="padding:14px">
+  return `<div class="dx-01">
     ${createCard}
     ${emptyState}
     ${bucketHTML('🟢 ACTIVE',buckets.active)}
     ${bucketHTML('⏳ SCHEDULED',buckets.scheduled)}
     ${bucketHTML('⚫ CLOSED',buckets.closed)}
-    <div style="height:40px"></div>
+    <div class="dx-15"></div>
   </div>`;
 }
 
@@ -842,7 +847,7 @@ function renderGroupChipStrip(){
 function renderDashSkeleton(){
   const line=(cls)=>`<div class="gs-skeleton-line ${cls}"></div>`;
   const card=`<div class="gs-skeleton-card">${line('short')}${line('long')}${line('medium')}</div>`;
-  return `<div style="padding:14px">${card}${card}${card}</div>`;
+  return `<div class="dx-01">${card}${card}${card}</div>`;
 }
 
 // ── Batch 2: empty states (Decision 3B — friendly + CTA) ──────────────
@@ -919,10 +924,10 @@ function renderDashErrors(){
   });
   const list=Object.values(groups).sort((a,b)=>b.count-a.count);
   const head='<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 12px 8px">'
-    +'<div style="font-size:13px;color:var(--muted)">'+st.rows.length+' recent reports \u00B7 '+list.length+' distinct</div>'
-    +'<div style="display:flex;gap:6px"><button class="sub-nav-btn" onclick="loadDashErrors()">\u21BB Refresh</button>'
+    +'<div class="dx-23">'+st.rows.length+' recent reports \u00B7 '+list.length+' distinct</div>'
+    +'<div class="dx-24"><button class="sub-nav-btn" onclick="loadDashErrors()">\u21BB Refresh</button>'
     +(st.rows.length?'<button class="sub-nav-btn" onclick="clearDashErrors()">\u{1F5D1}\uFE0F Clear</button>':'')+'</div></div>';
-  if(!list.length)return head+'<div style="text-align:center;padding:40px 20px;color:var(--muted);font-size:14px">\u2705 No errors reported.</div>';
+  if(!list.length)return head+'<div class="dx-25">\u2705 No errors reported.</div>';
   return head+list.map(g=>{
     const r=g.last;
     const when=r.at?new Date(r.at).toLocaleString():'';
@@ -930,7 +935,7 @@ function renderDashErrors(){
       +'<div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start">'
       +'<div style="font-size:13px;font-weight:600;color:var(--ink);word-break:break-word">'+esc(g.msg||'(no message)')+'</div>'
       +'<div style="flex-shrink:0;font-size:12px;font-weight:600;color:var(--err)">\u00D7'+g.count+'</div></div>'
-      +'<div style="font-size:11px;color:var(--muted);margin-top:4px">'+esc(g.kind||'')+' \u00B7 '+Object.keys(g.users).length+' student(s) \u00B7 build '+esc(Object.keys(g.builds).join(', '))+' \u00B7 last: '+esc(when)+(r.tab?' \u00B7 screen: '+esc(r.tab):'')+'</div>'
+      +'<div class="dx-26">'+esc(g.kind||'')+' \u00B7 '+Object.keys(g.users).length+' student(s) \u00B7 build '+esc(Object.keys(g.builds).join(', '))+' \u00B7 last: '+esc(when)+(r.tab?' \u00B7 screen: '+esc(r.tab):'')+'</div>'
       +(r.src?'<div style="font-size:11px;color:var(--muted);margin-top:2px;word-break:break-all">'+esc(r.src)+'</div>':'')
       +(r.stack?'<details style="margin-top:6px"><summary style="font-size:11px;cursor:pointer;color:var(--brand)">Stack</summary><pre style="font-size:10px;white-space:pre-wrap;word-break:break-word;margin:6px 0 0;color:var(--muted)">'+esc(r.stack)+'</pre></details>':'')
       +'</div>';
@@ -950,6 +955,16 @@ async function loadDashAtRisk(groupCode){
   }
   STATE.dashAtRiskLoading=false;render();
 }
+
+// The saved daysSinceActive is calculated on the student's device while the app is open,
+// so it stops growing once they stay away. Work it out from the last activity date instead.
+function atRiskDaysInactive(r){
+  const times=[r.updatedAt,r.lastActiveDate].map(v=>v?new Date(v).getTime():NaN).filter(t=>!isNaN(t));
+  if(!times.length)return r.daysSinceActive||0;
+  const midnight=t=>{const d=new Date(t);d.setHours(0,0,0,0);return d.getTime();};
+  return Math.max(0,Math.round((midnight(Date.now())-midnight(Math.max(...times)))/86400000));
+}
+function atRiskCurrent(r){return Object.assign({},r,{daysSinceActive:atRiskDaysInactive(r)});}
 
 function _atRiskReason(r){
   if((r.daysSinceActive||0)>=7)return{tag:'Silent '+r.daysSinceActive+' days',sev:'high'};
@@ -975,13 +990,13 @@ function renderDashAtRisk(){
   const g=STATE.dashSelectedGroup;
   if(STATE.dashAtRiskLoadedFor!==g && !STATE.dashAtRiskLoading){loadDashAtRisk(g);}
   if(STATE.dashAtRiskLoading||STATE.dashAtRiskLoadedFor!==g){return renderDashSkeleton();}
-  const rows=(STATE.dashAtRisk||[]).map(r=>({r,reason:_atRiskReason(r)})).filter(x=>x.reason);
+  const rows=(STATE.dashAtRisk||[]).map(atRiskCurrent).map(r=>({r,reason:_atRiskReason(r)})).filter(x=>x.reason);
   rows.sort((a,b)=>(b.r.daysSinceActive||0)-(a.r.daysSinceActive||0));
   if(!rows.length){
     return `<div style="text-align:center;padding:48px 20px">
       <div style="font-size:40px;margin-bottom:12px">\u{1F389}</div>
-      <div style="font-size:15px;font-weight:600;color:#333;margin-bottom:6px">No one at risk right now</div>
-      <div style="font-size:13px;color:#888;line-height:1.5;max-width:280px;margin:0 auto">Everyone in <b>${esc(g)}</b> has been active recently. Check back after a few days of new data.</div>
+      <div style="font-size:15px;font-weight:600;color:var(--ink);margin-bottom:6px">No one at risk right now</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.5;max-width:280px;margin:0 auto">Everyone in <b>${esc(g)}</b> has been active recently. Check back after a few days of new data.</div>
     </div>`;
   }
   const sevColor={high:'var(--err)',med:'var(--warn)'};
@@ -989,18 +1004,18 @@ function renderDashAtRisk(){
     const waLinks=atRiskWaLinks(r);
     const initial=(r.displayName||'?').charAt(0).toUpperCase();
     const noPhone=!(r.phoneNumber||'').replace(/[^0-9]/g,'');
-    return `<div style="background:#fff;border:.5px solid #eee;border-left:3px solid ${sevColor[reason.sev]||'var(--warn)'};border-radius:10px;padding:13px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px">
+    return `<div style="background:var(--card);border:.5px solid var(--border);border-left:3px solid ${sevColor[reason.sev]||'var(--warn)'};border-radius:10px;padding:13px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px">
       <div style="width:40px;height:40px;border-radius:50%;background:var(--brand-tint);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:var(--brand);flex-shrink:0">${initial}</div>
-      <div style="flex:1;min-width:0">
+      <div class="dx-16">
         <div style="font-size:14px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(r.displayName||'Unknown')}</div>
-        <div style="font-size:12px;color:${sevColor[reason.sev]||'#888'};margin-top:2px">${esc(reason.tag)}</div>
-        ${noPhone?'<div style="font-size:11px;color:#c00;margin-top:2px">\u26A0\uFE0F no phone on file</div>':(!waLinks.length?'<div style="font-size:11px;color:#c00;margin-top:2px" dir="ltr">'+esc(r.phoneNumber)+' \u2014 add country code</div>':'')}
+        <div style="font-size:12px;color:${sevColor[reason.sev]||'var(--muted)'};margin-top:2px">${esc(reason.tag)}</div>
+        ${noPhone?'<div style="font-size:11px;color:var(--err);margin-top:2px">\u26A0\uFE0F no phone on file</div>':(!waLinks.length?'<div style="font-size:11px;color:var(--err);margin-top:2px" dir="ltr">'+esc(r.phoneNumber)+' \u2014 add country code</div>':'')}
       </div>
       ${waLinks.map(w=>`<a href="${w.url}" target="_blank" rel="noopener" style="flex-shrink:0;min-width:40px;height:40px;padding:0 8px;border-radius:10px;background:#25D366;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:4px;text-decoration:none" title="Message on WhatsApp">\u{1F4AC}${w.label?' '+w.label:''}</a>`).join('')}
     </div>`;
   }).join('');
   return `<div style="padding-top:4px">
-    <div style="font-size:12px;color:#888;margin-bottom:12px">${rows.length} student${rows.length>1?'s':''} in <b>${esc(g)}</b> may need a nudge \u00B7 sorted by days silent</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:12px">${rows.length} student${rows.length>1?'s':''} in <b>${esc(g)}</b> may need a nudge \u00B7 sorted by days silent</div>
     ${cards}
   </div>`;
 }

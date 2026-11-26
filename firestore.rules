@@ -511,6 +511,18 @@ service cloud.firestore {
       allow delete: if isInstructor();
     }
 
+    // Dashboard follow-up for the interest list: status and amount paid (EGP).
+    // Instructor only. Kept apart from group-interest, which its owner can read.
+    match /interest-followup/{uid} {
+      allow read, delete: if isInstructor();
+      allow create, update: if isInstructor()
+        && request.resource.data.keys().hasOnly(['status','paid','updatedAt','by'])
+        && request.resource.data.status in ['new','contacted','deposit','paid']
+        && request.resource.data.paid is number
+        && request.resource.data.paid >= 0
+        && request.resource.data.paid <= 100000;
+    }
+
     match /group-requests/{requestId} {
       allow read, update, delete: if isInstructor();
       allow create: if signedIn()

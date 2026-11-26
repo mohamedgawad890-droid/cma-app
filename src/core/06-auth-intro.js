@@ -706,7 +706,7 @@ async function logout(){
   try{ if(window._qTimerInterval) clearInterval(window._qTimerInterval); }catch(_){}
   try{ stopLivePolling(); }catch(_){}
   try{
-    ['cma-html-v2','cma-student-v1','cma-tracker-v1','cma-streak-v1'].forEach(function(k){ localStorage.removeItem(k); });
+    ['cma-html-v2','cma-student-v1','cma-tracker-v1','cma-streak-v1','cma-dash-roster-v1'].forEach(function(k){ localStorage.removeItem(k); });
   }catch(_){}
   try{
     STATE.quizState=null;STATE.quizMode=null;

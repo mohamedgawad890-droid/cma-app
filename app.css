@@ -899,3 +899,64 @@ html[dir="rtl"] .case-insight{border-left:none;border-right:3px solid var(--bran
   .dash-areas .sub-nav-btn,.dash-subs .sub-nav-btn{margin-bottom:6px;padding:6px 11px}
   .dash-subs{padding-top:6px}
 }
+
+/* ═══ Dashboard: student-list bar and interest follow-up ═════════════════ */
+.dash-roster{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 14px 0;font-size:11px;color:var(--muted)}
+.dash-roster .sub-nav-btn{margin:0}
+.dash-stat.static{cursor:default}
+.dash-stat.static:hover{border-color:var(--border)}
+.dash-grid.money{padding-top:4px}
+.dash-grid.money .dash-stat b{font-size:19px}
+.dash-warn{margin:8px 14px;padding:11px 14px;border-radius:10px;background:var(--warn-tint);color:var(--warn-strong);font-size:13px;line-height:1.5}
+.dt-status{font-family:inherit;font-size:12px;font-weight:600;padding:6px 8px;border-radius:8px;border:1px solid var(--border-4);background:var(--card);color:var(--ink)}
+.dt-status.s-contacted{background:var(--brand-tint);color:var(--brand)}
+.dt-status.s-deposit{background:var(--warn-tint);color:var(--warn-strong)}
+.dt-status.s-paid{background:var(--ok-tint);color:var(--ok-strong)}
+
+/* Repeated dashboard styles (moved out of inline style attributes). The doubled
+   class keeps them as strong as the inline rules they replaced. */
+.dx-01.dx-01{padding:14px}
+.dx-02.dx-02{font-size:11px;color:var(--muted);display:block;margin-bottom:4px}
+.dx-03.dx-03{margin-bottom:10px}
+.dx-04.dx-04{height:30px}
+.dx-05.dx-05{width:100%;padding:9px;border-radius:8px;border:.5px solid var(--border-4);font-size:13px;font-family:inherit;outline:none;background:var(--card);color:var(--ink);box-sizing:border-box}
+.dx-06.dx-06{font-size:13px}
+.dx-07.dx-07{font-size:11px;color:var(--muted);margin-top:2px}
+.dx-08.dx-08{text-align:center;padding:34px 20px;color:var(--muted-2)}
+.dx-09.dx-09{font-size:9px;color:var(--muted-2);margin-top:1px}
+.dx-10.dx-10{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:10px}
+.dx-11.dx-11{font-size:11px;color:var(--muted)}
+.dx-12.dx-12{font-size:11px;opacity:.75}
+.dx-13.dx-13{width:100%;padding:9px 12px;border-radius:8px;border:.5px solid var(--border-4);font-size:14px;font-family:inherit;outline:none;color:var(--ink);background:var(--surface);box-sizing:border-box}
+.dx-14.dx-14{width:100%;padding:11px;border-radius:10px;border:none;background:var(--brand);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+.dx-15.dx-15{height:40px}
+.dx-16.dx-16{flex:1;min-width:0}
+.dx-17.dx-17{background:var(--card);border:.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px}
+.dx-18.dx-18{font-size:10px;color:var(--muted);margin-top:2px}
+.dx-19.dx-19{font-size:12px;color:var(--muted-2);margin-bottom:12px}
+.dx-20.dx-20{font-size:20px;font-weight:600}
+.dx-21.dx-21{background:var(--card);border:.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px}
+.dx-22.dx-22{background:none;border:none;color:var(--brand);font-size:14px;cursor:pointer;font-family:inherit;padding:0 0 12px;font-weight:500}
+.dx-23.dx-23{font-size:13px;color:var(--muted)}
+.dx-24.dx-24{display:flex;gap:6px}
+.dx-25.dx-25{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px}
+.dx-26.dx-26{font-size:11px;color:var(--muted);margin-top:4px}
+.dx-27.dx-27{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.dx-28.dx-28{font-weight:600;color:var(--brand)}
+.dx-29.dx-29{background:none;border:none;color:var(--brand);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}
+.dx-30.dx-30{display:flex;flex-wrap:wrap;gap:6px;padding:8px;background:var(--surface);border:.5px solid var(--border);border-radius:8px;max-height:150px;overflow-y:auto}
+.dx-31.dx-31{font-size:14px;font-weight:600;color:var(--ink)}
+.dx-32.dx-32{font-size:12px;font-weight:600;color:var(--brand);margin-bottom:10px;letter-spacing:.5px}
+.dx-33.dx-33{background:var(--card);border:.5px solid var(--border);border-radius:10px;padding:12px;text-align:center}
+.dx-34.dx-34{font-size:26px;margin-bottom:8px}
+.dx-35.dx-35{font-size:36px;margin-bottom:8px}
+.dx-36.dx-36{min-width:150px;max-width:170px;padding:8px 10px;background:var(--surface-3);border:1px solid var(--border);font-weight:600;font-size:11px;color:var(--ink-2);text-align:left;position:sticky;left:0;top:0;z-index:3}
+.dx-37.dx-37{min-width:150px;max-width:170px;padding:8px 10px;background:var(--card);border:1px solid var(--border);font-size:12px;color:var(--ink);text-align:left;position:sticky;left:0;z-index:1;cursor:pointer;font-weight:500;white-space:normal;word-break:break-word;line-height:1.3}
+.dx-38.dx-38{min-width:150px;max-width:170px;padding:8px 10px;background:var(--surface-3);border:1px solid var(--border);font-size:11px;font-weight:600;color:var(--ink-2);text-align:left;position:sticky;left:0;z-index:1}
+.dx-39.dx-39{background:var(--surface-3);border:1px solid var(--border)}
+.dx-40.dx-40{padding:7px 12px;border-radius:8px;border:.5px solid var(--border);background:var(--card);color:var(--ink);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}
+.dx-41.dx-41{overflow-x:auto;-webkit-overflow-scrolling:touch;max-height:70vh;border-radius:10px;border:1px solid var(--border);background:var(--card)}
+.dx-42.dx-42{border-collapse:collapse;font-family:inherit;width:auto}
+.dx-43.dx-43{font-size:11px;color:var(--muted-2);margin-top:8px;line-height:1.4}
+.dx-44.dx-44{display:flex;justify-content:flex-end;margin-bottom:10px}
+.dx-45.dx-45{flex:1}
