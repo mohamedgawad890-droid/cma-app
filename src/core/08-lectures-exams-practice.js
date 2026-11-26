@@ -438,8 +438,11 @@ function isFeedbackOpen(lec){
 // Instructor-only Dashboard tab appended to the student nav.
 function getNavTabs(){
   // Batch 35: the Case Study tab shows only to the instructor and to students in an approved group.
-  const base = (typeof caseStudyAllowed==='function' && caseStudyAllowed())
-    ? [...TABS,{id:'case-study',label:'Case',icon:'\u{1F4BC}'}] : TABS;
+  let base = TABS;
+  if(typeof caseStudyAllowed==='function' && caseStudyAllowed()){
+    // Approved members and the instructor also get My Group (after Study) and Case.
+    base = [...TABS.slice(0,2),{id:'my-group',label:'My Group',icon:'\u{1F465}'},...TABS.slice(2),{id:'case-study',label:'Case',icon:'\u{1F4BC}'}];
+  }
   return isInstructor() ? [...base,{id:'dashboard',label:'Dashboard',icon:'\u{1F6E1}\uFE0F'}] : base;
 }
 
@@ -481,7 +484,7 @@ function _todayKey(){const d=new Date();return d.getFullYear()+'-'+String(d.getM
 function loadQotdState(){try{const d=localStorage.getItem('cma-qotd-v1');return d?JSON.parse(d):{};}catch{return{};}}
 function saveQotdState(v){try{localStorage.setItem('cma-qotd-v1',JSON.stringify(v));}catch{}}
 async function ensureQotd(){const st=loadStudent();if(!st||!st.groupCode||!STATE.user)return;const dateKey=_todayKey();const stored=loadQotdState();const key=st.groupCode+'|'+dateKey;const already=stored[key];if(STATE.qotdState.dateKey===dateKey&&STATE.qotdState.question)return;
-  try{const snap=await db.collection('teaching-log').where('groupCode','==',st.groupCode.toUpperCase()).get();const entries=snap.docs.map(d=>d.data());const taughtSet=new Set();entries.forEach(e=>(e.unitIds||[]).forEach(u=>taughtSet.add(u)));if(!taughtSet.size){STATE.qotdState={dateKey,question:null,taughtUnitCount:0,answered:false,selected:null};return;}
+  try{const taughtSet=await fetchTaughtUnits(st.groupCode);if(!taughtSet.size){STATE.qotdState={dateKey,question:null,taughtUnitCount:0,answered:false,selected:null};return;}
     const secIds=[...new Set([...taughtSet].map(u=>parseInt(u.split('-')[0])).filter(n=>n>0))];await Promise.all(secIds.map(i=>ensureQuizzes(i)));const pool=[];S.forEach(sec=>{sec.lessons.forEach(l=>{if(l.outOfScope)return;if(taughtSet.has(l.id)&&l.quizzes&&l.quizzes.length)l.quizzes.forEach(q=>{if(isOutOfScopeQ(l,q))return;pool.push({...q,secId:sec.id,secTitle:sec.title,secBar:sec.bar,lessonTitle:l.title});});});});if(!pool.length){STATE.qotdState={dateKey,question:null,taughtUnitCount:taughtSet.size,answered:false,selected:null};return;}
     const seed=_hashCode(st.groupCode+'|'+dateKey);const q=shuffleQuestionOptions(pool[seed%pool.length]);STATE.qotdState={dateKey,question:q,taughtUnitCount:taughtSet.size,answered:!!(already&&already.answered),selected:already?already.selected:null};if(STATE.tab==='intro')render();
   }catch(e){console.warn('QoD load failed:',e);}

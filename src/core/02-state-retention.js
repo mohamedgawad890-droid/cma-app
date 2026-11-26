@@ -217,8 +217,7 @@ async function buildGraceMiniSet(){
   try{
     const st=loadStudent();
     if(st&&st.groupCode){
-      const snap=await db.collection('teaching-log').where('groupCode','==',st.groupCode.toUpperCase()).get();
-      const taught=new Set();snap.docs.forEach(d=>(d.data().unitIds||[]).forEach(u=>taught.add(u)));
+      const taught=await fetchTaughtUnits(st.groupCode);
       const secIds=[...new Set([...taught].map(u=>parseInt(u.split('-')[0])).filter(n=>n>0))];
       await Promise.all(secIds.map(i=>ensureQuizzes(i)));
       const pool=[];

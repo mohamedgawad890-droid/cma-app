@@ -241,6 +241,16 @@ service cloud.firestore {
       allow write: if isInstructor();
     }
 
+    // My Group — one doc per group (doc id = group code, upper case): lecture schedule
+    // and the instructor's roadmap note. An APPROVED member reads only their own
+    // group's doc (students can never set their own groupCode, see students rules);
+    // only the instructor writes.
+    match /group-space/{groupCode} {
+      allow read:  if isInstructor()
+        || (inGroup() && groupCode == myGroupCode().upper());
+      allow write: if isInstructor();
+    }
+
     // Live lecture pointer — one doc per group code (key IS the group code, so a
     // group can only ever have ONE live lecture). Instructor opens/closes it;
     // any signed-in student reads it (Phase 2b poller detects a live session).

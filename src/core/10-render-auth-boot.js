@@ -27,14 +27,19 @@ function activeNavTab(){
 // ── Phone bottom tabs ────────────────────────────────────────────────────────
 // Below 900px the bar shows these (in this order) plus "More". Every other tab is
 // listed in the More sheet. The desktop sidebar still shows all tabs.
-// Slot 3 is Tools for now; My Group takes it for group members in the next upload.
-const MOBILE_TAB_ORDER={'study':1,'quiz-mode-select':2,'formula-bank':3,'progress':4};
+// Slot 3 is My Group for approved members (and the instructor); otherwise it is Tools.
+function mobileTabOrder(){
+  const order={'study':1,'quiz-mode-select':2,'progress':4};
+  order[myGroupAllowed()?'my-group':'formula-bank']=3;
+  return order;
+}
 const MORE_LABELS={'intro':'Home & Profile'};
 function closeMoreSheet(){const el=document.getElementById('more-sheet');if(el)el.remove();}
 function openMoreSheet(){
   closeMoreSheet();
   const active=activeNavTab();
-  const items=getNavTabs().filter(t=>!MOBILE_TAB_ORDER[t.id]);
+  const order=mobileTabOrder();
+  const items=getNavTabs().filter(t=>!order[t.id]);
   const wrap=document.createElement('div');
   wrap.id='more-sheet';
   wrap.onclick=e=>{if(e.target===wrap)closeMoreSheet();};
@@ -138,6 +143,7 @@ function render(){
   // yields a graceful recovery card instead of a blank screen.
   try{
     switch(STATE.tab){
+      case'my-group':html=renderMyGroup();break;
       case'loading':html=renderLoading();break;case'onboarding':html=renderOnboarding();break;case'login':html=renderLogin();break;case'intro':html=renderIntro();break;case'register':html=renderRegister();break;case'progress':html=renderProgress();break;case'wrong-answers':html=renderWrongAnswers();break;case'study':html=renderStudy();break;case'quiz-session':html=renderQuizSession();break;case'quiz-results':html=renderQuizResults();break;case'quiz-review':html=renderQuizReview();break;case'search':html=renderSearch();break;case'quiz-mode':html=renderQuizMode();break;case'quiz-mode-select':html=renderQuizModeSelect();break;case'leaderboard':html=renderLeaderboard();break;case'tracker':html=renderTracker();break;case'feedback':html=renderFeedback();break;case'community':html=renderCommunity();break;case'question-detail':html=renderQuestionDetail();break;case'formula-bank':html=renderFormulaBank();break;case'dictionary':html=renderDictionary();break;case'flashcards':html=renderFlashcards();break;case'my-notes':html=renderNotes();break;case'dashboard':html=renderDashboardLazy();break;case'cbq':html=renderCBQ();break;case'mock-exam':html=renderMockExamScreen();break;case'custom-practice':html=renderCustomPractice();break;case'case-study':html=renderCaseStudy();break;case'exam':html=renderExam();break;default:html=renderIntro();
     }
   }catch(err){
@@ -148,33 +154,6 @@ function render(){
   }
   content.innerHTML=html;
   window.__uiReady=true; // Batch 24 (B24-03): UI is up — errors now toast instead of the boot-failure screen
-
-  // Batch 5: weekly plan banner — floats above content on Study tab.
-  if(STATE.tab==='study' && STATE.studentActivePlan){
-    try{
-      const _bannerHTML=renderStudentActivePlanBanner();
-      if(_bannerHTML){
-        const _wrap=document.createElement('div');
-        _wrap.style.cssText='margin:10px 12px 0;flex-shrink:0';
-        _wrap.innerHTML=_bannerHTML;
-        content.insertBefore(_wrap,content.firstChild);
-      }
-    }catch(e){}
-  }
-
-  // Batch 22 (item 5): lecture schedule (plan vs actual) — floats above
-  // content on Study tab, same insertion pattern as the weekly plan banner.
-  if(STATE.tab==='study' && STATE.studentSchedule && STATE.studentSchedule.length){
-    try{
-      const _schedHTML=renderStudentScheduleSection();
-      if(_schedHTML){
-        const _wrap2=document.createElement('div');
-        _wrap2.style.cssText='margin:10px 12px 0;flex-shrink:0';
-        _wrap2.innerHTML=_schedHTML;
-        content.insertBefore(_wrap2,content.firstChild);
-      }
-    }catch(e){}
-  }
 
   // Batch 5: lecture feedback prompt — appears when instructor opens feedback
   // AND student attended AND hasn't submitted yet. Non-blocking floating card.
@@ -240,8 +219,7 @@ function render(){
     STATE._flashLoading=true;STATE._flashTriedAt=Date.now();
     ensureFlashcards().then(()=>{STATE._flashLoading=false;if(STATE.tab==='flashcards'&&STATE.flashcards&&STATE.flashcards.length)render();}).catch(()=>{STATE._flashLoading=false;});
   }
-  if(STATE.tab==='intro'&&STATE.user){setTimeout(()=>{try{ensureQotd();}catch(e){}try{ensureStudentPlan();}catch(e){}},0);}
-  if(STATE.tab==='study'&&STATE.user){setTimeout(()=>{try{ensureStudentPlan();}catch(e){}try{ensureStudentSchedule();}catch(e){}},0);}
+  if(STATE.tab==='intro'&&STATE.user){setTimeout(()=>{try{ensureQotd();}catch(e){}},0);}
   if(STATE.tab==='search'){setTimeout(()=>{const inp=document.getElementById('search-input');if(inp){inp.focus();if(STATE.searchQ)updateSearchResults();}},50);}
   if(STATE.tab==='dictionary'){if(!STATE.dictLoaded)setTimeout(ensureDictionary,0);setTimeout(()=>{const i=document.getElementById('dict-input');if(i)i.focus();},50);}
   content.style.display='flex';content.style.flexDirection='column';content.style.overflow=STATE.tab==='cbq'||STATE.tab==='mock-exam'?'hidden':'auto';
@@ -254,9 +232,10 @@ function render(){
     const _caseOn=(typeof caseStudyAllowed==='function'&&caseStudyAllowed());
     if(active!==render._lastNavActive||_caseOn!==render._lastCaseOn){
       render._lastNavActive=active;render._lastCaseOn=_caseOn;
+      const mOrder=mobileTabOrder();
       const brandHeader=`<div class="desktop-brand"><div style="display:flex;align-items:center;gap:10px;min-width:0"><img src="./gawad-avatar.webp" alt="Mohamed Abdelgawad" style="width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--brand-tint)"><div style="min-width:0"><div style="font-size:13px;font-weight:600;color:var(--brand);letter-spacing:.5px">CMA Part One Prep</div><div style="font-size:10px;color:#888;margin-top:1px">With Gawad</div></div></div>${!window.matchMedia("(display-mode: standalone)").matches?'<button onclick="installApp()" title="Install App" style="display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:8px;border:1px solid #d0d8e8;background:var(--brand-tint);color:var(--brand);cursor:pointer;font-size:12px;font-weight:500;font-family:inherit;flex-shrink:0"><span style="font-size:14px">⬇</span><span>Install App</span></button>':''}</div>`;
-      nav.innerHTML=brandHeader+getNavTabs().map(t=>`<button class="nav-btn${t.id===active?' active':''}${MOBILE_TAB_ORDER[t.id]?' m-main m-'+MOBILE_TAB_ORDER[t.id]:''}" onclick="navTo('${t.id}')" title="${t.label}"><span class="nav-icon">${t.icon}</span><span class="nav-label">${t.label}</span></button>`).join('')
-        +`<button class="nav-btn nav-more m-main m-5${MOBILE_TAB_ORDER[active]?'':' active'}" onclick="openMoreSheet()" aria-haspopup="dialog" title="More"><span class="nav-icon">☰</span><span class="nav-label">More</span></button>`
+      nav.innerHTML=brandHeader+getNavTabs().map(t=>`<button class="nav-btn${t.id===active?' active':''}${mOrder[t.id]?' m-main m-'+mOrder[t.id]:''}" onclick="navTo('${t.id}')" title="${t.label}"><span class="nav-icon">${t.icon}</span><span class="nav-label">${t.label}</span></button>`).join('')
+        +`<button class="nav-btn nav-more m-main m-5${mOrder[active]?'':' active'}" onclick="openMoreSheet()" aria-haspopup="dialog" title="More"><span class="nav-icon">☰</span><span class="nav-label">More</span></button>`
         +'<button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()">&laquo;</button>'; // Batch 19
       applySidebarState(); // Batch 19: nav DOM was just rebuilt — re-sync class + button glyph
     }}
@@ -709,6 +688,7 @@ async function navTo(tab){
   // Batch 35: Case Study is for the instructor and approved-group students only.
   if(tab==='case-study'&&!(typeof caseStudyAllowed==='function'&&caseStudyAllowed())){tab='intro';}
   if(tab==='case-study'&&typeof _cs!=='undefined')_cs.sel=null;
+  if(tab==='my-group'&&!myGroupAllowed()){tab='intro';}
   if(tab==='lessons'&&tab!==STATE.tab){STATE.sectId=null;STATE.lessonId=null;}
   if(tab==='community'){STATE.communityLoaded=false;}
   STATE.tab=tab;render();

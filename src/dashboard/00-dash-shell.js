@@ -9,13 +9,13 @@ const DASH_AREAS=[
     {id:'students',label:'Students',render:()=>renderDashStudents(),roster:true},{id:'approvals',label:'Approvals',render:()=>renderDashApprovalsPage()},
     {id:'at-risk',label:'At Risk',group:true,render:()=>renderDashAtRisk()},{id:'progress',label:'Progress',group:true,render:()=>renderDashProgress()},{id:'leader',label:'Leader',group:true,render:()=>renderDashLeader()}]},
   {id:'teaching',label:'Teaching',icon:'\u{1F3AC}',tabs:[
-    {id:'lectures',label:'Lectures',group:true,render:()=>renderDashLectures()},{id:'attendance',label:'Attendance',group:true,render:()=>renderDashAttendance()},{id:'plan',label:'Plan',group:true,render:()=>renderDashPlan()},
-    {id:'schedule',label:'Schedule',group:true,render:()=>renderDashSchedule()},{id:'teaching-log',label:'Actual Teaching',group:true,render:()=>renderDashActualTeaching()}]},
+    {id:'lectures',label:'Lectures',group:true,render:()=>renderDashLectures()},{id:'attendance',label:'Attendance',group:true,render:()=>renderDashAttendance()},
+    {id:'group-schedule',label:'Group Schedule',group:true,render:()=>renderDashGroupSchedule()}]},
   {id:'exams',label:'Exams',icon:'\u{1F4DD}',tabs:[{id:'exams',label:'Exams',group:true,render:()=>renderDashExams()},{id:'results',label:'Results',group:true,render:()=>renderDashResults()}]},
   {id:'admin',label:'Admin',icon:'\u2699\uFE0F',tabs:[
     {id:'groups',label:'Groups',render:()=>renderDashGroups(),roster:true},{id:'interest',label:'Interest',render:()=>renderDashInterest()},{id:'inbox',label:'Inbox',render:()=>renderDashInbox()},{id:'errors',label:'Errors',render:()=>renderDashErrors()}]}
 ];
-const DASH_EMPTY_LABEL={'plan':'Weekly Plan','at-risk':'At-Risk students'};
+const DASH_EMPTY_LABEL={'group-schedule':'Group Schedule','at-risk':'At-Risk students'};
 STATE.dashStudentsPage=0;
 STATE.dashOverview=null;
 
@@ -188,13 +188,13 @@ async function loadDashOverview(){
     try{
       const [an,sch,lec]=await Promise.all([
         db.collection('student-analytics').where('groupCode','==',code.toUpperCase()).get(),
-        db.collection('lecture-schedule').doc(code).get(),
+        db.collection('group-space').doc(code.toUpperCase()).get(),
         db.collection('lectures').where('groupCode','==',code).get()
       ]);
       out.atRisk=an.docs.filter(d=>_atRiskReason(atRiskCurrent(d.data()))).length;
       const dated=[];
       ((sch.exists&&sch.data().rows)||[]).forEach(r=>{
-        if(r.plannedDate)dated.push({date:String(r.plannedDate).slice(0,10),title:'Lecture '+r.lectureNumber,tab:'schedule'});
+        if(r.date&&r.status==='planned')dated.push({date:r.date,title:'Lecture '+r.lectureNumber,tab:'group-schedule'});
       });
       lec.docs.forEach(d=>{const x=d.data();if(x.date&&x.status!=='ended')dated.push({date:String(x.date).slice(0,10),title:x.title||'Lecture',tab:'lectures'});});
       out.next=dated.filter(x=>x.date>=today).sort((a,b)=>a.date.localeCompare(b.date))[0]||null;
@@ -224,7 +224,7 @@ function renderDashOverview(){
   let perGroup='<div class="dash-sec">'+renderDashSkeleton()+'</div>';
   if(ov&&ov.loaded){
     const risk=ov.groups.map(g=>`<button class="dash-row" onclick="dashGo('at-risk','${esc(g.code)}')"><span><b>${esc(g.code)}</b></span><span>${g.failed?'Couldn\u2019t load':g.atRisk+' at risk'} \u203A</span></button>`).join('');
-    const next=ov.groups.map(g=>`<button class="dash-row" onclick="dashGo('${g.next?g.next.tab:'schedule'}','${esc(g.code)}')"><span><b>${esc(g.code)}</b><small dir="auto">${g.failed?'Couldn\u2019t load':(g.next?esc(g.next.title):'No upcoming dated lecture')}</small></span><span>${g.next?esc(dashFmtSeen(g.next.date)):''} \u203A</span></button>`).join('');
+    const next=ov.groups.map(g=>`<button class="dash-row" onclick="dashGo('${g.next?g.next.tab:'group-schedule'}','${esc(g.code)}')"><span><b>${esc(g.code)}</b><small dir="auto">${g.failed?'Couldn\u2019t load':(g.next?esc(g.next.title):'No upcoming dated lecture')}</small></span><span>${g.next?esc(dashFmtSeen(g.next.date)):''} \u203A</span></button>`).join('');
     perGroup=ov.groups.length
       ?`<div class="dash-sec"><h3>Next lecture</h3>${next}</div><div class="dash-sec"><h3>At-risk students</h3>${risk}</div>`
       :'<div class="dash-sec">'+renderDashPickGroupEmpty('overview')+'</div>';

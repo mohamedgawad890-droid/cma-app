@@ -118,8 +118,6 @@ const STATE={tab:'loading',searchQ:'',dictQ:'',dictData:[],dictLoaded:false,lead
     qotdState:{dateKey:'',question:null,selected:null,answered:false,taughtUnitCount:0},
     dailyGoalMinutes:30,fontSize:'md',
     dashTab:'overview',dashGroups:[],dashGroupsLoaded:false,dashStudents:[],dashSlideIdx:0,
-    dashTeachingLog:[],dashTeachingLogLoaded:false,
-    dashTeachingDraft:{groupCode:'',lectureNumber:'',date:'',unitIds:[],notes:'',lectureId:'',lectureTitle:''},
     dashLoaded:false,dashLoading:false,dashError:false,
     dashLectures:[],dashLive:{},dashLectureDraft:{title:'',groupCode:'',date:''},dashAttendance:[],
     dashExams:[],dashExamsLoaded:false,

@@ -151,62 +151,6 @@ async function deleteExam(id){
   }catch(e){showToast('Error deleting exam.','error');}
 }
 
-// ==== PHASE 1 DASHBOARD HANDLERS (ported from FMAA, remapped) ====
-// Legacy shim — teaching-log is now scoped by group in loadDashScopedData.
-function toggleTeachingUnit(uid){const u=STATE.dashTeachingDraft.unitIds;const i=u.indexOf(uid);if(i>=0)u.splice(i,1);else u.push(uid);render();}
-
-// Batch 8 (teaching-log-lecture-picker): link an Actual-Teaching entry to a
-// lecture already created in the Lectures tab. Selecting one auto-fills the
-// date and links lectureId/lectureTitle; units stay a manual pick because
-// lectures don't carry units. Clearing the select unlinks (leaves other fields).
-function onTeachingLecturePick(id){
-  const d=STATE.dashTeachingDraft;
-  if(!id){ d.lectureId=''; d.lectureTitle=''; render(); return; }
-  const lec=(STATE.dashLectures||[]).find(l=>l.id===id);
-  if(!lec){ render(); return; }
-  d.lectureId=lec.id;
-  d.lectureTitle=lec.title||'';
-  if(lec.date) d.date=lec.date;
-  if(!d.lectureNumber){ d.lectureNumber=String(((STATE.dashTeachingLog||[]).length)+1); }
-  render();
-}
-
-function _tlFlagField(id){
-  const el=document.getElementById(id);
-  if(!el)return;
-  el.scrollIntoView({behavior:'smooth',block:'center'});
-  el.classList.add('field-error');
-  setTimeout(()=>{el.classList.remove('field-error');},2500);
-}
-
-async function saveTeachingEntry(){
-  const d=STATE.dashTeachingDraft;
-  // Batch 22 (B22-01): same live-group fix as createLecture()/saveExam() --
-  // read the group from dashSelectedGroup at submit time, not the draft's
-  // cached groupCode, which can go stale if the instructor switches groups
-  // after opening this form.
-  const g=STATE.dashSelectedGroup;
-  // S4-E: check required fields in order; on the first empty one show a
-  // specific message and scroll+highlight that field instead of a generic toast.
-  if(!g){showToast('No group selected.','warning');return;}
-  if(!d.lectureNumber){showToast('Enter a lecture #.','warning');_tlFlagField('tl-lecno');return;}
-  if(!d.date){showToast('Pick a date.','warning');_tlFlagField('tl-date');return;}
-  if(!d.unitIds.length){showToast('Select at least one unit.','warning');_tlFlagField('tl-units');return;}
-  try{
-    await db.collection('teaching-log').add({groupCode:g.trim().toUpperCase(),lectureNumber:Number(d.lectureNumber),date:d.date,unitIds:d.unitIds.slice(),notes:d.notes.trim(),lectureId:d.lectureId||'',lectureTitle:d.lectureTitle||'',createdAt:new Date().toISOString(),createdBy:STATE.user.uid});
-    showToast('Teaching entry saved \u2705','success');
-    // Reset draft but preserve group prefill for the next entry
-    STATE.dashTeachingDraft={groupCode:STATE.dashSelectedGroup,lectureNumber:'',date:'',unitIds:[],notes:'',lectureId:'',lectureTitle:''};
-    await refreshDashScoped();
-  }catch(e){showToast('Error: '+e.message,'error');}
-}
-
-async function deleteTeachingEntry(id){
-  const ok=await showModal({icon:'\u{1F5D1}\uFE0F',title:'Delete Entry?',body:'This removes the teaching record. Questions of the Day may change for that group.',type:'danger',confirmText:'Delete',cancelText:'Cancel'});
-  if(!ok)return;
-  try{await db.collection('teaching-log').doc(id).delete();await refreshDashScoped();}catch(e){showToast('Error deleting.','error');}
-}
-
 async function saveGroup(){
   const inp=document.getElementById('new-group-input');
   if(!inp)return;
@@ -299,7 +243,7 @@ async function loadDashGroupsList(){
 async function loadDashScopedData(groupCode){
   if(!groupCode){
     // No group selected — nothing to scope. Empty state will render.
-    STATE.dashLectures=[];STATE.dashTeachingLog=[];STATE.dashExams=[];STATE.dashLive={};
+    STATE.dashLectures=[];STATE.dashExams=[];STATE.dashLive={};
     STATE.dashLoadedForGroup='';STATE.dashLoaded=true;STATE.dashLoading=false;
     render();return;
   }
@@ -307,25 +251,22 @@ async function loadDashScopedData(groupCode){
   STATE.dashLoading=true;STATE.dashError=false;
   // Instant-swap UX (Decision 2A): clear stale data so old group's numbers
   // never appear under the new group's header — skeleton renders instead.
-  STATE.dashLectures=[];STATE.dashTeachingLog=[];STATE.dashExams=[];STATE.dashLive={};
+  STATE.dashLectures=[];STATE.dashExams=[];STATE.dashLive={};
   STATE.dashAttendanceByLecture={};   // group switch invalidates per-lecture cache
   render();
   try{
-    const [lsnap,tsnap,exsnap,livedoc]=await Promise.all([
+    const [lsnap,exsnap,livedoc]=await Promise.all([
       db.collection('lectures').where('groupCode','==',groupCode).get(),
-      db.collection('teaching-log').where('groupCode','==',groupCode).get(),
       db.collection('exams').where('groupCode','==',groupCode).get(),
       db.collection('live').doc(groupCode).get()
     ]);
     STATE.dashLectures=lsnap.docs.map(d=>({id:d.id,...d.data()}))
       .sort((a,b)=>(b.date||'')>(a.date||'')?1:(b.createdAt||'')>(a.createdAt||'')?1:-1);
-    STATE.dashTeachingLog=tsnap.docs.map(d=>({id:d.id,...d.data()}))
-      .sort((a,b)=>(b.date||'')>(a.date||'')?1:-1);
     STATE.dashExams=exsnap.docs.map(d=>({id:d.id,...d.data()}))
       .sort((a,b)=>(b.opensAt||'')>(a.opensAt||'')?1:-1);
     STATE.dashLive={};
     if(livedoc.exists)STATE.dashLive[groupCode]=livedoc.data();
-    STATE.dashTeachingLogLoaded=true;STATE.dashExamsLoaded=true;
+    STATE.dashExamsLoaded=true;
     STATE.dashLoadedForGroup=groupCode;STATE.dashLoaded=true;
   }catch(e){
     console.warn('[Dashboard scoped] load failed:',e);
