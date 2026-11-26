@@ -74,10 +74,10 @@ async function reshuffleExam(examId){
     // exams (no sectionIds array) fall back to their one sectionId/unitIds.
     const sectionIds=Array.isArray(ex.sectionIds)&&ex.sectionIds.length?ex.sectionIds:[ex.sectionId];
     const unitsBySection=ex.unitsBySection||(ex.unitIds?{[ex.sectionId]:ex.unitIds}:{});
-    const result=await buildDistributedExamPool(sectionIds,unitsBySection,ex.count);
+    const result=await buildDistributedExamPool(sectionIds,unitsBySection,ex.count,{sourceFilter:ex.sourceFilter,numericalPct:ex.numericalPct});
     if(!result.ok){showToast(result.message,'warning');return;}
-    await db.collection('exams').doc(examId).update({questionIds:result.questionIds,reshuffledAt:new Date().toISOString()});
-    showToast('Questions re-shuffled \u2705','success');
+    await db.collection('exams').doc(examId).update({questionIds:result.questionIds,numericalCount:result.numericalCount,reshuffledAt:new Date().toISOString()});
+    showToast('Questions re-shuffled \u2705 '+result.numericalCount+' of '+ex.count+' numerical','success',5000);
     await refreshDashScoped();
   }catch(e){console.warn('[reshuffleExam]',e);showToast('Error: '+e.message,'error');}
 }

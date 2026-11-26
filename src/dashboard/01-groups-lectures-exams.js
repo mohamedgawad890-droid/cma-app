@@ -77,14 +77,25 @@ async function saveExam(){
   const closesISO=new Date(d.closesAt).toISOString();
   if(new Date(closesISO)<=new Date(opensISO)){showToast('Closes must be after opens.','warning');return;}
   if(new Date(closesISO)<=new Date()){showToast('Closes time is in the past.','warning');return;}
+  const options=readExamOptions(d,sectionIds);
+  if(!options.ok){showToast(options.message,'warning',5000);return;}
+  if(options.includeCbq&&(Date.parse(closesISO)-Math.max(Date.parse(opensISO),Date.now()))<(dur+options.cbqMinutes)*60000){
+    showToast('The exam window is shorter than both parts ('+(dur+options.cbqMinutes)+' min). Set a later closing time.','warning',5000);return;
+  }
   try{
     // Batch 11: even split across sections, then even split across each
     // section's selected units (largest-remainder rounding), shared with
     // reshuffleExam() via buildDistributedExamPool().
     const unitsBySection=d.unitsBySection||{};
-    const result=await buildDistributedExamPool(sectionIds,unitsBySection,count);
-    if(!result.ok){showToast(result.message,'warning');return;}
+    const result=await buildDistributedExamPool(sectionIds,unitsBySection,count,{sourceFilter:options.sourceFilter,numericalPct:options.numericalPct});
+    if(!result.ok){showToast(result.message,'warning',5000);return;}
+    const cbqFields=await buildExamCbqFields(options,sectionIds);
+    if(!cbqFields.ok){showToast(cbqFields.message,'warning',5000);return;}
     await db.collection('exams').add({
+      sourceFilter:options.sourceFilter,
+      numericalPct:options.numericalPct,       // requested share (null = no preference)
+      numericalCount:result.numericalCount,    // actual numerical questions frozen
+      ...cbqFields.fields,
       title:d.title.trim(),
       groupCode:g.toUpperCase(),
       questionSource:'auto',
@@ -99,7 +110,7 @@ async function saveExam(){
       createdAt:new Date().toISOString(),
       createdBy:STATE.user.uid
     });
-    showToast('Exam created \u2705','success');
+    showToast('Exam created \u2705 '+result.numericalCount+' of '+count+' questions are numerical'+(result.numericalTarget!=null&&result.numericalTarget!==result.numericalCount?' (target '+result.numericalTarget+': the closest your selection allows)':''),'success',7000);
     // Batch 2: preserve group prefill so back-to-back exams for the same
     // group don't require re-selection
     STATE.dashExamDraft={title:'',groupCode:STATE.dashSelectedGroup,sectionIds:[],unitsBySection:{},count:20,durationMinutes:30,opensAt:'',closesAt:'',maxAttempts:3};
@@ -675,6 +686,7 @@ function renderDashExamPreview(){
       ⚠️ This is the <b>frozen snapshot</b> shown to students. Correct answers are highlighted for your review — do not share this view with students.
     </div>
     ${questionsHTML}
+    ${renderExamCbqPreview(ex)}
     <div class="dx-15"></div>
   </div>`;
 }
@@ -729,6 +741,7 @@ function renderDashExams(){
                  class="dx-05">
         </div>
       </div>
+      ${renderExamOptions(d)}
       <div class="dx-03">
         <label class="dx-02">Max Attempts (1\u201310) <span style="font-weight:400">\u2014 students can retake up to this many times, in shuffled order</span></label>
         <input type="number" min="1" max="10" value="${esc(String(d.maxAttempts==null?3:d.maxAttempts))}"
@@ -792,6 +805,7 @@ function renderDashExams(){
       <div style="font-size:11px;color:var(--muted);line-height:1.7;margin-bottom:10px">
         ${sectionsLine}<br>
         <b>${x.count}</b> questions · <b>${x.durationMinutes}</b> min<br>
+        ${examOptionsLine(x)}
         Opens <b>${fmtDT(x.opensAt)}</b> · Closes <b>${fmtDT(x.closesAt)}</b>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
@@ -1063,7 +1077,11 @@ async function loadExamResults(examId){
     );
     const scores=submitted.map(r=>r.percentage||0);
     const avg=scores.length?Math.round(scores.reduce((s,v)=>s+v,0)/scores.length):0;
-    const passCount=submitted.filter(r=>(r.percentage||0)>=EXAM_PASS_THRESHOLD).length; // Batch 11: was hardcoded 60
+    // Two-part exams: a student passes if any attempt reaches the estimated pass mark.
+    const ex=(STATE.dashExams||[]).find(e=>e.id===examId);
+    const passCount=(ex&&ex.includeCbq)
+      ?new Set(results.filter(r=>r.submitted&&examCbqSummary(ex,r).passed).map(r=>r.userId)).size
+      :submitted.filter(r=>(r.percentage||0)>=EXAM_PASS_THRESHOLD).length; // Batch 11: was hardcoded 60
     const passRate=submitted.length?Math.round(passCount/submitted.length*100):0;
     const sorted=[...scores].sort((a,b)=>a-b);
     const median=sorted.length?(sorted.length%2?sorted[(sorted.length-1)/2]:Math.round((sorted[sorted.length/2-1]+sorted[sorted.length/2])/2)):0;

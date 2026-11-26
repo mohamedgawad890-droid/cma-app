@@ -73,7 +73,7 @@
   function ahFind(id){return AH.items.filter(function(x){return x.id===id;})[0]||null;}
   function ahBusy(){                                               // an INSTRUCTOR exam is mid-way
     var s=STATE.examSession;
-    if(s&&!s.submitted&&!s.reviewMode&&!s.isPractice){
+    if(s&&((!s.submitted&&!s.reviewMode&&!s.isPractice)||(s.part2&&!s.part2.submitted))){
       ahToast('Finish or submit your current exam first.','warning');
       return true;
     }

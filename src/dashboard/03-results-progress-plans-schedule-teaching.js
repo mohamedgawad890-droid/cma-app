@@ -775,6 +775,8 @@ function exportResultsCSV(examId){
   const exam=STATE.dashExams.find(e=>e.id===examId);
   const students=STATE.dashStudents||[];
   const header=['Student Name','Student ID','Group','Attempt','Score','Total','Percentage','Time Taken (min)','Started At','Submitted At','Auto-Submitted','Status'];
+  const twoPart=!!(exam&&exam.includeCbq);
+  if(twoPart)header.push('CBQ Score','CBQ Total','CBQ Percentage','Estimated /500 (not official)','Two-Part Result');
   const rows=[header];
   cache.results.forEach(r=>{
     const st=students.find(s=>s.uid===r.userId)||{};
@@ -795,6 +797,11 @@ function exportResultsCSV(examId){
       r.autoSubmitted?'Yes':'No',
       r.submitted?'Submitted':'In Progress'
     ]);
+    if(twoPart){
+      const sum=r.submitted?examCbqSummary(exam,r):null;
+      const c=r.cbq&&r.cbq.submitted?r.cbq:null;
+      rows[rows.length-1].push(c?c.score:'',c?c.total:'',c?c.percentage:'',sum&&sum.points!=null?sum.points:'',sum?sum.label:'');
+    }
   });
   const csv=rows.map(row=>row.map(cell=>{
     const s=String(cell==null?'':cell);
@@ -846,7 +853,7 @@ function renderDashExamResults(){
     +'<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:10px">'
     +'<div><div class="dx-12">Submitted</div><div class="dx-20">'+(stats.submitted||0)+(enrolled?' / '+enrolled+' ('+takenPct+'%)':'')+'</div></div>'
     +'<div><div class="dx-12">Average</div><div class="dx-20">'+(stats.avgPct||0)+'%</div></div>'
-    +'<div><div class="dx-12">Pass Rate (\u226560%)</div><div class="dx-20">'+(stats.passRate||0)+'% <span class="dx-12">('+(stats.passCount||0)+' passed)</span></div></div>'
+    +'<div><div class="dx-12">Pass Rate ('+(exam&&exam.includeCbq?'est. \u2265'+EXAM_CBQ_PASS_POINTS+'/500':'\u2265'+EXAM_PASS_THRESHOLD+'%')+')</div><div class="dx-20">'+(stats.passRate||0)+'% <span class="dx-12">('+(stats.passCount||0)+' passed)</span></div></div>'
     +'<div><div class="dx-12">Median</div><div class="dx-20">'+(stats.medianPct||0)+'%</div></div>'
     +'</div>'
     +(stats.submitted>0?('<div style="display:flex;gap:14px;font-size:11px;opacity:.85;padding-top:8px;border-top:1px solid rgba(255,255,255,.2)"><div>Highest: <b>'+stats.highest+'%</b></div><div>Lowest: <b>'+stats.lowest+'%</b></div>'+(stats.pending>0?'<div>In progress: <b>'+stats.pending+'</b></div>':'')+'</div>'):'')
@@ -904,6 +911,7 @@ function renderDashExamResults(){
       +'<div class="dx-16">'
       +'<div style="font-size:13px;font-weight:600;color:var(--ink);line-height:1.3;display:flex;align-items:center;gap:6px">'+esc(r._stName)+' '+statusPill+' '+attemptPill+'</div>'
       +'<div class="dx-18">'+(r._stId?esc(r._stId)+' \u00B7 ':'')+fmtDT(r.submittedAt)+(r._timeMin!=null?' \u00B7 '+r._timeMin+' min':'')+'</div>'
+      +examCbqResultLine(exam,r,examId)
       +'</div>'
       +(r.submitted?('<div style="background:'+pctBg+';color:'+pctColor+';border-radius:8px;padding:5px 10px;font-family:\'Courier New\',monospace;font-size:13px;font-weight:700;min-width:64px;text-align:center">'+(r.score||0)+'/'+(r.total||0)+'<br><span style="font-size:11px">'+pct+'%</span></div>'):'')
       +(r.submitted?('<button onclick="openInstructorReview(\''+examId+'\',\''+r._docId+'\')" style="padding:7px 10px;border-radius:8px;border:.5px solid var(--brand-2)40;background:var(--brand-tint);color:var(--brand);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">Review \u203A</button>'):'')

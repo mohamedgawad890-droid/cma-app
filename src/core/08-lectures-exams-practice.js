@@ -175,6 +175,92 @@ function _largestRemainderSplit(total,n){
   for(let i=0;i<rem;i++)arr[i]++;
   return arr;
 }
+// Exam batch (item 1): same even split, but the leftover +1s land on RANDOM buckets,
+// not always the first ones (otherwise the last units could never get the extra).
+function _randomRemainderSplit(total,n){
+  return _shuffleInPlace(_largestRemainderSplit(total,n));
+}
+function _shuffleInPlace(a){
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+// Exam batch (item 3): question source filter. Everything NOT listed here counts
+// as an outside source. Edit this list to move a label between the two groups.
+const APP_WRITTEN_SOURCES=['AUTH','Claude','CMA Prep \u2014 Gawad'];
+function isAppWrittenQ(q){
+  const s=String((q&&q.source)||'').trim();
+  return !s||APP_WRITTEN_SOURCES.includes(s)||s.indexOf('ORIGINAL')===0;
+}
+function matchesSourceFilter(q,filter){
+  if(filter==='app')return isAppWrittenQ(q);
+  if(filter==='outside')return !isAppWrittenQ(q);
+  return true;
+}
+// Exam batch (item 2): a question is "numerical" when at least 3 of 4 answer choices
+// are figures (digits with only a few unit words). A question may override with num:true/false.
+function _isFigureOption(o){
+  const t=String(o==null?'':o).replace(/<[^>]*>/g,' ');
+  if(!/\d/.test(t))return false;
+  const rest=t.replace(/\b(favou?rable|unfavou?rable|increase|decrease|units?|per|hours?|minutes|pounds?|gain|loss|million|thousand|direct|labor|machine|U|F)\b/gi,'');
+  return (rest.match(/[A-Za-z]/g)||[]).length<=6;
+}
+function isNumericalQ(q){
+  if(!q)return false;
+  if(typeof q.num==='boolean')return q.num;
+  const o=q.o||[];
+  return !!o.length&&o.filter(_isFigureOption).length>=Math.ceil(o.length*0.75);
+}
+// Picks one section's questions. quota is split over units; when wantNum is a number
+// the numerical share is spread over the same units, and only if the unit split can't
+// deliver it are questions swapped between units of the SAME section.
+function _pickSection(byUnit,quota,wantNum,isNum){
+  const units=_shuffleInPlace(Object.keys(byUnit));
+  const split=_largestRemainderSplit(quota,units.length);
+  const U=units.map((u,i)=>{
+    const pool=_shuffleInPlace(byUnit[u].slice());
+    return {pool,take:Math.min(split[i]||0,pool.length)};
+  });
+  // fill any shortfall from units that still have spare questions
+  let short=quota-U.reduce((n,x)=>n+x.take,0);
+  while(short>0){
+    const room=U.filter(x=>x.take<x.pool.length);
+    if(!room.length)break;
+    room[Math.floor(Math.random()*room.length)].take++;short--;
+  }
+  if(wantNum==null){
+    return U.reduce((out,x)=>out.concat(x.pool.slice(0,x.take)),[]);
+  }
+  U.forEach(x=>{
+    x.num=x.pool.filter(isNum);x.txt=x.pool.filter(id=>!isNum(id));
+    x.min=Math.max(0,x.take-x.txt.length);x.max=Math.min(x.take,x.num.length);
+    x.k=x.min;
+  });
+  const total=U.reduce((n,x)=>n+x.take,0);
+  let have=U.reduce((n,x)=>n+x.k,0);
+  const target=Math.max(0,Math.min(total,wantNum));
+  while(have<target){
+    const room=U.filter(x=>x.k<x.max);
+    if(!room.length)break;
+    const low=Math.min(...room.map(x=>x.k/x.take));
+    const best=room.filter(x=>x.k/x.take===low);
+    best[Math.floor(Math.random()*best.length)].k++;have++;
+  }
+  const picked=[];
+  U.forEach(x=>{picked.push(...x.num.slice(0,x.k),...x.txt.slice(0,x.take-x.k));});
+  // swap within the section to close any remaining gap
+  const chosen=new Set(picked);
+  const spare=wantNumeric=>_shuffleInPlace(U.reduce((out,x)=>out.concat((wantNumeric?x.num:x.txt).filter(id=>!chosen.has(id))),[]));
+  const count=()=>picked.filter(isNum).length;
+  const need=count()<target;
+  const pool=spare(need);
+  while(pool.length&&count()!==target){
+    const outIdx=_shuffleInPlace(picked.map((_,i)=>i)).find(i=>isNum(picked[i])!==need);
+    if(outIdx===undefined)break;
+    picked[outIdx]=pool.pop();
+  }
+  return picked;
+}
+
 // Batch 11: shared section- and unit-balanced pool builder, used by both
 // saveExam (creation) and reshuffleExam (re-roll) so distribution logic
 // never drifts between the two. sectionIds: array of section ids.
@@ -205,8 +291,12 @@ function countHardPractice(sectionIds,unitsBySection){
 
 async function buildDistributedExamPool(sectionIds,unitsBySection,count,opts){
   const hardOnly=!!(opts&&opts.hardOnly);
+  const sourceFilter=(opts&&opts.sourceFilter)||'all';
+  const rawPct=opts?opts.numericalPct:null;
+  const numericalPct=(rawPct===''||rawPct==null||isNaN(Number(rawPct)))?null:Math.max(0,Math.min(100,Number(rawPct)));
   await Promise.all(sectionIds.map(sid=>ensureQuizzes(sid)));
   const secPools={};   // sid -> {unitId -> [qid,...]}
+  const numSet=new Set();
   sectionIds.forEach(sid=>{
     const sec=S.find(s=>s.id===sid);
     if(!sec)return;
@@ -218,47 +308,60 @@ async function buildDistributedExamPool(sectionIds,unitsBySection,count,opts){
         l.quizzes.forEach((q,i)=>{
           if(isOutOfScopeQ(l,q))return;   // never freeze Part-2 content into a graded exam
           if(hardOnly&&!isHardQ(q))return;
+          if(!matchesSourceFilter(q,sourceFilter))return;
           const qid=l.id+':'+(q.id||i);
+          if(isNumericalQ(q))numSet.add(qid);
           (byUnit[l.id]=byUnit[l.id]||[]).push(qid);
         });
       }
     });
     secPools[sid]=byUnit;
   });
-  const secQuotas={};
-  _largestRemainderSplit(count,sectionIds.length).forEach((q,i)=>{secQuotas[sectionIds[i]]=q;});
-  const picked=[];
-  const leftoverPool=[];   // surplus questions (available but past their unit's quota) — backfill source
-  let totalShortfall=0;
-  sectionIds.forEach(sid=>{
-    const byUnit=secPools[sid]||{};
-    const unitIds=Object.keys(byUnit);
-    const quota=secQuotas[sid]||0;
-    const unitQuotas={};
-    _largestRemainderSplit(quota,unitIds.length).forEach((q,i)=>{unitQuotas[unitIds[i]]=q;});
-    let filled=0;
-    unitIds.forEach(uid=>{
-      const pool=byUnit[uid].slice();
-      for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
-      const take=Math.min(unitQuotas[uid]||0,pool.length);
-      picked.push(...pool.slice(0,take));
-      filled+=take;
-      leftoverPool.push(...pool.slice(take));   // unused surplus from this unit
+  const sizeOf=sid=>Object.values(secPools[sid]||{}).reduce((n,a)=>n+a.length,0);
+  const available=sectionIds.reduce((n,sid)=>n+sizeOf(sid),0);
+  if(available<count){
+    if(hardOnly)return {ok:false,message:'Only '+available+' hard questions available in this selection (need '+count+'). Reduce the count or add more sections/units.'};
+    const note=sourceFilter==='all'?'in-scope':(sourceFilter==='app'?'app-written':'outside-source');
+    return {ok:false,message:'Only '+available+' '+note+' questions available across your selection (need '+count+'). Reduce Question count, select more units/sections'+(sourceFilter==='all'?'':', or change the source filter')+'.'};
+  }
+  // Even split across sections (random +1s); a section that runs short passes the rest on.
+  const secQuota={};
+  _randomRemainderSplit(count,sectionIds.length).forEach((q,i)=>{secQuota[sectionIds[i]]=Math.min(q,sizeOf(sectionIds[i]));});
+  let left=count-sectionIds.reduce((n,sid)=>n+secQuota[sid],0);
+  while(left>0){
+    const room=sectionIds.filter(sid=>secQuota[sid]<sizeOf(sid));
+    if(!room.length)break;
+    secQuota[room[Math.floor(Math.random()*room.length)]]++;left--;
+  }
+  // Numerical target, shared between sections in proportion to their quota,
+  // limited by what each section can actually deliver.
+  const secNum={};
+  let target=null;
+  if(numericalPct!=null){
+    target=Math.round(count*numericalPct/100);
+    const info=sectionIds.map(sid=>{
+      const ids=Object.values(secPools[sid]||{}).reduce((o,a)=>o.concat(a),[]);
+      const num=ids.filter(id=>numSet.has(id)).length,q=secQuota[sid];
+      return {sid,q,min:Math.max(0,q-(ids.length-num)),max:Math.min(q,num)};
     });
-    if(filled<quota)totalShortfall+=(quota-filled);
+    info.forEach(x=>{x.k=x.min;});
+    let have=info.reduce((n,x)=>n+x.k,0);
+    while(have<target){
+      const room=info.filter(x=>x.k<x.max);
+      if(!room.length)break;
+      const low=Math.min(...room.map(x=>x.k/x.q));
+      const best=room.filter(x=>x.k/x.q===low);
+      best[Math.floor(Math.random()*best.length)].k++;have++;
+    }
+    info.forEach(x=>{secNum[x.sid]=x.k;});
+  }
+  const picked=[];
+  sectionIds.forEach(sid=>{
+    picked.push(..._pickSection(secPools[sid]||{},secQuota[sid],numericalPct==null?null:secNum[sid],id=>numSet.has(id)));
   });
-  // Redistribute shortfall from whatever surplus exists elsewhere in the exam.
-  if(totalShortfall>0&&leftoverPool.length){
-    for(let i=leftoverPool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[leftoverPool[i],leftoverPool[j]]=[leftoverPool[j],leftoverPool[i]];}
-    while(totalShortfall>0&&leftoverPool.length){picked.push(leftoverPool.pop());totalShortfall--;}
-  }
-  if(picked.length<count){
-    if(hardOnly)return {ok:false,message:'Only '+picked.length+' hard questions available in this selection (need '+count+'). Reduce the count or add more sections/units.'};
-    return {ok:false,message:'Only '+picked.length+' in-scope questions available across your selection (need '+count+'). Reduce Question count or select more units/sections.'};
-  }
-  const finalShuffled=picked.slice();
-  for(let i=finalShuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[finalShuffled[i],finalShuffled[j]]=[finalShuffled[j],finalShuffled[i]];}
-  return {ok:true,questionIds:finalShuffled.slice(0,count)};
+  _shuffleInPlace(picked);
+  return {ok:true,questionIds:picked.slice(0,count),
+    numericalCount:picked.filter(id=>numSet.has(id)).length,numericalTarget:target};
 }
 
 
@@ -613,7 +716,7 @@ async function buildExamQuestions(exam,uid,attemptNumber){
     // If some frozen IDs are missing (e.g. content rebuild), top up from pool
     if(picked.length<exam.count){
       const have=new Set(picked.map(q=>q._qid));
-      const filler=poolAll.filter(q=>!have.has(q._qid));
+      const filler=poolAll.filter(q=>!have.has(q._qid)&&matchesSourceFilter(q,exam.sourceFilter));
       // fill up to exam.count
       while(picked.length<exam.count&&filler.length){
         const j=Math.floor(rand()*filler.length);
@@ -650,6 +753,11 @@ async function startExam(examId){
     return;
   }
 
+  if(!inProgress&&exam.includeCbq&&existing&&existing.submitted){
+    const state=examCbqSummary(exam,existing).state;
+    if(state==='pending'||state==='running'){showToast('Finish Part 2 of your last attempt first.','warning',4000);return;}
+  }
+
   const resumeMode=!!inProgress;
   const attemptNumber=resumeMode?(inProgress.attemptNumber||1):attemptsUsed+1;
   const isRetake=!resumeMode&&attemptsUsed>0;
@@ -665,6 +773,7 @@ async function startExam(examId){
     '📊 Questions: '+exam.count+(isRetake?' (same questions, new shuffled order)':''),
     '🔁 Attempt '+attemptNumber+' of '+maxAttempts
   ];
+  if(modalList&&exam.includeCbq)modalList.push('\u{1F4C4} Two parts: score 50% or more to open '+(exam.cbqIds||[]).length+' case studies ('+(exam.cbqDurationMinutes||60)+' min)');
   const ok=await showModal({
     icon:'\u{1F4DD}',title:modalTitle,body:modalBody,list:modalList,
     type:'primary',confirmText:resumeMode?'Resume':(isRetake?'Retake Now':'Start Now'),cancelText:'Not Yet'
@@ -956,7 +1065,9 @@ function renderExamsStrip(){
   const active=exams.filter(e=>examWindowStatus(e)==='active'&&!(results[e.id]&&results[e.id].submitted));
   const scheduled=exams.filter(e=>examWindowStatus(e)==='scheduled');
   const completed=exams.filter(e=>results[e.id]&&results[e.id].submitted).slice(0,2);
-  const cards=[...active,...scheduled,...completed].slice(0,3);
+  // Two-part exams with Part 2 still to do come first so they are never cut off.
+  const part2Due=exams.filter(e=>e.includeCbq&&results[e.id]&&results[e.id].submitted&&['pending','running'].includes(examCbqSummary(e,results[e.id]).state));
+  const cards=[...part2Due,...active,...scheduled,...completed.filter(e=>!part2Due.includes(e))].slice(0,3);
   if(!cards.length)return '';
 
   const cardHTML=(ex)=>{
@@ -981,6 +1092,17 @@ function renderExamsStrip(){
         secondBtn='<button onclick="startExam(\''+ex.id+'\')" style="background:#fff;color:var(--ok-strong-2);border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">\u{1F501} Retake \u2192</button>';
       }
       btn=reviewBtn+secondBtn;
+      if(ex.includeCbq){
+        const sum=examCbqSummary(ex,res);
+        const white=(fn,label)=>'<button onclick="'+fn+'(\''+ex.id+'\')" style="background:#fff;color:var(--ok-strong-2);border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;margin-right:6px">'+label+'</button>';
+        body='MCQ: <b>'+res.score+'/'+res.total+'</b> \u00B7 '+res.percentage+'% \u00B7 '+sum.label;
+        if(sum.state==='pending'||sum.state==='running'){
+          banner={bg:'linear-gradient(135deg,var(--brand),var(--brand-2))',label:'\u{1F513} PART 2 WAITING'};
+          btn=white('startExamCbq',(sum.state==='running'?'Resume':'Start')+' Part 2 \u2192');
+        }else{
+          btn=white('openExamCbqStatus','View result \u2192')+(res.inProgress||(attemptsUsed<maxAttempts&&st==='active')?secondBtn:'');
+        }
+      }
     }else if(st==='active'){
       const inProgress=_examLoadLocal(ex.id,1)||((STATE.studentExamResults||{})[ex.id]||{}).inProgress;   // Batch 30: also true when the draft is only on the server
       banner={bg:'linear-gradient(135deg,var(--brand),var(--brand-2))',label:inProgress?'\u25B6\uFE0F RESUME':'\u{1F7E2} ACTIVE'};
@@ -1008,7 +1130,11 @@ function renderExamsStrip(){
 // Full-screen runner + result. Dispatcher case: 'exam'
 function renderExam(){
   if(!STATE.examSession)return renderIntro();
+  const p2=STATE.examSession.part2;
+  if(p2&&(p2.review||!p2.submitted))return renderExamCbqRunner();
+  if(p2)return renderExamCbqStatus();
   if(STATE.examSession.reviewMode)return renderExamReview();
+  if(STATE.examSession.mcq)return renderExamCbqStatus();
   if(STATE.examSession.submitted)return renderExamResult();
   return renderExamRunner();
 }
@@ -1102,6 +1228,7 @@ function renderExamResult(){
   const sess=STATE.examSession;
   const r=sess.results;
   if(!r)return '';
+  if(sess.exam&&sess.exam.includeCbq&&!sess.isPractice)return renderExamCbqStatus();
   const emoji=r.percentage>=80?'\u{1F3C6}':r.percentage>=60?'\u{1F44D}':'\u{1F4DA}';
   const label=r.percentage>=80?'Excellent!':r.percentage>=60?'Good work!':'Keep studying!';
   // Batch 11: explicit pass/fail line, independent of the tiered emoji/label above.
@@ -1179,6 +1306,10 @@ function _examRenderRunner(){
 
 async function openExamReview(examId){
   // Case 1: we just submitted this exam and the in-memory session is intact.
+  const live=STATE.examSession;
+  if(live&&live.examId===examId&&live.exam&&live.exam.includeCbq&&live.results&&examAnswersLocked(live.exam,live.results)){
+    showToast('Answers are locked until you finish Part 2 or the exam closes.','warning',4000);return;
+  }
   if(STATE.examSession&&STATE.examSession.examId===examId&&STATE.examSession.submitted&&Array.isArray(STATE.examSession.questions)&&STATE.examSession.questions.length){
     STATE.examSession.reviewMode=true;
     STATE.examSession.reviewIdx=0;
@@ -1208,6 +1339,7 @@ async function openExamReview(examId){
     const doc=await db.collection('exam-results').doc(docId).get();
     if(!doc.exists){showToast('No result found.','error');return;}
     const data=doc.data();
+    if(examAnswersLocked(exam,data)){showToast('Answers are locked until you finish Part 2 or the exam closes.','warning',4000);return;}
     let questions=data.questionSnapshot;
     if(!questions||!Array.isArray(questions)||!questions.length){
       // Fallback: regenerate deterministically. Same seed will yield the same

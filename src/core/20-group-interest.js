@@ -100,7 +100,7 @@ function _giMaybeToast(){
     if(st.toastShown) return;
     if(st.hideUntil && Date.now() < st.hideUntil) return;
     if(GI_BLOCKED_TABS.indexOf(String(STATE.tab || '')) >= 0) return;
-    if(STATE.examSession && !STATE.examSession.submitted) return;
+    if(STATE.examSession && (!STATE.examSession.submitted || _examCbqActive())) return;
     var mo = document.getElementById('modal-overlay');
     if(mo && mo.style.display === 'flex') return;
     _giSetLS({ toastShown: true });
