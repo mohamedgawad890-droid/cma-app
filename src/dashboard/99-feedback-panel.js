@@ -4,12 +4,7 @@
 // Shows what students send from the share/feedback popup (collection
 // `app-feedback`, instructor-only read — see firestore.rules).
 //
-// Loads LAST in the dashboard bundle (99- prefix). It wraps renderDashboard()
-// instead of editing it: the original runs first, then this adds an "Inbox"
-// button to the sub-nav and, when that tab is selected, swaps the body.
-// If the dashboard markup ever changes and the sub-nav is not found, the wrapper
-// returns the original HTML untouched — the rest of the dashboard is unaffected.
-// To remove the tab: delete this one file.
+// The tab is registered in 00-dash-shell.js.
 
 // ── Data ───────────────────────────────────────────────────────────────────
 async function loadDashInbox(){
@@ -106,6 +101,7 @@ function renderDashInbox(){
     return '<div class="card" style="margin:0 12px 10px;'+(isNew?'border-inline-start:3px solid var(--brand,#0C447C)':'')+'">'
       +'<div style="display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:6px">'
       +'<span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:999px;background:'+t.bg+';color:'+t.c+'">'+tl+(isNew?' \u00B7 new':'')+'</span>'
+      +'<span class="dt-badge-slot">'+dashGroupBadge(r.userId)+'</span>'
       +'<span style="font-size:11px;color:var(--muted)">'+esc(when)+'</span></div>'
       +'<div dir="auto" style="font-size:14px;line-height:1.7;color:var(--ink);white-space:pre-wrap;word-break:break-word">'+(r.message?esc(r.message):'<span style="color:var(--muted)">(no comment)</span>')+'</div>'
       +'<div style="font-size:11px;color:var(--muted);margin-top:6px">'+esc(who)+(r.tab?' \u00B7 screen: '+esc(r.tab):'')+(r.build?' \u00B7 build '+esc(r.build):'')+'</div>'
@@ -115,37 +111,3 @@ function renderDashInbox(){
       +'</div>';
   }).join('');
 }
-
-// ── Wire into the dashboard (wrapper; original always runs first) ──────────
-(function(){
-  'use strict';
-  if(typeof renderDashboard!=='function')return;
-  const _renderDashboard=renderDashboard;
-  renderDashboard=function(){
-    const html=_renderDashboard.apply(this,arguments);
-    try{
-      if(typeof html!=='string')return html;
-      const i0=html.indexOf('<div class="sub-nav">');
-      if(i0<0)return html;
-      const i1=html.indexOf('</div>',i0);
-      if(i1<0)return html;
-
-      _inboxEnsureCount();
-      const isInbox=STATE.dashTab==='inbox';
-      const n=STATE.dashInboxNew||0;
-      const btn='<button class="sub-nav-btn'+(isInbox?' active':'')+'" onclick="STATE.dashTab=\'inbox\';render()">\u{1F4AC} Inbox'+(n?' \u00B7 '+n:'')+'</button>';
-
-      let nav=html.slice(i0,i1);
-      if(isInbox)nav=nav.replace(/sub-nav-btn active/g,'sub-nav-btn');
-      let out=html.slice(0,i0)+nav+btn+html.slice(i1);
-
-      if(isInbox){
-        const k=out.lastIndexOf('<div class="scroll-area">');
-        if(k>=0)out=out.slice(0,k)+'<div class="scroll-area">'+renderDashInbox()+'</div>';
-      }
-      return out;
-    }catch(_){
-      return html;
-    }
-  };
-})();

@@ -874,89 +874,6 @@ function renderDashTabEmpty(tabLabel,groupCode,cta){
   </div>`;
 }
 
-function renderDashboard(){
-  if(!isInstructor())return renderIntro();
-  if(!STATE.dashLoaded&&!STATE.dashLoading&&!STATE.dashGroupsLoaded)loadDashboardP1();
-  const _pendingApprovalsCount=(STATE.dashApprovals&&STATE.dashApprovals.rows||[]).filter(r=>r.status==='pending').length;
-  const SUB_DASH=[
-    {id:'groups',      icon:'\u{1F465}', label:'Groups'},
-    {id:'students',    icon:'\u{1F464}', label:'Students'},
-    {id:'approvals',   icon:'\u2705', label:'Approvals'+(_pendingApprovalsCount?' \u00B7 '+_pendingApprovalsCount:'')},
-    {id:'lectures',    icon:'\u{1F3AC}', label:'Lectures'},
-    {id:'attendance',  icon:'\u{2705}', label:'Attendance'},
-    {id:'exams',       icon:'\u{1F4DD}', label:'Exams'},
-    {id:'results',     icon:'\u{1F4CA}', label:'Results'},
-    {id:'progress',    icon:'\u{1F4C8}', label:'Progress'},
-    {id:'leader',      icon:'\u{1F3C5}', label:'Leader'},
-    {id:'plan',        icon:'\u{1F5D3}\uFE0F', label:'Plan'},
-    {id:'teaching-log',icon:'\u{1F4D3}', label:'Actual Teaching'},
-    {id:'schedule',    icon:'\u{1F4C5}', label:'Schedule'},
-    {id:'at-risk',     icon:'\u{1F6A8}', label:'At Risk'},
-    {id:'errors',      icon:'\u{1F41E}', label:'Errors'}   // Batch 24 (B24-08)
-  ];
-  const _validTabs=['groups','students','approvals','lectures','attendance','exams','results','progress','leader','plan','teaching-log','schedule','at-risk','errors'];
-  const tab=_validTabs.includes(STATE.dashTab)?STATE.dashTab:'groups';
-  const subnav=`<div class="sub-nav">${SUB_DASH.map(it=>
-    `<button class="sub-nav-btn${tab===it.id?' active':''}" onclick="STATE.dashTab='${it.id}';render()">${it.icon} ${it.label}</button>`
-  ).join('')}</div>`;
-
-  // ── Group chip strip: shown once we have the groups list ──
-  const chipStrip=STATE.dashGroupsLoaded?renderGroupChipStrip():'';
-
-  // ── Body dispatch ──
-  const scopedTabs={lectures:'Lectures',exams:'Exams','teaching-log':'Actual Teaching','at-risk':'At-Risk students',students:'Students',attendance:'Attendance',results:'Results',progress:'Progress',leader:'Leader',plan:'Weekly Plan',schedule:'Schedule'};
-  let body;
-  if(STATE.dashError){
-    body=`<div style="text-align:center;padding:50px 20px"><div style="font-size:34px;margin-bottom:10px">\u26A0\uFE0F</div><div style="font-size:14px;color:#555;margin-bottom:14px">Couldn't load dashboard data.</div><button onclick="STATE.dashError=false;STATE.dashGroupsLoaded=false;STATE.dashLoaded=false;loadDashboardP1()" style="padding:9px 18px;border-radius:8px;border:.5px solid var(--border-4);background:#fff;font-size:13px;cursor:pointer;font-family:inherit">Retry</button></div>`;
-  }else if(tab==='groups'){
-    // Groups tab: unscoped, always renders (roster management surface).
-    body=STATE.dashGroupsLoaded?renderDashGroups():renderDashSkeleton();
-  }else if(tab==='students'){
-    // Batch 5 Students tab: unscoped (roster is already loaded with groups).
-    body=STATE.dashGroupsLoaded?renderDashStudents():renderDashSkeleton();
-  }else if(tab==='approvals'){
-    // Batch 11: unscoped — pending join/switch requests span all groups.
-    if(!STATE.dashApprovals||!STATE.dashApprovals.loaded){
-      loadDashApprovals();
-      body=renderDashSkeleton();
-    }else{
-      body=renderDashApprovals();
-    }
-  }else if(tab==='errors'){
-    // Batch 24 (B24-08): unscoped — app errors reported by all students' devices.
-    body=renderDashErrors();
-  }else if(!STATE.dashSelectedGroup){
-    // Scoped tab but no group picked → empty state
-    body=renderDashPickGroupEmpty(scopedTabs[tab]||'items');
-  }else if(STATE.dashLoading||STATE.dashLoadedForGroup!==STATE.dashSelectedGroup){
-    // Scoped tab, group picked, but data still loading (or stale from prior group)
-    body=renderDashSkeleton();
-  }else if(tab==='teaching-log'){
-    body=renderDashActualTeaching();
-  }else if(tab==='lectures'){
-    body=renderDashLectures();
-  }else if(tab==='attendance'){
-    body=renderDashAttendance();
-  }else if(tab==='exams'){
-    body=renderDashExams();
-  }else if(tab==='results'){
-    body=renderDashResults();
-  }else if(tab==='progress'){
-    body=renderDashProgress();
-  }else if(tab==='leader'){
-    body=renderDashLeader();
-  }else if(tab==='plan'){
-    body=renderDashPlan();
-  }else if(tab==='schedule'){
-    body=renderDashSchedule();
-  }else if(tab==='at-risk'){
-    body=renderDashAtRisk();
-  }else{
-    body=renderDashGroups();
-  }
-  return `${subnav}${chipStrip}<div class="sh"><h2>Instructor Dashboard</h2><p>${STATE.dashSelectedGroup?'Viewing: <b>'+esc(STATE.dashSelectedGroup)+'</b> \u00B7 ':''}Groups \u00B7 lectures \u00B7 exams \u00B7 teaching log</p></div><div class="scroll-area">${body}</div>`;
-}
-
 // ═══════════════════════════════════════════════════════════════════════════
 // BATCH 4 — PILLAR 4: At Risk instructor view
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1042,15 +959,16 @@ function _atRiskReason(r){
   return null;
 }
 
-function waLink(r){
-  const phone=(r.phoneNumber||'').replace(/[^0-9]/g,'');
-  if(!phone)return '';
+// Returns one link per possible country code (two only when a 05… number could be KSA or UAE).
+function atRiskWaLinks(r){
+  const st=(STATE.dashStudents||[]).find(x=>x.uid===r.userId);
   const ar=(r.language||'ar')==='ar';
   const days=r.daysSinceActive||0;
   const msg=ar
     ? `\u0623\u0647\u0644\u064B\u0627 ${r.displayName||''}\u060C\n\u0634\u0641\u062A \u0625\u0646\u0643 \u0645\u0634 \u062F\u0627\u062E\u0644 \u0639\u0644\u0649 \u062A\u0637\u0628\u064A\u0642 CMA \u0645\u0646 ${days} \u0623\u064A\u0627\u0645.\n\u0643\u0644\u0647 \u062A\u0645\u0627\u0645\u061F \u0644\u0648 \u0645\u062D\u062A\u0627\u062C \u0645\u0633\u0627\u0639\u062F\u0629 \u0641\u064A \u0623\u064A \u0645\u0648\u0636\u0648\u0639\u060C \u0642\u0648\u0644\u0651\u064A.\n\n\u2014 \u062F. \u0645\u062D\u0645\u062F`
     : `Hey ${r.displayName||''},\nNoticed you haven't been active on the CMA app for ${days} days.\nEverything okay? If you need help with any topic, let me know.\n\n\u2014 Dr. Mohamed`;
-  return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+  return dashWaTargets(r.phoneNumber,st&&st.country)
+    .map(t=>({label:t.label,url:`https://wa.me/${t.num}?text=${encodeURIComponent(msg)}`}));
 }
 
 function renderDashAtRisk(){
@@ -1068,7 +986,7 @@ function renderDashAtRisk(){
   }
   const sevColor={high:'var(--err)',med:'var(--warn)'};
   const cards=rows.map(({r,reason})=>{
-    const wa=waLink(r);
+    const waLinks=atRiskWaLinks(r);
     const initial=(r.displayName||'?').charAt(0).toUpperCase();
     const noPhone=!(r.phoneNumber||'').replace(/[^0-9]/g,'');
     return `<div style="background:#fff;border:.5px solid #eee;border-left:3px solid ${sevColor[reason.sev]||'var(--warn)'};border-radius:10px;padding:13px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px">
@@ -1076,9 +994,9 @@ function renderDashAtRisk(){
       <div style="flex:1;min-width:0">
         <div style="font-size:14px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(r.displayName||'Unknown')}</div>
         <div style="font-size:12px;color:${sevColor[reason.sev]||'#888'};margin-top:2px">${esc(reason.tag)}</div>
-        ${noPhone?'<div style="font-size:11px;color:#c00;margin-top:2px">\u26A0\uFE0F no phone on file</div>':''}
+        ${noPhone?'<div style="font-size:11px;color:#c00;margin-top:2px">\u26A0\uFE0F no phone on file</div>':(!waLinks.length?'<div style="font-size:11px;color:#c00;margin-top:2px" dir="ltr">'+esc(r.phoneNumber)+' \u2014 add country code</div>':'')}
       </div>
-      ${wa?`<a href="${wa}" target="_blank" rel="noopener" style="flex-shrink:0;width:40px;height:40px;border-radius:10px;background:#25D366;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:20px" title="Message on WhatsApp">\u{1F4AC}</a>`:''}
+      ${waLinks.map(w=>`<a href="${w.url}" target="_blank" rel="noopener" style="flex-shrink:0;min-width:40px;height:40px;padding:0 8px;border-radius:10px;background:#25D366;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:4px;text-decoration:none" title="Message on WhatsApp">\u{1F4AC}${w.label?' '+w.label:''}</a>`).join('')}
     </div>`;
   }).join('');
   return `<div style="padding-top:4px">

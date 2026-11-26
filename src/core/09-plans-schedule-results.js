@@ -196,7 +196,7 @@ function renderStudentScheduleSection(){
     </div>`;
   }).join('');
   return `<div style="background:#fff;border:.5px solid var(--border);border-radius:14px;padding:14px 16px;margin:0 0 14px">
-    <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px">\U0001F4C5 Lecture Schedule</div>
+    <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px">\u{1F4C5} Lecture Schedule</div>
     <div>${items}</div>
   </div>`;
 }

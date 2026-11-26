@@ -117,7 +117,7 @@ const STATE={tab:'loading',searchQ:'',dictQ:'',dictData:[],dictLoaded:false,lead
     flashcards:[],flashcardsIdx:0,flashcardsFlipped:false,flashcardsFilter:'all',flashcardsMode:'study',
     qotdState:{dateKey:'',question:null,selected:null,answered:false,taughtUnitCount:0},
     dailyGoalMinutes:30,fontSize:'md',
-    dashTab:'groups',dashGroups:[],dashGroupsLoaded:false,dashStudents:[],dashSlideIdx:0,
+    dashTab:'overview',dashGroups:[],dashGroupsLoaded:false,dashStudents:[],dashSlideIdx:0,
     dashTeachingLog:[],dashTeachingLogLoaded:false,
     dashTeachingDraft:{groupCode:'',lectureNumber:'',date:'',unitIds:[],notes:'',lectureId:'',lectureTitle:''},
     dashLoaded:false,dashLoading:false,dashError:false,

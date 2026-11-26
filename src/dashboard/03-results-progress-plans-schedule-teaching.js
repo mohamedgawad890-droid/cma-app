@@ -267,6 +267,13 @@ async function loadDashProgress(g){
   render();
   try{
     const students=(STATE.dashStudents||[]).filter(s=>(s.groupCode||'').toUpperCase()===g.toUpperCase());
+    // "Last seen" comes from student-analytics, which the student app already updates when it is used.
+    const seenByUid=Object.create(null);
+    try{
+      const an=await db.collection('student-analytics').where('groupCode','==',g.toUpperCase()).get();
+      an.forEach(d=>{const x=d.data()||{};seenByUid[d.id]=x.updatedAt||'';});
+    }catch(e){console.warn('[loadDashProgress] last-seen unavailable',e);}
+    const knownLessons=new Set();S.forEach(sec=>sec.lessons.forEach(l=>knownLessons.add(String(l.id))));
     // Fetch progress docs one-by-one (allow-owner-or-instructor rule requires doc-by-doc reads)
     const rows=await Promise.all(students.map(async s=>{
       try{
@@ -275,8 +282,9 @@ async function loadDashProgress(g){
         const p=doc.data()||{};
         const mcqRight=p.mcqRight||0,mcqTotal=p.mcqTotal||0;
         const acc=mcqTotal>0?Math.round((mcqRight/mcqTotal)*100):0;
-        const lessonsDone=p.lessonsDone?Object.keys(p.lessonsDone).length:0;
-        return {uid:s.uid,name:s.name||'Student',acc,mcqRight,mcqTotal,lessons:lessonsDone,lastSeen:p.lastSeen||''};
+        // Saved shape is {done:[lessonId,…]}. Count current lessons only, once each.
+        const lessonsDone=new Set((p.done||[]).map(String).filter(id=>knownLessons.has(id))).size;
+        return {uid:s.uid,name:s.name||'Student',acc,mcqRight,mcqTotal,lessons:lessonsDone,lastSeen:dashFmtSeen(seenByUid[s.uid])};
       }catch(e){return null;}
     }));
     STATE.dashProgressByGroup[g]={loading:false,loaded:true,rows:rows.filter(Boolean)};
@@ -661,14 +669,14 @@ function renderDashSchedule(){
         </div>
         <div style="display:flex;gap:6px;flex-shrink:0">
           <button onclick="editScheduleRow('${r.id}')" style="background:none;border:none;cursor:pointer;font-size:16px;padding:4px" title="Edit">\u270F\uFE0F</button>
-          <button onclick="deleteScheduleRow('${r.id}')" style="background:none;border:none;cursor:pointer;font-size:16px;padding:4px" title="Delete">\U0001F5D1\uFE0F</button>
+          <button onclick="deleteScheduleRow('${r.id}')" style="background:none;border:none;cursor:pointer;font-size:16px;padding:4px" title="Delete">\u{1F5D1}\uFE0F</button>
         </div>
       </div>
     </div>`;
   }).join(''):'<div style="text-align:center;padding:30px 12px;color:#aaa;font-size:13px">No schedule rows yet. Add the first lecture below.</div>';
 
   return `<div style="padding:14px">
-    <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:10px">\U0001F4C5 Schedule (${rows.length} lectures)</div>
+    <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:10px">\u{1F4C5} Schedule (${rows.length} lectures)</div>
     ${rowsHtml}
     <div style="font-size:13px;font-weight:600;color:var(--ink);margin:18px 0 10px">${editing?'\u2795 Edit Row':'\u2795 Add Lecture'}</div>
     <div style="background:#fff;border:.5px solid var(--border);border-radius:12px;padding:14px">

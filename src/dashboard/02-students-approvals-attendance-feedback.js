@@ -82,27 +82,46 @@ async function reshuffleExam(examId){
   }catch(e){console.warn('[reshuffleExam]',e);showToast('Error: '+e.message,'error');}
 }
 
+const DASH_STU_PAGE=50;
+function dashStudentsFiltered(){
+  const f=(STATE.dashStudentsFilter||'').toUpperCase();
+  const q=(STATE.dashStudentsSearch||'').trim().toLowerCase();
+  let list=(STATE.dashStudents||[]).slice();
+  if(f==='__NONE__')list=list.filter(s=>!String(s.groupCode||'').trim());
+  else if(f)list=list.filter(s=>(s.groupCode||'').toUpperCase()===f);
+  if(q)list=list.filter(s=>((s.name||'')+' '+(s.email||'')+' '+(s.mobile||'')+' '+(s.groupCode||'')).toLowerCase().includes(q));
+  return list.sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+}
+function renderDashStudentRows(){
+  const list=dashStudentsFiltered();
+  const pages=Math.max(1,Math.ceil(list.length/DASH_STU_PAGE));
+  const page=Math.min(Math.max(0,STATE.dashStudentsPage||0),pages-1);
+  const from=page*DASH_STU_PAGE;
+  const rows=list.slice(from,from+DASH_STU_PAGE).map(s=>{
+    const initials=(s.name||'?').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase();
+    const avatar=s.photo?`<img class="dt-avatar" src="${esc(s.photo)}" alt="" loading="lazy">`:`<span class="dt-avatar">${esc(initials)}</span>`;
+    return `<tr class="dt-click" onclick="STATE.dashStudentDetailUid='${esc(s.uid)}';render()">`
+      +`<td class="dt-main"><div class="dt-who">${avatar}<span dir="auto">${esc(s.name||'Unnamed')}</span></div></td>`
+      +`<td data-label="Group">${dashGroupBadge(s.uid)}</td>`
+      +`<td data-label="Email" dir="ltr">${esc(s.email||'\u2014')}</td>`
+      +`<td data-label="Mobile" dir="ltr">${esc(s.mobile||'\u2014')}</td></tr>`;
+  }).join('');
+  if(!list.length)return `<div class="dt-empty">No students match this search or filter.</div>`;
+  const pager=pages>1?`<div class="dt-pager"><button class="sub-nav-btn" ${page===0?'disabled':''} onclick="dashStudentsGoPage(${page-1})">\u2039 Previous</button><span>Page ${page+1} of ${pages}</span><button class="sub-nav-btn" ${page>=pages-1?'disabled':''} onclick="dashStudentsGoPage(${page+1})">Next \u203A</button></div>`:'';
+  return `<div class="dt-count">Showing ${from+1}\u2013${Math.min(from+DASH_STU_PAGE,list.length)} of ${list.length} students</div>`
+    +`<table class="dtable"><thead><tr><th>Name</th><th>Group</th><th>Email</th><th>Mobile</th></tr></thead><tbody>${rows}</tbody></table>${pager}`;
+}
+// Only the list is redrawn while typing, so the search box keeps focus and cursor position.
+function dashStudentsSearchInput(v){
+  STATE.dashStudentsSearch=v;STATE.dashStudentsPage=0;
+  const el=document.getElementById('dash-stu-list');
+  if(el)el.innerHTML=renderDashStudentRows();else render();
+}
+function dashStudentsSetFilter(v){STATE.dashStudentsFilter=v;STATE.dashStudentsPage=0;render();}
+function dashStudentsGoPage(n){STATE.dashStudentsPage=n;render();dashScrollTop();}
 function renderDashStudents(){
   if(STATE.dashStudentDetailUid)return renderDashStudentDetail();
   const all=STATE.dashStudents||[];
-  const groups=(STATE.dashGroups||[]).slice().sort((a,b)=>(a.code||'').localeCompare(b.code||''));
-  const f=(STATE.dashStudentsFilter||'').toUpperCase();
-  const q=(STATE.dashStudentsSearch||'').trim().toLowerCase();
-  let list=all.slice();
-  if(f)list=list.filter(s=>(s.groupCode||'').toUpperCase()===f);
-  if(q)list=list.filter(s=>{
-    const hay=((s.name||'')+' '+(s.email||'')+' '+(s.mobile||'')+' '+(s.groupCode||'')).toLowerCase();
-    return hay.includes(q);
-  });
-  list.sort((a,b)=>(a.name||'').localeCompare(b.name||''));
-  const filterBtn=(v,l)=>{
-    const on=(STATE.dashStudentsFilter||'')===v;
-    return `<button onclick="STATE.dashStudentsFilter='${esc(v)}';render()" style="padding:6px 12px;border-radius:16px;border:1px solid ${on?'var(--brand)':'var(--border-4)'};background:${on?'var(--brand)':'#fff'};color:${on?'#fff':'#555'};font-size:12px;font-weight:${on?'600':'500'};cursor:pointer;font-family:inherit;white-space:nowrap">${esc(l)}</button>`;
-  };
-  const filterChips='<div style="display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none">'+
-    filterBtn('','All ('+all.length+')')+
-    groups.map(g=>{const n=all.filter(s=>(s.groupCode||'').toUpperCase()===g.code.toUpperCase()).length;return filterBtn(g.code,g.code+' ('+n+')');}).join('')+
-    '</div>';
   if(!all.length){
     return `<div style="padding:14px">
       <div class="gs-empty">
@@ -111,26 +130,15 @@ function renderDashStudents(){
         <div class="gs-empty-body">Once students register with a group code, they\u2019ll appear here.</div>
       </div></div>`;
   }
-  const rows=list.map(s=>{
-    const initials=(s.name||'?').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase();
-    const avatar=s.photo?`<img src="${esc(s.photo)}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;flex-shrink:0">`:`<div style="width:44px;height:44px;border-radius:50%;background:var(--brand-tint);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0">${esc(initials)}</div>`;
-    return `<div onclick="STATE.dashStudentDetailUid='${esc(s.uid)}';render()" style="background:#fff;border:.5px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer">
-      ${avatar}
-      <div style="min-width:0;flex:1">
-        <div style="font-size:14px;font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(s.name||'Unnamed')}</div>
-        <div style="font-size:11px;color:#888;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(s.groupCode||'\u2014 no group')} \u00B7 ${esc(s.email||s.mobile||'\u2014')}</div>
-      </div>
-      <span style="color:#bbb;font-size:20px">\u203A</span>
-    </div>`;
-  }).join('')||`<div style="text-align:center;padding:34px 20px;color:#888;font-size:13px">No students match your search.</div>`;
-  return `<div style="padding:14px">
-    <input type="text" placeholder="\u{1F50D} Search by name, email, mobile\u2026" value="${esc(STATE.dashStudentsSearch||'')}"
-      oninput="STATE.dashStudentsSearch=this.value;render()"
-      style="width:100%;padding:10px 12px;border-radius:10px;border:.5px solid var(--border-4);font-size:13px;font-family:inherit;outline:none;background:var(--surface);box-sizing:border-box;margin-bottom:10px">
-    ${filterChips}
-    <div style="font-size:12px;font-weight:500;color:#888;letter-spacing:.5px;margin:6px 0 8px">STUDENTS (${list.length})</div>
-    ${rows}
-    <div style="height:30px"></div>
+  const groups=(STATE.dashGroups||[]).slice().sort((a,b)=>(a.code||'').localeCompare(b.code||''));
+  const filterBtn=(v,l)=>`<button class="sub-nav-btn${(STATE.dashStudentsFilter||'')===v?' active':''}" onclick="dashStudentsSetFilter('${esc(v)}')">${esc(l)}</button>`;
+  const noGroup=all.filter(s=>!String(s.groupCode||'').trim()).length;
+  const chips=filterBtn('','All ('+all.length+')')+filterBtn('__none__','No group ('+noGroup+')')
+    +groups.map(g=>filterBtn(g.code,g.code+' ('+all.filter(s=>(s.groupCode||'').toUpperCase()===g.code.toUpperCase()).length+')')).join('');
+  return `<div class="dt-wrap">
+    <input class="dt-search" type="text" placeholder="\u{1F50D} Search by name, email, mobile\u2026" value="${esc(STATE.dashStudentsSearch||'')}" oninput="dashStudentsSearchInput(this.value)">
+    <div class="dt-filters">${chips}</div>
+    <div id="dash-stu-list">${renderDashStudentRows()}</div>
   </div>`;
 }
 
@@ -142,11 +150,11 @@ async function loadDashApprovals(){
     const rows=snap.docs.map(d=>({_docId:d.id,...d.data()}))
       .sort((a,b)=>(a.requestedAt||'').localeCompare(b.requestedAt||''));
     STATE.dashApprovals={loading:false,loaded:true,rows};
-    if(STATE.tab==='dashboard'&&STATE.dashTab==='approvals')render();
+    if(STATE.tab==='dashboard')render();
   }catch(e){
     console.warn('[loadDashApprovals] failed:',e);
     STATE.dashApprovals={loading:false,loaded:true,rows:[],error:e.message};
-    if(STATE.tab==='dashboard'&&STATE.dashTab==='approvals')render();
+    if(STATE.tab==='dashboard')render();
   }
 }
 
