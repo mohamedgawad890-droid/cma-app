@@ -231,6 +231,9 @@ function flushQueuedClientErrors(){
 // cases) are no longer downloaded and parsed at start-up by every student.
 // RULE: core code must never call a dashboard function directly — go through
 // renderDashboardLazy()/ensureDashboardBundle(). The CI build enforces this.
+// The build stamps a hash of the dashboard code here, so each dashboard version has
+// its own URL and an old cached copy can never run with a newer app.
+const DASH_BUILD='dev';
 const _lazyScripts={};
 function loadScriptOnce(src){
   if(!_lazyScripts[src]){
@@ -245,7 +248,7 @@ function loadScriptOnce(src){
   return _lazyScripts[src];
 }
 function ensureDashboardBundle(){
-  return typeof renderDashboard==='function'?Promise.resolve():loadScriptOnce('./dist/dashboard.min.js');
+  return typeof renderDashboard==='function'?Promise.resolve():loadScriptOnce('./dist/dashboard.min.js?v='+DASH_BUILD);
 }
 function ensureCBQData(){
   return typeof CBQ_DATA!=='undefined'?Promise.resolve():loadScriptOnce('./dist/cbq-data.min.js');
