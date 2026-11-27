@@ -70,6 +70,16 @@ if (hasSrc) {
   console.log('  app.js (single-file mode)');
 }
 
+// 2a) Stamp DASH_BUILD with a hash of the dashboard source. The app requests
+//     dashboard.min.js?v=<hash>, so a cached older dashboard is never reused.
+//     Done before the APP_BUILD hash, so a dashboard-only change also changes it.
+if (dashCode) {
+  const re = /const DASH_BUILD='[^']*';/g;
+  if ((appCode.match(re) || []).length !== 1) fail("Expected exactly one  const DASH_BUILD='...';  in src/core/01-boot-config.js");
+  const dashId = 'd' + crypto.createHash('sha256').update(dashCode).digest('hex').slice(0, 7);
+  appCode = appCode.replace(re, "const DASH_BUILD='" + dashId + "';");
+  console.log('  dashboard id: ' + dashId);
+}
 // 2b) Batch 31: stamp APP_BUILD with a hash of the app source (so every error report
 //     names the exact version). Hash is taken BEFORE stamping, so an unchanged
 //     source always gives the same id (and the same service-worker cache name).
